@@ -1,3 +1,171 @@
+# Gymify
+
+## Project Overview
+
+**Gymify** is a comprehensive platform designed to manage all aspects of a gym, including user management, workout tracking, diet planning, gym attendance, and communication between trainers and users. This project features an **admin panel built with React**, a **mobile app for users developed with Flutter**, and a **backend API built using Express.js** with a PostgreSQL database for data management.
+
+### Key Features
+
+- **User Management**: Users can create profiles, track their fitness goals, and manage their subscriptions to gyms. Trainers and gym owners have separate management interfaces to monitor and assist users.
+- **Workout Management**: Trainers can create and assign predefined workouts, while users can create their own custom workout plans. Workouts are linked to exercises, which include details like calories burned and target muscle groups.
+- **Diet Planning and Tracking**: Trainers can create diet plans for users, which include multiple meals with calorie and nutrition information. Users can track their diets, weight, BMI, and set calorie goals based on their fitness objectives (weight loss, muscle gain, maintenance).
+- **Attendance Tracking**: Gym attendance is tracked using RFID cards, allowing users to log their gym visits. The system keeps a record of streaks (consecutive days of attendance), and users can earn rewards for maintaining their attendance streaks.
+- **Subscriptions and Payments**: Users can subscribe to gyms with different plans (monthly, yearly, etc.), and payments are processed with a status tracking system. Subscription details, start/end dates, and payment statuses are managed efficiently.
+- **Chat System**: Integrated chat feature that allows users to communicate directly with trainers for guidance and feedback.
+- **Admin Panel**: Gym owners and admins can monitor gym activity, user subscriptions, payments, and more through a React-based admin dashboard.
+- **Mobile App**: Users access the system via a Flutter-based mobile application, allowing them to view workout plans, diet progress, track attendance, and chat with trainers on the go.
+
+## Tech Stack
+
+### Frontend
+
+- **Admin Panel**: Built with **React**, the admin panel offers a responsive interface for gym owners and trainers to manage users, subscriptions, and gym operations.
+- **User Mobile App**: Developed using **Flutter**, providing users with a smooth and intuitive interface for tracking their progress, accessing workout plans, and managing gym attendance.
+
+### Backend
+
+- **Express.js**: The backend is powered by **Express.js**, which serves as the API layer for handling user data, workout plans, diet tracking, chat, and attendance. The API is designed with RESTful principles to ensure scalability and ease of use.
+- **PostgreSQL**: A **PostgreSQL** database is used to manage user data, workouts, subscriptions, payments, and gym information. The schema is designed with normalization principles to ensure efficient querying and data consistency.
+
+## Features Breakdown
+
+### Admin Panel (React)
+
+- Manage gym operations, including user subscriptions, payments, and workouts.
+- View and track user attendance, streaks, and performance.
+- Access analytics related to gym activities, user progress, and overall performance.
+
+### Mobile App (Flutter)
+
+- Users can sign up, create profiles, and view their workout and diet plans.
+- Access a detailed view of their progress, including current weight, BMI, and attendance streaks.
+- Chat directly with trainers for personalized guidance.
+- Receive notifications and updates about workouts, diet plans, and gym attendance.
+
+### Backend API (Express.js)
+
+- Secure API endpoints for user authentication, gym management, workout and diet tracking.
+- Real-time chat system for trainers and users.
+- Subscription and payment handling with status tracking.
+
+## Installation and Setup
+
+### Prerequisites
+
+- **Node.js** for backend (Express.js)
+- **Flutter SDK** for mobile app development
+- **React** for admin panel
+- **PostgreSQL** for database management
+
+### Steps to Run the Project
+
+1. **Clone the repository**:
+    
+    ```bash
+    bash
+    Copy code
+    git clone https://github.com/AashishRauniyar/fyp-gymify
+    
+    ```
+    
+2. **Backend Setup**:
+    - Navigate to the backend directory:
+        
+        ```bash
+        bash
+        Copy code
+        cd be
+        
+        ```
+        
+    - Install the dependencies:
+        
+        ```bash
+        bash
+        Copy code
+        npm install
+        
+        ```
+        
+    - Set up the PostgreSQL database and environment variables:
+        
+        ```bash
+        bash
+        Copy code
+        cp .env.example .env
+        
+        ```
+        
+    - Run the backend server:
+        
+        ```bash
+        bash
+        Copy code
+        npm run dev
+        
+        ```
+        
+3. **Front end Admin Panel Setup**:
+    - Navigate to the admin panel directory:
+        
+        ```bash
+        bash
+        Copy code
+        cd fe
+        
+        ```
+        
+    - Install the dependencies:
+        
+        ```bash
+        bash
+        Copy code
+        npm install
+        
+        ```
+        
+    - Run the admin panel in development mode:
+        
+        ```bash
+        bash
+        Copy code
+        npm run dev
+        
+        ```
+        
+4. **Mobile App Setup**:
+    - Navigate to the Flutter app directory:
+        
+        ```bash
+        bash
+        Copy code
+        cd mobile
+        
+        ```
+        
+    - Install the dependencies:
+        
+        ```bash
+        bash
+        Copy code
+        flutter pub get
+        
+        ```
+        
+    - Run the Flutter app on a device or emulator:
+        
+        ```bash
+        bash
+        Copy code
+        flutter run
+        
+        ```
+        
+
+## More Features
+
+- **Push Notifications**: Integrate Firebase for push notifications to alert users about workout plans, diet reminders, and gym updates.
+
 # Business Rules
 ### User
 
