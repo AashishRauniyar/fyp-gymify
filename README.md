@@ -6,7 +6,7 @@
 - A user have its attendance tracked
 - A user views exercises and workout
 - A user can make custom workout and add predefined exercise to it.
-- A user pays for its subscription using Esewa
+- A user pays for its subscription using khalti
 - **Uniqueness**: Each user must have a unique **email** and **phone number**.
 - **Optional or Mandatory**:
     - **Mandatory**: user name, full name, email, phone number, password, address, fitness level, goal, current weight, height

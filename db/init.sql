@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS Payments (
     user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
     amount_paid DECIMAL(10, 2),
     payment_date DATE,
+    khalti_transaction_id VARCHAR(255),
     payment_status PAYMENT_STATUS      -- ENUM
 );
 
