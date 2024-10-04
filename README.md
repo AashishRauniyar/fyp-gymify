@@ -138,3 +138,6 @@
 - **Uniqueness**: Each reward is unique to the **user_id** and **reward_type**.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, reward_type, achieved_streak, claimed
+
+// image
+![ERD](./ERD.png)
