@@ -168,134 +168,173 @@
 
 # Business Rules
 
-### Users
+### **1. Users**
 
 - A user has attributes: user_name, full_name, address, age, height, current_weight, gender, email, password, phone number, role, fitness level, goal type, card number, created_at, and updated_at.
-- A user can have one active membership at a time.
-- A user’s attendance is recorded to track gym sessions.
-- A user can view exercises and predefined workout plans.
-- A user can create custom workouts by adding predefined exercises to them.
-- A user can make payments for memberships using methods such as Khalti.
-- A user can participate in diet plans and track diet logs.
-- **Uniqueness**: Each user must have a unique **email** and **phone number**.
+- A user has one active membership at a time.
+- A user has attendance records to track gym visits.
+- A user has the ability to view exercises and predefined workout plans.
+- A user has the capability to create custom workouts by adding predefined exercises to them.
+- A user has diet plans and logs their diet intake.
+- A user has the ability to make payments for memberships using methods such as Khalti.
+- A user has the option to participate in chat conversations with trainers and receive notifications.
+- **Uniqueness**: Each user has a unique email and phone number.
 - **Optional or Mandatory**:
     - **Mandatory**: user_name, full_name, email, password, phone_number, address, fitness_level, goal_type, current_weight, height.
-    - **Optional**: profile image, card_number, fitness_level.
+    - **Optional**: profile image, card_number.
 
-### Memberships
+---
+
+### **2. Memberships**
 
 - A membership has a plan_type, start_date, end_date, status, created_at, and updated_at.
-- A membership is unique to each **user** and is associated with a specific gym.
-- **Uniqueness**: Each membership is unique to a **user_id**.
+- A membership is unique to each user and is associated with a specific gym.
+- **Uniqueness**: Each membership is unique to a user_id.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, plan_type, start_date, end_date, status.
 
-### Payments
+---
 
+### **3. Payments**
+
+- A payment has attributes: membership_id, user_id, amount_paid, payment_method, transaction_id, payment_date, and payment_status.
 - A payment is linked to a specific user’s membership.
-- Payment attributes include membership_id, user_id, amount_paid, payment_method, transaction_id, payment_date, and payment_status.
-- Payment status can be **paid**, **pending**, or **failed**.
+- A payment has status options such as paid, pending, or failed.
+- **Uniqueness**: Each payment has a unique transaction_id.
 - **Optional or Mandatory**:
     - **Mandatory**: membership_id, user_id, amount_paid, payment_method, payment_date, payment_status.
 
-### Workouts
+---
 
-- A workout has attributes: workout_name, description, target muscle group, duration, difficulty, created_at, and updated_at.
-- A workout is created by a trainer and can consist of multiple exercises.
-- **Uniqueness**: Each workout must have a unique **workout_name** per trainer.
+### **4. Workouts**
+
+- A workout has attributes: workout_name, description, target muscle group, difficulty, created_at, and updated_at.
+- A workout is created by a trainer and has multiple exercises.
+- **Uniqueness**: Each workout has a unique workout_name per trainer.
 - **Optional or Mandatory**:
-    - **Mandatory**: workout_name, description, target muscle group, duration, difficulty.
+    - **Mandatory**: workout_name, description, target muscle group, difficulty.
 
-### Exercises
+---
+
+### **5. Exercises**
 
 - An exercise has attributes: exercise_name, calories burned per minute, and created_at.
-- Exercises can be part of multiple workouts.
-- **Uniqueness**: Each exercise must have a unique **exercise_name**.
+- An exercise is included in multiple workouts.
+- **Uniqueness**: Each exercise has a unique exercise_name.
 - **Optional or Mandatory**:
     - **Mandatory**: exercise_name, calories burned per minute.
 
-### WorkoutExercises
+---
 
-- **WorkoutExercises** table links workouts to exercises and has attributes: workout_id, exercise_id, sets, reps, and duration.
-- **Uniqueness**: Each entry in the WorkoutExercises table must be unique for a combination of **workout_id** and **exercise_id**.
+### **6. WorkoutExercises**
+
+- The WorkoutExercises table links workouts to exercises and has attributes: workout_id, exercise_id, sets, reps, and duration.
+- **Uniqueness**: Each entry in the WorkoutExercises table has a unique combination of workout_id and exercise_id.
 - **Optional or Mandatory**:
     - **Mandatory**: workout_id, exercise_id, sets, reps, duration.
 
-### CustomWorkouts
+---
 
-- A custom workout has attributes: custom_workout_name and created_at.
-- A custom workout is created by a user and can contain multiple predefined exercises.
-- **Uniqueness**: Each custom workout is unique to a **user**.
+### **7. CustomWorkouts**
+
+- A custom workout has attributes: custom_workout_name, created_at.
+- A custom workout is created by a user and has multiple predefined exercises.
+- **Uniqueness**: Each custom workout is unique to a user.
 - **Optional or Mandatory**:
     - **Mandatory**: custom_workout_name.
 
-### CustomWorkoutExercises
+---
 
-- Links exercises to a custom workout with attributes: custom_workout_id, exercise_id, sets, reps, and duration.
-- **Uniqueness**: Each entry in the CustomWorkoutExercises table must be unique for a combination of **custom_workout_id** and **exercise_id**.
+### **8. CustomWorkoutExercises**
+
+- Links exercises to custom workouts with attributes: custom_workout_id, exercise_id, sets, reps, duration.
+- **Uniqueness**: Each entry in CustomWorkoutExercises has a unique combination of custom_workout_id and exercise_id.
 - **Optional or Mandatory**:
     - **Mandatory**: custom_workout_id, exercise_id, sets, reps, duration.
 
-### DietPlans
+---
+
+### **9. DietPlans**
 
 - A diet plan has attributes: calorie_goal, goal_type, description, created_at, and updated_at.
 - A diet plan is created by a trainer and includes multiple meals.
-- **Uniqueness**: Each diet plan must have a unique **goal_type** per user.
+- **Uniqueness**: Each diet plan has a unique goal_type per user.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, trainer_id, calorie_goal, goal_type, description.
 
-### Meals
+---
+
+### **10. Meals**
 
 - A meal has attributes: meal_name, meal_time, calories, description, macronutrients, and created_at.
 - A meal is part of a diet plan and is assigned to a specific time of day (e.g., breakfast).
-- **Uniqueness**: Each meal must have a unique **meal_name** within a diet plan.
+- **Uniqueness**: Each meal has a unique meal_name within a diet plan.
 - **Optional or Mandatory**:
     - **Mandatory**: meal_name, meal_time, calories, description.
 
-### DietLogs
+---
 
-- Tracks diet information for a user including diet_plan_id, meal_id, consumed_calories, custom_meal, notes, and log_date.
-- Each user can have multiple diet logs based on daily meals consumed.
-- **Uniqueness**: Each diet log entry is unique to a combination of **user_id** and **log_date**.
+### **11. DietLogs**
+
+- DietLogs track a user's diet intake with attributes: diet_plan_id, meal_id, consumed_calories, custom_meal, notes, log_date.
+- **Uniqueness**: Each diet log entry has a unique combination of user_id and log_date.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, diet_plan_id, meal_id, consumed_calories, log_date.
 
-### WorkoutLogs
+---
 
-- Logs each workout a user completes, with attributes: workout_date, start_time, end_time, total_duration, calories_burned, and performance_notes.
-- **Uniqueness**: Each workout log entry is unique to a combination of **user_id** and **workout_date**.
+### **12. WorkoutLogs**
+
+- WorkoutLogs track a user's workouts with attributes: workout_date, start_time, end_time, total_duration, calories_burned, performance_notes.
+- **Uniqueness**: Each workout log entry has a unique combination of user_id and workout_date.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, workout_id, workout_date, start_time, end_time, total_duration.
 
-### WorkoutExercisesLogs
+---
+
+### **13. WorkoutExercisesLogs**
 
 - Tracks each exercise completed in a workout session with attributes: workout_log_id, exercise_id, start_time, end_time, exercise_duration, rest_duration, and skipped.
-- **Uniqueness**: Each workout exercise log entry is unique to a combination of **workout_log_id** and **exercise_id**.
+- **Uniqueness**: Each entry has a unique combination of workout_log_id and exercise_id.
 - **Optional or Mandatory**:
     - **Mandatory**: workout_log_id, exercise_id, start_time, end_time, exercise_duration.
 
-### Attendance
+---
+
+### **14. Attendance**
 
 - Tracks gym attendance with attributes: user_id, gym_id, attendance_date, and status.
-- Attendance status can be **present** or **absent**.
-- **Uniqueness**: Each attendance record is unique for a combination of **user_id**, **gym_id**, and **attendance_date**.
+- **Uniqueness**: Each attendance record is unique for a combination of user_id, gym_id, and attendance_date.
 - **Optional or Mandatory**:
     - **Mandatory**: user_id, gym_id, attendance_date, status.
-    - 
 
-### ChatConversations
+---
 
-- Chat conversation records include user_id, trainer_id, last_message, and last_message_timestamp.
-- **Uniqueness**: Each chat conversation must be unique for a combination of **user_id** and **trainer_id**.
+### **15. Notifications**
+
+- Users receive notifications with attributes: message, is_read, created_at.
+- Notifications inform users of updates, reminders, or alerts.
 - **Optional or Mandatory**:
-    - **Mandatory**: user_id, trainer_id, last_message, last_message_timestamp.
+    - **Mandatory**: user_id, message, is_read.
 
-### ChatMessages
+---
 
-- Chat messages include chat_id, sender_id, message_content, sent_at, and is_read.
-- Each chat conversation can have multiple messages.
-- **Uniqueness**: Each chat message entry is unique to a **chat_id**.
+### **16. ChatConversations**
+
+- Chat conversations include user_id, trainer_id, last_message, and last_message_timestamp.
+- **Uniqueness**: Each chat conversation has a unique combination of user_id and trainer_id.
+- **Optional or Mandatory**:
+    - **Mandatory**: user_id, trainer_id, last_message.
+
+---
+
+### **17. ChatMessages**
+
+- ChatMessages include chat_id, sender_id, message_content, sent_at, and is_read.
+- Each chat conversation has multiple messages.
+- **Uniqueness**: Each chat message entry is unique to a chat_id.
 - **Optional or Mandatory**:
     - **Mandatory**: chat_id, sender_id, message_content, sent_at.
+
 // image
 ![ERD](./ERD.png)
