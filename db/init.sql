@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS ChatMessages, ChatConversations, Attendance, DietLogs, Meal
 DO $$ 
 BEGIN
     DROP TYPE IF EXISTS GENDER;
-    DROP TYPE IF EXISTS USER_ROLE;
+    DROP TYPE IF EXISTS ROLE;
     DROP TYPE IF EXISTS FITNESS_LEVEL;
     DROP TYPE IF EXISTS GOAL_TYPE;
     DROP TYPE IF EXISTS PLAN_TYPE;
@@ -24,7 +24,7 @@ END $$;
 
 -- Create ENUM types for gender, role, fitness level, and goal type
 CREATE TYPE GENDER AS ENUM ('Male', 'Female', 'Other');
-CREATE TYPE USER_ROLE AS ENUM ('Member', 'Trainer', 'Admin');
+CREATE TYPE ROLE AS ENUM ('Member', 'Trainer', 'Admin');
 CREATE TYPE FITNESS_LEVEL AS ENUM ('Beginner', 'Intermediate', 'Advanced', 'Athlete');
 CREATE TYPE GOAL_TYPE AS ENUM ('Weight Loss', 'Muscle Gain', 'Endurance', 'Maintenance', 'Flexibility');
 
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS Users (
     email VARCHAR(255) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20) UNIQUE NOT NULL,
-    role USER_ROLE NOT NULL,
+    role ROLE NOT NULL,
     fitness_level FITNESS_LEVEL NOT NULL,
     goal_type GOAL_TYPE NOT NULL,
     card_number VARCHAR(50),
