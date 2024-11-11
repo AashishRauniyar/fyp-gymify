@@ -28,7 +28,7 @@ export const register = async (req, res) => {
 
     // Validate required fields
     if (!email || !password || !user_name || !full_name || !phone_number || !gender || !role || !fitness_level || !goal_type) {
-        return res.status(400).json({ message: 'Missing required fields' });
+        return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
     }
 
     try {
@@ -38,7 +38,7 @@ export const register = async (req, res) => {
         });
 
         if (existingUser) {
-            return res.status(400).json({ message: 'User with this email already exists' });
+            return res.status(400).json({ status: 'failure', message: 'User with this email already exists' });
         }
 
         const existingPhoneNumber = await prisma.users.findUnique({
@@ -46,7 +46,7 @@ export const register = async (req, res) => {
         });
 
         if (existingPhoneNumber) {
-            return res.status(400).json({ message: 'User with this phone number already exists' });
+            return res.status(400).json({ status: 'failure', message: 'User with this phone number already exists' });
         }
 
         // Hash the password
@@ -78,6 +78,7 @@ export const register = async (req, res) => {
         const token = generateToken(user.user_id);
 
         res.status(201).json({
+            status: 'success',
             message: 'User registered successfully',
             user: {
                 user_id: user.user_id,
@@ -93,6 +94,50 @@ export const register = async (req, res) => {
         });
     } catch (error) {
         console.error('Error during registration:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
+
+
+// Login a user
+// User login
+
+
+export const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await prisma.users.findUnique({ where: { email } });
+
+        if (!user) {
+            return res.status(404).json({ status: 'failure', message: 'User not found' });
+        }
+
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        if (!isPasswordMatch) {
+            return res.status(401).json({ status: 'failure', message: 'Invalid credentials' });
+        }
+
+        // Generate the token including user_id and role
+        const token = generateToken(user);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Login successful',
+            user: {
+                user_id: user.user_id,
+                user_name: user.user_name,
+                email: user.email,
+                role: user.role,
+                full_name: user.full_name,
+                phone_number: user.phone_number,
+                fitness_level: user.fitness_level,
+                goal_type: user.goal_type
+            },
+            token
+        });
+    } catch (error) {
+        console.error('Error during login:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
