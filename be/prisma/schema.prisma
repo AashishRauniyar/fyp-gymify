@@ -1,0 +1,273 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model attendance {
+  attendance_id   Int      @id @default(autoincrement())
+  user_id         Int?
+  gym_id          Int?
+  attendance_date DateTime @db.Date
+  users           users?   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model chatconversations {
+  chat_id                                   Int            @id @default(autoincrement())
+  user_id                                   Int?
+  trainer_id                                Int?
+  last_message                              String?        @db.VarChar(255)
+  last_message_timestamp                    DateTime?      @default(now()) @db.Timestamp(6)
+  users_chatconversations_trainer_idTousers users?         @relation("chatconversations_trainer_idTousers", fields: [trainer_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  users_chatconversations_user_idTousers    users?         @relation("chatconversations_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  chatmessages                              chatmessages[]
+}
+
+model chatmessages {
+  message_id        Int                @id @default(autoincrement())
+  chat_id           Int?
+  sender_id         Int?
+  message_content   Json?              @db.Json
+  sent_at           DateTime?          @default(now()) @db.Timestamp(6)
+  is_read           Boolean?           @default(false)
+  chatconversations chatconversations? @relation(fields: [chat_id], references: [chat_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model customworkoutexercises {
+  custom_workout_exercise_id Int             @id @default(autoincrement())
+  custom_workout_id          Int?
+  exercise_id                Int?
+  sets                       Int
+  reps                       Int
+  duration                   Decimal         @db.Decimal(5, 2)
+  customworkouts             customworkouts? @relation(fields: [custom_workout_id], references: [custom_workout_id], onDelete: Cascade, onUpdate: NoAction)
+  exercises                  exercises?      @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model customworkouts {
+  custom_workout_id      Int                      @id @default(autoincrement())
+  user_id                Int?
+  custom_workout_name    String                   @unique @db.VarChar(100)
+  created_at             DateTime?                @default(now()) @db.Timestamp(6)
+  customworkoutexercises customworkoutexercises[]
+  users                  users?                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model dietlogs {
+  log_id            Int        @id @default(autoincrement())
+  user_id           Int?
+  diet_plan_id      Int?
+  meal_id           Int?
+  consumed_calories Decimal?   @db.Decimal(5, 2)
+  custom_meal       String?    @db.VarChar(100)
+  notes             String?
+  log_date          DateTime?  @default(now()) @db.Timestamp(6)
+  dietplans         dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: NoAction, onUpdate: NoAction)
+  meals             meals?     @relation(fields: [meal_id], references: [meal_id], onDelete: NoAction, onUpdate: NoAction)
+  users             users?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model dietplans {
+  diet_plan_id                      Int        @id @default(autoincrement())
+  user_id                           Int?
+  trainer_id                        Int?
+  calorie_goal                      Decimal?   @db.Decimal(6, 2)
+  goal_type                         goal_type
+  description                       String?
+  created_at                        DateTime?  @default(now()) @db.Timestamp(6)
+  updated_at                        DateTime?  @default(now()) @db.Timestamp(6)
+  dietlogs                          dietlogs[]
+  users_dietplans_trainer_idTousers users?     @relation("dietplans_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
+  users_dietplans_user_idTousers    users?     @relation("dietplans_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  meals                             meals[]
+}
+
+model exercises {
+  exercise_id                Int                      @id @default(autoincrement())
+  exercise_name              String                   @unique @db.VarChar(100)
+  calories_burned_per_minute Decimal                  @db.Decimal(5, 2)
+  created_at                 DateTime?                @default(now()) @db.Timestamp(6)
+  customworkoutexercises     customworkoutexercises[]
+  workoutexercises           workoutexercises[]
+}
+
+model gym {
+  gym_id         Int       @id @default(autoincrement())
+  gym_name       String    @unique @db.VarChar(100)
+  location       String    @db.VarChar(255)
+  contact_number String    @unique @db.VarChar(20)
+  admin_id       Int?
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @default(now()) @db.Timestamp(6)
+  users          users?    @relation(fields: [admin_id], references: [user_id], onUpdate: NoAction)
+}
+
+model meals {
+  meal_id        Int        @id @default(autoincrement())
+  diet_plan_id   Int?
+  meal_name      String     @unique @db.VarChar(100)
+  meal_time      meal_time
+  calories       Decimal    @db.Decimal(5, 2)
+  description    String?
+  macronutrients String?    @db.VarChar(100)
+  created_at     DateTime?  @default(now()) @db.Timestamp(6)
+  dietlogs       dietlogs[]
+  dietplans      dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model memberships {
+  membership_id Int               @id @default(autoincrement())
+  user_id       Int?
+  plan_type     plan_type
+  start_date    DateTime          @db.Date
+  end_date      DateTime          @db.Date
+  status        membership_status
+  created_at    DateTime?         @default(now()) @db.Timestamp(6)
+  updated_at    DateTime?         @default(now()) @db.Timestamp(6)
+  users         users?            @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  payments      payments[]
+}
+
+model payments {
+  payment_id     Int            @id @default(autoincrement())
+  membership_id  Int?
+  user_id        Int?
+  price          Decimal        @db.Decimal(10, 2)
+  payment_method payment_method
+  khalti_payload String         @unique @db.VarChar(100)
+  payment_date   DateTime       @db.Date
+  payment_status payment_status
+  created_at     DateTime?      @default(now()) @db.Timestamp(6)
+  memberships    memberships?   @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  user_id                                               Int                 @id @default(autoincrement())
+  user_name                                             String              @unique @db.VarChar(100)
+  full_name                                             String              @db.VarChar(100)
+  address                                               String?             @db.VarChar(255)
+  age                                                   Int?
+  height                                                Decimal             @db.Decimal
+  current_weight                                        Decimal             @db.Decimal
+  gender                                                gender
+  email                                                 String              @unique @db.VarChar(255)
+  password                                              String              @db.VarChar(255)
+  phone_number                                          String              @unique @db.VarChar(20)
+  role                                                  role
+  fitness_level                                         fitness_level
+  goal_type                                             goal_type
+  card_number                                           String?             @db.VarChar(50)
+  created_at                                            DateTime?           @default(now()) @db.Timestamp(6)
+  updated_at                                            DateTime?           @default(now()) @db.Timestamp(6)
+  attendance                                            attendance[]
+  chatconversations_chatconversations_trainer_idTousers chatconversations[] @relation("chatconversations_trainer_idTousers")
+  chatconversations_chatconversations_user_idTousers    chatconversations[] @relation("chatconversations_user_idTousers")
+  customworkouts                                        customworkouts[]
+  dietlogs                                              dietlogs[]
+  dietplans_dietplans_trainer_idTousers                 dietplans[]         @relation("dietplans_trainer_idTousers")
+  dietplans_dietplans_user_idTousers                    dietplans[]         @relation("dietplans_user_idTousers")
+  gym                                                   gym[]
+  memberships                                           memberships[]
+  payments                                              payments[]
+  workouts_workouts_trainer_idTousers                   workouts[]          @relation("workouts_trainer_idTousers")
+  workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
+}
+
+model workoutexercises {
+  workout_exercise_id Int        @id @default(autoincrement())
+  workout_id          Int?
+  exercise_id         Int?
+  sets                Int
+  reps                Int
+  duration            Decimal    @db.Decimal(5, 2)
+  exercises           exercises? @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
+  workouts            workouts?  @relation(fields: [workout_id], references: [workout_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model workouts {
+  workout_id                       Int                @id @default(autoincrement())
+  user_id                          Int?
+  workout_name                     String             @unique @db.VarChar(100)
+  description                      String
+  target_muscle_group              String             @db.VarChar(50)
+  difficulty                       difficulty_level
+  trainer_id                       Int?
+  created_at                       DateTime?          @default(now()) @db.Timestamp(6)
+  updated_at                       DateTime?          @default(now()) @db.Timestamp(6)
+  workoutexercises                 workoutexercises[]
+  users_workouts_trainer_idTousers users?             @relation("workouts_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
+  users_workouts_user_idTousers    users?             @relation("workouts_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+enum difficulty_level {
+  Easy
+  Intermediate
+  Hard
+}
+
+enum fitness_level {
+  Beginner
+  Intermediate
+  Advanced
+  Athlete
+}
+
+enum gender {
+  Male
+  Female
+  Other
+}
+
+enum goal_type {
+  Weight_Loss @map("Weight Loss")
+  Muscle_Gain @map("Muscle Gain")
+  Endurance
+  Maintenance
+  Flexibility
+}
+
+enum meal_time {
+  Breakfast
+  Lunch
+  Dinner
+  Snack
+}
+
+enum membership_status {
+  Active
+  Expired
+  Cancelled
+}
+
+enum payment_method {
+  Khalti
+  Cash
+}
+
+enum payment_status {
+  Paid
+  Pending
+  Failed
+}
+
+enum plan_type {
+  Monthly
+  Yearly
+  Quaterly
+}
+
+enum user_role {
+  Member
+  Trainer
+  Admin
+}
+
+enum role {
+  Member
+  Trainer
+  Admin
+}

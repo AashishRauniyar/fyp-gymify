@@ -31,11 +31,10 @@ CREATE TYPE GOAL_TYPE AS ENUM ('Weight Loss', 'Muscle Gain', 'Endurance', 'Maint
 -- Create ENUM types for plans, payments, attendance, difficulty levels, and meal times
 CREATE TYPE PLAN_TYPE AS ENUM ('Monthly', 'Yearly', 'Quaterly');
 CREATE TYPE MEMBERSHIP_STATUS AS ENUM ('Active', 'Expired', 'Cancelled');
-CREATE TYPE PAYMENT_METHOD AS ENUM ('Esewa', 'Khalti', 'CreditCard');
+CREATE TYPE PAYMENT_METHOD AS ENUM ('Khalti', 'Cash');
 CREATE TYPE PAYMENT_STATUS AS ENUM ('Paid', 'Pending', 'Failed');
 CREATE TYPE DIFFICULTY_LEVEL AS ENUM ('Easy', 'Intermediate', 'Hard');
 CREATE TYPE MEAL_TIME AS ENUM ('Breakfast', 'Lunch', 'Dinner', 'Snack');
-CREATE TYPE ATTENDANCE_STATUS AS ENUM ('Present', 'Absent');
 
 -- Create Users Table
 CREATE TABLE IF NOT EXISTS Users (
@@ -185,8 +184,8 @@ CREATE TABLE IF NOT EXISTS Attendance (
     attendance_id SERIAL PRIMARY KEY,
     user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
     gym_id INT,
-    attendance_date DATE NOT NULL,
-    status ATTENDANCE_STATUS NOT NULL
+    attendance_date DATE NOT NULL
+    
 );
 
 -- Create ChatConversations Table
