@@ -48,54 +48,121 @@ export const createWorkout = async (req, res) => {
     }
 };
 
-// Add exercise to workout (Trainer only)
+// // Add exercise to workout (Trainer only)
+// export const addExerciseToWorkout = async (req, res) => {
+//     try {
+//         const { user_id, role } = req.user;
+        
+//         // Ensure the user is a trainer
+//         if (role !== 'Trainer') {
+//             return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
+//         }
+
+//         const workoutId = parseInt(req.params.workoutId);
+//         const { exercise_id, sets, reps, duration } = req.body;
+
+//         // Validate required fields
+//         if (!exercise_id || !sets || !reps || !duration) {
+//             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
+//         }
+
+//         // Check if the workout exists
+//         const workout = await prisma.workouts.findUnique({ where: { workout_id: workoutId } });
+//         if (!workout) {
+//             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
+//         }
+
+//         // Check if the exercise exists
+//         const exercise = await prisma.exercises.findUnique({ where: { exercise_id: exercise_id } });
+//         if (!exercise) {
+//             return res.status(404).json({ status: 'failure', message: 'Exercise not found' });
+//         }
+
+//         // Add the exercise to the workout
+//         const workoutExercise = await prisma.workoutexercises.create({
+//             data: {
+//                 workout_id: workoutId,
+//                 exercise_id: exercise_id,
+//                 sets: sets,
+//                 reps: reps,
+//                 duration: duration
+//             }
+//         });
+
+//         res.status(201).json({
+//             status: 'success',
+//             message: 'Exercise added to workout successfully',
+//             workoutExercise
+//         });
+//     } catch (error) {
+//         console.error('Error adding exercise to workout:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
+
+// Add multiple exercises to a workout (Trainer only)
 export const addExerciseToWorkout = async (req, res) => {
     try {
         const { user_id, role } = req.user;
-        
+
         // Ensure the user is a trainer
         if (role !== 'Trainer') {
             return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
         }
 
         const workoutId = parseInt(req.params.workoutId);
-        const { exercise_id, sets, reps, duration } = req.body;
+        const exercises = req.body.exercises; // Expecting an array of exercises
 
-        // Validate required fields
-        if (!exercise_id || !sets || !reps || !duration) {
-            return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
+        if (!Array.isArray(exercises) || exercises.length === 0) {
+            return res.status(400).json({ status: 'failure', message: 'No exercises provided' });
         }
 
-        // Check if the workout exists
-        const workout = await prisma.workouts.findUnique({ where: { workout_id: workoutId } });
-        if (!workout) {
-            return res.status(404).json({ status: 'failure', message: 'Workout not found' });
-        }
+        const addedExercises = [];
 
-        // Check if the exercise exists
-        const exercise = await prisma.exercises.findUnique({ where: { exercise_id: exercise_id } });
-        if (!exercise) {
-            return res.status(404).json({ status: 'failure', message: 'Exercise not found' });
-        }
+        for (const exercise of exercises) {
+            const { exercise_id, sets, reps, duration } = exercise;
 
-        // Add the exercise to the workout
-        const workoutExercise = await prisma.workoutexercises.create({
-            data: {
-                workout_id: workoutId,
-                exercise_id: exercise_id,
-                sets: sets,
-                reps: reps,
-                duration: duration
+            // Validate required fields
+            if (!exercise_id || !sets || !reps || !duration) {
+                continue;
             }
-        });
+
+            // Check if the exercise exists
+            const existingExercise = await prisma.exercises.findUnique({ where: { exercise_id } });
+            if (!existingExercise) continue;
+
+            // Check if the exercise is already added to this workout
+            const existingWorkoutExercise = await prisma.workoutexercises.findFirst({
+                where: {
+                    workout_id: workoutId,
+                    exercise_id,
+                },
+            });
+
+            if (existingWorkoutExercise) {
+                continue; // Skip adding if it's already present
+            }
+
+            // Add the exercise to the workout
+            const workoutExercise = await prisma.workoutexercises.create({
+                data: {
+                    workout_id: workoutId,
+                    exercise_id,
+                    sets,
+                    reps,
+                    duration,
+                },
+            });
+            addedExercises.push(workoutExercise);
+        }
 
         res.status(201).json({
             status: 'success',
-            message: 'Exercise added to workout successfully',
-            workoutExercise
+            message: 'Exercises added to workout successfully',
+            addedExercises,
         });
     } catch (error) {
-        console.error('Error adding exercise to workout:', error);
+        console.error('Error adding exercises to workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };

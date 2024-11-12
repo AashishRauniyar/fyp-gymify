@@ -1,10 +1,70 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.jsx'
 import './index.css'
+import App from './App.jsx'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import Register from './pages/Register.jsx'
+import Welcome from './pages/Welcome.jsx'
+import Login from './pages/Login.jsx'
+import CreateWorkout from './pages/workout/CreateWorkout.jsx'
+import ViewWorkouts from './pages/workout/ViewWorkouts.jsx'
+import CreateExercise from './pages/exercise/CreateExercise.jsx'
+import ViewExercises from './pages/exercise/ViewExercises.jsx'
+import AddExercisesToWorkout from './pages/workout/AddExerciseToWorkout.jsx'
+import WorkoutDetails from './pages/workout/WorkoutDetails.jsx'
+
+
+const router = createBrowserRouter(
+  [
+    {
+      path: '/register',
+      element: <Register />
+    },
+    {
+      path: '/welcome',
+      element: <Welcome />
+    },
+    {
+      path: '/login',
+      element: <Login />
+    },
+    {
+      path: '/create-workout',
+      element: <CreateWorkout />
+    },
+    {
+      path: '/workouts',
+      element: <ViewWorkouts />
+    },
+    {
+      path: 'create-exercise',
+      element: <CreateExercise />
+    },
+    {
+      path: '/exercises',
+      element: <ViewExercises />
+    },
+    {
+      path: '/add-exercise-to-workout',
+      element: <AddExercisesToWorkout />
+    },
+    {
+      path: '/workouts/:workoutId',
+      element: <WorkoutDetails />
+    },
+    {
+      path: '/',
+      element: <App />
+    }
+    
+
+  ]
+)
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <RouterProvider router={router}/>
   </StrictMode>,
 )

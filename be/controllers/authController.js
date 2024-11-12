@@ -31,20 +31,47 @@ export const register = async (req, res) => {
         return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
     }
 
+    // Additional validation
+    if (!validateEmail(email)) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid email format' });
+    }
+
+    if (typeof age !== 'number' || age < 0 || age > 120) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid age' });
+    }
+
+    if (typeof height !== 'number' || height <= 0) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid height' });
+    }
+
+    if (typeof current_weight !== 'number' || current_weight <= 0) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid weight' });
+    }
+
+    if (!/^\d{10}$/.test(phone_number)) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid phone number' });
+    }
+
+    if (password.length < 8) {
+        return res.status(400).json({ status: 'failure', message: 'Password must be at least 8 characters long' });
+    }
+
+    if (!['Male', 'Female', 'Other'].includes(gender)) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid gender' });
+    }
+
+    if (!['Member', 'Trainer', 'Admin'].includes(role)) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid role' });
+    }
+
     try {
         // Check if the user already exists by email or phone number
-        const existingUser = await prisma.users.findUnique({
-            where: { email },
-        });
-
+        const existingUser = await prisma.users.findUnique({ where: { email } });
         if (existingUser) {
             return res.status(400).json({ status: 'failure', message: 'User with this email already exists' });
         }
 
-        const existingPhoneNumber = await prisma.users.findUnique({
-            where: { phone_number },
-        });
-
+        const existingPhoneNumber = await prisma.users.findUnique({ where: { phone_number } });
         if (existingPhoneNumber) {
             return res.status(400).json({ status: 'failure', message: 'User with this phone number already exists' });
         }
@@ -96,6 +123,12 @@ export const register = async (req, res) => {
         console.error('Error during registration:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
+};
+
+// Utility function to validate email format
+const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
 };
 
 
