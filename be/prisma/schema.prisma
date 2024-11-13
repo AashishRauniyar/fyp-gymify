@@ -88,17 +88,17 @@ model dietplans {
 model exercises {
   exercise_id                Int                      @id @default(autoincrement())
   exercise_name              String                   @unique @db.VarChar(100)
-  description                String
-  target_muscle_group        String
   calories_burned_per_minute Decimal                  @db.Decimal(5, 2)
-  image_url                  String?                  @db.VarChar(255)
-  video_url                  String?                  @db.VarChar(255)
   created_at                 DateTime?                @default(now()) @db.Timestamp(6)
+  description                String
+  image_url                  String?                  @db.VarChar(255)
+  target_muscle_group        String
+  video_url                  String?                  @db.VarChar(255)
   updated_at                 DateTime                 @updatedAt
   customworkoutexercises     customworkoutexercises[]
   workoutexercises           workoutexercises[]
+  workoutexerciseslogs       workoutexerciseslogs[]
 }
-
 
 model gym {
   gym_id         Int       @id @default(autoincrement())
@@ -166,6 +166,8 @@ model users {
   role                                                  role
   fitness_level                                         fitness_level
   goal_type                                             goal_type
+  allergies                                             String?             @db.VarChar(255)
+  calorie_goals                                         Decimal?            @db.Decimal(6, 2)
   card_number                                           String?             @db.VarChar(50)
   created_at                                            DateTime?           @default(now()) @db.Timestamp(6)
   updated_at                                            DateTime?           @default(now()) @db.Timestamp(6)
@@ -179,6 +181,7 @@ model users {
   gym                                                   gym[]
   memberships                                           memberships[]
   payments                                              payments[]
+  workoutlogs                                           workoutlogs[]
   workouts_workouts_trainer_idTousers                   workouts[]          @relation("workouts_trainer_idTousers")
   workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
 }
@@ -205,8 +208,37 @@ model workouts {
   created_at                       DateTime?          @default(now()) @db.Timestamp(6)
   updated_at                       DateTime?          @default(now()) @db.Timestamp(6)
   workoutexercises                 workoutexercises[]
+  workoutlogs                      workoutlogs[]
   users_workouts_trainer_idTousers users?             @relation("workouts_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
   users_workouts_user_idTousers    users?             @relation("workouts_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model workoutexerciseslogs {
+  log_id            Int                      @id @default(autoincrement())
+  workout_log_id    Int?
+  exercise_id       Int?
+  start_time        DateTime?                @db.Time(6)
+  end_time          DateTime?                @db.Time(6)
+  exercise_duration Unsupported("interval")?
+  rest_duration     Unsupported("interval")?
+  skipped           Boolean?                 @default(false)
+  exercises         exercises?               @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
+  workoutlogs       workoutlogs?             @relation(fields: [workout_log_id], references: [log_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model workoutlogs {
+  log_id               Int                      @id @default(autoincrement())
+  user_id              Int?
+  workout_id           Int?
+  workout_date         DateTime?                @default(now()) @db.Timestamp(6)
+  start_time           DateTime?                @db.Time(6)
+  end_time             DateTime?                @db.Time(6)
+  total_duration       Unsupported("interval")?
+  calories_burned      Decimal?                 @db.Decimal(10, 2)
+  performance_notes    String?
+  workoutexerciseslogs workoutexerciseslogs[]
+  users                users?                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workouts             workouts?                @relation(fields: [workout_id], references: [workout_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum difficulty_level {

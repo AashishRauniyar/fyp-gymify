@@ -16,6 +16,8 @@ const Register = () => {
         role: 'Member',
         fitness_level: 'Beginner',
         goal_type: 'Weight_Loss',
+        allergies: '',
+        calorie_goals: '',
         card_number: ''
     });
 
@@ -26,21 +28,18 @@ const Register = () => {
     const validateForm = () => {
         const errors = {};
 
-        // Required fields
+        // Required fields validation
         if (!formData.user_name) errors.user_name = 'Username is required';
         if (!formData.full_name) errors.full_name = 'Full name is required';
         if (!formData.email) errors.email = 'Email is required';
         if (!formData.password) errors.password = 'Password is required';
         if (!formData.phone_number) errors.phone_number = 'Phone number is required';
-        if (!formData.gender) errors.gender = 'Gender is required';
-        if (!formData.role) errors.role = 'Role is required';
-        if (!formData.fitness_level) errors.fitness_level = 'Fitness level is required';
-        if (!formData.goal_type) errors.goal_type = 'Goal type is required';
 
-        // Type validations
-        if (isNaN(Number(formData.age)) || formData.age < 0) errors.age = 'Age must be a positive number';
-        if (isNaN(Number(formData.height)) || formData.height <= 0) errors.height = 'Height must be a positive number';
-        if (isNaN(Number(formData.current_weight)) || formData.current_weight <= 0) errors.current_weight = 'Weight must be a positive number';
+        // Numeric fields validation
+        if (isNaN(Number(formData.age)) || formData.age < 0) errors.age = 'Invalid age';
+        if (isNaN(Number(formData.height)) || formData.height <= 0) errors.height = 'Invalid height';
+        if (isNaN(Number(formData.current_weight)) || formData.current_weight <= 0) errors.current_weight = 'Invalid weight';
+        if (formData.calorie_goals && isNaN(Number(formData.calorie_goals))) errors.calorie_goals = 'Invalid calorie goal';
 
         setErrors(errors);
         return Object.keys(errors).length === 0;
@@ -60,10 +59,10 @@ const Register = () => {
                 ...formData,
                 age: parseInt(formData.age, 10),
                 height: parseFloat(formData.height),
-                current_weight: parseFloat(formData.current_weight)
+                current_weight: parseFloat(formData.current_weight),
+                calorie_goals: formData.calorie_goals ? parseFloat(formData.calorie_goals) : null
             });
             setMessage(response.data.message);
-            console.log("user registerd successfully")
         } catch (error) {
             setMessage(error.response?.data?.message || 'An error occurred during registration');
         }
@@ -74,12 +73,9 @@ const Register = () => {
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">Register</h2>
                 <form onSubmit={handleSubmit}>
-                    {/* Loop through each input field */}
                     {Object.keys(formData).map((key) => (
                         <div key={key} className="mb-4">
-                            <label className="block mb-2 capitalize">
-                                {key.replace('_', ' ')}
-                            </label>
+                            <label className="block mb-2 capitalize">{key.replace('_', ' ')}</label>
                             <input
                                 type={key === 'password' ? 'password' : 'text'}
                                 name={key}

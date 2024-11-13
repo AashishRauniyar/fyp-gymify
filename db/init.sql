@@ -1,24 +1,24 @@
 -- Drop existing tables if they exist
-DROP TABLE IF EXISTS ChatMessages, ChatConversations, Attendance, DietLogs, Meals, DietPlans, CustomWorkoutExercises, CustomWorkouts, WorkoutExercises, Exercises, Workouts, Payments, Memberships, Gym, Users CASCADE;
+-- DROP TABLE IF EXISTS ChatMessages, ChatConversations, Attendance, DietLogs, Meals, DietPlans, CustomWorkoutExercises, CustomWorkouts, WorkoutExercises, Exercises, Workouts, Payments, Memberships, Gym, Users CASCADE;
 
 
 
 
--- Drop existing ENUM types if they exist
-DO $$ 
-BEGIN
-    DROP TYPE IF EXISTS GENDER;
-    DROP TYPE IF EXISTS ROLE;
-    DROP TYPE IF EXISTS FITNESS_LEVEL;
-    DROP TYPE IF EXISTS GOAL_TYPE;
-    DROP TYPE IF EXISTS PLAN_TYPE;
-    DROP TYPE IF EXISTS MEMBERSHIP_STATUS;
-    DROP TYPE IF EXISTS PAYMENT_METHOD;
-    DROP TYPE IF EXISTS PAYMENT_STATUS;
-    DROP TYPE IF EXISTS DIFFICULTY_LEVEL;
-    DROP TYPE IF EXISTS MEAL_TIME;
-    DROP TYPE IF EXISTS ATTENDANCE_STATUS;
-END $$;
+-- -- Drop existing ENUM types if they exist
+-- DO $$ 
+-- BEGIN
+--     DROP TYPE IF EXISTS GENDER;
+--     DROP TYPE IF EXISTS ROLE;
+--     DROP TYPE IF EXISTS FITNESS_LEVEL;
+--     DROP TYPE IF EXISTS GOAL_TYPE;
+--     DROP TYPE IF EXISTS PLAN_TYPE;
+--     DROP TYPE IF EXISTS MEMBERSHIP_STATUS;
+--     DROP TYPE IF EXISTS PAYMENT_METHOD;
+--     DROP TYPE IF EXISTS PAYMENT_STATUS;
+--     DROP TYPE IF EXISTS DIFFICULTY_LEVEL;
+--     DROP TYPE IF EXISTS MEAL_TIME;
+--     DROP TYPE IF EXISTS ATTENDANCE_STATUS;
+-- END $$;
 
 
 
@@ -167,6 +167,8 @@ CREATE TABLE IF NOT EXISTS Meals (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+
 -- Create DietLogs Table
 CREATE TABLE IF NOT EXISTS DietLogs (
     log_id SERIAL PRIMARY KEY,
@@ -205,4 +207,30 @@ CREATE TABLE IF NOT EXISTS ChatMessages (
     message_content JSON,  -- json to store messaged and image (image url if the user sends image) , workout id if the trainer sends workouts
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     is_read BOOLEAN DEFAULT FALSE
+);
+
+
+-- WorkoutLogs Table
+CREATE TABLE WorkoutLogs (
+    log_id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
+    workout_id INT REFERENCES Workouts(workout_id),
+    workout_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    start_time TIME,
+    end_time TIME,
+    total_duration INTERVAL,
+    calories_burned DECIMAL(10, 2),
+    performance_notes TEXT
+);
+
+-- WorkoutExercisesLogs Table
+CREATE TABLE WorkoutExercisesLogs (
+    log_id SERIAL PRIMARY KEY,
+    workout_log_id INT REFERENCES WorkoutLogs(log_id) ON DELETE CASCADE,
+    exercise_id INT REFERENCES Exercises(exercise_id) ON DELETE CASCADE,
+    start_time TIME,
+    end_time TIME,
+    exercise_duration INTERVAL,
+    rest_duration INTERVAL,
+    skipped BOOLEAN DEFAULT FALSE
 );

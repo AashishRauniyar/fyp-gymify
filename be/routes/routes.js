@@ -84,4 +84,13 @@ router.get('/custom-workouts/:id/exercises', authenticate, getCustomWorkoutExerc
 // Route to remove an exercise from a custom workout
 router.delete('/custom-workouts/exercises/:id', authenticate, removeExerciseFromCustomWorkout);
 
+
+// // log exercises
+// router.post('/log-exercise', authenticate, logExercise);
+// router.get('/log-exercise', authenticate, getLoggedExercises);
+
+// // log workout
+// router.post('/log-workout', authenticate, logWorkout);
+// router.get('/log-workout', authenticate, getLoggedWorkouts);
+
 export default router;
