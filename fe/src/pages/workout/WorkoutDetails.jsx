@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 // import { useState, useEffect } from 'react';
 // import { useParams } from 'react-router-dom';
 // import { userInstance } from '../../utils/axios';

@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 import generateToken from '../utils/generateToken.js';
-
+import { uploadToCloudinary } from '../middleware/cloudinaryMiddleware.js';
+import fs from 'fs';
 const prisma = new PrismaClient();
 
 // // Register a new user
@@ -20,10 +21,12 @@ const prisma = new PrismaClient();
 //         role,
 //         fitness_level,
 //         goal_type,
-//         card_number
+//         allergies,
+//         calorie_goals,
+//         card_number,
+//         profile_image
 //     } = req.body;
 
-//     // Log the request body for debugging
 //     console.log('Request Body:', req.body);
 
 //     // Validate required fields
@@ -79,6 +82,13 @@ const prisma = new PrismaClient();
 //         // Hash the password
 //         const hashedPassword = await bcrypt.hash(password, 10);
 
+
+//         // Upload profile image to Cloudinary
+//         let profileImageUrl = null;
+//         if (req.file) {
+//             profileImageUrl = await uploadToCloudinary(req.file.path);
+//         }
+
 //         // Create a new user with all fields
 //         const user = await prisma.users.create({
 //             data: {
@@ -95,7 +105,10 @@ const prisma = new PrismaClient();
 //                 role,
 //                 fitness_level,
 //                 goal_type,
+//                 allergies,
+//                 calorie_goals,
 //                 card_number,
+//                 profile_image: profileImageUrl,
 //                 created_at: new Date(),
 //                 updated_at: new Date()
 //             }
@@ -115,7 +128,10 @@ const prisma = new PrismaClient();
 //                 full_name: user.full_name,
 //                 phone_number: user.phone_number,
 //                 fitness_level: user.fitness_level,
-//                 goal_type: user.goal_type
+//                 goal_type: user.goal_type,
+//                 allergies: user.allergies,
+//                 calorie_goals: user.calorie_goals,
+//                 profile_image: user.profile_image
 //             },
 //             token
 //         });
@@ -125,7 +141,14 @@ const prisma = new PrismaClient();
 //     }
 // };
 
-// Register a new user
+
+// Utility function to validate email format
+const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+};
+
+// Registration function
 export const register = async (req, res) => {
     const {
         user_name,
@@ -134,9 +157,6 @@ export const register = async (req, res) => {
         password,
         phone_number,
         address,
-        age,
-        height,
-        current_weight,
         gender,
         role,
         fitness_level,
@@ -146,44 +166,62 @@ export const register = async (req, res) => {
         card_number
     } = req.body;
 
-    console.log('Request Body:', req.body);
+    // Parse string inputs to numbers
+    const age = parseInt(req.body.age);
+    const height = parseFloat(req.body.height);
+    const current_weight = parseFloat(req.body.current_weight);
+
+    // Log parsed inputs
+    console.log('Parsed Inputs:', { age, height, current_weight });
 
     // Validate required fields
-    if (!email || !password || !user_name || !full_name || !phone_number || !gender || !role || !fitness_level || !goal_type) {
+    if (!user_name || !full_name || !email || !password || !phone_number || !gender || !role || !fitness_level || !goal_type) {
         return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
     }
 
-    // Additional validation
+    // Validate email format
     if (!validateEmail(email)) {
         return res.status(400).json({ status: 'failure', message: 'Invalid email format' });
     }
 
-    if (typeof age !== 'number' || age < 0 || age > 120) {
+    // Validate age
+    if (isNaN(age) || age < 0 || age > 120) {
         return res.status(400).json({ status: 'failure', message: 'Invalid age' });
     }
 
-    if (typeof height !== 'number' || height <= 0) {
+    // Validate height (Decimal)
+    if (isNaN(height) || height <= 0) {
         return res.status(400).json({ status: 'failure', message: 'Invalid height' });
     }
 
-    if (typeof current_weight !== 'number' || current_weight <= 0) {
-        return res.status(400).json({ status: 'failure', message: 'Invalid weight' });
+    // Validate current_weight (Decimal)
+    if (isNaN(current_weight) || current_weight <= 0) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid current weight' });
     }
 
+    // Validate phone number (must be 10 digits)
     if (!/^\d{10}$/.test(phone_number)) {
         return res.status(400).json({ status: 'failure', message: 'Invalid phone number' });
     }
 
+    // Validate password length
     if (password.length < 8) {
         return res.status(400).json({ status: 'failure', message: 'Password must be at least 8 characters long' });
     }
 
+    // Validate gender
     if (!['Male', 'Female', 'Other'].includes(gender)) {
         return res.status(400).json({ status: 'failure', message: 'Invalid gender' });
     }
 
+    // Validate role
     if (!['Member', 'Trainer', 'Admin'].includes(role)) {
         return res.status(400).json({ status: 'failure', message: 'Invalid role' });
+    }
+
+    // Validate calorie goals (if provided)
+    if (calorie_goals && (isNaN(calorie_goals) || calorie_goals < 0)) {
+        return res.status(400).json({ status: 'failure', message: 'Invalid calorie goals' });
     }
 
     try {
@@ -201,7 +239,26 @@ export const register = async (req, res) => {
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Create a new user with all fields
+        // Upload profile image to Cloudinary
+        let profileImageUrl = null;
+        if (req.file) {
+            const imagePath = req.file.path;
+            try {
+                profileImageUrl = await uploadToCloudinary(imagePath);
+
+                // Remove the file from the server after uploading to Cloudinary
+                if (profileImageUrl) {
+                    fs.unlinkSync(imagePath);
+                }
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                }
+            }
+        }
+
+        // Create a new user with validated data
         const user = await prisma.users.create({
             data: {
                 user_name,
@@ -220,6 +277,7 @@ export const register = async (req, res) => {
                 allergies,
                 calorie_goals,
                 card_number,
+                profile_image: profileImageUrl,
                 created_at: new Date(),
                 updated_at: new Date()
             }
@@ -237,11 +295,7 @@ export const register = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 full_name: user.full_name,
-                phone_number: user.phone_number,
-                fitness_level: user.fitness_level,
-                goal_type: user.goal_type,
-                allergies: user.allergies,
-                calorie_goals: user.calorie_goals
+                profile_image: user.profile_image
             },
             token
         });
@@ -250,14 +304,6 @@ export const register = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
-// Utility function to validate email format
-const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-};
-
 
 // Login a user
 // User login

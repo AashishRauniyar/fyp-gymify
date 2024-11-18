@@ -25,6 +25,8 @@ export const getProfile = async (req, res) => {
                 role: true,
                 fitness_level: true,
                 goal_type: true,
+                allergies: true,
+                profile_image: true,
                 created_at: true,
                 updated_at: true
             }
@@ -62,6 +64,7 @@ export const updateProfile = async (req, res) => {
             height,
             current_weight,
             fitness_level,
+            allergies,
             goal_type
         } = req.body;
 
@@ -74,6 +77,7 @@ export const updateProfile = async (req, res) => {
             !height &&
             !current_weight &&
             !fitness_level &&
+            !allergies &&
             !goal_type
         ) {
             return res.status(400).json({ status: 'failure', message: 'No fields to update' });
@@ -90,6 +94,7 @@ export const updateProfile = async (req, res) => {
                 height,
                 current_weight,
                 fitness_level,
+                allergies,
                 goal_type,
                 updated_at: new Date()
             },
@@ -107,8 +112,7 @@ export const updateProfile = async (req, res) => {
                 role: true,
                 fitness_level: true,
                 goal_type: true,
-                created_at: true,
-                updated_at: true
+                allergies: true
             }
         });
 

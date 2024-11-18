@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { useState } from 'react';
 import { userInstance } from '../utils/axios';
 import { useNavigate } from 'react-router-dom';

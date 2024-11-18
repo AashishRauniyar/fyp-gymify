@@ -27,6 +27,7 @@ import {
     getCustomWorkoutExercises,
     removeExerciseFromCustomWorkout
 } from '../controllers/customWorkoutController.js';
+import upload from '../middleware/multerMiddleware.js';
 
 
 
@@ -34,7 +35,7 @@ import {
 const router = express.Router();
 
 // Public routes for user registration and login
-router.post('/register', register);
+router.post('/register',upload.single('profile_image'), register);
 router.post('/login', login);
 
 
