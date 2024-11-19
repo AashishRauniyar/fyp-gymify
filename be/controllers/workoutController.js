@@ -341,3 +341,8 @@ export const completeWorkoutLog = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
+
+
+
+//TODO: TO Implement workout logs
+

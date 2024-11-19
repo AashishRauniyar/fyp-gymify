@@ -1,6 +1,6 @@
 import express from 'express';
-import { register } from '../controllers/authController.js';
-import { login } from '../controllers/authController.js';
+import { forgetPassword, register } from '../controllers/authController.js';
+import { login, resetPassword } from '../controllers/authController.js';
 import { getProfile } from '../controllers/profileController.js';
 import { updateProfile } from '../controllers/profileController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
@@ -37,6 +37,8 @@ const router = express.Router();
 // Public routes for user registration and login
 router.post('/register',upload.single('profile_image'), register);
 router.post('/login', login);
+router.post('/forget-password', forgetPassword );
+router.post('/reset-password', resetPassword);
 
 
 // Protected route for getting and updating user profile
