@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { userInstance } from '../../utils/axios';
-
+import React from 'react';
 const ViewExercises = () => {
     const [exercises, setExercises] = useState([]);
     const [loading, setLoading] = useState(true);
