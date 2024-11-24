@@ -24,8 +24,9 @@ import { createWorkout, addExerciseToWorkout } from '../controllers/workoutContr
 import {
     createCustomWorkout,
     addExerciseToCustomWorkout,
-    getCustomWorkoutExercises,
-    removeExerciseFromCustomWorkout
+    removeExerciseFromCustomWorkout,
+    getCustomWorkoutExercisesById,
+    getCustomWorkoutsOfUser
 } from '../controllers/customWorkoutController.js';
 import upload from '../middleware/multerMiddleware.js';
 
@@ -49,8 +50,8 @@ router.put('/profile',authenticate, updateProfile);
 
 
 // Routes accessible to everyone
-router.get('/exercises', getAllExercises);
-router.get('/exercises/:id', getExerciseById);
+router.get('/exercises', authenticate ,getAllExercises);
+router.get('/exercises/:id', authenticate, getExerciseById);
 
 // Routes restricted to trainers
 router.post('/exercises', authenticate, createExercise);
@@ -67,10 +68,10 @@ router.post('/workouts', authenticate, createWorkout);
 router.post('/workouts/:workoutId/exercises', authenticate, addExerciseToWorkout);
 
 // View all workouts (All users)
-router.get('/workouts', getAllWorkouts);
+router.get('/workouts', authenticate, getAllWorkouts);
 
 // View details of a specific workout (All users)
-router.get('/workouts/:id', getWorkoutById);
+router.get('/workouts/:id', authenticate, getWorkoutById);
 
 // Update a workout (Trainer Only)
 router.put('/workouts/:id', authenticate, updateWorkout);
@@ -82,8 +83,12 @@ router.delete('/workouts/:id', authenticate, deleteWorkout);
 
 // Routes for managing custom workouts
 router.post('/custom-workouts', authenticate, createCustomWorkout);
+//route to get customer workouts of a user
+
+router.get('/custom-workouts', authenticate, getCustomWorkoutsOfUser);
+
 router.post('/custom-workouts/add-exercise', authenticate, addExerciseToCustomWorkout);
-router.get('/custom-workouts/:id/exercises', authenticate, getCustomWorkoutExercises);
+router.get('/custom-workouts/:id/exercises', authenticate, getCustomWorkoutExercisesById);
 // Route to remove an exercise from a custom workout
 router.delete('/custom-workouts/exercises/:id', authenticate, removeExerciseFromCustomWorkout);
 

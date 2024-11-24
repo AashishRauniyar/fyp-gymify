@@ -85,7 +85,7 @@
 
 // export default WorkoutDetails;
 
-
+import React from 'react';
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
@@ -101,7 +101,12 @@ const WorkoutDetails = () => {
     // Fetch workout details and exercises
     const fetchWorkoutDetails = async () => {
         try {
-            const response = await userInstance.get(`/workouts/${workoutId}`);
+            const token = localStorage.getItem('token');
+            const response = await userInstance.get(`/workouts/${workoutId}`, {
+                headers: {  
+                        Authorization: `Bearer ${token}`
+                }
+            });
             setWorkout(response.data.workout);
             setExercises(response.data.workout.workoutexercises);
             setLoading(false);

@@ -13,6 +13,9 @@ import CreateExercise from './pages/exercise/CreateExercise.jsx'
 import ViewExercises from './pages/exercise/ViewExercises.jsx'
 import AddExercisesToWorkout from './pages/workout/AddExerciseToWorkout.jsx'
 import WorkoutDetails from './pages/workout/WorkoutDetails.jsx'
+import CreateCustomWorkout from './pages/custom_workout/CreateCustomWorkout.jsx'
+import AddExercisesToCustomWorkout from './pages/custom_workout/AddExercisesToCustomWorkout.jsx'
+import ViewCustomWorkouts from './pages/custom_workout/ViewCustomWorkouts.jsx'
 
 
 const router = createBrowserRouter(
@@ -52,6 +55,18 @@ const router = createBrowserRouter(
     {
       path: '/workouts/:workoutId',
       element: <WorkoutDetails />
+    },
+    {
+      path: '/create-custom-workout',
+      element: <CreateCustomWorkout />
+    },
+    {
+      path: '/custom-workouts/:id/add-exercises',
+      element: <AddExercisesToCustomWorkout />
+    },
+    {
+      path: '/custom-workouts',
+      element: <ViewCustomWorkouts />
     },
     {
       path: '/',

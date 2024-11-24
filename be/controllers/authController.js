@@ -108,23 +108,36 @@ export const register = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Upload profile image to Cloudinary
+        // let profileImageUrl = null;
+        // if (req.file) {
+        //     const imagePath = req.file.path;
+        //     try {
+        //         profileImageUrl = await uploadToCloudinary(imagePath);
+
+        //         // Remove the file from the server after uploading to Cloudinary
+        //         if (profileImageUrl) {
+        //             fs.unlinkSync(imagePath);
+        //         }
+        //     } catch (error) {
+        //         console.error('Error uploading image:', error);
+        //         if (fs.existsSync(imagePath)) {
+        //             fs.unlinkSync(imagePath);
+        //         }
+        //     }
+        // }
+
+
+        // Upload profile image to Cloudinary
         let profileImageUrl = null;
         if (req.file) {
-            const imagePath = req.file.path;
             try {
-                profileImageUrl = await uploadToCloudinary(imagePath);
-
-                // Remove the file from the server after uploading to Cloudinary
-                if (profileImageUrl) {
-                    fs.unlinkSync(imagePath);
-                }
+                profileImageUrl = await uploadToCloudinary(req.file.buffer); // Pass the file buffer directly
             } catch (error) {
                 console.error('Error uploading image:', error);
-                if (fs.existsSync(imagePath)) {
-                    fs.unlinkSync(imagePath);
-                }
+                return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
             }
         }
+        
 
         // Create a new user with validated data
         const user = await prisma.users.create({
@@ -151,7 +164,7 @@ export const register = async (req, res) => {
             }
         });
 
-        
+
 
         res.status(201).json({
             status: 'success',
@@ -164,7 +177,7 @@ export const register = async (req, res) => {
                 full_name: user.full_name,
                 profile_image: user.profile_image
             },
-            
+
         });
     } catch (error) {
         console.error('Error during registration:', error);
@@ -197,6 +210,7 @@ export const login = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'Login successful',
+            //TODO: Remove user details from response
             user: {
                 user_id: user.user_id,
                 user_name: user.user_name,

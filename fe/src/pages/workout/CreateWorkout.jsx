@@ -134,6 +134,7 @@
 import { useState, useEffect } from 'react';
 import { userInstance } from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
+import React from 'react';
 
 const CreateWorkout = () => {
     const [workoutData, setWorkoutData] = useState({
@@ -152,7 +153,12 @@ const CreateWorkout = () => {
     // Fetch all exercises
     const fetchExercises = async () => {
         try {
-            const response = await userInstance.get('/exercises');
+            const token = localStorage.getItem('token');
+            const response = await userInstance.get('/exercises', {
+                headers: {  
+                        Authorization: `Bearer ${token}`
+                }
+            });
             setExercises(response.data.exercises);
             setLoading(false);
         } catch (error) {

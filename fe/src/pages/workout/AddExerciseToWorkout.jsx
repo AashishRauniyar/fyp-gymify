@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { userInstance } from '../../utils/axios';
+import React from 'react';
 
 // eslint-disable-next-line react/prop-types
 const AddExercisesToWorkout = ({ workoutId }) => {
@@ -9,7 +10,14 @@ const AddExercisesToWorkout = ({ workoutId }) => {
 
     useEffect(() => {
         const fetchExercises = async () => {
-            const response = await userInstance.get('/exercises');
+
+            const token = localStorage.getItem('token');
+
+            const response = await userInstance.get('/exercises',{
+                headers: {  
+                        Authorization: `Bearer ${token}`
+                }
+            });
             setExercises(response.data.exercises);
         };
         fetchExercises();

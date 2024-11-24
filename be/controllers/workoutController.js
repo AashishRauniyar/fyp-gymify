@@ -169,6 +169,13 @@ export const addExerciseToWorkout = async (req, res) => {
 
 
 export const getAllWorkouts = async (req, res) => {
+
+    const {user_id} = req.user;
+    // Ensure only trainers can create exercises
+    if (!user_id) {
+        return res.status(403).json({ status: 'failure', message: 'Access denied. Please login first' });
+    }
+
     try {
         const workouts = await prisma.workouts.findMany({
             include: { workoutexercises: true }
@@ -183,6 +190,13 @@ export const getAllWorkouts = async (req, res) => {
 
 // get workout by ID 
 export const getWorkoutById = async (req, res) => {
+
+    const {user_id} = req.user;
+    // Ensure only trainers can create exercises
+    if (!user_id) {
+        return res.status(403).json({ status: 'failure', message: 'Access denied. Please login first' });
+    }
+
     try {
         const workoutId = parseInt(req.params.id);
 

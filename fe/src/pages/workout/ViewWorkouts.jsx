@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { userInstance } from '../../utils/axios';
 import { Link } from 'react-router-dom';
-
+import React from 'react';
 const ViewWorkouts = () => {
     const [workouts, setWorkouts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,7 +10,14 @@ const ViewWorkouts = () => {
     // Fetch workouts from the backend
     const fetchWorkouts = async () => {
         try {
-            const response = await userInstance.get('/workouts');
+            const token = localStorage.getItem('token');
+            const response = await userInstance.get('/workouts', 
+                {
+                    headers: {  
+                            Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             setWorkouts(response.data.workouts);
             setLoading(false);
         } catch (error) {

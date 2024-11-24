@@ -96,9 +96,38 @@ export const addExerciseToCustomWorkout = async (req, res) => {
 };
 
 
+
 // get all exercises in custom workout
 
-export const getCustomWorkoutExercises = async (req, res) => {
+//TODO: Implement this function
+
+export const getCustomWorkoutsOfUser = async (req, res) => {
+    try {
+        const { user_id } = req.user; // Extract user_id from the authenticated user
+
+        // Fetch custom workouts for the user
+        const customWorkouts = await prisma.customworkouts.findMany({
+            where: { user_id }, // Use scalar value directly
+            include: {
+                customworkoutexercises: {
+                    include: { exercises: true }, // Include related exercises
+                },
+            },
+        });
+
+        res.status(200).json({ status: 'success', customWorkouts });
+    } catch (error) {
+        console.error('Error fetching custom workouts:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
+
+
+
+
+// get all exercises in custom workout by id
+
+export const getCustomWorkoutExercisesById = async (req, res) => {
     try {
         const customWorkoutId = parseInt(req.params.id);
 

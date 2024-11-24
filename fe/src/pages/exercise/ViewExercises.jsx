@@ -9,7 +9,15 @@ const ViewExercises = () => {
     // Fetch exercises from the server
     const fetchExercises = async () => {
         try {
-            const response = await userInstance.get('/exercises');
+
+            const token = localStorage.getItem('token');
+
+            const response = await userInstance.get('/exercises', {
+                headers: {  
+                        Authorization: `Bearer ${token}`
+                }
+            }
+            );
             setExercises(response.data.exercises);
             setLoading(false);
         } catch (error) {

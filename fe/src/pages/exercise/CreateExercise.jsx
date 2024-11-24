@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { userInstance } from '../../utils/axios';
 import { useNavigate } from 'react-router-dom';
-
+import React from 'react';
 const CreateExercise = () => {
     const [formData, setFormData] = useState({
         exercise_name: '',
