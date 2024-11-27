@@ -248,8 +248,8 @@ model workoutexerciseslogs {
   exercise_id       Int?
   start_time        DateTime?                @db.Time(6)
   end_time          DateTime?                @db.Time(6)
-  exercise_duration Unsupported("interval")?
-  rest_duration     Unsupported("interval")?
+  exercise_duration Decimal?    @db.Decimal(5, 2) // Store duration in minutes (calculated in the app)
+  rest_duration     Decimal?    @db.Decimal(5, 2) // Optional rest duration in minutes
   skipped           Boolean?                 @default(false)
   exercises         exercises?               @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
   workoutlogs       workoutlogs?             @relation(fields: [workout_log_id], references: [log_id], onDelete: Cascade, onUpdate: NoAction)
@@ -262,7 +262,7 @@ model workoutlogs {
   workout_date         DateTime?                @default(now()) @db.Timestamp(6)
   start_time           DateTime?                @db.Time(6)
   end_time             DateTime?                @db.Time(6)
-  total_duration       Unsupported("interval")?
+  total_duration       Decimal?                 @db.Decimal(5, 2)
   calories_burned      Decimal?                 @db.Decimal(10, 2)
   performance_notes    String?
   workoutexerciseslogs workoutexerciseslogs[]

@@ -1,25 +1,20 @@
 import express from 'express';
-import { forgetPassword, register } from '../controllers/authController.js';
-import { login, resetPassword } from '../controllers/authController.js';
-import { getProfile } from '../controllers/profileController.js';
-import { updateProfile } from '../controllers/profileController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+
 import { 
     createExercise, 
     getAllExercises, 
     getExerciseById, 
     updateExercise, 
     deleteExercise 
-} from '../controllers/exerciseController.js';
+} from '../controllers/workout_controller/exerciseController.js';
 
 import { 
     getAllWorkouts, 
     getWorkoutById, 
     updateWorkout, 
     deleteWorkout 
-} from '../controllers/workoutController.js';
+} from '../controllers/workout_controller/workoutController.js';
 
-import { createWorkout, addExerciseToWorkout } from '../controllers/workoutController.js';
 
 import {
     createCustomWorkout,
@@ -28,77 +23,29 @@ import {
     getCustomWorkoutExercisesById,
     getCustomWorkoutsOfUser
 } from '../controllers/customWorkoutController.js';
-import upload from '../middleware/multerMiddleware.js';
+import { finishWorkout, logExercise, startWorkout } from '../controllers/workoutLogController.js';
+import { addExerciseToWorkout, createWorkout } from '../controllers/workout_controller/workoutController.js';
+import {authenticate} from '../middleware/authMiddleware.js';
+import { getAllMembers, getAllTrainers, getAllUsers } from '../controllers/user_controller/user_controller.js';
 
 
 
 
 const router = express.Router();
 
-// Public routes for user registration and login
-router.post('/register',upload.single('profile_image'), register);
-router.post('/login', login);
-router.post('/forget-password', forgetPassword );
-router.post('/reset-password', resetPassword);
-
-
-// Protected route for getting and updating user profile
-router.get('/profile',authenticate, getProfile);
-router.put('/profile',authenticate, updateProfile);
 
 
 
 
-// Routes accessible to everyone
-router.get('/exercises', authenticate ,getAllExercises);
-router.get('/exercises/:id', authenticate, getExerciseById);
+// Route to start a workout
+router.post('/workouts/start', authenticate, startWorkout);
 
-// Routes restricted to trainers
-router.post('/exercises', authenticate, createExercise);
-router.put('/exercises/:id', authenticate, updateExercise);
-router.delete('/exercises/:id', authenticate, deleteExercise);
+// Route to log an exercise
+router.post('/workouts/log-exercise', authenticate, logExercise);
 
-
+// Route to finish a workout
+router.post('/workouts/finish', authenticate, finishWorkout);
 
 
-// Route to create a new workout (Trainers only)
-router.post('/workouts', authenticate, createWorkout);
-
-// Route to add an exercise to a workout (Trainer Only)
-router.post('/workouts/:workoutId/exercises', authenticate, addExerciseToWorkout);
-
-// View all workouts (All users)
-router.get('/workouts', authenticate, getAllWorkouts);
-
-// View details of a specific workout (All users)
-router.get('/workouts/:id', authenticate, getWorkoutById);
-
-// Update a workout (Trainer Only)
-router.put('/workouts/:id', authenticate, updateWorkout);
-
-// Delete a workout (Trainer Only)
-router.delete('/workouts/:id', authenticate, deleteWorkout);
-
-
-
-// Routes for managing custom workouts
-router.post('/custom-workouts', authenticate, createCustomWorkout);
-//route to get customer workouts of a user
-
-router.get('/custom-workouts', authenticate, getCustomWorkoutsOfUser);
-
-router.post('/custom-workouts/add-exercise', authenticate, addExerciseToCustomWorkout);
-router.get('/custom-workouts/:id/exercises', authenticate, getCustomWorkoutExercisesById);
-// Route to remove an exercise from a custom workout
-router.delete('/custom-workouts/exercises/:id', authenticate, removeExerciseFromCustomWorkout);
-
-
-// // log exercises
-// router.post('/log-exercise', authenticate, logExercise);
-// router.get('/log-exercise', authenticate, getLoggedExercises);
-
-// // log workout
-// router.post('/log-workout', authenticate, logWorkout);
-// router.get('/log-workout', authenticate, getLoggedWorkouts);
 
 export default router;

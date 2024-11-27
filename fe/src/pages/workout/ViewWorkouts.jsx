@@ -60,7 +60,7 @@ const ViewWorkouts = () => {
                                 to={`/workouts/${workout.workout_id}`}
                                 className="block mt-4 text-blue-500 hover:underline"
                             >
-                                View Details
+                                View Details/ Start
                             </Link>
                         </div>
                     ))}

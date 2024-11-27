@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
-import generateToken from '../utils/generateToken.js';
-import { uploadToCloudinary } from '../middleware/cloudinaryMiddleware.js';
+import generateToken from '../../utils/generateToken.js';
+import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 import fs from 'fs';
 import crypto from 'crypto';
 const prisma = new PrismaClient();
@@ -40,6 +40,8 @@ export const register = async (req, res) => {
 
     // Log parsed inputs
     console.log('Parsed Inputs:', { age, height, current_weight });
+
+    //TODO: Learn express validator
 
     // Validate required fields
     if (!user_name || !full_name || !email || !password || !phone_number || !gender || !role || !fitness_level || !goal_type) {

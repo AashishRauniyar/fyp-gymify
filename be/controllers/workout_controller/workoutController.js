@@ -286,77 +286,77 @@ export const deleteWorkout = async (req, res) => {
 
 
 
-// start workout logs for a user
-export const startWorkoutLog = async (req, res) => {
-    try {
-        const { user_id } = req.user;
-        const { workout_id } = req.body;
+// // start workout logs for a user
+// export const startWorkoutLog = async (req, res) => {
+//     try {
+//         const { user_id } = req.user;
+//         const { workout_id } = req.body;
 
-        // Create a new workout log entry
-        const workoutLog = await prisma.workoutlogs.create({
-            data: {
-                user_id: user_id,
-                workout_id: workout_id,
-                workout_date: new Date(),
-                start_time: new Date()
-            }
-        });
+//         // Create a new workout log entry
+//         const workoutLog = await prisma.workoutlogs.create({
+//             data: {
+//                 user_id: user_id,
+//                 workout_id: workout_id,
+//                 workout_date: new Date(),
+//                 start_time: new Date()
+//             }
+//         });
 
-        res.status(201).json({ status: 'success', workoutLog });
-    } catch (error) {
-        console.error('Error starting workout log:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
-    }
-};
+//         res.status(201).json({ status: 'success', workoutLog });
+//     } catch (error) {
+//         console.error('Error starting workout log:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
 
-// log exercise progress
-export const logExerciseProgress = async (req, res) => {
-    try {
-        const { workout_log_id, exercise_id, start_time, end_time, exercise_duration, rest_duration, skipped } = req.body;
+// // log exercise progress
+// export const logExerciseProgress = async (req, res) => {
+//     try {
+//         const { workout_log_id, exercise_id, start_time, end_time, exercise_duration, rest_duration, skipped } = req.body;
 
-        // Create a new workout exercise log entry
-        const exerciseLog = await prisma.workoutexerciseslogs.create({
-            data: {
-                workout_log_id,
-                exercise_id,
-                start_time,
-                end_time,
-                exercise_duration,
-                rest_duration,
-                skipped
-            }
-        });
+//         // Create a new workout exercise log entry
+//         const exerciseLog = await prisma.workoutexerciseslogs.create({
+//             data: {
+//                 workout_log_id,
+//                 exercise_id,
+//                 start_time,
+//                 end_time,
+//                 exercise_duration,
+//                 rest_duration,
+//                 skipped
+//             }
+//         });
 
-        res.status(201).json({ status: 'success', exerciseLog });
-    } catch (error) {
-        console.error('Error logging exercise:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
-    }
-};
+//         res.status(201).json({ status: 'success', exerciseLog });
+//     } catch (error) {
+//         console.error('Error logging exercise:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
 
-// complete workout log
-export const completeWorkoutLog = async (req, res) => {
-    try {
-        const { workout_log_id, end_time, total_duration, calories_burned, performance_notes } = req.body;
+// // complete workout log
+// export const completeWorkoutLog = async (req, res) => {
+//     try {
+//         const { workout_log_id, end_time, total_duration, calories_burned, performance_notes } = req.body;
 
-        const updatedLog = await prisma.workoutlogs.update({
-            where: { log_id: workout_log_id },
-            data: {
-                end_time,
-                total_duration,
-                calories_burned,
-                performance_notes
-            }
-        });
+//         const updatedLog = await prisma.workoutlogs.update({
+//             where: { log_id: workout_log_id },
+//             data: {
+//                 end_time,
+//                 total_duration,
+//                 calories_burned,
+//                 performance_notes
+//             }
+//         });
 
-        res.status(200).json({ status: 'success', updatedLog });
-    } catch (error) {
-        console.error('Error completing workout log:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
-    }
-};
+//         res.status(200).json({ status: 'success', updatedLog });
+//     } catch (error) {
+//         console.error('Error completing workout log:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
 
 
 
-//TODO: TO Implement workout logs
+// //TODO: TO Implement workout logs
 

@@ -17,7 +17,6 @@ import CreateCustomWorkout from './pages/custom_workout/CreateCustomWorkout.jsx'
 import AddExercisesToCustomWorkout from './pages/custom_workout/AddExercisesToCustomWorkout.jsx'
 import ViewCustomWorkouts from './pages/custom_workout/ViewCustomWorkouts.jsx'
 
-
 const router = createBrowserRouter(
   [
     {
@@ -68,6 +67,7 @@ const router = createBrowserRouter(
       path: '/custom-workouts',
       element: <ViewCustomWorkouts />
     },
+    
     {
       path: '/',
       element: <App />

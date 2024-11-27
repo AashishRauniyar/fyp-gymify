@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:gymify/services/login_service.dart';
 
-
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
@@ -49,9 +48,8 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       body: FlutterLogin(
         title: 'GYMIFY',
-        logo: "assets/images/logo.png",
         theme: LoginTheme(
-          primaryColor: Colors.green,
+          primaryColor: const Color.fromARGB(255, 30, 90, 232),
           accentColor: Colors.green,
           errorColor: Colors.red,
           logoWidth: 2,
@@ -61,7 +59,6 @@ class LoginScreen extends StatelessWidget {
             letterSpacing: 4,
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            
           ),
         ),
         onLogin: _authUser,

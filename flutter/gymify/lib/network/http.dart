@@ -2,19 +2,21 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:gymify/constant/api_constant.dart';
+import 'package:gymify/services/storage_service.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:image/image.dart' as img;
 import 'package:path/path.dart';
 
+StorageService _storageService = SharedPrefsService();
 
+var token = _storageService.getString('auth_token');
 
 final Dio httpClient = Dio(BaseOptions(
   baseUrl: baseUrl,
   connectTimeout: const Duration(seconds: 5),
   receiveTimeout: const Duration(seconds: 3),
-  
-
   headers: {
+            'Authorization': 'Bearer $token',
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
