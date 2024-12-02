@@ -15,7 +15,11 @@ export const getAllUsers = async (req, res) => {
             }
         });
 
-        res.status(200).json(users);
+        res.status(200).json({
+            status: 'success',
+            message: 'Users fetched successfully',
+            data : users
+        });
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Failed to fetch users' });
@@ -38,7 +42,11 @@ export const getAllTrainers = async (req, res) => {
             }
         });
 
-        res.status(200).json(trainers);
+        res.status(200).json({
+            status: 'success',
+            message: 'Trainers fetched successfully',
+            data : trainers
+        });
     } catch (error) {
         console.error('Error fetching trainers:', error);
         res.status(500).json({ error: 'Failed to fetch trainers' });
@@ -61,7 +69,11 @@ export const getAllMembers = async (req, res) => {
             }
         });
 
-        res.status(200).json(members);
+        res.status(200).json({
+            status: 'success',
+            message: 'Members fetched successfully',
+            data : members
+        });
     } catch (error) {
         console.error('Error fetching members:', error);
         res.status(500).json({ error: 'Failed to fetch members' });
@@ -86,7 +98,13 @@ export const getUserById = async (req, res) => {
             }
         });
 
-        res.status(200).json(user);
+        res.status(200).json(
+            {
+                status: 'success',
+                message: 'User fetched successfully',
+                data : user
+            }
+        );
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Failed to fetch users' });

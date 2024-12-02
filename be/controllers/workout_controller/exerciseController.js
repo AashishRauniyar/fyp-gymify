@@ -30,7 +30,7 @@ export const createExercise = async (req, res) => {
             }
         });
 
-        res.status(201).json({ status: 'success', message: 'Exercise created successfully', exercise });
+        res.status(201).json({ status: 'success', message: 'Exercise created successfully', data: exercise });
     } catch (error) {
         console.error('Error creating exercise:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -61,7 +61,7 @@ export const getAllExercises = async (req, res) => {
                 updated_at: true
             }
         });
-        res.status(200).json({ status: 'success', exercises });
+        res.status(200).json({ status: 'success', message: "data fetched successfully", data: exercises });
     } catch (error) {
         console.error('Error fetching exercises:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -100,7 +100,7 @@ export const getExerciseById = async (req, res) => {
             return res.status(404).json({ status: 'failure', message: 'Exercise not found' });
         }
 
-        res.status(200).json({ status: 'success', exercise });
+        res.status(200).json({ status: 'success', message: "Exercise fetched successfully" , data: exercise });
     } catch (error) {
         console.error('Error fetching exercise:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });

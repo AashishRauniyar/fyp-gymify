@@ -18,7 +18,7 @@ const ViewWorkouts = () => {
                     }
                 }
             );
-            setWorkouts(response.data.workouts);
+            setWorkouts(response.data.data);
             setLoading(false);
         } catch (error) {
             setError(error.response?.data?.message || 'Failed to fetch workouts');

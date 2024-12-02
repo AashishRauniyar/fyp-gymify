@@ -159,7 +159,7 @@ const CreateWorkout = () => {
                         Authorization: `Bearer ${token}`
                 }
             });
-            setExercises(response.data.exercises);
+            setExercises(response.data.data);
             setLoading(false);
         } catch (error) {
             setError(error,'Failed to fetch exercises');
@@ -211,7 +211,7 @@ const CreateWorkout = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
     
-            const workoutId = workoutResponse.data.workout.workout_id;
+            const workoutId = workoutResponse.data.data.workout_id;
     
             if (selectedExercises.length > 0) {
                 await userInstance.post(`/workouts/${workoutId}/exercises`, 

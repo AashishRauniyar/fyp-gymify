@@ -41,7 +41,7 @@ export const getProfile = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'User profile retrieved successfully',
-            user
+            data : user
         });
     } catch (error) {
         console.error('Error retrieving profile:', error);
@@ -120,7 +120,7 @@ export const updateProfile = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'Profile updated successfully',
-            user: updatedUser
+            data: updatedUser
         });
     } catch (error) {
         console.error('Error updating profile:', error);

@@ -56,7 +56,7 @@ const Register = () => {
         if (!validateForm()) return;
 
         try {
-            const response = await userInstance.post('/register', {
+            const response = await userInstance.post('/auth/register', {
                 ...formData,
                 age: parseInt(formData.age, 10),
                 height: parseFloat(formData.height),

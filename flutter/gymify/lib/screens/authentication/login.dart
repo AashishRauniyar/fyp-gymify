@@ -66,7 +66,7 @@ class LoginScreen extends StatelessWidget {
         onSignup: _signupUser,
         onSubmitAnimationCompleted: () {
           // Navigate to home screen after successful login
-          Navigator.pushNamed(context, '/home');
+          Navigator.pushNamed(context, '/workouts');
         },
       ),
     );

@@ -8,7 +8,7 @@ export const exerciseRouter = express.Router();
 
 
 // Routes accessible to everyone
-exerciseRouter.get('/create-exercises', authenticate ,getAllExercises);
+exerciseRouter.get('/exercises', authenticate ,getAllExercises);
 exerciseRouter.get('/exercises/:id', authenticate, getExerciseById);
 
 

@@ -37,13 +37,14 @@ const Login = () => {
         if (!validateForm()) return;
 
         try {
-            const response = await userInstance.post('/login', formData);
+            const response = await userInstance.post('/auth/login', formData);
             
             setMessage(response.data.message);
 
             // Store token and user info in local storage
             localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify(response.data.user));
+            localStorage.setItem('user', JSON.stringify(response.data.data));
+            
 
             // Navigate to the dashboard or home page after successful login
             navigate('/welcome');

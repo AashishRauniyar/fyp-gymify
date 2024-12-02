@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:gymify/network/http.dart';
 import 'package:gymify/services/storage_service.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 
 class LoginService {
   final StorageService _storageService = SharedPrefsService();
@@ -12,14 +14,13 @@ class LoginService {
   }) async {
     try {
       final response = await httpClient.post(
-        '/login',
+        '/auth/login',
         data: {
           'email': email,
           'password': password,
         },
         options: Options(
           headers: {
-            
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
@@ -51,9 +52,29 @@ class LoginService {
     }
   }
 
-  /// Get token from SharedPreferences
+  // /// Get token from SharedPreferences
+  // Future<String?> getToken() async {
+  //   return await _storageService.getString('auth_token');
+  // }
+
+  // /// Logout by clearing the token
+  // Future<void> logout() async {
+  //   await _storageService.remove('auth_token');
+  // }
+
+
+   /// Get token from SharedPreferences
   Future<String?> getToken() async {
     return await _storageService.getString('auth_token');
+  }
+
+  /// Check if the token is valid (not expired)
+  Future<bool> isTokenValid() async {
+    final token = await getToken();
+    if (token == null || JwtDecoder.isExpired(token)) {
+      return false; // Token is either null or expired
+    }
+    return true;
   }
 
   /// Logout by clearing the token

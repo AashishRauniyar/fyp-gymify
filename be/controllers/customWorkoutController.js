@@ -20,7 +20,7 @@ export const createCustomWorkout = async (req, res) => {
             }
         });
 
-        res.status(201).json({ status: 'success', message: 'Custom workout created successfully', customWorkout });
+        res.status(201).json({ status: 'success', message: 'Custom workout created successfully', data : customWorkout });
     } catch (error) {
         console.error('Error creating custom workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -87,7 +87,7 @@ export const addExerciseToCustomWorkout = async (req, res) => {
         res.status(201).json({
             status: 'success',
             message: 'Exercises added to custom workout successfully',
-            addedExercises
+            data : addedExercises
         });
     } catch (error) {
         console.error('Error adding exercises to custom workout:', error);
