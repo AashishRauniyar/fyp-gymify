@@ -125,34 +125,34 @@ model meals {
 }
 
 model membership_plan {
-  plan_id    Int       @id @default(autoincrement()) // Unique ID for each plan
-  plan_type  plan_type // Enum for plan types (Monthly, Yearly, etc.)
-  price      Decimal   @db.Decimal(10, 2) // Price of the plan
-  created_at DateTime? @default(now()) @db.Timestamp(6) // Plan creation timestamp
-  updated_at DateTime? @default(now()) @db.Timestamp(6) // Plan update timestamp
+  plan_id     Int           @id @default(autoincrement()) // Unique ID for each plan
+  plan_type   plan_type // Enum for plan types (Monthly, Yearly, etc.)
+  price       Decimal       @db.Decimal(10, 2) // Price of the plan
+  created_at  DateTime?     @default(now()) @db.Timestamp(6) // Plan creation timestamp
+  updated_at  DateTime?     @default(now()) @db.Timestamp(6) // Plan update timestamp
   memberships memberships[] // One-to-many relation with memberships
 }
 
 model memberships {
   membership_id Int               @id @default(autoincrement()) // Unique ID for each subscription
-  user_id       Int?              // ID of the user who subscribes
-  plan_id       Int               // ID of the plan subscribed
+  user_id       Int? // ID of the user who subscribes
+  plan_id       Int // ID of the plan subscribed
   start_date    DateTime          @db.Date // Start date of the subscription
   end_date      DateTime          @db.Date // End date of the subscription
   status        membership_status // Enum for membership status (Active, Expired, etc.)
   created_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription creation timestamp
   updated_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription update timestamp
 
-  payments      payments[]        // One-to-many relation with payments
+  payments             payments[] // One-to-many relation with payments
   subscription_changes subscription_changes[] // One-to-many relation with subscription_changes
-  membership_plan membership_plan @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade, onUpdate: NoAction) // Relation to membership_plan
-  users           users?          @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
+  membership_plan      membership_plan        @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade, onUpdate: NoAction) // Relation to membership_plan
+  users                users?                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
 }
 
 model payments {
   payment_id     Int            @id @default(autoincrement()) // Unique ID for payment
-  membership_id  Int?           // Link to the membership being paid for
-  user_id        Int?           // ID of the user making the payment
+  membership_id  Int? // Link to the membership being paid for
+  user_id        Int? // ID of the user making the payment
   price          Decimal        @db.Decimal(10, 2) // Payment amount
   payment_method payment_method // Enum for payment methods (Khalti, Cash, etc.)
   transaction_id String         @unique @db.VarChar(100) // Khalti payment details
@@ -160,22 +160,20 @@ model payments {
   payment_status payment_status // Enum for payment status (Paid, Pending, etc.)
   created_at     DateTime?      @default(now()) @db.Timestamp(6) // Payment creation timestamp
 
-  memberships    memberships?   @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade, onUpdate: NoAction) // Relation to memberships
-  users          users?         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
+  memberships memberships? @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade, onUpdate: NoAction) // Relation to memberships
+  users       users?       @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
 }
 
 model subscription_changes {
-  change_id      Int          @id @default(autoincrement())
-  membership_id  Int
-  previous_plan  Int
-  new_plan       Int
-  change_date    DateTime     @default(now())
-  action         String
+  change_id     Int      @id @default(autoincrement())
+  membership_id Int
+  previous_plan Int
+  new_plan      Int
+  change_date   DateTime @default(now())
+  action        String
 
   memberships memberships @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
 }
-
-
 
 model users {
   user_id                                               Int                 @id @default(autoincrement())
@@ -196,8 +194,8 @@ model users {
   calorie_goals                                         Decimal?            @db.Decimal(6, 2)
   card_number                                           String?             @db.VarChar(50)
   profile_image                                         String?             @db.VarChar(255)
-  reset_token       String?  // Nullable field for reset token
-  reset_token_expiry DateTime? // Nullable field for token expiry
+  reset_token                                           String? // Nullable field for reset token
+  reset_token_expiry                                    DateTime? // Nullable field for token expiry
   created_at                                            DateTime?           @default(now()) @db.Timestamp(6)
   updated_at                                            DateTime?           @default(now()) @db.Timestamp(6)
   attendance                                            attendance[]
@@ -233,6 +231,8 @@ model workouts {
   description                      String
   target_muscle_group              String             @db.VarChar(50)
   difficulty                       difficulty_level
+  goal_type                        goal_type          @default(Weight_Loss) // Set a default value here
+  fitness_level                    fitness_level      @default(Beginner)
   trainer_id                       Int?
   created_at                       DateTime?          @default(now()) @db.Timestamp(6)
   updated_at                       DateTime?          @default(now()) @db.Timestamp(6)
@@ -243,31 +243,31 @@ model workouts {
 }
 
 model workoutexerciseslogs {
-  log_id            Int                      @id @default(autoincrement())
+  log_id            Int          @id @default(autoincrement())
   workout_log_id    Int?
   exercise_id       Int?
-  start_time        DateTime?                @db.Time(6)
-  end_time          DateTime?                @db.Time(6)
-  exercise_duration Decimal?    @db.Decimal(5, 2) // Store duration in minutes (calculated in the app)
-  rest_duration     Decimal?    @db.Decimal(5, 2) // Optional rest duration in minutes
-  skipped           Boolean?                 @default(false)
-  exercises         exercises?               @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
-  workoutlogs       workoutlogs?             @relation(fields: [workout_log_id], references: [log_id], onDelete: Cascade, onUpdate: NoAction)
+  start_time        DateTime?    @db.Time(6)
+  end_time          DateTime?    @db.Time(6)
+  exercise_duration Decimal?     @db.Decimal(5, 2) // Store duration in minutes (calculated in the app)
+  rest_duration     Decimal?     @db.Decimal(5, 2) // Optional rest duration in minutes
+  skipped           Boolean?     @default(false)
+  exercises         exercises?   @relation(fields: [exercise_id], references: [exercise_id], onDelete: Cascade, onUpdate: NoAction)
+  workoutlogs       workoutlogs? @relation(fields: [workout_log_id], references: [log_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model workoutlogs {
-  log_id               Int                      @id @default(autoincrement())
+  log_id               Int                    @id @default(autoincrement())
   user_id              Int?
   workout_id           Int?
-  workout_date         DateTime?                @default(now()) @db.Timestamp(6)
-  start_time           DateTime?                @db.Time(6)
-  end_time             DateTime?                @db.Time(6)
-  total_duration       Decimal?                 @db.Decimal(5, 2)
-  calories_burned      Decimal?                 @db.Decimal(10, 2)
+  workout_date         DateTime?              @default(now()) @db.Timestamp(6)
+  start_time           DateTime?              @db.Time(6)
+  end_time             DateTime?              @db.Time(6)
+  total_duration       Decimal?               @db.Decimal(5, 2)
+  calories_burned      Decimal?               @db.Decimal(10, 2)
   performance_notes    String?
   workoutexerciseslogs workoutexerciseslogs[]
-  users                users?                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  workouts             workouts?                @relation(fields: [workout_id], references: [workout_id], onDelete: NoAction, onUpdate: NoAction)
+  users                users?                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+  workouts             workouts?              @relation(fields: [workout_id], references: [workout_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 enum difficulty_level {

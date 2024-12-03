@@ -3,6 +3,50 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 // Create a new workout (Trainer only)
+// export const createWorkout = async (req, res) => {
+//     try {
+//         const { user_id, role } = req.user;
+
+//         // Ensure the user is a trainer
+//         if (role !== 'Trainer') {
+//             return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
+//         }
+
+//         const { workout_name, description, target_muscle_group, difficulty } = req.body;
+
+//         // Validate required fields
+//         if (!workout_name || !description || !target_muscle_group || !difficulty) {
+//             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
+//         }
+
+//         // Validate difficulty level
+//         const validDifficulties = ['Easy', 'Intermediate', 'Hard'];
+//         if (!validDifficulties.includes(difficulty)) {
+//             return res.status(400).json({ status: 'failure', message: 'Invalid difficulty level' });
+//         }
+
+//         // Create the workout
+//         const workout = await prisma.workouts.create({
+//             data: {
+//                 workout_name,
+//                 description,
+//                 target_muscle_group,
+//                 difficulty,
+//                 trainer_id: user_id,
+//                 created_at: new Date()
+//             }
+//         });
+
+//         res.status(201).json({
+//             status: 'success',
+//             message: 'Workout created successfully',
+//             data : workout
+//         });
+//     } catch (error) {
+//         console.error('Error creating workout:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
 export const createWorkout = async (req, res) => {
     try {
         const { user_id, role } = req.user;
@@ -12,10 +56,10 @@ export const createWorkout = async (req, res) => {
             return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
         }
 
-        const { workout_name, description, target_muscle_group, difficulty } = req.body;
+        const { workout_name, description, target_muscle_group, difficulty, goal_type, fitness_level } = req.body;
 
         // Validate required fields
-        if (!workout_name || !description || !target_muscle_group || !difficulty) {
+        if (!workout_name || !description || !target_muscle_group || !difficulty || !goal_type || !fitness_level) {
             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
         }
 
@@ -25,6 +69,17 @@ export const createWorkout = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Invalid difficulty level' });
         }
 
+        // Validate goal_type and fitness_level values
+        const validGoalTypes = ['Weight_Loss', 'Muscle_Gain', 'Endurance', 'Maintenance', 'Flexibility'];
+        if (!validGoalTypes.includes(goal_type)) {
+            return res.status(400).json({ status: 'failure', message: 'Invalid goal type' });
+        }
+
+        const validFitnessLevels = ['Beginner', 'Intermediate', 'Advanced', 'Athlete'];
+        if (!validFitnessLevels.includes(fitness_level)) {
+            return res.status(400).json({ status: 'failure', message: 'Invalid fitness level' });
+        }
+
         // Create the workout
         const workout = await prisma.workouts.create({
             data: {
@@ -32,6 +87,8 @@ export const createWorkout = async (req, res) => {
                 description,
                 target_muscle_group,
                 difficulty,
+                goal_type,            // Add goal_type to the data
+                fitness_level,        // Add fitness_level to the data
                 trainer_id: user_id,
                 created_at: new Date()
             }
@@ -40,14 +97,13 @@ export const createWorkout = async (req, res) => {
         res.status(201).json({
             status: 'success',
             message: 'Workout created successfully',
-            data : workout
+            data: workout
         });
     } catch (error) {
         console.error('Error creating workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
 
 
 // Add multiple exercises to a workout (Trainer only)
