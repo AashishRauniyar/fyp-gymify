@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:gymify/services/login_service.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -66,7 +67,7 @@ class LoginScreen extends StatelessWidget {
         onSignup: _signupUser,
         onSubmitAnimationCompleted: () {
           // Navigate to home screen after successful login
-          Navigator.pushNamed(context, '/workouts');
+          context.go('/workout');
         },
       ),
     );

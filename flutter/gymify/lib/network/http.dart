@@ -46,6 +46,8 @@ final Dio httpClient = Dio(BaseOptions(
     },
   ));
 
+
+
 MediaType getContentType(File file) {
   // Rename `extension` to `fileExtension` to avoid conflicts
   String fileExtension = extension(file.path).toLowerCase();

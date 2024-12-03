@@ -7,14 +7,14 @@ class ExerciseProvider with ChangeNotifier {
   List<Exercise> _exercises = [];
   List<Exercise> get exercises => _exercises;
 
-
-  Future<void> fetchAllExercises() async{
+  Future<void> fetchAllExercises() async {
     try {
       final response = await httpClient.get('/exercises');
 
       final apiResponse = ApiResponse<List<Exercise>>.fromJson(
         response.data,
-        (data) => (data as List).map((item) => Exercise.fromJson(item)).toList(),
+        (data) =>
+            (data as List).map((item) => Exercise.fromJson(item)).toList(),
       );
 
       if (apiResponse.status == 'success') {
@@ -22,14 +22,14 @@ class ExerciseProvider with ChangeNotifier {
         notifyListeners();
       } else {
         print('Error: ${apiResponse.message}');
-        throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
       }
-
     } catch (e) {
       print('Error fetching exercises: $e');
 
-      throw Exception('Error fetching exercises: $e');  
-      
+      throw Exception('Error fetching exercises: $e');
     }
   }
 
@@ -37,7 +37,7 @@ class ExerciseProvider with ChangeNotifier {
   // Future<void> fetchAllExercises() async {
   //   try {
   //     final response = await httpClient.get('/exercises');
-      
+
   //     // Deserialize the response using ApiResponse with a list of exercises
   //     final apiResponse = ApiResponse<List<Exercise>>.fromJson(
   //       response.data,

@@ -52,16 +52,7 @@ class LoginService {
     }
   }
 
-  // /// Get token from SharedPreferences
-  // Future<String?> getToken() async {
-  //   return await _storageService.getString('auth_token');
-  // }
-
-  // /// Logout by clearing the token
-  // Future<void> logout() async {
-  //   await _storageService.remove('auth_token');
-  // }
-
+  
 
    /// Get token from SharedPreferences
   Future<String?> getToken() async {

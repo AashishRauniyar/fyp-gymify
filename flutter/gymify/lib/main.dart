@@ -1,14 +1,11 @@
+
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
-import 'package:gymify/screens/exercise_screen.dart';
-import 'package:gymify/screens/main_screens/workout_screen.dart';
-import 'package:gymify/screens/test.dart';
+import 'package:gymify/routes/route_config.dart';
 import 'package:provider/provider.dart';
 
-import 'package:gymify/screens/authentication/login.dart';
-import 'package:gymify/screens/authentication/register.dart';
-import 'package:gymify/screens/workout_screen.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -24,20 +21,21 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => WorkoutProvider()),
         ChangeNotifierProvider(create: (context) => ExerciseProvider()),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Gymify',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: LoginScreen(),
-        routes: {
-          '/register': (context) => const RegisterScreen(),
-          '/login': (context) => LoginScreen(),
-          '/home': (context) => const HomePage(),
-          '/workouts': (context) => WorkoutListScreen(),
-          '/exercises': (context) => const ExerciseScreen(),
-        },
+        routerConfig: router,
+        // routes: {
+        //   '/register': (context) => const RegisterScreen(),
+        //   '/login': (context) => LoginScreen(),
+        //   '/home': (context) => const HomePage(),
+        //   '/workouts': (context) =>  const WorkoutListScreen(),
+        //   '/exercises': (context) =>const ExerciseScreen(),
+        // },
+        
       ),
     );
   }

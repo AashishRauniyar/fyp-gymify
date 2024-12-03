@@ -131,7 +131,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:gymify/screens/splash_screen/splash_sreen.dart';
 import 'package:gymify/utils/custom_button.dart';
+import 'package:go_router/go_router.dart';
 
 class WelcomeScreen extends StatelessWidget {
   final masonryItems = [
@@ -139,7 +141,9 @@ class WelcomeScreen extends StatelessWidget {
     'assets/images/loading_screen/2.jpg',
     'assets/images/loading_screen/3.jpg',
     'assets/images/loading_screen/4.jpg',
+    'assets/images/loading_screen/4.jpg',
     'assets/images/loading_screen/5.jpg',
+    'assets/images/loading_screen/6.jpg',
     'assets/images/loading_screen/6.jpg',
   ];
 
@@ -148,7 +152,7 @@ class WelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF00A86B), // Vibrant green background
+      backgroundColor: Colors.blue, // Vibrant green background
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -189,14 +193,14 @@ class WelcomeScreen extends StatelessWidget {
             ),
           ),
           // Heart icon
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: Icon(
-              Icons.favorite,
-              size: 48,
-              color: Colors.white,
-            ),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.symmetric(vertical: 10),
+          //   child: Icon(
+          //     Icons.arrow_drop_up_outlined,
+          //     size: 48,
+          //     color: Colors.white,
+          //   ),
+          // ),
           // Welcome message
           Expanded(
             flex: 1,
@@ -225,16 +229,15 @@ class WelcomeScreen extends StatelessWidget {
                 // Join now button
                 CustomButton(
                     text: "Join Now",
-                    color: Colors.white,
-                    
+                    color: Colors.black,
                     onPressed: () {
-                      Navigator.pushNamed(context, '/register');
+                      context.go('/register');
                     }),
                 const SizedBox(height: 10),
                 // Already a member
                 TextButton(
                   onPressed: () {
-                    // Handle log in
+                    context.go('/login');
                   },
                   child: const Text(
                     "Already a member? Log in",

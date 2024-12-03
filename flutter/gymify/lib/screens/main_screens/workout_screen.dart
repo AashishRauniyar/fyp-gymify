@@ -48,7 +48,6 @@ class WorkoutListScreen extends StatelessWidget {
 class WorkoutDetailScreen extends StatelessWidget {
   final Workout workout;
 
-  
   const WorkoutDetailScreen({super.key, required this.workout});
 
   @override

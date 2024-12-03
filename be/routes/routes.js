@@ -1,51 +1,19 @@
 import express from 'express';
+import authRouter from './authRoutes.js';
+import profileRouter from './profileRoutes.js';
+import { userRouter } from './userRoutes.js';
+import { exerciseRouter } from './exerciseRoutes.js';
+import { workoutRouter } from './workoutRoutes.js';
+import { customWorkoutRouter } from './customWorkoutRoutes.js';
 
-import { 
-    createExercise, 
-    getAllExercises, 
-    getExerciseById, 
-    updateExercise, 
-    deleteExercise 
-} from '../controllers/workout_controller/exerciseController.js';
+const mainRouter = express.Router();
 
-import { 
-    getAllWorkouts, 
-    getWorkoutById, 
-    updateWorkout, 
-    deleteWorkout 
-} from '../controllers/workout_controller/workoutController.js';
+// Define the routes here
+mainRouter.use('/api/auth', authRouter);
+mainRouter.use('/api', profileRouter);
+mainRouter.use('/api', userRouter);
+mainRouter.use('/api', exerciseRouter);
+mainRouter.use('/api', workoutRouter);
+mainRouter.use('/api', customWorkoutRouter);
 
-
-import {
-    createCustomWorkout,
-    addExerciseToCustomWorkout,
-    removeExerciseFromCustomWorkout,
-    getCustomWorkoutExercisesById,
-    getCustomWorkoutsOfUser
-} from '../controllers/customWorkoutController.js';
-import { finishWorkout, logExercise, startWorkout } from '../controllers/workoutLogController.js';
-import { addExerciseToWorkout, createWorkout } from '../controllers/workout_controller/workoutController.js';
-import {authenticate} from '../middleware/authMiddleware.js';
-import { getAllMembers, getAllTrainers, getAllUsers } from '../controllers/user_controller/user_controller.js';
-
-
-
-
-const router = express.Router();
-
-
-
-
-
-// Route to start a workout
-router.post('/workouts/start', authenticate, startWorkout);
-
-// Route to log an exercise
-router.post('/workouts/log-exercise', authenticate, logExercise);
-
-// Route to finish a workout
-router.post('/workouts/finish', authenticate, finishWorkout);
-
-
-
-export default router;
+export default mainRouter;
