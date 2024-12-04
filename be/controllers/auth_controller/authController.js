@@ -190,7 +190,6 @@ import nodemailer from 'nodemailer';
 
 import { body, validationResult } from 'express-validator';
 
-
 export const register = async (req, res) => {
     // Validation rules for input fields
     await body('user_name').notEmpty().withMessage('User name is required').run(req);
@@ -200,7 +199,7 @@ export const register = async (req, res) => {
     await body('phone_number').matches(/^\d{10}$/).withMessage('Invalid phone number').run(req);
     await body('gender').isIn(['Male', 'Female', 'Other']).withMessage('Invalid gender').run(req);
     await body('role').isIn(['Member', 'Trainer', 'Admin']).withMessage('Invalid role').run(req);
-    await body('age').isInt({ min: 0, max: 120 }).withMessage('Invalid age').run(req);
+    await body('birthdate').isDate().withMessage('Invalid birthdate format').run(req); // Changed validation for age to birthdate
     await body('height').isFloat({ min: 0 }).withMessage('Invalid height').run(req);
     await body('current_weight').isFloat({ min: 0 }).withMessage('Invalid current weight').run(req);
 
@@ -227,16 +226,13 @@ export const register = async (req, res) => {
         goal_type,
         allergies,
         calorie_goals,
-        card_number
+        card_number,
+        birthdate,
+        height,
+        current_weight // Now accepting birthdate
     } = req.body;
 
-    // Parse string inputs to numbers
-    const age = parseInt(req.body.age);
-    const height = parseFloat(req.body.height);
-    const current_weight = parseFloat(req.body.current_weight);
-
     try {
-
         // Check if the user already exists by user_name, email, or phone number
         const existingUser = await prisma.users.findUnique({ where: { user_name } });
         if (existingUser) {
@@ -277,7 +273,7 @@ export const register = async (req, res) => {
                 password: hashedPassword,
                 phone_number,
                 address,
-                age,
+                birthdate: new Date(birthdate), // Store birthdate as DateTime
                 height,
                 current_weight,
                 gender,
@@ -310,7 +306,6 @@ export const register = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
 
 
 

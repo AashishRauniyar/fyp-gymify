@@ -180,7 +180,7 @@ model users {
   user_name                                             String              @unique @db.VarChar(100)
   full_name                                             String              @db.VarChar(100)
   address                                               String?             @db.VarChar(255)
-  age                                                   Int?
+  birthdate                                             DateTime? 
   height                                                Decimal             @db.Decimal
   current_weight                                        Decimal             @db.Decimal
   gender                                                gender
