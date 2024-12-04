@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/services/login_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,14 +10,30 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final LoginService _loginService = LoginService();
+
   @override
   void initState() {
     super.initState();
-    // Add a 3-second delay and then navigate to the login screen
+
+    // Show splash screen for a few seconds before checking login status
     Future.delayed(const Duration(seconds: 3), () {
-      // Navigate to the login screen after 3 seconds
-      context.go('/welcome');
+      _checkLoginStatus();
     });
+  }
+
+  // Check login status by validating token
+  Future<void> _checkLoginStatus() async {
+    bool isLoggedIn = await _loginService.isTokenValid();
+
+    // Navigate to the appropriate screen after checking login status
+    if (isLoggedIn) {
+      // If logged in, go directly to Home screen
+      context.go('/home');
+    } else {
+      // If not logged in, go to the Welcome screen
+      context.go('/welcome');
+    }
   }
 
   @override

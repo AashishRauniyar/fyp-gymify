@@ -156,7 +156,7 @@ class WelcomeScreen extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(height: 50),
+          const SizedBox(height: 50),
           // Header: Grid of images with borders
           Expanded(
             flex: 2,

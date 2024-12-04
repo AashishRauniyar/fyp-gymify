@@ -67,7 +67,8 @@ class LoginScreen extends StatelessWidget {
         onSignup: _signupUser,
         onSubmitAnimationCompleted: () {
           // Navigate to home screen after successful login
-          context.go('/workout');
+          context.go(
+              '/home'); // This should work now with the updated GoRouter routing
         },
       ),
     );
