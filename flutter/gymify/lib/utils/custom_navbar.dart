@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
@@ -16,7 +14,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   final List<IconData> _icons = [
     Icons.home,
     Icons.fitness_center,
-    Icons.fastfood,
+    Icons.dining,
     Icons.chat,
     Icons.account_circle,
   ];

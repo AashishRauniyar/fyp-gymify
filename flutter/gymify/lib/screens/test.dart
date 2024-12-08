@@ -126,10 +126,6 @@ class HomePage extends StatelessWidget {
             ),
             CustomButton(
               text: "Get Started",
-              textStyle: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
               color: const Color(0xFF3B3C5D),
               onPressed: () {
                 Navigator.pushNamed(context, '/login');

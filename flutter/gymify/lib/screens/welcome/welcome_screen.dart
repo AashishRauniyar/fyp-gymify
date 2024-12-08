@@ -192,16 +192,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
           ),
-          // Heart icon
-          // const Padding(
-          //   padding: EdgeInsets.symmetric(vertical: 10),
-          //   child: Icon(
-          //     Icons.arrow_drop_up_outlined,
-          //     size: 48,
-          //     color: Colors.white,
-          //   ),
-          // ),
-          // Welcome message
+
           Expanded(
             flex: 1,
             child: Column(
@@ -229,7 +220,8 @@ class WelcomeScreen extends StatelessWidget {
                 // Join now button
                 CustomButton(
                     text: "Join Now",
-                    color: Colors.black,
+                    textColor: Colors.blue,
+                    color: Colors.white,
                     onPressed: () {
                       context.go('/register');
                     }),
