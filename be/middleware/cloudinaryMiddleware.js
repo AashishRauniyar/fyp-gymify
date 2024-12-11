@@ -108,8 +108,8 @@ export const uploadExerciseImageToCloudinary = async (buffer, folder = 'exercise
 
 // upload video to Cloudinary in folder 'exercise_videos'
 
+// Cloudinary video upload function
 export const uploadExerciseVideoToCloudinary = async (buffer, folder = 'exercise_videos') => {
-
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
             { folder, resource_type: 'video' },
@@ -124,4 +124,7 @@ export const uploadExerciseVideoToCloudinary = async (buffer, folder = 'exercise
         );
         // Pipe the buffer into the Cloudinary upload stream
         stream.end(buffer); // end the stream   
-})};
+    });
+};
+
+

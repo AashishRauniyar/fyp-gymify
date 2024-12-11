@@ -79,3 +79,7 @@ Future<File> reEncodeImage(File file) async {
   }
   return file;
 }
+
+
+// upload video file
+

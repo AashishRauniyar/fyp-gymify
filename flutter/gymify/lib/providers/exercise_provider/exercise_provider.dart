@@ -34,8 +34,8 @@
 //   }
 // }
 
-
 import 'dart:io';
+import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
@@ -86,6 +86,7 @@ class ExerciseProvider with ChangeNotifier {
     required String caloriesBurnedPerMinute,
     required String videoUrl,
     File? exerciseImage, // Optional: To upload image
+    File? exerciseVideo, // Optional: To upload video
   }) async {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -104,10 +105,17 @@ class ExerciseProvider with ChangeNotifier {
         'video_url': videoUrl,
         'trainer_id': trainerId, // Assuming trainer ID
         if (exerciseImage != null)
-          'exercise_image': await MultipartFile.fromFile(
+          'image': await MultipartFile.fromFile(
             exerciseImage.path,
             filename: 'exercise_image.jpeg',
             contentType: getContentType(exerciseImage),
+          ),
+        //! new added
+        if (exerciseVideo != null)
+          'video': await MultipartFile.fromFile(
+            exerciseVideo.path,
+            filename: 'exercise_video.mp4',
+            contentType: getContentType(exerciseVideo),
           ),
       });
 

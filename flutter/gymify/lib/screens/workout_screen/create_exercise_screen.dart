@@ -1,6 +1,10 @@
+
+
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +24,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
   late String videoUrl;
 
   File? exerciseImage;
+  File? exerciseVideo; // Declare the video file variable
 
   // List for muscle groups (You can customize this list as needed)
   final List<String> muscleGroups = [
@@ -41,6 +46,21 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
     description = '';
     caloriesBurnedPerMinute = '';
     videoUrl = '';
+  }
+
+  // Function to pick a video
+  Future<void> _pickVideo() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video, // Set file type to video
+    );
+
+    if (result != null) {
+      setState(() {
+        exerciseVideo = File(result.files.single.path!);
+      });
+    } else {
+      // User canceled the picker
+    }
   }
 
   @override
@@ -120,7 +140,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               // Pick Exercise Image
               ElevatedButton(
                 onPressed: () async {
-                  final ImagePicker picker = ImagePicker();
+                  final picker = ImagePicker();
                   final pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
 
@@ -134,6 +154,14 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               ),
               if (exerciseImage != null)
                 Image.file(exerciseImage!, height: 100, width: 100),
+              const SizedBox(height: 20),
+              // Pick Exercise Video
+              ElevatedButton(
+                onPressed: _pickVideo, // Use the video picker
+                child: const Text('Pick Exercise Video'),
+              ),
+              if (exerciseVideo != null)
+                Text('Video selected: ${exerciseVideo!.path}'),
               const SizedBox(height: 20),
               // Create Exercise Button
               ElevatedButton(
@@ -150,6 +178,8 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                         caloriesBurnedPerMinute: caloriesBurnedPerMinute,
                         videoUrl: videoUrl,
                         exerciseImage: exerciseImage,
+                        exerciseVideo:
+                            exerciseVideo, // Pass the video to provider
                       );
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

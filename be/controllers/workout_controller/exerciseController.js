@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { uploadExerciseImageToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
+import { uploadExerciseImageToCloudinary, uploadExerciseVideoToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -19,14 +19,39 @@ export const createExercise = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
         }
 
+        //? working for images
+        // let exerciseImageUrl = null;
+        // if (req.file) {
+        //     try {
+        //         exerciseImageUrl = await uploadExerciseImageToCloudinary(req.file.buffer); // Pass the file buffer directly
+        //     } catch (error) {
+        //         console.error('Error uploading image:', error);
+        //         return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+        //     }
+        // }
 
+
+        //! testing for videos
+
+        // Image upload handling
         let exerciseImageUrl = null;
-        if (req.file) {
+        if (req.files && req.files.image) {
             try {
-                exerciseImageUrl = await uploadExerciseImageToCloudinary(req.file.buffer); // Pass the file buffer directly
+                exerciseImageUrl = await uploadExerciseImageToCloudinary(req.files.image[0].buffer); // Access the first image file in the array
             } catch (error) {
                 console.error('Error uploading image:', error);
                 return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+            }
+        }
+
+        // Video upload handling
+        let exerciseVideoUrl = null;
+        if (req.files && req.files.video) {
+            try {
+                exerciseVideoUrl = await uploadExerciseVideoToCloudinary(req.files.video[0].buffer); // Access the first video file in the array
+            } catch (error) {
+                console.error('Error uploading video:', error);
+                return res.status(500).json({ status: 'failure', message: 'Video upload failed' });
             }
         }
 
@@ -37,7 +62,7 @@ export const createExercise = async (req, res) => {
                 target_muscle_group,
                 calories_burned_per_minute,
                 image_url : exerciseImageUrl,
-                video_url,
+                video_url : exerciseVideoUrl,
                 created_at: new Date()
             }
         });
