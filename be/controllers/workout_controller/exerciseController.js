@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { uploadExerciseImageToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -18,13 +19,24 @@ export const createExercise = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
         }
 
+
+        let exerciseImageUrl = null;
+        if (req.file) {
+            try {
+                exerciseImageUrl = await uploadExerciseImageToCloudinary(req.file.buffer); // Pass the file buffer directly
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+            }
+        }
+
         const exercise = await prisma.exercises.create({
             data: {
                 exercise_name,
                 description,
                 target_muscle_group,
                 calories_burned_per_minute,
-                image_url,
+                image_url : exerciseImageUrl,
                 video_url,
                 created_at: new Date()
             }

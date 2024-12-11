@@ -137,7 +137,8 @@ class AuthService {
             filename: 'profile_image.jpeg',
             contentType: getContentType(profilePicture),
           ),
-      });
+      }
+      );
 
       // Send the request
       Response response = await httpClient.post('/auth/register',

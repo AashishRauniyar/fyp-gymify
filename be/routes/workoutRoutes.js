@@ -1,6 +1,7 @@
 import express from 'express';
 import { addExerciseToWorkout, createWorkout, deleteWorkout, getAllWorkouts, getWorkoutById, updateWorkout } from '../controllers/workout_controller/workoutController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
+import upload from '../middleware/multerMiddleware.js';
 
 
 export const workoutRouter = express.Router();
@@ -8,7 +9,7 @@ export const workoutRouter = express.Router();
 
 
 // Route to create a new workout (Trainers only)
-workoutRouter.post('/create-workouts', authenticate, createWorkout);
+workoutRouter.post('/create-workouts',upload.single('workout_image'), authenticate, createWorkout);
 
 // Route to add an exercise to a workout (Trainer Only)
 workoutRouter.post('/workouts/:workoutId/exercises', authenticate, addExerciseToWorkout);

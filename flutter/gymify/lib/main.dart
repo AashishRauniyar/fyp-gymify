@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => WorkoutProvider()),
         ChangeNotifierProvider(create: (context) => ExerciseProvider()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

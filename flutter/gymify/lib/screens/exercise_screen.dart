@@ -134,7 +134,7 @@ class ExerciseCard extends StatelessWidget {
             // Exercise Name
             Text(
               exercise.exerciseName,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.black87,

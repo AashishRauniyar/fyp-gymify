@@ -136,62 +136,63 @@ import 'package:gymify/utils/custom_button.dart';
 import 'package:go_router/go_router.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  final masonryItems = [
-    'assets/images/loading_screen/1.jpg',
-    'assets/images/loading_screen/2.jpg',
-    'assets/images/loading_screen/3.jpg',
-    'assets/images/loading_screen/4.jpg',
-    'assets/images/loading_screen/4.jpg',
-    'assets/images/loading_screen/5.jpg',
-    'assets/images/loading_screen/6.jpg',
-    'assets/images/loading_screen/6.jpg',
-  ];
+  // final masonryItems = [
+  //   'assets/images/loading_screen/1.jpg',
+  //   'assets/images/loading_screen/2.jpg',
+  //   'assets/images/loading_screen/3.jpg',
+  //   'assets/images/loading_screen/4.jpg',
+  //   'assets/images/loading_screen/4.jpg',
+  //   'assets/images/loading_screen/5.jpg',
+  //   'assets/images/loading_screen/6.jpg',
+  //   'assets/images/loading_screen/6.jpg',
+  // ];
 
-  WelcomeScreen({super.key});
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue, // Vibrant green background
+      backgroundColor: Color(0xFF2E3440), // Vibrant green background
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: 50),
           // Header: Grid of images with borders
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: MasonryGridView.extent(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                maxCrossAxisExtent: 120,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                itemCount: masonryItems.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      border: Border.all(
-                        color: Colors.white, // Border color
-                        width: 2.0, // Border width
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(13.0), // Inner border radius
-                      child: Image.asset(
-                        masonryItems[index],
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
+          //Expanded(
+          //flex: 2,
+          //child: Padding(
+          //padding: const EdgeInsets.all(16.0),
+          //child:
+          // MasonryGridView.extent(
+          //   padding: EdgeInsets.zero,
+          //   physics: const NeverScrollableScrollPhysics(),
+          //   shrinkWrap: true,
+          //   maxCrossAxisExtent: 120,
+          //   mainAxisSpacing: 8,
+          //   crossAxisSpacing: 8,
+          //   itemCount: masonryItems.length,
+          //   itemBuilder: (context, index) {
+          //     return Container(
+          //       decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(15.0),
+          //         border: Border.all(
+          //           color: Colors.white, // Border color
+          //           width: 2.0, // Border width
+          //         ),
+          //       ),
+          //       child: ClipRRect(
+          //         borderRadius:
+          //             BorderRadius.circular(13.0), // Inner border radius
+          //         child: Image.asset(
+          //           masonryItems[index],
+          //           fit: BoxFit.cover,
+          //         ),
+          //       ),
+          //     );
+          //   },
+          // ),
+          //),
+          //),
 
           Expanded(
             flex: 1,
@@ -220,7 +221,8 @@ class WelcomeScreen extends StatelessWidget {
                 // Join now button
                 CustomButton(
                     text: "Join Now",
-                    textColor: Colors.blue,
+                    // use 2E3440 by doing Color(0xFF2E3440)
+                    textColor: const Color(0xFF2E3440),
                     color: Colors.white,
                     onPressed: () {
                       context.go('/register');

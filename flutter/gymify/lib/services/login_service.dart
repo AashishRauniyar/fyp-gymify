@@ -3,7 +3,6 @@ import 'package:gymify/network/http.dart';
 import 'package:gymify/services/storage_service.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-
 class LoginService {
   final StorageService _storageService = SharedPrefsService();
 
@@ -35,7 +34,7 @@ class LoginService {
         // Return user details
         return {
           'success': true,
-          'user': response.data['user'],
+          'user': response.data['data'],
           'token': token,
         };
       } else {
@@ -52,11 +51,14 @@ class LoginService {
     }
   }
 
-  
-
-   /// Get token from SharedPreferences
+  /// Get token from SharedPreferences
   Future<String?> getToken() async {
     return await _storageService.getString('auth_token');
+  }
+
+  // method to set token
+  Future<void> setToken(String token) async {
+    await _storageService.setString('auth_token', token);
   }
 
   /// Check if the token is valid (not expired)
@@ -72,4 +74,47 @@ class LoginService {
   Future<void> logout() async {
     await _storageService.remove('auth_token');
   }
+
+  /// Get user ID from the token
+  // Inside LoginService
+Future<String?> getUserId() async {
+  final token = await getToken(); // Get the token from storage
+  if (token == null || JwtDecoder.isExpired(token)) {
+    return null; // Return null if the token is invalid or expired
+  }
+
+  // Decode the token and extract the user_id
+  final decodedToken = JwtDecoder.decode(token);
+
+  // Ensure the user_id is returned as a String, even if it's an int
+  final userId = decodedToken['user_id'];
+  return userId?.toString();  // Ensure it's a String
+}
+
+
+  /// Get role from the token
+  Future<String?> getRole() async {
+    final token = await getToken(); // Get the token from storage
+    if (token == null || JwtDecoder.isExpired(token)) {
+      return null; // Return null if the token is invalid or expired
+    }
+
+    // Decode the token and extract the role
+    final decodedToken = JwtDecoder.decode(token);
+    return decodedToken['role'];
+  }
+
+//? example usage
+  /**
+   * // Get user ID
+String? userId = await loginService.getUserId();
+print('User ID: $userId');
+
+// Get role
+String? role = await loginService.getRole();
+print('Role: $role');
+
+   * 
+   * 
+   */
 }

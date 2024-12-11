@@ -1,6 +1,7 @@
 import express from 'express';
 import { authenticate } from '../middleware/authMiddleware.js';
 import { createExercise, deleteExercise, getAllExercises, getExerciseById, updateExercise } from '../controllers/workout_controller/exerciseController.js';
+import upload from '../middleware/multerMiddleware.js';
 
 
 export const exerciseRouter = express.Router();
@@ -14,6 +15,6 @@ exerciseRouter.get('/exercises/:id', authenticate, getExerciseById);
 
 
 // Routes restricted to trainers
-exerciseRouter.post('/exercises', authenticate, createExercise);
+exerciseRouter.post('/exercises', upload.single('exercise_image'),authenticate, createExercise);
 exerciseRouter.put('/exercises/:id', authenticate, updateExercise);
 exerciseRouter.delete('/exercises/:id', authenticate, deleteExercise);

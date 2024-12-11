@@ -233,6 +233,7 @@ model workouts {
   difficulty                       difficulty_level
   goal_type                        goal_type          @default(Weight_Loss) // Set a default value here
   fitness_level                    fitness_level      @default(Beginner)
+  workout_image                    String?            @db.VarChar(255)
   trainer_id                       Int?
   created_at                       DateTime?          @default(now()) @db.Timestamp(6)
   updated_at                       DateTime?          @default(now()) @db.Timestamp(6)

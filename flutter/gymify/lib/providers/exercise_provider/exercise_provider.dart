@@ -1,12 +1,57 @@
+// import 'package:flutter/material.dart';
+// import 'package:gymify/models/api_response.dart';
+// import 'package:gymify/models/exercise_model.dart';
+// import 'package:gymify/network/http.dart';
+
+// class ExerciseProvider with ChangeNotifier {
+//   List<Exercise> _exercises = [];
+//   List<Exercise> get exercises => _exercises;
+
+//   Future<void> fetchAllExercises() async {
+//     try {
+//       final response = await httpClient.get('/exercises');
+
+//       final apiResponse = ApiResponse<List<Exercise>>.fromJson(
+//         response.data,
+//         (data) =>
+//             (data as List).map((item) => Exercise.fromJson(item)).toList(),
+//       );
+
+//       if (apiResponse.status == 'success') {
+//         _exercises = apiResponse.data;
+//         notifyListeners();
+//       } else {
+//         print('Error: ${apiResponse.message}');
+//         throw Exception(apiResponse.message.isNotEmpty
+//             ? apiResponse.message
+//             : 'Unknown error');
+//       }
+//     } catch (e) {
+//       print('Error fetching exercises: $e');
+
+//       throw Exception('Error fetching exercises: $e');
+//     }
+//   }
+// }
+
+
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/network/http.dart';
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
+import 'package:gymify/services/storage_service.dart';
+import 'package:provider/provider.dart';
 
 class ExerciseProvider with ChangeNotifier {
   List<Exercise> _exercises = [];
   List<Exercise> get exercises => _exercises;
 
+  final StorageService _storageService = SharedPrefsService();
+
+  // Fetch all exercises
   Future<void> fetchAllExercises() async {
     try {
       final response = await httpClient.get('/exercises');
@@ -28,125 +73,70 @@ class ExerciseProvider with ChangeNotifier {
       }
     } catch (e) {
       print('Error fetching exercises: $e');
-
       throw Exception('Error fetching exercises: $e');
     }
   }
 
-  // Fetch all exercises
-  // Future<void> fetchAllExercises() async {
-  //   try {
-  //     final response = await httpClient.get('/exercises');
+  // Create a new exercise (with image upload)
+  Future<void> createExercise({
+    required BuildContext context,
+    required String exerciseName,
+    required String description,
+    required String targetMuscleGroup,
+    required String caloriesBurnedPerMinute,
+    required String videoUrl,
+    File? exerciseImage, // Optional: To upload image
+  }) async {
+    try {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final trainerId = authProvider.userId;
 
-  //     // Deserialize the response using ApiResponse with a list of exercises
-  //     final apiResponse = ApiResponse<List<Exercise>>.fromJson(
-  //       response.data,
-  //       (data) => (data as List).map((item) => Exercise.fromJson(item)).toList(),
-  //     );
+      if (trainerId == null) {
+        throw Exception('Trainer ID not found');
+      }
 
-  //     if (apiResponse.status == 'success') {
-  //       // Update the _exercises list with the fetched data
-  //       _exercises = apiResponse.data ?? [];
-  //       notifyListeners();
-  //     } else {
-  //       // Handle error if status is not success, message may be empty
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching exercises: $e');
-  //   }
-  // }
+      // Prepare the data for the exercise
+      FormData formData = FormData.fromMap({
+        'exercise_name': exerciseName,
+        'description': description,
+        'target_muscle_group': targetMuscleGroup,
+        'calories_burned_per_minute': caloriesBurnedPerMinute,
+        'video_url': videoUrl,
+        'trainer_id': trainerId, // Assuming trainer ID
+        if (exerciseImage != null)
+          'exercise_image': await MultipartFile.fromFile(
+            exerciseImage.path,
+            filename: 'exercise_image.jpeg',
+            contentType: getContentType(exerciseImage),
+          ),
+      });
 
-  // // Fetch a specific exercise by ID
-  // Future<Exercise?> fetchExerciseById(int id) async {
-  //   try {
-  //     final response = await httpClient.get('/exercises/$id');
-  //     final apiResponse = ApiResponse<Exercise>.fromJson(
-  //       response.data,
-  //       (data) => Exercise.fromJson(data),
-  //     );
-  //     if (apiResponse.status == 'success') {
-  //       return apiResponse.data;
-  //     } else {
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching exercise by ID: $e');
-  //     return null;
-  //   }
-  // }
+      final response = await httpClient.post(
+        '/exercises',
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
+        }),
+        data: formData,
+      );
 
-  // // Create a new exercise
-  // Future<void> createExercise(Exercise exercise) async {
-  //   try {
-  //     final response = await httpClient.post(
-  //       '/create-exercise',
-  //       data: exercise.toJson(),
-  //     );
-  //     final apiResponse = ApiResponse<Exercise>.fromJson(
-  //       response.data,
-  //       (data) => Exercise.fromJson(data),
-  //     );
-  //     if (apiResponse.status == 'success') {
-  //       // Add the newly created exercise to the list
-  //       _exercises.add(apiResponse.data!);
-  //       notifyListeners();
-  //     } else {
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     print('Error creating exercise: $e');
-  //   }
-  // }
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data,
+        (data) => data as Map<String, dynamic>,
+      );
 
-  // // Update an exercise
-  // Future<void> updateExercise(int id, Exercise updatedExercise) async {
-  //   try {
-  //     final response = await httpClient.put(
-  //       '/exercises/$id',
-  //       data: updatedExercise.toJson(),
-  //     );
-  //     final apiResponse = ApiResponse<Exercise>.fromJson(
-  //       response.data,
-  //       (data) => Exercise.fromJson(data),
-  //     );
-  //     if (apiResponse.status == 'success') {
-  //       // Find the exercise and update it
-  //       final index = _exercises.indexWhere((e) => e.exerciseId == id);
-  //       if (index != -1) {
-  //         _exercises[index] = apiResponse.data!;
-  //         notifyListeners();
-  //       }
-  //     } else {
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     print('Error updating exercise: $e');
-  //   }
-  // }
-
-  // // Delete an exercise
-  // Future<void> deleteExercise(int id) async {
-  //   try {
-  //     final response = await httpClient.delete('/exercises/$id');
-  //     final apiResponse = ApiResponse<Exercise>.fromJson(
-  //       response.data,
-  //       (data) => Exercise.fromJson(data),
-  //     );
-  //     if (apiResponse.status == 'success') {
-  //       // Remove the deleted exercise from the list
-  //       _exercises.removeWhere((e) => e.exerciseId == id);
-  //       notifyListeners();
-  //     } else {
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     print('Error deleting exercise: $e');
-  //   }
-  // }
+      if (apiResponse.status == 'success') {
+        // Handle success (maybe add to the exercise list or show success message)
+        print('Exercise created successfully');
+        fetchAllExercises(); // Refresh the list of exercises
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      print('Error creating exercise: $e');
+      throw Exception('Error creating exercise: $e');
+    }
+  }
 }

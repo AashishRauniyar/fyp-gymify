@@ -19,7 +19,9 @@ class Workout {
   @JsonKey(name: "goal_type")
   final String goalType;  // Added new field for goal_type
   @JsonKey(name: "fitness_level")
-  final String fitnessLevel;  // Added new field for fitness_level
+  final String fitnessLevel;
+  @JsonKey(name: "workout_image")
+  final String workoutImage;  // Added new field for fitness_level
   @JsonKey(name: "trainer_id")
   final int trainerId;
   @JsonKey(name: "created_at")
@@ -38,6 +40,7 @@ class Workout {
     required this.difficulty,
     required this.goalType,  // Add goalType to constructor
     required this.fitnessLevel,  // Add fitnessLevel to constructor
+    this.workoutImage = "",  // Add workout_image to constructor
     required this.trainerId,
     required this.createdAt,
     required this.updatedAt,

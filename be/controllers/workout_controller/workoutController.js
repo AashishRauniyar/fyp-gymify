@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { uploadWorkoutImageToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -80,6 +81,17 @@ export const createWorkout = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Invalid fitness level' });
         }
 
+
+        let workoutImageUrl = null;
+        if (req.file) {
+            try {
+                workoutImageUrl = await uploadWorkoutImageToCloudinary(req.file.buffer); // Pass the file buffer directly
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+            }
+        }
+
         // Create the workout
         const workout = await prisma.workouts.create({
             data: {
@@ -88,11 +100,12 @@ export const createWorkout = async (req, res) => {
                 target_muscle_group,
                 difficulty,
                 goal_type,            // Add goal_type to the data
-                fitness_level,        // Add fitness_level to the data
+                fitness_level,
+                workout_image : workoutImageUrl,        // Add fitness_level to the data
                 trainer_id: user_id,
                 created_at: new Date()
             }
-        });
+        }); 
 
         res.status(201).json({
             status: 'success',
@@ -251,6 +264,8 @@ export const updateWorkout = async (req, res) => {
                 description,
                 target_muscle_group,
                 difficulty,
+                goal_type,
+                fitness_level,                
                 updated_at: new Date()
             }
         });

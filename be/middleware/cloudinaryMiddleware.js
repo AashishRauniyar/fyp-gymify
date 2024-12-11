@@ -62,3 +62,66 @@ export const uploadToCloudinary = async (buffer, folder = 'profile_images') => {
         stream.end(buffer);
     });
 };
+
+
+
+// Upload workout image to Cloudinary in folder 'workout_images'
+export const uploadWorkoutImageToCloudinary = async (buffer, folder = 'workout_images') => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: 'image' },
+            (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    reject(error);
+                } else {
+                    resolve(result.secure_url); // Return the Cloudinary URL
+                }
+            }
+        );
+        // Pipe the buffer into the Cloudinary upload stream
+        stream.end(buffer); // end the stream   
+})};  
+    
+
+
+// upload exercise image to Cloudinary in folder 'exercise_images'
+
+export const uploadExerciseImageToCloudinary = async (buffer, folder = 'exercise_images') => {
+
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: 'image' },
+            (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    reject(error);
+                } else {
+                    resolve(result.secure_url); // Return the Cloudinary URL
+                }
+            }
+        );
+        // Pipe the buffer into the Cloudinary upload stream
+        stream.end(buffer); // end the stream   
+})};
+
+
+// upload video to Cloudinary in folder 'exercise_videos'
+
+export const uploadExerciseVideoToCloudinary = async (buffer, folder = 'exercise_videos') => {
+
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: 'video' },
+            (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    reject(error);
+                } else {
+                    resolve(result.secure_url); // Return the Cloudinary URL
+                }
+            }
+        );
+        // Pipe the buffer into the Cloudinary upload stream
+        stream.end(buffer); // end the stream   
+})};
