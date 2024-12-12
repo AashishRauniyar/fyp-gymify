@@ -132,10 +132,10 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                 },
               ),
               // Video URL
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Video URL'),
-                onSaved: (value) => videoUrl = value ?? '',
-              ),
+              // TextFormField(
+              //   decoration: const InputDecoration(labelText: 'Video URL'),
+              //   onSaved: (value) => videoUrl = value ?? '',
+              // ),
               const SizedBox(height: 20),
               // Pick Exercise Image
               ElevatedButton(

@@ -211,6 +211,7 @@ model users {
   workoutlogs                                           workoutlogs[]
   workouts_workouts_trainer_idTousers                   workouts[]          @relation("workouts_trainer_idTousers")
   workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
+  personal_bests                                        personal_bests[]
 }
 
 model workoutexercises {
@@ -269,6 +270,27 @@ model workoutlogs {
   workoutexerciseslogs workoutexerciseslogs[]
   users                users?                 @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
   workouts             workouts?              @relation(fields: [workout_id], references: [workout_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+
+model personal_bests {
+  personal_best_id  Int       @id @default(autoincrement()) // Unique ID for the personal best entry
+  user_id           Int       // The user who achieved the personal best
+  exercise          supported_exercises // The exercise for which the personal best is logged (only Squat, Bench Press, Deadlift)
+  weight            Decimal   @db.Decimal(6, 2) // The weight lifted in the personal best
+  reps              Int       // The number of reps for the personal best (if relevant)
+  achieved_at       DateTime  @default(now()) // Date when the personal best was achieved
+  
+  users             users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+}
+
+
+enum supported_exercises {
+  //TODO! add mode all exercises that should be logged in competitive level
+  Squat
+  Bench_Press @map("Bench Press")
+  Deadlift
+
 }
 
 enum difficulty_level {

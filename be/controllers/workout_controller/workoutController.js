@@ -48,6 +48,8 @@ const prisma = new PrismaClient();
 //         res.status(500).json({ status: 'failure', message: 'Server error' });
 //     }
 // };
+
+
 export const createWorkout = async (req, res) => {
     try {
         const { user_id, role } = req.user;
@@ -101,11 +103,11 @@ export const createWorkout = async (req, res) => {
                 difficulty,
                 goal_type,            // Add goal_type to the data
                 fitness_level,
-                workout_image : workoutImageUrl,        // Add fitness_level to the data
+                workout_image: workoutImageUrl,        // Add fitness_level to the data
                 trainer_id: user_id,
                 created_at: new Date()
             }
-        }); 
+        });
 
         res.status(201).json({
             status: 'success',
@@ -132,6 +134,11 @@ export const addExerciseToWorkout = async (req, res) => {
         const workoutId = parseInt(req.params.workoutId);
         const exercises = req.body.exercises; // Expecting an array of exercises
 
+        console.log('Processing exercise:', exercises);
+
+        console.log('Request payload:', req.body);
+        console.log('Workout ID:', req.params.workoutId);
+
         if (!Array.isArray(exercises) || exercises.length === 0) {
             return res.status(400).json({ status: 'failure', message: 'No exercises provided' });
         }
@@ -139,10 +146,13 @@ export const addExerciseToWorkout = async (req, res) => {
         const addedExercises = [];
 
         for (const exercise of exercises) {
+
             const { exercise_id, sets, reps, duration } = exercise;
 
             // Validate required fields
-            if (!exercise_id || !sets || !reps || !duration) {
+            // fixed as duration was 0 which is a valid value
+
+            if (!exercise_id || !sets || !reps || duration == undefined) {
                 continue;
             }
 
@@ -173,12 +183,13 @@ export const addExerciseToWorkout = async (req, res) => {
                 },
             });
             addedExercises.push(workoutExercise);
+            console.log(addedExercises);
         }
 
         res.status(201).json({
             status: 'success',
             message: 'Exercises added to workout successfully',
-            data : addedExercises,
+            data: addedExercises,
         });
     } catch (error) {
         console.error('Error adding exercises to workout:', error);
@@ -189,7 +200,7 @@ export const addExerciseToWorkout = async (req, res) => {
 
 export const getAllWorkouts = async (req, res) => {
 
-    const {user_id} = req.user;
+    const { user_id } = req.user;
     // Ensure only trainers can create exercises
     if (!user_id) {
         return res.status(403).json({ status: 'failure', message: 'Access denied. Please login first' });
@@ -210,7 +221,7 @@ export const getAllWorkouts = async (req, res) => {
 // get workout by ID 
 export const getWorkoutById = async (req, res) => {
 
-    const {user_id} = req.user;
+    const { user_id } = req.user;
     // Ensure only trainers can create exercises
     if (!user_id) {
         return res.status(403).json({ status: 'failure', message: 'Access denied. Please login first' });
@@ -228,7 +239,7 @@ export const getWorkoutById = async (req, res) => {
             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
         }
 
-        res.status(200).json({ status: 'success', message: "successfully fetched workout by id" , data: workout });
+        res.status(200).json({ status: 'success', message: "successfully fetched workout by id", data: workout });
     } catch (error) {
         console.error('Error fetching workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -265,12 +276,12 @@ export const updateWorkout = async (req, res) => {
                 target_muscle_group,
                 difficulty,
                 goal_type,
-                fitness_level,                
+                fitness_level,
                 updated_at: new Date()
             }
         });
 
-        res.status(200).json({ status: 'success', message: 'Workout updated successfully', data : updatedWorkout });
+        res.status(200).json({ status: 'success', message: 'Workout updated successfully', data: updatedWorkout });
     } catch (error) {
         console.error('Error updating workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });

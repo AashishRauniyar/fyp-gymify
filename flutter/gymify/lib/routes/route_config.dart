@@ -28,7 +28,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/welcome',
       builder: (context, state) =>
-          WelcomeScreen(), // Show welcome screen if not logged in
+          const WelcomeScreen(), // Show welcome screen if not logged in
     ),
     GoRoute(
       path: '/register',

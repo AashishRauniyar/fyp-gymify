@@ -72,6 +72,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gymify/models/workout_model.dart';
+import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 
@@ -101,19 +102,21 @@ class WorkoutListScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12)),
                   child: Container(
                     decoration: BoxDecoration(
-  image: DecorationImage(
-    image: workout.workoutImage.isNotEmpty
-        ? NetworkImage(workout.workoutImage) // Use network image if URL is available
-        : const AssetImage('assets/images/workout_image/defaultWorkoutImage.jpg') as ImageProvider, // Fallback to the asset image if URL is empty
-    fit: BoxFit.cover,
-    colorFilter: ColorFilter.mode(
-      Colors.black.withOpacity(0.5), 
-      BlendMode.darken,
-    ),
-  ),
-  borderRadius: BorderRadius.circular(12),
-),
-
+                      image: DecorationImage(
+                        image: workout.workoutImage.isNotEmpty
+                            ? NetworkImage(workout
+                                .workoutImage) // Use network image if URL is available
+                            : const AssetImage(
+                                    'assets/images/workout_image/defaultWorkoutImage.jpg')
+                                as ImageProvider, // Fallback to the asset image if URL is empty
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.5),
+                          BlendMode.darken,
+                        ),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(16),
                       title: Text(
@@ -125,7 +128,8 @@ class WorkoutListScreen extends StatelessWidget {
                       ),
                       subtitle: Text(
                         workout.targetMuscleGroup,
-                        style: const TextStyle(color: Colors.white, fontSize: 16),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 16),
                       ),
                       onTap: () {
                         // Navigate to the detailed screen showing exercises
@@ -151,11 +155,19 @@ class WorkoutListScreen extends StatelessWidget {
 
 class WorkoutDetailScreen extends StatelessWidget {
   final Workout workout;
+  
 
   const WorkoutDetailScreen({super.key, required this.workout});
 
   @override
   Widget build(BuildContext context) {
+    final exerciseProvider = Provider.of<ExerciseProvider>(context, listen: false);
+
+    // Fetch exercises if not already loaded
+    if (exerciseProvider.exercises.isEmpty) {
+      exerciseProvider.fetchAllExercises();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(workout.workoutName),
@@ -243,7 +255,7 @@ class WorkoutDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   // Exercises List
-                  Text(
+                  const Text(
                     'Exercises Included:',
                     style: TextStyle(
                       fontSize: 18,
@@ -256,7 +268,7 @@ class WorkoutDetailScreen extends StatelessWidget {
                     shrinkWrap:
                         true, // Ensures the list doesn't take up extra space
                     physics:
-                        NeverScrollableScrollPhysics(), // Disable scrolling on the list
+                        const NeverScrollableScrollPhysics(), // Disable scrolling on the list
                     itemCount: workout.workoutexercises.length,
                     itemBuilder: (context, index) {
                       final exercise = workout.workoutexercises[index];

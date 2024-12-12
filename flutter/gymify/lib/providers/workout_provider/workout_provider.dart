@@ -41,8 +41,12 @@ class WorkoutProvider with ChangeNotifier {
     }
   }
 
+//----------------------------------------------------------------
+
+
+//TODO: to handle unique name for workout
   // Create a new workout
-  Future<void> createWorkout({
+  Future<int> createWorkout({
     required BuildContext context,
     required String workoutName,
     required String description,
@@ -70,7 +74,8 @@ class WorkoutProvider with ChangeNotifier {
         'difficulty': difficulty,
         'goal_type': goalType,
         'fitness_level': fitnessLevel,
-        'trainer_id': trainerId, // Set the trainer's ID
+        'trainer_id': trainerId,
+        // Set the trainer's ID
         if (workoutImage != null)
           'workout_image': await MultipartFile.fromFile(
             workoutImage.path,
@@ -78,7 +83,6 @@ class WorkoutProvider with ChangeNotifier {
             contentType: getContentType(workoutImage),
           ),
       });
-
 
       final response = await httpClient.post(
         '/create-workouts',
@@ -95,9 +99,17 @@ class WorkoutProvider with ChangeNotifier {
       );
 
       if (apiResponse.status == 'success') {
-        // Handle success (maybe add to the workout list or show success message)
-        print('Workout created successfully');
-        fetchAllWorkouts(); // Refresh the list of workouts
+        // Extract the workout_id
+        final workoutData = apiResponse.data;
+        // Extract the workout_id
+        final workoutId = workoutData['workout_id'] as int;
+        print(workoutId);
+
+        // Optionally, fetch all workouts if needed
+        fetchAllWorkouts();
+
+        // Return the workout_id
+        return workoutId;
       } else {
         throw Exception(apiResponse.message.isNotEmpty
             ? apiResponse.message
@@ -106,6 +118,41 @@ class WorkoutProvider with ChangeNotifier {
     } catch (e) {
       print('Error creating workout: $e');
       throw Exception('Error creating workout: $e');
+    }
+  }
+
+  //----------------------------------------------------------------------------
+
+
+  Future<void> addExercisesToWorkout(BuildContext context, int workoutId,
+      List<Map<String, dynamic>> exercises) async {
+    try {
+      print('Request payload: ${exercises.toString()}');
+      final response = await httpClient.post(
+        '/workouts/$workoutId/exercises',
+        data: {'exercises': exercises},
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }),
+      );
+
+      final responseData = response.data;
+      print('API Response: $responseData');
+
+      if (responseData['status'] == 'success') {
+        final addedExercises = (responseData['data'] as List<dynamic>)
+            .map((exercise) => exercise as Map<String, dynamic>)
+            .toList();
+        print('Added exercises: $addedExercises');
+        notifyListeners();
+      } else {
+        print('API Error: ${responseData['message']}');
+        throw Exception(responseData['message']);
+      }
+    } catch (e) {
+      print('Error adding exercises to workout: $e');
+      throw Exception('Error adding exercises: $e');
     }
   }
 }
