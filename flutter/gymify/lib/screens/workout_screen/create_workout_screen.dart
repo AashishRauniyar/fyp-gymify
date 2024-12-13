@@ -266,6 +266,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   List<Map<String, dynamic>> exercises = [];
   final TextEditingController repsController = TextEditingController();
   final TextEditingController setsController = TextEditingController();
+  final TextEditingController durationController = TextEditingController();
+  
 
   @override
   void initState() {
@@ -452,7 +454,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     return ListTile(
                       title: Text(exercises[index]['exercise'].exerciseName),
                       subtitle: Text(
-                        'Reps: ${exercises[index]['reps']} | Sets: ${exercises[index]['sets']}',
+                        'Reps: ${exercises[index]['reps']} | Sets: ${exercises[index]['sets']}  | Duration: ${exercises[index]['duration']}',
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
@@ -513,7 +515,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                               .exerciseId, // Use correct field
                           'sets': int.parse(exerciseData['sets']),
                           'reps': int.parse(exerciseData['reps']),
-                          'duration': 0, // Default or fetched value
+                          'duration': exerciseData['duration'], // Default or fetched value
                         };
                       }).toList();
                       print(exercisesPayload);
@@ -549,7 +551,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add Reps and Sets for ${exercise.exerciseName}'),
+          title: Text('Add Reps, Sets and Duration for ${exercise.exerciseName}'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -563,6 +565,11 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: 'Sets'),
               ),
+              TextField(
+                controller: durationController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Duration'),
+              ),
             ],
           ),
           actions: [
@@ -575,6 +582,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       'exercise': exercise,
                       'reps': repsController.text,
                       'sets': setsController.text,
+                      'duration': durationController.text,
                     });
                   });
                   Navigator.pop(context);
@@ -582,7 +590,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   setsController.clear();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter reps and sets')),
+                    const SnackBar(content: Text('Please enter reps, sets and duration')),
                   );
                 }
               },
