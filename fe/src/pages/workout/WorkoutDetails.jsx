@@ -420,6 +420,7 @@ const WorkoutDetails = () => {
             const totalDuration = Math.floor((endTime - startTime) / 1000); // Calculate total duration in seconds
 
             const token = localStorage.getItem('token');
+            // eslint-disable-next-line no-unused-vars
             const { data } = await userInstance.post(
                 '/workouts/finish', 
                 {

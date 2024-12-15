@@ -3,68 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 
-export const logWorkout = async (req, res) => {
-    const {
-        user_id,
-        workout_id,
-        start_time,
-        end_time,
-        total_duration,
-        calories_burned,
-        performance_notes,
-    } = req.body;
-
-    try {
-        const workoutLog = await prisma.workoutlogs.create({
-            data: {
-                user_id,
-                workout_id,
-                start_time: start_time ? new Date(start_time) : null,
-                end_time: end_time ? new Date(end_time) : null,
-                total_duration,
-                calories_burned,
-                performance_notes,
-            },
-        });
-
-        res.status(200).json({ status: 'success', message: "workout logged succesfully", data: workoutLog });
-    } catch (error) {
-        console.error('Error logging workout:', error.message);
-        res.status(500).json({ status: 'error', message: 'Failed to log workout' });
-    }
-};
-
-
-export const logExercise = async (req, res) => {
-    const {
-        workout_log_id,
-        exercise_id,
-        start_time,
-        end_time,
-        exercise_duration,
-        rest_duration,
-        skipped,
-    } = req.body;
-
-    try {
-        const exerciseLog = await prisma.workoutexerciseslogs.create({
-            data: {
-                workout_log_id,
-                exercise_id,
-                start_time: start_time ? new Date(start_time) : null,
-                end_time: end_time ? new Date(end_time) : null,
-                exercise_duration,
-                rest_duration,
-                skipped,
-            },
-        });
-
-        res.status(200).json({ status: 'success', message: "exercise logged succesfully", data: exerciseLog });
-    } catch (error) {
-        console.error('Error logging exercise:', error.message);
-        res.status(500).json({ status: 'error', message: 'Failed to log exercise' });
-    }
-};
 
 export const getWorkoutLogs = async (req, res) => {
     const { workout_id } = req.params;
@@ -83,7 +21,7 @@ export const getWorkoutLogs = async (req, res) => {
             return res.status(404).json({ status: 'error', message: 'No logs found' });
         }
 
-        res.status(200).json({ status: 'success', data: logs });
+        res.status(200).json({ status: 'success',message: "workout logs fetched successfully", data: logs });
     } catch (error) {
         console.error('Error fetching workout logs:', error.message);
         res.status(500).json({ status: 'error', message: 'Failed to fetch logs' });
@@ -154,7 +92,7 @@ export const getUserLogs = async (req, res) => {
             },
         });
 
-        res.status(200).json({ status: 'success', data: logs });
+        res.status(200).json({ status: 'success', message: "user logs fetched successfully",  data: logs });
     } catch (error) {
         console.error('Error fetching user logs:', error.message);
         res.status(500).json({ status: 'error', message: 'Failed to fetch logs' });
@@ -166,6 +104,36 @@ export const getUserLogs = async (req, res) => {
 //!-----------------------------------------------
 
 
+
+export const logWorkout = async (req, res) => {
+    const {
+        user_id,
+        workout_id,
+        workout_date,  // Include workout_date from the request body
+        total_duration,
+        calories_burned,
+        performance_notes,
+    } = req.body;
+
+    try {
+        const workoutLog = await prisma.workoutlogs.create({
+            data: {
+                user_id,
+                workout_id,
+                workout_date: workout_date || new Date(), // Default to current date if not provided
+                total_duration,
+                calories_burned,
+                performance_notes,
+            },
+        });
+
+        res.status(200).json({ status: 'success', message: "Workout logged successfully", data: workoutLog });
+    } catch (error) {
+        console.error('Error logging workout:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to log workout' });
+    }
+};
+
 export const logMultipleExercises = async (req, res) => {
     const { exercises } = req.body; // Expecting an array of exercise logs
 
@@ -175,19 +143,15 @@ export const logMultipleExercises = async (req, res) => {
             data: exercises.map((exercise) => ({
                 workout_log_id: exercise.workout_log_id,
                 exercise_id: exercise.exercise_id,
-                start_time: exercise.start_time ? new Date(exercise.start_time) : null,
-                end_time: exercise.end_time ? new Date(exercise.end_time) : null,
-                exercise_duration: exercise.exercise_duration,
+                exercise_duration: exercise.exercise_duration, // No need for start_time/end_time
                 rest_duration: exercise.rest_duration,
                 skipped: exercise.skipped,
             })),
         });
 
-        res.status(200).json({ status: 'success', message:"all exercise logged", data: logs });
+        res.status(200).json({ status: 'success', message: "All exercises logged successfully", data: logs });
     } catch (error) {
         console.error('Error logging multiple exercises:', error.message);
-        res
-            .status(500)
-            .json({ status: 'error', message: 'Failed to log multiple exercises' });
+        res.status(500).json({ status: 'error', message: 'Failed to log multiple exercises' });
     }
 };

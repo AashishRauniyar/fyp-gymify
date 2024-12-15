@@ -1,55 +1,15 @@
-// import 'package:flutter/material.dart';
-// import 'package:gymify/models/api_response.dart';
-// import 'package:gymify/models/exercise_model.dart';
-// import 'package:gymify/network/http.dart';
-
-// class ExerciseProvider with ChangeNotifier {
-//   List<Exercise> _exercises = [];
-//   List<Exercise> get exercises => _exercises;
-
-//   Future<void> fetchAllExercises() async {
-//     try {
-//       final response = await httpClient.get('/exercises');
-
-//       final apiResponse = ApiResponse<List<Exercise>>.fromJson(
-//         response.data,
-//         (data) =>
-//             (data as List).map((item) => Exercise.fromJson(item)).toList(),
-//       );
-
-//       if (apiResponse.status == 'success') {
-//         _exercises = apiResponse.data;
-//         notifyListeners();
-//       } else {
-//         print('Error: ${apiResponse.message}');
-//         throw Exception(apiResponse.message.isNotEmpty
-//             ? apiResponse.message
-//             : 'Unknown error');
-//       }
-//     } catch (e) {
-//       print('Error fetching exercises: $e');
-
-//       throw Exception('Error fetching exercises: $e');
-//     }
-//   }
-// }
-
 import 'dart:io';
-import 'dart:math';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/network/http.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:gymify/services/storage_service.dart';
 import 'package:provider/provider.dart';
 
 class ExerciseProvider with ChangeNotifier {
   List<Exercise> _exercises = [];
   List<Exercise> get exercises => _exercises;
-
-  final StorageService _storageService = SharedPrefsService();
 
   // Fetch all exercises
   Future<void> fetchAllExercises() async {

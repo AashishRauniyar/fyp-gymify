@@ -1,6 +1,8 @@
-// //! working
 // import 'dart:io';
+
 // import 'package:flutter/material.dart';
+// import 'package:gymify/models/exercise_model.dart';
+// import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 // import 'package:gymify/providers/workout_provider/workout_provider.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:provider/provider.dart';
@@ -22,36 +24,27 @@
 //   final _formKey = GlobalKey<FormState>();
 //   late String workoutName;
 //   late String description;
-//   String targetMuscleGroup =
-//       ''; // Initialize with an empty string or default muscle group
-
-//   // Initialize enum fields with default values
-//   DifficultyLevel difficulty = DifficultyLevel.Easy; // Default value
-//   GoalType goalType = GoalType.Weight_Loss; // Default value
-//   FitnessLevel fitnessLevel = FitnessLevel.Beginner; // Default value
-
+//   String targetMuscleGroup = '';
+//   DifficultyLevel difficulty = DifficultyLevel.Easy;
+//   GoalType goalType = GoalType.Weight_Loss;
+//   FitnessLevel fitnessLevel = FitnessLevel.Beginner;
 //   File? workoutImage;
 
-//   // List for muscle groups
-//   final List<String> muscleGroups = [
-//     'Chest',
-//     'Upper Back',
-//     'Lower Back',
-//     'Middle Back',
-//     'Biceps',
-//     'Shoulders',
-//     'Legs',
-//     'Glutes',
-//     'Calves',
-//     'Hamstrings',
-//     'Hips',
-//     'Core (Abs)',
-//     'Traps',
-//     'Neck',
-//   ];
+//   List<Map<String, dynamic>> exercises = [];
+//   final TextEditingController repsController = TextEditingController();
+//   final TextEditingController setsController = TextEditingController();
+//   final TextEditingController durationController = TextEditingController();
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     // Fetch exercises from API
+//     Provider.of<ExerciseProvider>(context, listen: false).fetchAllExercises();
+//   }
 
 //   @override
 //   Widget build(BuildContext context) {
+//     final exerciseProvider = Provider.of<ExerciseProvider>(context);
 //     final workoutProvider = Provider.of<WorkoutProvider>(context);
 
 //     return Scaffold(
@@ -65,6 +58,7 @@
 //           child: Column(
 //             crossAxisAlignment: CrossAxisAlignment.start,
 //             children: [
+//               // Workout Name Input
 //               TextFormField(
 //                 decoration: const InputDecoration(labelText: 'Workout Name'),
 //                 onSaved: (value) => workoutName = value ?? '',
@@ -75,22 +69,34 @@
 //                   return null;
 //                 },
 //               ),
+
+//               // Description Input
 //               TextFormField(
 //                 decoration: const InputDecoration(labelText: 'Description'),
 //                 onSaved: (value) => description = value ?? '',
 //               ),
+
 //               // Target Muscle Group Dropdown
 //               DropdownButtonFormField<String>(
 //                 decoration:
 //                     const InputDecoration(labelText: 'Target Muscle Group'),
-//                 value: targetMuscleGroup.isNotEmpty ? targetMuscleGroup : null,
+//                 value: targetMuscleGroup.isNotEmpty
+//                     ? targetMuscleGroup
+//                     : null, // Only set a value if it's not empty
 //                 onChanged: (String? newValue) {
 //                   setState(() {
 //                     targetMuscleGroup = newValue!;
 //                   });
 //                 },
-//                 items:
-//                     muscleGroups.map<DropdownMenuItem<String>>((String value) {
+//                 items: [
+//                   'Chest',
+//                   'Back',
+//                   'Legs',
+//                   'Shoulders',
+//                   'Arms',
+//                   'Core',
+//                   'Lower Back'
+//                 ].map<DropdownMenuItem<String>>((String value) {
 //                   return DropdownMenuItem<String>(
 //                     value: value,
 //                     child: Text(value),
@@ -103,6 +109,7 @@
 //                   return null;
 //                 },
 //               ),
+
 //               // Difficulty Level Dropdown
 //               DropdownButtonFormField<DifficultyLevel>(
 //                 decoration:
@@ -128,6 +135,7 @@
 //                   return null;
 //                 },
 //               ),
+
 //               // Goal Type Dropdown
 //               DropdownButtonFormField<GoalType>(
 //                 decoration: const InputDecoration(labelText: 'Goal Type'),
@@ -152,6 +160,7 @@
 //                   return null;
 //                 },
 //               ),
+
 //               // Fitness Level Dropdown
 //               DropdownButtonFormField<FitnessLevel>(
 //                 decoration: const InputDecoration(labelText: 'Fitness Level'),
@@ -175,14 +184,64 @@
 //                   return null;
 //                 },
 //               ),
+
+//               // Exercise Selection from API
+//               const SizedBox(height: 20),
+//               Text('Select Exercises'),
+//               if (exerciseProvider.exercises.isEmpty)
+//                 const Center(child: CircularProgressIndicator())
+//               else
+//                 Expanded(
+//                   child: ListView.builder(
+//                     itemCount: exerciseProvider.exercises.length,
+//                     itemBuilder: (context, index) {
+//                       final exercise = exerciseProvider.exercises[index];
+//                       return ListTile(
+//                         title: Text(exercise.exerciseName),
+//                         subtitle: Text(exercise.targetMuscleGroup),
+//                         trailing: IconButton(
+//                           icon: const Icon(Icons.add),
+//                           onPressed: () {
+//                             _showRepsSetsDialog(exercise);
+//                           },
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 ),
+
+//               // Display Added Exercises
+//               const SizedBox(height: 20),
+//               Text('Added Exercises:'),
+//               Expanded(
+//                 child: ListView.builder(
+//                   itemCount: exercises.length,
+//                   itemBuilder: (context, index) {
+//                     return ListTile(
+//                       title: Text(exercises[index]['exercise'].exerciseName),
+//                       subtitle: Text(
+//                         'Reps: ${exercises[index]['reps']} | Sets: ${exercises[index]['sets']}  | Duration: ${exercises[index]['duration']}',
+//                       ),
+//                       trailing: IconButton(
+//                         icon: const Icon(Icons.delete),
+//                         onPressed: () {
+//                           setState(() {
+//                             exercises.removeAt(index);
+//                           });
+//                         },
+//                       ),
+//                     );
+//                   },
+//                 ),
+//               ),
+
+//               // Image Picker Button
 //               const SizedBox(height: 20),
 //               ElevatedButton(
 //                 onPressed: () async {
-//                   // Pick an image
 //                   final ImagePicker picker = ImagePicker();
 //                   final pickedFile =
 //                       await picker.pickImage(source: ImageSource.gallery);
-
 //                   if (pickedFile != null) {
 //                     setState(() {
 //                       workoutImage = File(pickedFile.path);
@@ -191,16 +250,20 @@
 //                 },
 //                 child: const Text('Pick Workout Image'),
 //               ),
+
+//               // Display selected workout image
 //               if (workoutImage != null)
 //                 Image.file(workoutImage!, height: 100, width: 100),
+
+//               // Create Workout Button
 //               const SizedBox(height: 20),
 //               ElevatedButton(
 //                 onPressed: () async {
-//                   // Save form and create workout
 //                   if (_formKey.currentState?.validate() ?? false) {
 //                     _formKey.currentState?.save();
 //                     try {
-//                       await workoutProvider.createWorkout(
+//                       // Create workout
+//                       final workoutId = await workoutProvider.createWorkout(
 //                         context: context,
 //                         workoutName: workoutName,
 //                         description: description,
@@ -210,9 +273,27 @@
 //                         fitnessLevel: fitnessLevel.toString().split('.').last,
 //                         workoutImage: workoutImage,
 //                       );
+
+//                       // Prepare exercises payload
+//                       final exercisesPayload = exercises.map((exerciseData) {
+//                         return {
+//                           'exercise_id': exerciseData['exercise']
+//                               .exerciseId, // Use correct field
+//                           'sets': int.parse(exerciseData['sets']),
+//                           'reps': int.parse(exerciseData['reps']),
+//                           'duration': exerciseData['duration'], // Default or fetched value
+//                         };
+//                       }).toList();
+//                       print(exercisesPayload);
+
+//                       // Add multiple exercises to the workout
+//                       await workoutProvider.addExercisesToWorkout(
+//                           context, workoutId, exercisesPayload);
+
 //                       ScaffoldMessenger.of(context).showSnackBar(
 //                         const SnackBar(
-//                             content: Text('Workout created successfully')),
+//                             content: Text(
+//                                 'Workout created and exercises added successfully')),
 //                       );
 //                     } catch (e) {
 //                       ScaffoldMessenger.of(context).showSnackBar(
@@ -229,10 +310,65 @@
 //       ),
 //     );
 //   }
+
+//   // Show dialog to input reps and sets for a selected exercise
+//   void _showRepsSetsDialog(Exercise exercise) {
+//     showDialog(
+//       context: context,
+//       builder: (context) {
+//         return AlertDialog(
+//           title: Text('Add Reps, Sets and Duration for ${exercise.exerciseName}'),
+//           content: Column(
+//             mainAxisSize: MainAxisSize.min,
+//             children: [
+//               TextField(
+//                 controller: repsController,
+//                 keyboardType: TextInputType.number,
+//                 decoration: const InputDecoration(labelText: 'Reps'),
+//               ),
+//               TextField(
+//                 controller: setsController,
+//                 keyboardType: TextInputType.number,
+//                 decoration: const InputDecoration(labelText: 'Sets'),
+//               ),
+//               TextField(
+//                 controller: durationController,
+//                 keyboardType: TextInputType.number,
+//                 decoration: const InputDecoration(labelText: 'Duration'),
+//               ),
+//             ],
+//           ),
+//           actions: [
+//             TextButton(
+//               onPressed: () {
+//                 if (repsController.text.isNotEmpty &&
+//                     setsController.text.isNotEmpty) {
+//                   setState(() {
+//                     exercises.add({
+//                       'exercise': exercise,
+//                       'reps': repsController.text,
+//                       'sets': setsController.text,
+//                       'duration': durationController.text,
+//                     });
+//                   });
+//                   Navigator.pop(context);
+//                   repsController.clear();
+//                   setsController.clear();
+//                 } else {
+//                   ScaffoldMessenger.of(context).showSnackBar(
+//                     const SnackBar(content: Text('Please enter reps, sets and duration')),
+//                   );
+//                 }
+//               },
+//               child: const Text('Add Exercise'),
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
 // }
-
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
@@ -255,9 +391,9 @@ class CreateWorkoutScreen extends StatefulWidget {
 
 class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   final _formKey = GlobalKey<FormState>();
-  late String workoutName;
-  late String description;
-  String targetMuscleGroup = '';
+  String? workoutName;
+  String? description;
+  String? targetMuscleGroup;
   DifficultyLevel difficulty = DifficultyLevel.Easy;
   GoalType goalType = GoalType.Weight_Loss;
   FitnessLevel fitnessLevel = FitnessLevel.Beginner;
@@ -267,12 +403,10 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   final TextEditingController repsController = TextEditingController();
   final TextEditingController setsController = TextEditingController();
   final TextEditingController durationController = TextEditingController();
-  
 
   @override
   void initState() {
     super.initState();
-    // Fetch exercises from API
     Provider.of<ExerciseProvider>(context, listen: false).fetchAllExercises();
   }
 
@@ -295,7 +429,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
               // Workout Name Input
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Workout Name'),
-                onSaved: (value) => workoutName = value ?? '',
+                onSaved: (value) => workoutName = value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a workout name';
@@ -303,23 +437,21 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   return null;
                 },
               ),
-
+              const SizedBox(height: 20),
               // Description Input
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Description'),
-                onSaved: (value) => description = value ?? '',
+                onSaved: (value) => description = value,
               ),
-
+              const SizedBox(height: 20),
               // Target Muscle Group Dropdown
               DropdownButtonFormField<String>(
                 decoration:
                     const InputDecoration(labelText: 'Target Muscle Group'),
-                value: targetMuscleGroup.isNotEmpty
-                    ? targetMuscleGroup
-                    : null, // Only set a value if it's not empty
+                value: targetMuscleGroup,
                 onChanged: (String? newValue) {
                   setState(() {
-                    targetMuscleGroup = newValue!;
+                    targetMuscleGroup = newValue;
                   });
                 },
                 items: [
@@ -343,7 +475,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   return null;
                 },
               ),
-
+              const SizedBox(height: 20),
               // Difficulty Level Dropdown
               DropdownButtonFormField<DifficultyLevel>(
                 decoration:
@@ -362,14 +494,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     child: Text(value.toString().split('.').last),
                   );
                 }).toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a difficulty level';
-                  }
-                  return null;
-                },
               ),
-
+              const SizedBox(height: 20),
               // Goal Type Dropdown
               DropdownButtonFormField<GoalType>(
                 decoration: const InputDecoration(labelText: 'Goal Type'),
@@ -387,14 +513,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                         value.toString().split('.').last.replaceAll('_', ' ')),
                   );
                 }).toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a goal type';
-                  }
-                  return null;
-                },
               ),
-
+              const SizedBox(height: 20),
               // Fitness Level Dropdown
               DropdownButtonFormField<FitnessLevel>(
                 decoration: const InputDecoration(labelText: 'Fitness Level'),
@@ -411,17 +531,11 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     child: Text(value.toString().split('.').last),
                   );
                 }).toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'Please select a fitness level';
-                  }
-                  return null;
-                },
               ),
-
-              // Exercise Selection from API
               const SizedBox(height: 20),
-              Text('Select Exercises'),
+              // Exercise Selection
+
+              const Text('Select Exercises'),
               if (exerciseProvider.exercises.isEmpty)
                 const Center(child: CircularProgressIndicator())
               else
@@ -446,7 +560,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
               // Display Added Exercises
               const SizedBox(height: 20),
-              Text('Added Exercises:'),
+              const Text('Added Exercises:'),
               Expanded(
                 child: ListView.builder(
                   itemCount: exercises.length,
@@ -454,7 +568,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     return ListTile(
                       title: Text(exercises[index]['exercise'].exerciseName),
                       subtitle: Text(
-                        'Reps: ${exercises[index]['reps']} | Sets: ${exercises[index]['sets']}  | Duration: ${exercises[index]['duration']}',
+                        'Reps: ${exercises[index]['reps']} | Sets: ${exercises[index]['sets']} | Duration: ${exercises[index]['duration']}',
                       ),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete),
@@ -471,7 +585,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
               // Image Picker Button
               const SizedBox(height: 20),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   final ImagePicker picker = ImagePicker();
                   final pickedFile =
@@ -482,16 +596,20 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     });
                   }
                 },
-                child: const Text('Pick Workout Image'),
+                icon: const Icon(Icons.image),
+                label: const Text('Pick Workout Image'),
               ),
 
               // Display selected workout image
               if (workoutImage != null)
-                Image.file(workoutImage!, height: 100, width: 100),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.file(workoutImage!, height: 100, width: 100),
+                ),
 
               // Create Workout Button
               const SizedBox(height: 20),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   if (_formKey.currentState?.validate() ?? false) {
                     _formKey.currentState?.save();
@@ -499,9 +617,9 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       // Create workout
                       final workoutId = await workoutProvider.createWorkout(
                         context: context,
-                        workoutName: workoutName,
-                        description: description,
-                        targetMuscleGroup: targetMuscleGroup,
+                        workoutName: workoutName!,
+                        description: description ?? '',
+                        targetMuscleGroup: targetMuscleGroup!,
                         difficulty: difficulty.toString().split('.').last,
                         goalType: goalType.toString().split('.').last,
                         fitnessLevel: fitnessLevel.toString().split('.').last,
@@ -511,16 +629,14 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       // Prepare exercises payload
                       final exercisesPayload = exercises.map((exerciseData) {
                         return {
-                          'exercise_id': exerciseData['exercise']
-                              .exerciseId, // Use correct field
+                          'exercise_id': exerciseData['exercise'].exerciseId,
                           'sets': int.parse(exerciseData['sets']),
                           'reps': int.parse(exerciseData['reps']),
-                          'duration': exerciseData['duration'], // Default or fetched value
+                          'duration': exerciseData['duration'],
                         };
                       }).toList();
-                      print(exercisesPayload);
 
-                      // Add multiple exercises to the workout
+                      // Add exercises to the workout
                       await workoutProvider.addExercisesToWorkout(
                           context, workoutId, exercisesPayload);
 
@@ -536,7 +652,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     }
                   }
                 },
-                child: const Text('Create Workout'),
+                icon: const Icon(Icons.save),
+                label: const Text('Create Workout'),
               ),
             ],
           ),
@@ -545,13 +662,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
     );
   }
 
-  // Show dialog to input reps and sets for a selected exercise
   void _showRepsSetsDialog(Exercise exercise) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Add Reps, Sets and Duration for ${exercise.exerciseName}'),
+          title:
+              Text('Add Reps, Sets, and Duration for ${exercise.exerciseName}'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -576,7 +693,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
             TextButton(
               onPressed: () {
                 if (repsController.text.isNotEmpty &&
-                    setsController.text.isNotEmpty) {
+                    setsController.text.isNotEmpty &&
+                    durationController.text.isNotEmpty) {
                   setState(() {
                     exercises.add({
                       'exercise': exercise,
@@ -588,9 +706,11 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                   Navigator.pop(context);
                   repsController.clear();
                   setsController.clear();
+                  durationController.clear();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter reps, sets and duration')),
+                    const SnackBar(
+                        content: Text('Please enter reps, sets, and duration')),
                   );
                 }
               },

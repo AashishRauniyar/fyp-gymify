@@ -6,7 +6,7 @@ import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
 import 'package:gymify/screens/main_screens/home_screen.dart';
 import 'package:gymify/screens/main_screens/profile_screen.dart';
-import 'package:gymify/screens/main_screens/workout_screen.dart';
+import 'package:gymify/screens/main_screens/workout_screens/workout_screen.dart';
 import 'package:gymify/screens/splash_screen/splash_sreen.dart';
 import 'package:gymify/screens/welcome/welcome_screen.dart';
 import 'package:gymify/screens/authentication/login.dart';

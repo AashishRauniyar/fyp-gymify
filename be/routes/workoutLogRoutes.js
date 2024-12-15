@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { logWorkout, logExercise, getWorkoutLogs, getUserLogs, updateExerciseLog, deleteLog, logMultipleExercises } from '../controllers/workoutLogController.js';
+import { logWorkout,  getWorkoutLogs, getUserLogs, updateExerciseLog, deleteLog, logMultipleExercises } from '../controllers/workoutLogController.js';
 
 export const workoutLogRouter = express.Router();
 
@@ -9,8 +9,7 @@ export const workoutLogRouter = express.Router();
 // Log a workout (accessible to authenticated users)
 workoutLogRouter.post('/workoutlogs', authenticate, logWorkout);
 
-// Log an individual exercise (accessible to authenticated users)
-workoutLogRouter.post('/workoutexerciseslogs', authenticate, logExercise);
+
 
 // Get logs for a specific workout (accessible to authenticated users)
 workoutLogRouter.get('/workoutlogs/:workout_id', authenticate, getWorkoutLogs);

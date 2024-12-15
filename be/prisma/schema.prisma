@@ -248,8 +248,6 @@ model workoutexerciseslogs {
   log_id            Int          @id @default(autoincrement())
   workout_log_id    Int?
   exercise_id       Int?
-  start_time        DateTime?    @db.Time(6)
-  end_time          DateTime?    @db.Time(6)
   exercise_duration Decimal?     @db.Decimal(5, 2) // Store duration in minutes (calculated in the app)
   rest_duration     Decimal?     @db.Decimal(5, 2) // Optional rest duration in minutes
   skipped           Boolean?     @default(false)
@@ -262,8 +260,6 @@ model workoutlogs {
   user_id              Int?
   workout_id           Int?
   workout_date         DateTime?              @default(now()) @db.Timestamp(6)
-  start_time           DateTime?              @db.Time(6)
-  end_time             DateTime?              @db.Time(6)
   total_duration       Decimal?               @db.Decimal(5, 2)
   calories_burned      Decimal?               @db.Decimal(10, 2)
   performance_notes    String?
