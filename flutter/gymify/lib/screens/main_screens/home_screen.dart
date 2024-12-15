@@ -17,14 +17,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body:  Column(
+      body: Column(
         children: [
           Text("Welcome to Gymify"),
           Text("Your personal fitness trainer"),
           // ink well for showing exercise
           InkWell(
             onTap: () {
-              context.go('/exercises');
+              context.push('/exercises'); // Adds to the stack
             },
             child: Container(
               padding: const EdgeInsets.all(8.0),
@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           // ink well for creating exercise
           InkWell(
             onTap: () {
-              context.go('/createExercise');
+              context.push('/createExercise');
             },
             child: Container(
               padding: const EdgeInsets.all(8.0),
@@ -56,8 +56,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(color: Colors.white),
               ),
             ),
+          ),
+          InkWell(
+            onTap: () {
+              // go to create workout screen
+              context.push('/createWorkout');
+            },
+            child: const Text(
+              "Create Workout",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 16,
+                decoration: TextDecoration.underline,
+              ),
+            ),
           )
-
         ],
       ),
     );

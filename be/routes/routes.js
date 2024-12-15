@@ -6,6 +6,7 @@ import { exerciseRouter } from './exerciseRoutes.js';
 import { workoutRouter } from './workoutRoutes.js';
 import { customWorkoutRouter } from './customWorkoutRoutes.js';
 import { personalBestRouter } from './personalBestRoutes.js';
+import { workoutLogRouter } from './workoutLogRoutes.js';
 
 const mainRouter = express.Router();
 
@@ -17,5 +18,6 @@ mainRouter.use('/api', exerciseRouter);
 mainRouter.use('/api', workoutRouter);
 mainRouter.use('/api', customWorkoutRouter);
 mainRouter.use('/api', personalBestRouter);
+mainRouter.use('/api', workoutLogRouter)
 
 export default mainRouter;

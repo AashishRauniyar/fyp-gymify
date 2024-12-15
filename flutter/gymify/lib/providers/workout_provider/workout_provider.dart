@@ -13,6 +13,12 @@ class WorkoutProvider with ChangeNotifier {
   List<Workout> _workouts = [];
   List<Workout> get workouts => _workouts;
 
+  bool _hasError = false;
+  bool get hasError => _hasError;
+
+  Workout? _selectedWorkout;
+  Workout? get selectedWorkout => _selectedWorkout;
+
   final StorageService _storageService = SharedPrefsService();
 
   // Fetch all workouts
@@ -42,7 +48,6 @@ class WorkoutProvider with ChangeNotifier {
   }
 
 //----------------------------------------------------------------
-
 
 //TODO: to handle unique name for workout
   // Create a new workout
@@ -123,7 +128,6 @@ class WorkoutProvider with ChangeNotifier {
 
   //----------------------------------------------------------------------------
 
-
   Future<void> addExercisesToWorkout(BuildContext context, int workoutId,
       List<Map<String, dynamic>> exercises) async {
     try {
@@ -154,5 +158,32 @@ class WorkoutProvider with ChangeNotifier {
       print('Error adding exercises to workout: $e');
       throw Exception('Error adding exercises: $e');
     }
+  }
+
+  Future<void> fetchWorkoutById(int workoutId) async {
+    _hasError = false; // Reset error state
+    try {
+      final response = await httpClient.get('/workouts/$workoutId');
+      final apiResponse = ApiResponse<Workout>.fromJson(
+        response.data,
+        (data) => Workout.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (apiResponse.status == 'success') {
+        _selectedWorkout = apiResponse.data;
+      } else {
+        _hasError = true;
+      }
+    } catch (e) {
+      _hasError = true;
+      debugPrint('[WorkoutProvider] Error fetching workout by ID: $e');
+    }
+    notifyListeners();
+  }
+
+  // Reset the selected workout (optional)
+  void clearSelectedWorkout() {
+    _selectedWorkout = null;
+    notifyListeners();
   }
 }

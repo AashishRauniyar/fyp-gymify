@@ -3,254 +3,191 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 
-// export const startWorkout = async (req, res) => {
-//     try {
-//         const { user_id } = req.user;
-//         let { workout_id } = req.body;
+export const logWorkout = async (req, res) => {
+    const {
+        user_id,
+        workout_id,
+        start_time,
+        end_time,
+        total_duration,
+        calories_burned,
+        performance_notes,
+    } = req.body;
 
-//         // Validate the workout ID
-//         if (!workout_id) {
-//             return res.status(400).json({ status: 'failure', message: 'Workout ID is required' });
-//         }
-
-//         // Convert workout_id to integer if it's a string
-//         workout_id = parseInt(workout_id, 10);
-
-//         if (isNaN(workout_id)) {
-//             return res.status(400).json({ status: 'failure', message: 'Invalid Workout ID' });
-//         }
-
-//         // Check if the workout exists
-//         const workout = await prisma.workouts.findUnique({ where: { workout_id } });
-//         if (!workout) {
-//             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
-//         }
-
-//         // Create a new workout log
-//         const workoutLog = await prisma.workoutlogs.create({
-//             data: {
-//                 user_id,
-//                 workout_id,
-//                 workout_date: new Date(),
-//                 start_time: new Date(),
-//             },
-//         });
-
-//         res.status(201).json({ status: 'success', message: 'Workout started successfully', workoutLog });
-//     } catch (error) {
-//         console.error('Error starting workout:', error);
-//         res.status(500).json({ status: 'failure', message: 'Server error' });
-//     }
-// };
-
-
-
-
-// export const logExercise = async (req, res) => {
-//     try {
-//         const { workout_log_id, exercise_id, duration, skipped } = req.body;
-
-//         // Validate required fields
-//         if (!workout_log_id || !exercise_id) {
-//             return res.status(400).json({ status: 'failure', message: 'Workout log ID and exercise ID are required' });
-//         }
-
-//         // Parse and validate duration
-//         const parsedDuration = parseFloat(duration);
-//         if (isNaN(parsedDuration)) {
-//             return res.status(400).json({ status: 'failure', message: 'Invalid exercise duration' });
-//         }
-
-//         // Check if the workout log exists
-//         const workoutLog = await prisma.workoutlogs.findUnique({
-//             where: { log_id: workout_log_id },
-//         });
-//         if (!workoutLog) {
-//             return res.status(404).json({ status: 'failure', message: 'Workout log not found' });
-//         }
-
-//         // Check if the exercise exists
-//         const exercise = await prisma.exercises.findUnique({
-//             where: { exercise_id },
-//         });
-//         if (!exercise) {
-//             return res.status(404).json({ status: 'failure', message: 'Exercise not found' });
-//         }
-
-//         // Create a new exercise log
-//         const exerciseLog = await prisma.workoutexerciseslogs.create({
-//             data: {
-//                 workout_log_id,
-//                 exercise_id,
-//                 start_time: new Date(),
-//                 exercise_duration: parsedDuration,
-//                 rest_duration: skipped ? null : 60, // Default rest duration is 60s
-//                 skipped,
-//             },
-//         });
-
-//         res.status(201).json({ status: 'success', message: 'Exercise logged successfully', exerciseLog });
-//     } catch (error) {
-//         console.error('Error logging exercise:', error);
-//         res.status(500).json({ status: 'failure', message: 'Server error' });
-//     }
-// };
-
-
-
-// export const finishWorkout = async (req, res) => {
-//     try {
-//         const { workout_log_id, calories_burned, performance_notes } = req.body;
-
-//         // Validate required fields
-//         if (!workout_log_id) {
-//             return res.status(400).json({ status: 'failure', message: 'Workout log ID is required' });
-//         }
-
-//         // Check if the workout log exists
-//         const workoutLog = await prisma.workoutlogs.findUnique({ where: { log_id: workout_log_id } });
-//         if (!workoutLog) {
-//             return res.status(404).json({ status: 'failure', message: 'Workout log not found' });
-//         }
-
-//         // Update the workout log with end time and performance details
-//         const updatedLog = await prisma.workoutlogs.update({
-//             where: { log_id: workout_log_id },
-//             data: {
-//                 end_time: new Date(),
-//                 total_duration: new Date().getTime() - new Date(workoutLog.start_time).getTime(),
-//                 calories_burned,
-//                 performance_notes
-//             }
-//         });
-
-//         res.status(200).json({ status: 'success', message: 'Workout finished successfully', updatedLog });
-//     } catch (error) {
-//         console.error('Error finishing workout:', error);
-//         res.status(500).json({ status: 'failure', message: 'Server error' });
-//     }
-// };
-
-export const startWorkout = async (req, res) => {
     try {
-        const { user_id } = req.user;
-        const { workout_id, workout_date } = req.body;
-
-        if (!user_id) {
-            return res.status(400).json({ status: 'failure', message: 'User ID is required' });
-        }
-
-        if (!workout_id) {
-            return res.status(400).json({ status: 'failure', message: 'Workout ID is required' });
-        }
-
-        // Validate workout_date is provided
-        if (!workout_date) {
-            return res.status(400).json({ status: 'failure', message: 'Workout date is required' });
-        }
-
-        const workout = await prisma.workouts.findUnique({ where: { workout_id } });
-        if (!workout) {
-            return res.status(404).json({ status: 'failure', message: 'Workout not found' });
-        }
-
         const workoutLog = await prisma.workoutlogs.create({
             data: {
                 user_id,
                 workout_id,
-                workout_date: new Date(workout_date),  // Use the provided workout_date
-                start_time: new Date(), // Start time is the current timestamp
+                start_time: start_time ? new Date(start_time) : null,
+                end_time: end_time ? new Date(end_time) : null,
+                total_duration,
+                calories_burned,
+                performance_notes,
             },
         });
 
-        res.status(201).json({ status: 'success', message: 'Workout started', workoutLog });
+        res.status(200).json({ status: 'success', message: "workout logged succesfully", data: workoutLog });
     } catch (error) {
-        console.error('Error starting workout:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
+        console.error('Error logging workout:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to log workout' });
     }
 };
 
 
-
 export const logExercise = async (req, res) => {
+    const {
+        workout_log_id,
+        exercise_id,
+        start_time,
+        end_time,
+        exercise_duration,
+        rest_duration,
+        skipped,
+    } = req.body;
+
     try {
-        const { workout_log_id, exercise_id, duration, skipped } = req.body;
-
-        if (!workout_log_id || !exercise_id) {
-            return res.status(400).json({ status: 'failure', message: 'Workout log ID and exercise ID are required' });
-        }
-
-        const parsedDuration = parseFloat(duration);
-        if (isNaN(parsedDuration) || parsedDuration <= 0) {
-            return res.status(400).json({ status: 'failure', message: 'Invalid exercise duration' });
-        }
-
-        const workoutLog = await prisma.workoutlogs.findUnique({ where: { log_id: workout_log_id } });
-        if (!workoutLog) {
-            return res.status(404).json({ status: 'failure', message: 'Workout log not found' });
-        }
-
-        const exercise = await prisma.exercises.findUnique({ where: { exercise_id } });
-        if (!exercise) {
-            return res.status(404).json({ status: 'failure', message: 'Exercise not found' });
-        }
-
-        // Use current time as start time for the exercise log
         const exerciseLog = await prisma.workoutexerciseslogs.create({
             data: {
                 workout_log_id,
                 exercise_id,
-                start_time: new Date(),
-                exercise_duration: parsedDuration,
-                rest_duration: skipped ? 0 : 60,  // Default rest duration is 60s if not skipped
-                skipped: skipped || false,  // If skipped is not provided, default to false
+                start_time: start_time ? new Date(start_time) : null,
+                end_time: end_time ? new Date(end_time) : null,
+                exercise_duration,
+                rest_duration,
+                skipped,
             },
         });
 
-        res.status(201).json({ status: 'success', message: 'Exercise logged', exerciseLog });
+        res.status(200).json({ status: 'success', message: "exercise logged succesfully", data: exerciseLog });
     } catch (error) {
-        console.error('Error logging exercise:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
+        console.error('Error logging exercise:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to log exercise' });
     }
 };
 
+export const getWorkoutLogs = async (req, res) => {
+    const { workout_id } = req.params;
 
-export const finishWorkout = async (req, res) => {
     try {
-        const { workout_log_id, calories_burned, performance_notes } = req.body;
-
-        if (!workout_log_id) {
-            return res.status(400).json({ status: 'failure', message: 'Workout log ID is required' });
-        }
-
-        const workoutLog = await prisma.workoutlogs.findUnique({ where: { log_id: workout_log_id } });
-        if (!workoutLog) {
-            return res.status(404).json({ status: 'failure', message: 'Workout log not found' });
-        }
-
-        const parsedCaloriesBurned = parseFloat(calories_burned) || 0;
-
-        // Calculate the total duration in minutes
-        const endTime = new Date();
-        const startTime = new Date(workoutLog.start_time);
-        const totalDuration = (endTime - startTime) / 60000;  // Duration in minutes
-
-        const updatedLog = await prisma.workoutlogs.update({
-            where: { log_id: workout_log_id },
-            data: {
-                end_time: endTime,
-                total_duration: totalDuration,
-                calories_burned: parsedCaloriesBurned,
-                performance_notes: performance_notes || '',  // Default to empty string if no performance notes
+        const logs = await prisma.workoutlogs.findMany({
+            where: { workout_id: parseInt(workout_id) },
+            include: {
+                workoutexerciseslogs: {
+                    include: { exercises: true },
+                },
             },
         });
 
-        res.status(200).json({ status: 'success', message: 'Workout finished', updatedLog });
+        if (!logs) {
+            return res.status(404).json({ status: 'error', message: 'No logs found' });
+        }
+
+        res.status(200).json({ status: 'success', data: logs });
     } catch (error) {
-        console.error('Error finishing workout:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
+        console.error('Error fetching workout logs:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to fetch logs' });
     }
 };
 
 
 
+export const deleteLog = async (req, res) => {
+    const { log_id, type } = req.params; // `type` can be 'workout' or 'exercise'
+
+    try {
+        if (type === 'workout') {
+            await prisma.workoutlogs.delete({
+                where: { log_id: parseInt(log_id) },
+            });
+        } else if (type === 'exercise') {
+            await prisma.workoutexerciseslogs.delete({
+                where: { log_id: parseInt(log_id) },
+            });
+        } else {
+            return res.status(400).json({ status: 'error', message: 'Invalid log type' });
+        }
+
+        res.status(200).json({ status: 'success', message: 'Log deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting log:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to delete log' });
+    }
+};
+
+
+
+export const updateExerciseLog = async (req, res) => {
+    const { log_id } = req.params;
+    const { start_time, end_time, exercise_duration, rest_duration, skipped } = req.body;
+
+    try {
+        const updatedLog = await prisma.workoutexerciseslogs.update({
+            where: { log_id: parseInt(log_id) },
+            data: {
+                start_time: start_time ? new Date(start_time) : null,
+                end_time: end_time ? new Date(end_time) : null,
+                exercise_duration,
+                rest_duration,
+                skipped,
+            },
+        });
+
+        res.status(200).json({ status: 'success', data: updatedLog });
+    } catch (error) {
+        console.error('Error updating exercise log:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to update log' });
+    }
+};
+
+
+export const getUserLogs = async (req, res) => {
+    const { user_id } = req.params;
+
+    try {
+        const logs = await prisma.workoutlogs.findMany({
+            where: { user_id: parseInt(user_id) },
+            include: {
+                workoutexerciseslogs: {
+                    include: { exercises: true },
+                },
+            },
+        });
+
+        res.status(200).json({ status: 'success', data: logs });
+    } catch (error) {
+        console.error('Error fetching user logs:', error.message);
+        res.status(500).json({ status: 'error', message: 'Failed to fetch logs' });
+    }
+};
+
+
+
+//!-----------------------------------------------
+
+
+export const logMultipleExercises = async (req, res) => {
+    const { exercises } = req.body; // Expecting an array of exercise logs
+
+    try {
+        // Use Prisma's `createMany` to insert multiple exercise logs
+        const logs = await prisma.workoutexerciseslogs.createMany({
+            data: exercises.map((exercise) => ({
+                workout_log_id: exercise.workout_log_id,
+                exercise_id: exercise.exercise_id,
+                start_time: exercise.start_time ? new Date(exercise.start_time) : null,
+                end_time: exercise.end_time ? new Date(exercise.end_time) : null,
+                exercise_duration: exercise.exercise_duration,
+                rest_duration: exercise.rest_duration,
+                skipped: exercise.skipped,
+            })),
+        });
+
+        res.status(200).json({ status: 'success', message:"all exercise logged", data: logs });
+    } catch (error) {
+        console.error('Error logging multiple exercises:', error.message);
+        res
+            .status(500)
+            .json({ status: 'error', message: 'Failed to log multiple exercises' });
+    }
+};

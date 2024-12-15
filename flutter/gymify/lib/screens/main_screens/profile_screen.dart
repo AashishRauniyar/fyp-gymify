@@ -130,20 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Text("User ID: $userId"),
                 Text("Role: $role"),
-                InkWell(
-                  onTap: () {
-                    // go to create workout screen
-                    context.go('/createWorkout');
-                  },
-                  child: const Text(
-                    "Create Workout",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: 16,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                )
+                
               ],
             ),
             const SizedBox(height: 20),

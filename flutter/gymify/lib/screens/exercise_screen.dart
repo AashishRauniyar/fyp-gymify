@@ -135,8 +135,10 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
+import 'package:gymify/routes/route_config.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -165,6 +167,12 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         title: const Text('Exercises',
             style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.greenAccent,
+        leading: IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
       ),
       body: Consumer<ExerciseProvider>(
         builder: (context, exerciseProvider, child) {

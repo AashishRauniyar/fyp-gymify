@@ -81,7 +81,7 @@
 //   Map<String, dynamic> toJson() => _$WorkoutexerciseToJson(this);
 // }
 
-
+import 'package:gymify/models/exercise_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'workout_model.g.dart';
@@ -124,8 +124,8 @@ class Workout {
   @JsonKey(name: "updated_at")
   final DateTime updatedAt;
 
-  @JsonKey(name: "workoutexercises", defaultValue: [])
-  final List<Workoutexercise> workoutexercises;
+  @JsonKey(name: "workoutexercises")
+  final List<Workoutexercise>? workoutexercises;
 
   Workout({
     required this.workoutId,
@@ -140,7 +140,7 @@ class Workout {
     required this.trainerId,
     required this.createdAt,
     required this.updatedAt,
-    this.workoutexercises = const [],
+    this.workoutexercises,
   });
 
   factory Workout.fromJson(Map<String, dynamic> json) =>
@@ -166,17 +166,20 @@ class Workoutexercise {
   @JsonKey(name: "reps")
   final int reps;
 
-  @JsonKey(name: "duration", defaultValue: "0")
-  final String duration; // Default to "0" if null
+  @JsonKey(name: "duration")
+  final String duration;
 
-  Workoutexercise({
-    required this.workoutExerciseId,
-    required this.workoutId,
-    required this.exerciseId,
-    required this.sets,
-    required this.reps,
-    this.duration = "0",
-  });
+  @JsonKey(name: "exercises")
+  final Exercise? exercises;
+
+  Workoutexercise(
+      {required this.workoutExerciseId,
+      required this.workoutId,
+      required this.exerciseId,
+      required this.sets,
+      required this.reps,
+      required this.duration,
+      this.exercises});
 
   factory Workoutexercise.fromJson(Map<String, dynamic> json) =>
       _$WorkoutexerciseFromJson(json);

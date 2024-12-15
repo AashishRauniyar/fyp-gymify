@@ -19,10 +19,9 @@ Workout _$WorkoutFromJson(Map<String, dynamic> json) => Workout(
       trainerId: (json['trainer_id'] as num).toInt(),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
-      workoutexercises: (json['workoutexercises'] as List<dynamic>?)
-              ?.map((e) => Workoutexercise.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+      workoutexercises: (json['workoutexercises'] as List<dynamic>)
+          .map((e) => Workoutexercise.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$WorkoutToJson(Workout instance) => <String, dynamic>{
@@ -48,7 +47,10 @@ Workoutexercise _$WorkoutexerciseFromJson(Map<String, dynamic> json) =>
       exerciseId: (json['exercise_id'] as num).toInt(),
       sets: (json['sets'] as num).toInt(),
       reps: (json['reps'] as num).toInt(),
-      duration: json['duration'] as String? ?? '0',
+      duration: json['duration'] as String,
+      exercises: json['exercises'] == null
+          ? null
+          : Exercise.fromJson(json['exercises'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$WorkoutexerciseToJson(Workoutexercise instance) =>
@@ -59,4 +61,5 @@ Map<String, dynamic> _$WorkoutexerciseToJson(Workoutexercise instance) =>
       'sets': instance.sets,
       'reps': instance.reps,
       'duration': instance.duration,
+      'exercises': instance.exercises,
     };
