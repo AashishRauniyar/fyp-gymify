@@ -10,7 +10,7 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Color(0xFF2E3440) ,
-      backgroundColor: CustomColors.white,
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -43,7 +43,7 @@ class WelcomeScreen extends StatelessWidget {
                 CustomButton(
                     text: "Join Now",
                     // use 2E3440 by doing Color(0xFF2E3440)
-                    textColor: const Color(0xFF2E3440),
+                    textColor: Colors.white,
                     color: CustomColors.primary,
                     onPressed: () {
                       context.go('/register');

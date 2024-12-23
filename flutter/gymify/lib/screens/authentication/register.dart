@@ -298,7 +298,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String _selectedGender = 'Male';
   String _selectedRole = 'Member';
   String _selectedFitnessLevel = 'Beginner';
-  String _selectedGoalType = 'Muscle Gain';
+  String _selectedGoalType = 'Muscle_Gain';
 
   File? _profilePicture;
   final ImagePicker _picker = ImagePicker();
@@ -512,7 +512,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 8),
               DropdownButtonFormField(
                 value: _selectedGoalType,
-                items: ['Endurance', 'Muscle Gain', 'Maintain Weight']
+                items: ['Endurance', 'Muscle_Gain', 'Maintain Weight']
                     .map((goal) => DropdownMenuItem(
                           value: goal,
                           child: Text(goal),

@@ -1,29 +1,26 @@
 // import 'package:flutter/material.dart';
-// import 'package:flutter_login/flutter_login.dart';
-// import 'package:gymify/services/login_service.dart';
+// import 'package:flutter_login/flutter_login.dart'; // Import the provider
 // import 'package:go_router/go_router.dart';
+// import 'package:gymify/providers/auth_provider/auth_provider.dart';
+// import 'package:provider/provider.dart'; // Import provider package
 
 // class LoginScreen extends StatelessWidget {
 //   LoginScreen({super.key});
 
-//   // Create an instance of LoginService
-//   final LoginService _loginService = LoginService();
-
 //   // Login logic
-//   Future<String?> _authUser(LoginData data) async {
+//   Future<String?> _authUser(LoginData data, BuildContext context) async {
 //     try {
-//       // Attempt login with the email and password
-//       final response = await _loginService.login(
-//         email: data.name,
-//         password: data.password,
-//       );
+//       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-//       if (response['success'] == true) {
+//       // Attempt login with the email and password
+//       final response = await authProvider.login(data.name, data.password);
+
+//       if (response) {
 //         // Login success, navigate to home screen
 //         return null; // Returning null indicates success in FlutterLogin
 //       } else {
 //         // Return error message for display
-//         return response['message'];
+//         return 'Login failed. Please try again.';
 //       }
 //     } catch (error) {
 //       return 'An unexpected error occurred. Please try again.';
@@ -47,36 +44,44 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       body: FlutterLogin(
-//         title: 'GYMIFY',
-//         theme: LoginTheme(
-//           primaryColor: const Color.fromARGB(255, 30, 90, 232),
-//           accentColor: Colors.green,
-//           errorColor: Colors.red,
-//           logoWidth: 2,
-//           titleStyle: const TextStyle(
-//             color: Colors.white,
-//             fontFamily: 'Quicksand',
-//             letterSpacing: 4,
-//             fontSize: 28,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//         onLogin: _authUser,
-//         onRecoverPassword: _recoverPassword,
-//         onSignup: _signupUser,
-//         onSubmitAnimationCompleted: () {
-//           // Navigate to home screen after successful login
-//           context.go(
-//               '/home'); // This should work now with the updated GoRouter routing
+//       body: Consumer<AuthProvider>(
+//         // Listen to AuthProvider for changes
+//         builder: (context, authProvider, child) {
+//           return FlutterLogin(
+//             title: 'GYMIFY',
+//             theme: LoginTheme(
+//               primaryColor: const Color(0xFF2E3440),
+//               accentColor: const Color(0xFF2E3440),
+//               errorColor: Colors.red,
+//               logoWidth: 2,
+//               titleStyle: const TextStyle(
+//                 color: Colors.white,
+//                 fontFamily: 'Quicksand',
+//                 letterSpacing: 4,
+//                 fontSize: 28,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             onLogin: (data) => _authUser(data, context),
+//             onRecoverPassword: _recoverPassword,
+//             onSignup: _signupUser,
+//             onSubmitAnimationCompleted: () {
+//               // Check if logged in before navigating
+//               if (authProvider.isLoggedIn) {
+//                 context.go('/home'); // Navigate if logged in
+//               }
+//             },
+//           );
 //         },
 //       ),
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart'; // Import the provider
 import 'package:go_router/go_router.dart';
+import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:provider/provider.dart'; // Import provider package
 
@@ -93,12 +98,32 @@ class LoginScreen extends StatelessWidget {
 
       if (response) {
         // Login success, navigate to home screen
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Login successful! Welcome back, ${data.name}.'),
+            backgroundColor: Colors.green,
+          ),
+        );
         return null; // Returning null indicates success in FlutterLogin
       } else {
         // Return error message for display
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Login failed. Please check your credentials and try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
         return 'Login failed. Please try again.';
       }
     } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('An unexpected error occurred. Please try again later.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return 'An unexpected error occurred. Please try again.';
     }
   }
@@ -126,8 +151,8 @@ class LoginScreen extends StatelessWidget {
           return FlutterLogin(
             title: 'GYMIFY',
             theme: LoginTheme(
-              primaryColor: const Color(0xFF2E3440),
-              accentColor: const Color(0xFF2E3440),
+              primaryColor: CustomColors.primary,
+              accentColor: CustomColors.primary,
               errorColor: Colors.red,
               logoWidth: 2,
               titleStyle: const TextStyle(

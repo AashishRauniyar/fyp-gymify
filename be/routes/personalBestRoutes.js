@@ -1,13 +1,22 @@
 import express from 'express';
-
 import { authenticate } from '../middleware/authMiddleware.js';
-import { getUserPersonalBestHistory, logPersonalBest } from '../controllers/personal_best_controller/personalBestController.js';
+import {
+    validatePersonalBest,
+    logPersonalBest,
+    getUserPersonalBestHistory,
+} from '../controllers/personal_best_controller/personalBestController.js';
 
-export const personalBestRouter = express.Router(); 
+export const personalBestRouter = express.Router();
 
+personalBestRouter.post(
+    '/personal_best',
+    authenticate,
+    validatePersonalBest,
+    logPersonalBest
+);
 
-
-personalBestRouter.post('/personal_best', authenticate, logPersonalBest);
-
-
-personalBestRouter.get('/user/:userId/history/:exercise',authenticate, getUserPersonalBestHistory);
+personalBestRouter.get(
+    '/user/:userId/history/:exerciseId',
+    authenticate,
+    getUserPersonalBestHistory
+);

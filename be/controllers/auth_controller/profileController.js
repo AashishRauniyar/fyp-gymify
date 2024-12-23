@@ -18,7 +18,7 @@ export const getProfile = async (req, res) => {
                 email: true,
                 phone_number: true,
                 address: true,
-                age: true,
+                birthdate: true,
                 height: true,
                 current_weight: true,
                 gender: true,
@@ -60,7 +60,7 @@ export const updateProfile = async (req, res) => {
             full_name,
             phone_number,
             address,
-            age,
+            
             height,
             current_weight,
             fitness_level,
@@ -73,7 +73,6 @@ export const updateProfile = async (req, res) => {
             !full_name &&
             !phone_number &&
             !address &&
-            !age &&
             !height &&
             !current_weight &&
             !fitness_level &&
@@ -90,7 +89,6 @@ export const updateProfile = async (req, res) => {
                 full_name,
                 phone_number,
                 address,
-                age,
                 height,
                 current_weight,
                 fitness_level,
@@ -105,7 +103,6 @@ export const updateProfile = async (req, res) => {
                 email: true,
                 phone_number: true,
                 address: true,
-                age: true,
                 height: true,
                 current_weight: true,
                 gender: true,
