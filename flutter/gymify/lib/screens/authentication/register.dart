@@ -266,6 +266,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/services/register_service.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart'; // For date formatting
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -379,7 +380,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context);
+            context.go('/welcome');
           },
         ),
       ),

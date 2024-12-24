@@ -1,4 +1,4 @@
-import { forgetPassword, login, register, resetPassword } from "../controllers/auth_controller/authController.js";
+import { forgetPassword, login, register, resetPassword, checkUsername, checkPhoneNumber, checkEmail } from "../controllers/auth_controller/authController.js";
 import upload from "../middleware/multerMiddleware.js";
 import express from 'express';
 
@@ -316,11 +316,18 @@ const authRouter = express.Router();
  */
 
 
+// Routes for user validation
+authRouter.post('/check-username', checkUsername);
+authRouter.post('/check-email', checkEmail);
+authRouter.post('/check-phone-number', checkPhoneNumber);
 
 authRouter.post('/register',upload.single('profile_image'), register);
 authRouter.post('/login', login);
 authRouter.post('/forget-password', forgetPassword );
 authRouter.post('/reset-password', resetPassword);
+
+
+
 
 
 export default authRouter;

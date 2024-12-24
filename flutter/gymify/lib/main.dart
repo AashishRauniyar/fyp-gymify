@@ -38,6 +38,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
+import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
 import 'package:gymify/colors/custom_colors.dart';
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ExerciseProvider()),
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => WorkoutLogProvider()),
+        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
@@ -110,7 +112,7 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               textStyle: GoogleFonts.poppins(
-                fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),

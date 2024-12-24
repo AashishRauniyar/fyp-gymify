@@ -331,6 +331,9 @@ export const login = async (req, res) => {
     }
 };
 
+
+
+
 // Forget Password function with express-validator
 export const forgetPassword = async (req, res) => {
     try {
@@ -452,3 +455,74 @@ export const resetPassword = async (req, res) => {
         res.status(500).json({ error: "Internal server error" });
     }
 };
+
+
+//!------------------------------------------------------------------------------------------------------------
+
+
+// api to check username already exists or not
+
+export const checkUsername = async (req, res) => {
+
+    try {
+        const { user_name } = req.body;
+
+        const user = await prisma.users.findUnique({ where: { user_name } });
+
+        if (user) {
+            return res.status(200).json({ status: 'failure', message: 'User with this user name already exists' });
+        }
+
+        res.status(200).json({ status: 'success', message: 'User with this user name does not exist' });
+
+    } catch (error) {
+        console.error('Error during checking username:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+}
+
+
+
+// api to check email already exists or not
+
+export const checkEmail = async (req, res) => {
+
+    try {
+        const { email } = req.body;
+
+        const user = await prisma.users.findUnique({ where: { email } });
+
+        if (user) {
+            return res.status(200).json({ status: 'failure', message: 'User with this email already exists' });
+        }
+
+        res.status(200).json({ status: 'success', message: 'User with this email does not exist' });
+
+    } catch (error) {
+        console.error('Error during checking email:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+}
+
+// api to check phone number already exists or not
+
+export const checkPhoneNumber = async (req, res) => {
+
+    try {
+        const { phone_number } = req.body;
+
+        const user = await prisma.users.findUnique({ where: { phone_number } });
+
+        if (user) {
+            return res.status(200).json({ status: 'failure', message: 'User with this phone number already exists' });
+        }
+
+        res.status(200).json({ status: 'success', message: 'User with this phone number does not exist' });
+        
+    } catch (error) {
+        console.error('Error during checking phone number:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });       
+        
+    }
+
+}

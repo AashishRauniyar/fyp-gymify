@@ -83,7 +83,7 @@ import 'package:flutter_login/flutter_login.dart'; // Import the provider
 import 'package:go_router/go_router.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:provider/provider.dart'; // Import provider package
+import 'package:provider/provider.dart'; // Import provider package;
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -136,9 +136,10 @@ class LoginScreen extends StatelessWidget {
   }
 
   // Placeholder for sign-up logic
-  Future<String?> _signupUser(SignupData data) async {
+  Future<String?> _signupUser(SignupData data, BuildContext context) async {
     // Simulate user signup (Replace with real logic when API is ready)
     await Future.delayed(const Duration(seconds: 2));
+    context.go('/register');
     return 'Signup is not implemented yet.';
   }
 
@@ -165,7 +166,7 @@ class LoginScreen extends StatelessWidget {
             ),
             onLogin: (data) => _authUser(data, context),
             onRecoverPassword: _recoverPassword,
-            onSignup: _signupUser,
+            onSignup: (data) => _signupUser(data, context),
             onSubmitAnimationCompleted: () {
               // Check if logged in before navigating
               if (authProvider.isLoggedIn) {

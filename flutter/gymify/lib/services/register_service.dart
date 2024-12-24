@@ -85,6 +85,36 @@ import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:flutter/material.dart';
 
 class AuthService {
+  Future<bool> checkUsername(String username) async {
+    try {
+      final response = await httpClient
+          .post('/auth/check-username', data: {'user_name': username});
+      return response.data['status'] == 'success';
+    } catch (e) {
+      throw 'Error checking username: $e';
+    }
+  }
+
+  Future<bool> checkEmail(String email) async {
+    try {
+      final response =
+          await httpClient.post('/auth/check-email', data: {'email': email});
+      return response.data['status'] == 'success';
+    } catch (e) {
+      throw 'Error checking email: $e';
+    }
+  }
+
+  Future<bool> checkPhoneNumber(String phoneNumber) async {
+    try {
+      final response = await httpClient.post('/auth/check-phone-number',
+          data: {'phone_number': phoneNumber});
+      return response.data['status'] == 'success';
+    } catch (e) {
+      throw 'Error checking phone number: $e';
+    }
+  }
+
   /// Register a new user
   Future<Map<String, dynamic>> registerUser({
     required String userName,
@@ -137,8 +167,7 @@ class AuthService {
             filename: 'profile_image.jpeg',
             contentType: getContentType(profilePicture),
           ),
-      }
-      );
+      });
 
       // Send the request
       Response response = await httpClient.post('/auth/register',
