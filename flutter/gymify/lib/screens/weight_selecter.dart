@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gymify/colors/custom_colors.dart';
+import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
+import 'package:gymify/utils/custom_button.dart';
+import 'package:provider/provider.dart';
 
 class WeightSelector extends StatefulWidget {
   @override
@@ -11,23 +16,17 @@ class _WeightSelectorState extends State<WeightSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<RegistrationProvider>(context);
+
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: const Text(
-          'What Is Your Weight?',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.black,
-        elevation: 0,
-      ),
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
             "What Is Your Weight?",
             style: TextStyle(
-              color: Colors.white,
+              color: Color(0xFF666666),
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
@@ -35,7 +34,7 @@ class _WeightSelectorState extends State<WeightSelector> {
           const SizedBox(height: 10),
           const Text(
             "Please scroll to select your weight.",
-            style: TextStyle(color: Colors.white54, fontSize: 14),
+            style: TextStyle(color: Color(0xFF666666), fontSize: 14),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
@@ -52,7 +51,8 @@ class _WeightSelectorState extends State<WeightSelector> {
                   "KG",
                   style: TextStyle(
                     fontSize: 18,
-                    color: isKg ? Colors.yellow : Colors.grey,
+                    // use FF5E3A color
+                    color: isKg ? CustomColors.primary : CustomColors.secondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -68,7 +68,8 @@ class _WeightSelectorState extends State<WeightSelector> {
                   "LB",
                   style: TextStyle(
                     fontSize: 18,
-                    color: !isKg ? Colors.yellow : Colors.grey,
+                    color:
+                        !isKg ? CustomColors.primary : CustomColors.secondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -117,7 +118,7 @@ class _WeightSelectorState extends State<WeightSelector> {
                             fontWeight: isSelected
                                 ? FontWeight.bold
                                 : FontWeight.normal,
-                            color: isSelected ? Colors.yellow : Colors.grey,
+                            color: isSelected ? Color(0xFFFF5E3A) : Colors.grey,
                           ),
                           child: Text(weightValue.toStringAsFixed(1)),
                         ),
@@ -139,20 +140,14 @@ class _WeightSelectorState extends State<WeightSelector> {
             ),
           ),
           const SizedBox(height: 30),
-          ElevatedButton(
-            onPressed: () {
-              // Add your onPressed action here
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.yellow,
-              foregroundColor: Colors.black,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-            ),
-            child: const Text("Continue"),
-          ),
+          CustomButton(
+              text: "Continue",
+              onPressed: () {
+                provider.setWeight(selectedWeight);
+                if (provider.weight > 0) {
+                  context.go('/register/fitnesslevel');
+                }
+              }),
         ],
       ),
     );
@@ -194,7 +189,7 @@ class TrianglePointerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.yellow
+      ..color = Color(0xFFFF5E3A)
       ..style = PaintingStyle.fill;
 
     // Create a right-pointing triangle

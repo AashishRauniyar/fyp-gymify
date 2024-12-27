@@ -327,7 +327,7 @@ enum gender {
   Female
   Other
 }
-
+//TODO: goal strength, and hypertrophy
 enum goal_type {
   Weight_Loss @map("Weight Loss")
   Muscle_Gain @map("Muscle Gain")

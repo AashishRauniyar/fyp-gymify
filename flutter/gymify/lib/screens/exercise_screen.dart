@@ -207,6 +207,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/exercise_model.dart';
@@ -233,17 +234,41 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text(
+      //     'Exercises',
+      //     style: GoogleFonts.poppins(
+      //       fontSize: 20,
+      //       fontWeight: FontWeight.bold,
+      //       color: CustomColors.secondary,
+      //     ),
+      //   ),
+      //   backgroundColor: CustomColors.backgroundColor,
+      //   centerTitle: true,
+      // ),
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
-          'Exercises',
-          style: GoogleFonts.poppins(
-            fontSize: 20,
+          "Exercises",
+          style: TextStyle(
+            color: CustomColors.secondary,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
           ),
         ),
-        backgroundColor: CustomColors.primary,
-        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
+          },
+        ),
       ),
       body: Consumer<ExerciseProvider>(
         builder: (context, exerciseProvider, child) {
@@ -482,11 +507,11 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
                     decoration: BoxDecoration(
                       color: Colors.black,
                       borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 8,
-                          offset: const Offset(0, 4),
+                          offset: Offset(0, 4),
                         ),
                       ],
                     ),

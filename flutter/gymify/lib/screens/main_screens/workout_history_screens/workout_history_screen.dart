@@ -136,12 +136,10 @@ class _WorkoutLogTileState extends State<WorkoutLogTile> {
         title: _isLoading
             ? const CircularProgressIndicator()
             : Text(
-                "${_formatDate(workoutDate)} - $_workoutName",
+                "${_formatDate(workoutDate)} - $_workoutName - $workoutNotes",
                 style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
               ),
-        children: 
-        
-        exercises.map<Widget>((exerciseLog) {
+        children: exercises.map<Widget>((exerciseLog) {
           final exercise = exerciseLog['exercises'];
           return ListTile(
             leading: CircleAvatar(

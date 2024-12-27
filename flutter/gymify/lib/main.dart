@@ -74,31 +74,31 @@ class MyApp extends StatelessWidget {
             onPrimary: CustomColors.lightText, // Text color on primary
             onSecondary: CustomColors.lightText,
           ),
-          textTheme: GoogleFonts.poppinsTextTheme().copyWith(
-            headlineLarge: GoogleFonts.poppins(
+          textTheme: GoogleFonts.montserratTextTheme().copyWith(
+            headlineLarge: GoogleFonts.montserrat(
               fontSize: 32,
               fontWeight: FontWeight.bold,
               color: CustomColors.lightText,
             ),
-            headlineMedium: GoogleFonts.poppins(
+            headlineMedium: GoogleFonts.montserrat(
               fontSize: 24,
               fontWeight: FontWeight.bold,
               color: CustomColors.lightText,
             ),
-            headlineSmall: GoogleFonts.poppins(
+            headlineSmall: GoogleFonts.montserrat(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: CustomColors.lightText,
             ),
-            bodyLarge: GoogleFonts.poppins(
+            bodyLarge: GoogleFonts.montserrat(
               fontSize: 16,
               color: CustomColors.lightText,
             ),
-            bodyMedium: GoogleFonts.poppins(
+            bodyMedium: GoogleFonts.montserrat(
               fontSize: 14,
               color: CustomColors.lightText,
             ),
-            bodySmall: GoogleFonts.poppins(
+            bodySmall: GoogleFonts.montserrat(
               fontSize: 12,
               color: CustomColors.lightText,
             ),
@@ -112,7 +112,7 @@ class MyApp extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               textStyle: GoogleFonts.poppins(
-              fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.bold,
                 fontSize: 16,
               ),
             ),
@@ -125,22 +125,6 @@ class MyApp extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
             iconTheme: const IconThemeData(color: Colors.white),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: CustomColors.primaryShade2),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: CustomColors.primary),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            hintStyle: GoogleFonts.poppins(
-              color: Colors.grey,
-            ),
           ),
         ),
         routerConfig: router,

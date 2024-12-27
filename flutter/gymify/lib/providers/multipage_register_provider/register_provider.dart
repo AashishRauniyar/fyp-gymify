@@ -32,42 +32,50 @@ class RegistrationProvider with ChangeNotifier {
 
   // Setters
   void setUserName(String value) {
-    _userName = value;
+    _userName = value.trim();
     _validateUsername();
     notifyListeners();
+    print(_userName);
   }
 
   void setEmail(String value) {
-    _email = value;
+    _email = value.trim();
     _validateEmail();
     notifyListeners();
+    print(_email);
   }
 
   void setPassword(String value) {
-    _password = value;
+    _password = value.trim();
     _validatePassword();
     notifyListeners();
+    print(_password);
   }
 
   void setPhoneNumber(String value) {
-    _phoneNumber = value;
+    _phoneNumber = value.trim();
     _validatePhoneNumber();
     notifyListeners();
+    print(_phoneNumber);
   }
 
   void setFullName(String value) {
-    _fullName = value;
+    _fullName = value.trim();
     notifyListeners();
+    print(_fullName);
   }
 
   void setAddress(String value) {
-    _address = value;
+    _address = value.trim();
     notifyListeners();
+    print(_address);
   }
 
   void setGender(String value) {
     _gender = value;
     notifyListeners();
+
+    print(_gender);
   }
 
   void setRole(String value) {
@@ -78,31 +86,37 @@ class RegistrationProvider with ChangeNotifier {
   void setFitnessLevel(String value) {
     _fitnessLevel = value;
     notifyListeners();
+    print(_fitnessLevel);
   }
 
   void setGoalType(String value) {
     _goalType = value;
     notifyListeners();
+    print(_goalType);
   }
 
   void setBirthdate(String value) {
     _birthdate = value;
     notifyListeners();
+    print(_birthdate);
   }
 
   void setHeight(double value) {
     _height = value;
     notifyListeners();
+    print(_height);
   }
 
   void setWeight(double value) {
     _weight = value;
     notifyListeners();
+    print(_weight);
   }
 
   void setCalorieGoals(String value) {
     _calorieGoals = value;
     notifyListeners();
+    print(_calorieGoals);
   }
 
   void setCardNumber(String value) {
@@ -111,13 +125,15 @@ class RegistrationProvider with ChangeNotifier {
   }
 
   void setAllergies(String value) {
-    _allergies = value;
+    _allergies = value.trim();
     notifyListeners();
+    print(_allergies);
   }
 
   void setProfilePicture(File? value) {
     _profilePicture = value;
     notifyListeners();
+    print(_profilePicture);
   }
 
   // Getters

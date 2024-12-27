@@ -1,6 +1,7 @@
 // import 'package:flutter/material.dart';
 // import 'package:go_router/go_router.dart';
-// import 'package:gymify/services/login_service.dart';
+// import 'package:gymify/providers/auth_provider/auth_provider.dart';
+// import 'package:provider/provider.dart';
 
 // class SplashScreen extends StatefulWidget {
 //   const SplashScreen({super.key});
@@ -10,29 +11,26 @@
 // }
 
 // class _SplashScreenState extends State<SplashScreen> {
-//   final LoginService _loginService = LoginService();
-
 //   @override
 //   void initState() {
 //     super.initState();
 
 //     // Show splash screen for a few seconds before checking login status
-//     Future.delayed(const Duration(seconds: 5), () {
+//     Future.delayed(const Duration(seconds: 3), () {
 //       _checkLoginStatus();
 //     });
 //   }
 
 //   // Check login status by validating token
 //   Future<void> _checkLoginStatus() async {
-//     bool isLoggedIn = await _loginService.isTokenValid();
+//     await context.read<AuthProvider>().checkLoginStatus();
 
-//     // Navigate to the appropriate screen after checking login status
+//     // Navigate based on login status
+//     final isLoggedIn = context.read<AuthProvider>().isLoggedIn;
 //     if (isLoggedIn) {
-//       // If logged in, go directly to Home screen
-//       context.go('/home');
+//       context.go('/home'); // Navigate to home screen
 //     } else {
-//       // If not logged in, go to the Welcome screen
-//       context.go('/welcome');
+//       context.go('/welcome'); // Navigate to the welcome screen
 //     }
 //   }
 
@@ -49,7 +47,7 @@
 //             ),
 //           ),
 //           // Content over the background
-//           Center(
+//           const Center(
 //             child: Text(
 //               'Welcome to Gymify',
 //               style: TextStyle(
@@ -65,12 +63,11 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -84,16 +81,25 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    // Show splash screen for a few seconds before checking login status
-    Future.delayed(const Duration(seconds: 3), () {
-      _checkLoginStatus();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Future.delayed(const Duration(seconds: 5), () async {
+        await _loadDataAndCheckLoginStatus();
+      });
     });
+
+    // Show splash screen for a few seconds before fetching workouts and checking login status
+    // Future.delayed(const Duration(seconds: 5), () async {
+    //   await _loadDataAndCheckLoginStatus();
+    // });
   }
 
-  // Check login status by validating token
-  Future<void> _checkLoginStatus() async {
+  Future<void> _loadDataAndCheckLoginStatus() async {
+    // Fetch all workouts first (without blocking login check)
+    await context.read<WorkoutProvider>().fetchAllWorkouts();
+
+    // Check login status after fetching workouts
     await context.read<AuthProvider>().checkLoginStatus();
-    
+
     // Navigate based on login status
     final isLoggedIn = context.read<AuthProvider>().isLoggedIn;
     if (isLoggedIn) {

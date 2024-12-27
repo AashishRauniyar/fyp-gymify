@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart'; // Assuming this is where your TextWidget is
+import 'package:flutter/material.dart';
+import 'package:gymify/colors/custom_colors.dart'; // Assuming this is where your TextWidget is
 
 class CustomButton extends StatelessWidget {
   final String text;
@@ -8,15 +9,16 @@ class CustomButton extends StatelessWidget {
   final double fontSize;
   final Color textColor;
 
-  const CustomButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.color = const Color(0xFF37BD6B), // Default color if not provided
-    this.height = 40.0, // Default height if not provided
-    this.fontSize = 16.0,
-    this.textColor  =  Colors.white// Default font size if not provided
-  });
+  const CustomButton(
+      {super.key,
+      required this.text,
+      required this.onPressed,
+      this.color = CustomColors.primary, // Default color if not provided
+      this.height = 56.0, // Default height if not provided
+      this.fontSize = 16.0,
+      this.textColor =
+          CustomColors.buttonText // Default font size if not provided
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,10 @@ class CustomButton extends StatelessWidget {
 
     return Container(
       height: height,
-      width: screenWidth * 0.8, // 80% of the screen width, adjust as needed
+      width: screenWidth * 0.9, // 80% of the screen width, adjust as needed
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: TextButton(
         onPressed: onPressed,
@@ -40,7 +42,7 @@ class CustomButton extends StatelessWidget {
             text,
             style: TextStyle(
               fontSize: fontSize,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.bold,
               color: textColor,
             ),
           ),

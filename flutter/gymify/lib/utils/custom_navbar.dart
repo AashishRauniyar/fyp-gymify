@@ -146,31 +146,31 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        margin: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+        margin: const EdgeInsets.fromLTRB(24, 0, 24, 18),
         padding: const EdgeInsets.all(1),
         constraints: const BoxConstraints(maxWidth: 768),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          gradient: LinearGradient(
-            colors: [
-              CustomColors.primaryShade2
-                  .withOpacity(0.4), // Light gradient color
-              CustomColors.primaryShade2.withOpacity(0), // Fade out
-            ],
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(24),
+        //   gradient: LinearGradient(
+        //     colors: [
+        //       CustomColors.primaryShade2
+        //           .withOpacity(0.4), // Light gradient color
+        //       CustomColors.primaryShade2.withOpacity(0), // Fade out
+        //     ],
+        //   ),
+        // ),
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
             color: CustomColors.primary, // Main background color
             borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: CustomColors.lightText.withOpacity(0.1), // Subtle shadow
-                blurRadius: 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: CustomColors.lightText.withOpacity(0.1), // Subtle shadow
+            //     blurRadius: 15,
+            //     offset: const Offset(0, 5),
+            //   ),
+            // ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

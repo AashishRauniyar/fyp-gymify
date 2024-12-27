@@ -611,7 +611,99 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+            // Exercises Card
+            InkWell(
+              onTap: () {
+                context.pushNamed('exercises');
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                color: CustomColors.primaryShade2,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 12.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.fitness_center,
+                          size: 28, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Text(
+                        'View Exercises',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
 
+            // Create Exercise Card
+            InkWell(
+              onTap: () {
+                context.push('/createExercise');
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                color: CustomColors.primaryCompliment,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 12.0),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.add_circle_outline,
+                          size: 28, color: Colors.white),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Create Exercise',
+                        style: GoogleFonts.poppins(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Create Workout Link
+            InkWell(
+              onTap: () {
+                context.push('/createWorkout');
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.workspaces_outline,
+                      size: 24, color: Colors.blue),
+                  const SizedBox(width: 6),
+                  Text(
+                    "Create Workout",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // Logout Button
             Center(
               child: ElevatedButton.icon(
