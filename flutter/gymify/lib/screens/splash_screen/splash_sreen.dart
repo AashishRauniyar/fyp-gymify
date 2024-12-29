@@ -95,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _loadDataAndCheckLoginStatus() async {
     // Fetch all workouts first (without blocking login check)
-    await context.read<WorkoutProvider>().fetchAllWorkouts();
+    //await context.read<WorkoutProvider>().fetchAllWorkouts();
 
     // Check login status after fetching workouts
     await context.read<AuthProvider>().checkLoginStatus();

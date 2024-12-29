@@ -19,8 +19,8 @@ Workout _$WorkoutFromJson(Map<String, dynamic> json) => Workout(
       trainerId: (json['trainer_id'] as num).toInt(),
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
-      workoutexercises: (json['workoutexercises'] as List<dynamic>)
-          .map((e) => Workoutexercise.fromJson(e as Map<String, dynamic>))
+      workoutexercises: (json['workoutexercises'] as List<dynamic>?)
+          ?.map((e) => Workoutexercise.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 

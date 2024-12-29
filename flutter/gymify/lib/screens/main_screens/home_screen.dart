@@ -213,11 +213,25 @@ import 'package:gymify/screens/main_screens/workout_screens/workout_details_scre
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+
+  
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+   // Fetch workouts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<WorkoutProvider>().fetchAllWorkouts();
+    });  
+  }
+  
+
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 

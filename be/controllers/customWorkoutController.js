@@ -115,7 +115,7 @@ export const getCustomWorkoutsOfUser = async (req, res) => {
             },
         });
 
-        res.status(200).json({ status: 'success', customWorkouts });
+        res.status(200).json({ status: 'success', message: "custom workouts" ,data : customWorkouts });
     } catch (error) {
         console.error('Error fetching custom workouts:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -136,7 +136,7 @@ export const getCustomWorkoutExercisesById = async (req, res) => {
             include: { exercises: true }
         });
 
-        res.status(200).json({ status: 'success', exercises });
+        res.status(200).json({ status: 'success', message : "custom workout fetched" ,data : exercises });
     } catch (error) {
         console.error('Error fetching exercises:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
 import 'package:gymify/screens/weight_selecter.dart';
@@ -16,8 +18,8 @@ import 'package:gymify/screens/splash_screen/splash_sreen.dart';
 import 'package:gymify/screens/welcome/welcome_screen.dart';
 import 'package:gymify/screens/authentication/login.dart';
 import 'package:gymify/screens/authentication/register.dart';
-import 'package:gymify/screens/workout_screen/create_exercise_screen.dart';
-import 'package:gymify/screens/workout_screen/create_workout_screen.dart';
+import 'package:gymify/screens/create_workout_screen/create_exercise_screen.dart';
+import 'package:gymify/screens/create_workout_screen/create_workout_screen.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
@@ -213,12 +215,14 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: '/workoutDetail', 
-      name: 'workoutDetail',// Define the path with :workoutId as a dynamic parameter
+      path: '/workoutDetail',
+      name:
+          'workoutDetail', // Define the path with :workoutId as a dynamic parameter
       builder: (context, state) {
-         // Get the workoutId from the URL
+        // Get the workoutId from the URL
         return WorkoutDetailScreen(
-          workoutId: int.parse(state.uri.queryParameters['workoutId']!), // Pass the workoutId to the screen
+          workoutId: int.parse(state.uri.queryParameters[
+              'workoutId']!), // Pass the workoutId to the screen
         );
       },
     ),
@@ -252,5 +256,21 @@ final GoRouter router = GoRouter(
         ),
       ],
     ),
+    GoRoute(
+        name: 'customWorkout',
+        path: '/customWorkout',
+        builder: (context, state) => const CreateCustomWorkoutScreen()),
+
+    GoRoute(
+        name: 'customWorkoutDetail',
+        path: '/customWorkoutDetail',
+        builder: (context, state) {
+          return WorkoutDetailScreen(
+            workoutId: int.parse(state.uri.queryParameters['id']!),
+          );
+        }),
+        GoRoute(
+    name: 'allWorkouts',
+          path: '/allWorkouts', builder: (context, state) => const AllWorkouts()),
   ],
 );

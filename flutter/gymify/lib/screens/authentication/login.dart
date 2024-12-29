@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:provider/provider.dart'; // Import provider package;
+import 'package:gymify/providers/workout_provider/workout_provider.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -17,6 +18,8 @@ class LoginScreen extends StatelessWidget {
       final response = await authProvider.login(data.name, data.password);
 
       if (response) {
+
+        // context.read<WorkoutProvider>().fetchAllWorkouts();
         // Login success, navigate to home screen
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
