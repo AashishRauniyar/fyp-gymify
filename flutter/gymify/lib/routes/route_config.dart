@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
+import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
@@ -265,8 +266,8 @@ final GoRouter router = GoRouter(
         name: 'customWorkoutDetail',
         path: '/customWorkoutDetail',
         builder: (context, state) {
-          return WorkoutDetailScreen(
-            workoutId: int.parse(state.uri.queryParameters['id']!),
+          return CustomWorkoutDetailScreen(
+            customWorkoutId : int.parse(state.uri.queryParameters['id']!),
           );
         }),
         GoRoute(

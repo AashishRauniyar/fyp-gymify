@@ -7,6 +7,7 @@ import { workoutRouter } from './workoutRoutes.js';
 import { customWorkoutRouter } from './customWorkoutRoutes.js';
 import { personalBestRouter } from './personalBestRoutes.js';
 import { workoutLogRouter } from './workoutLogRoutes.js';
+import { dietPlanRouter } from './dietRoutes.js';
 
 const mainRouter = express.Router();
 
@@ -19,5 +20,6 @@ mainRouter.use('/api', workoutRouter);
 mainRouter.use('/api', customWorkoutRouter);
 mainRouter.use('/api', personalBestRouter);
 mainRouter.use('/api', workoutLogRouter)
+mainRouter.use('/api', dietPlanRouter);
 
 export default mainRouter;

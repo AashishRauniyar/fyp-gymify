@@ -7,7 +7,7 @@
 // const baseUrl = "http://192.168.1.73:8000/api";
 
 //home urk
-const baseUrl = "http://192.168.31.96:8000/api";
+// const baseUrl = "http://192.168.31.96:8000/api";
 
 // production url
-// const baseUrl = "https://fyp-gymify.onrender.com/api";
+const baseUrl = "https://fyp-gymify.onrender.com/api";
