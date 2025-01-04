@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
@@ -469,22 +468,7 @@ class BirthDatePage extends StatelessWidget {
             const Text("Enter Birthdate",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            // ElevatedButton(
-            //   onPressed: () async {
-            //     DateTime? date = await showDatePicker(
-            //       context: context,
-            //       initialDate: DateTime.now(),
-            //       firstDate: DateTime(1900),
-            //       lastDate: DateTime.now(),
-            //     );
-            //     if (date != null) {
-            //       final finalDate = DateFormat('yyyy-MM-dd').format(date);
-
-            //       provider.setBirthdate(finalDate);
-            //     }
-            //   },
-            //   child: const Text('Pick Birthdate'),
-            // ),
+            
             TextButton(
                 onPressed: () async {
                   DatePicker.showDatePicker(context,
@@ -521,96 +505,9 @@ class BirthDatePage extends StatelessWidget {
   }
 }
 
-// Height Page
-// class HeightPage extends StatelessWidget {
-//   const HeightPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<RegistrationProvider>(context);
-
-//     return Scaffold(
-//       backgroundColor: CustomColors.primary,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Text("Enter Height",
-//                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//             const SizedBox(height: 16),
-//             TextField(
-//               keyboardType: TextInputType.number,
-//               decoration: const InputDecoration(
-//                 border: OutlineInputBorder(),
-//                 labelText: 'Height (cm)',
-//               ),
-//               onChanged: (value) {
-//                 provider.setHeight(double.tryParse(value) ?? 0.0);
-//               },
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: () {
-//                 if (provider.height > 0) {
-//                   context.go('/register/weight');
-//                 }
-//               },
-//               child: const Text('Next'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // Weight Page
-// class WeightPage extends StatelessWidget {
-//   const WeightPage({Key? key}) : super(key: key);
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<RegistrationProvider>(context);
-
-//     return Scaffold(
-//       backgroundColor: CustomColors.primary,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Text("Enter Weight",
-//                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//             const SizedBox(height: 16),
-//             TextField(
-//               keyboardType: TextInputType.number,
-//               decoration: const InputDecoration(
-//                 border: OutlineInputBorder(),
-//                 labelText: 'Weight (kg)',
-//               ),
-//               onChanged: (value) {
-//                 provider.setWeight(double.tryParse(value) ?? 0.0);
-//               },
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: () {
-//                 if (provider.weight > 0) {
-//                   context.go('/register/fitnesslevel');
-//                 }
-//               },
-//               child: const Text('Next'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class FitnessLevelPage extends StatefulWidget {
-  const FitnessLevelPage({Key? key}) : super(key: key);
+  const FitnessLevelPage({super.key});
 
   @override
   State<FitnessLevelPage> createState() => _FitnessLevelPageState();
@@ -730,50 +627,10 @@ class FitnessLevelButton extends StatelessWidget {
   }
 }
 
-// Goal Type Page
-// class GoalTypePage extends StatelessWidget {
-//   const GoalTypePage({Key? key}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<RegistrationProvider>(context);
-
-//     return Scaffold(
-//       backgroundColor: CustomColors.primary,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             const Text("Select Goal Type",
-//                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//             const SizedBox(height: 16),
-//             DropdownButton<String>(
-//               value: provider.goalType,
-//               items: ["Endurance", "Muscle_Gain", "Maintain Weight"]
-//                   .map((goal) =>
-//                       DropdownMenuItem(value: goal, child: Text(goal)))
-//                   .toList(),
-//               onChanged: (value) {
-//                 if (value != null) provider.setGoalType(value);
-//               },
-//             ),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: () {
-//                 context.go('/register/caloriegoals');
-//               },
-//               child: const Text('Next'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class GoalTypePage extends StatelessWidget {
-  const GoalTypePage({Key? key}) : super(key: key);
+  const GoalTypePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -1021,85 +878,9 @@ class _AllergiesPageState extends State<AllergiesPage> {
   }
 }
 
-// class ConfirmRegistrationPage extends StatefulWidget {
-//   const ConfirmRegistrationPage({Key? key}) : super(key: key);
-
-//   @override
-//   State<ConfirmRegistrationPage> createState() =>
-//       _ConfirmRegistrationPageState();
-// }
-
-// class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
-//   File? _profilePicture;
-//   final ImagePicker _picker = ImagePicker();
-
-//   // Function to pick profile picture
-//   Future<void> _pickProfilePicture() async {
-//     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-//     if (pickedFile != null) {
-//       setState(() {
-//         _profilePicture = File(pickedFile.path);
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<RegistrationProvider>(context);
-
-//     return Scaffold(
-//       backgroundColor: CustomColors.backgroundColor,
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             GestureDetector(
-//               onTap: () async {
-//                 await _pickProfilePicture();
-//                 provider.setProfilePicture(_profilePicture);
-//               },
-//               child: CircleAvatar(
-//                 radius: 60,
-//                 backgroundImage: _profilePicture != null
-//                     ? FileImage(_profilePicture!)
-//                     : null,
-//                 child: _profilePicture == null
-//                     ? const Icon(Icons.camera_alt, size: 50, color: Colors.grey)
-//                     : null,
-//               ),
-//             ),
-//             const SizedBox(height: 16),
-//             Text('Hi ${provider.userName}, Ready to build your body '),
-//             const SizedBox(height: 16),
-//             ElevatedButton(
-//               onPressed: () async {
-//                 final result = await provider.submitRegistration();
-//                 if (result['success']) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(content: Text('Registration Successful!')),
-//                   );
-//                   context.go('/login');
-//                 } else {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(
-//                         content:
-//                             Text(result['message'] ?? 'Registration Failed')),
-//                   );
-//                 }
-//               },
-//               child: const Text('Register'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class ConfirmRegistrationPage extends StatefulWidget {
-  const ConfirmRegistrationPage({Key? key}) : super(key: key);
+  const ConfirmRegistrationPage({super.key});
 
   @override
   State<ConfirmRegistrationPage> createState() =>

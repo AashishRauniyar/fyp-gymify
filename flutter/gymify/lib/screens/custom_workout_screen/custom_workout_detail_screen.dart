@@ -14,8 +14,8 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
         title: const Text('Custom Workout Details'),
       ),
       body: ChangeNotifierProvider(
-        create: (_) =>
-            CustomWorkoutProvider()..getCustomWorkoutModelsById(customWorkoutId),
+        create: (_) => CustomWorkoutProvider()
+          ..getCustomWorkoutModelsById(customWorkoutId),
         child: Consumer<CustomWorkoutProvider>(
           builder: (context, customWorkoutProvider, child) {
             if (customWorkoutProvider.isLoading) {
@@ -23,8 +23,8 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
             }
 
             final exercises = customWorkoutProvider.customWorkouts
-                .firstWhere((workout) =>
-                    workout.customWorkoutId == customWorkoutId)
+                .firstWhere(
+                    (workout) => workout.customWorkoutId == customWorkoutId)
                 .customworkoutexercises;
 
             if (exercises.isEmpty) {

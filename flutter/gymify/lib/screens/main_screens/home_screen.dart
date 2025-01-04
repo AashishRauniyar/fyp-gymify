@@ -1,205 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:provider/provider.dart';
-// import 'package:gymify/providers/workout_provider/workout_provider.dart';
-// import 'package:gymify/colors/custom_colors.dart';
-// import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   _HomeScreenState createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   final TextEditingController _searchController = TextEditingController();
-//   String _searchQuery = '';
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: CustomColors.backgroundColor,
-//       appBar: AppBar(
-//         toolbarHeight: 80,
-//         backgroundColor: CustomColors.backgroundColor,
-//         title: const Text(
-//           'Gymify',
-//           style: TextStyle(
-//               fontSize: 32,
-//               fontWeight: FontWeight.bold,
-//               color: CustomColors.secondary),
-//         ),
-//         actions: [
-//           IconButton(
-//             color: CustomColors.secondary,
-//             icon: const Icon(Icons.settings),
-//             onPressed: () {
-//               print('Settings clicked');
-//             },
-//           ),
-//         ],
-//       ),
-//       body: Consumer<WorkoutProvider>(
-//         builder: (context, workoutProvider, child) {
-//           if (workoutProvider.isLoading) {
-//             return const Center(child: CircularProgressIndicator());
-//           }
-
-//           if (workoutProvider.hasError) {
-//             return const Center(child: Text('Error fetching workouts.'));
-//           }
-
-//           final filteredWorkouts = workoutProvider.workouts.where((workout) {
-//             final workoutName = workout.workoutName.toLowerCase();
-//             final targetMuscleGroup = workout.targetMuscleGroup.toLowerCase();
-//             return workoutName.contains(_searchQuery) ||
-//                 targetMuscleGroup.contains(_searchQuery);
-//           }).toList();
-
-//           return SingleChildScrollView(
-//             child: Padding(
-//               padding: const EdgeInsets.all(16.0),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Search Bar
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(vertical: 10),
-//                     child: TextField(
-//                       controller: _searchController,
-//                       onChanged: (value) {
-//                         setState(() {
-//                           _searchQuery = value.toLowerCase();
-//                         });
-//                       },
-//                       decoration: InputDecoration(
-//                         hintText: 'Search Workouts...',
-//                         prefixIcon: const Icon(Icons.search),
-//                         filled: true,
-//                         fillColor: Colors.grey[200],
-//                         border: OutlineInputBorder(
-//                           borderRadius: BorderRadius.circular(12),
-//                           borderSide: BorderSide.none,
-//                         ),
-//                         contentPadding:
-//                             const EdgeInsets.symmetric(vertical: 10),
-//                       ),
-//                     ),
-//                   ),
-//                   // Workout Plans Section
-//                   const Text(
-//                     "Workout Plans",
-//                     style: TextStyle(
-//                       fontSize: 24,
-//                       fontWeight: FontWeight.bold,
-//                       color: CustomColors.black,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20),
-//                   // Display filtered workout plans
-//                   for (var workout in filteredWorkouts)
-//                     GestureDetector(
-//                       onTap: () {
-//                         Navigator.push(
-//                           context,
-//                           MaterialPageRoute(
-//                             builder: (context) => WorkoutDetailScreen(
-//                                 workoutId: workout.workoutId),
-//                           ),
-//                         );
-//                       },
-//                       child: Card(
-//                         margin: const EdgeInsets.symmetric(vertical: 10),
-//                         shape: RoundedRectangleBorder(
-//                           borderRadius: BorderRadius.circular(12),
-//                         ),
-//                         elevation: 5,
-//                         child: ClipRRect(
-//                           borderRadius: BorderRadius.circular(12),
-//                           child: Stack(
-//                             children: [
-//                               Image.network(
-//                                 workout.workoutImage.isNotEmpty
-//                                     ? workout.workoutImage
-//                                     : 'https://via.placeholder.com/150',
-//                                 fit: BoxFit.cover,
-//                                 height: 200,
-//                                 width: double.infinity,
-//                               ),
-//                               Positioned(
-//                                 bottom: 0,
-//                                 left: 0,
-//                                 right: 0,
-//                                 child: Container(
-//                                   padding: const EdgeInsets.all(10),
-//                                   color: Colors.black.withOpacity(0.5),
-//                                   child: Column(
-//                                     crossAxisAlignment:
-//                                         CrossAxisAlignment.start,
-//                                     children: [
-//                                       Text(
-//                                         workout.workoutName,
-//                                         style: const TextStyle(
-//                                           fontSize: 18,
-//                                           fontWeight: FontWeight.bold,
-//                                           color: Colors.white,
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 8),
-//                                       Text(
-//                                         workout.targetMuscleGroup,
-//                                         style: TextStyle(
-//                                           fontSize: 14,
-//                                           color: Colors.white.withOpacity(0.8),
-//                                         ),
-//                                       ),
-//                                       const SizedBox(height: 12),
-//                                       ElevatedButton(
-//                                         onPressed: () {
-//                                           print('Start ${workout.workoutName}');
-//                                         },
-//                                         style: ElevatedButton.styleFrom(
-//                                           padding: const EdgeInsets.symmetric(
-//                                               vertical: 12, horizontal: 20),
-//                                         ),
-//                                         child: const Text(
-//                                           'Start',
-//                                           style: TextStyle(
-//                                             fontSize: 16,
-//                                             fontWeight: FontWeight.bold,
-//                                             color: Colors.white,
-//                                           ),
-//                                         ),
-//                                       ),
-//                                     ],
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   // Footer Text
-//                   Center(
-//                     child: Text(
-//                       "Let's build a stronger you 💪",
-//                       style: GoogleFonts.poppins(
-//                         fontSize: 16,
-//                         color: CustomColors.lightText,
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -213,24 +11,19 @@ import 'package:gymify/screens/main_screens/workout_screens/workout_details_scre
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-
-  
-
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   @override
   void initState() {
     super.initState();
-   // Fetch workouts
+    // Fetch workouts
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WorkoutProvider>().fetchAllWorkouts();
-    });  
+    });
   }
-  
 
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
@@ -240,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         toolbarHeight: 80,
         backgroundColor: CustomColors.backgroundColor,
         title: const Text(

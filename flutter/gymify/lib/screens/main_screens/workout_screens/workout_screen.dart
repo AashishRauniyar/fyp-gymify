@@ -516,7 +516,17 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColors.backgroundColor,
       appBar: AppBar(
+        actions: [
+          // Text('Create Custom Workout plan'),
+          IconButton(
+            icon: const Icon(Icons.add, color: CustomColors.primary),
+            onPressed: () {
+              context.pushNamed('createCustomWorkout');
+            },
+          ),
+        ],
         title: const Text(
           'Workouts',
           style: TextStyle(
@@ -690,7 +700,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                'Custom Workouts',
+                                'Your Custom Workouts',
                                 style: TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),

@@ -258,8 +258,8 @@ final GoRouter router = GoRouter(
       ],
     ),
     GoRoute(
-        name: 'customWorkout',
-        path: '/customWorkout',
+        name: 'createCustomWorkout',
+        path: '/createCustomWorkout',
         builder: (context, state) => const CreateCustomWorkoutScreen()),
 
     GoRoute(
@@ -267,11 +267,12 @@ final GoRouter router = GoRouter(
         path: '/customWorkoutDetail',
         builder: (context, state) {
           return CustomWorkoutDetailScreen(
-            customWorkoutId : int.parse(state.uri.queryParameters['id']!),
+            customWorkoutId: int.parse(state.uri.queryParameters['id']!),
           );
         }),
-        GoRoute(
-    name: 'allWorkouts',
-          path: '/allWorkouts', builder: (context, state) => const AllWorkouts()),
+    GoRoute(
+        name: 'allWorkouts',
+        path: '/allWorkouts',
+        builder: (context, state) => const AllWorkouts()),
   ],
 );
