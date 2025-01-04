@@ -60,3 +60,5 @@ class Customworkoutexercise {
 
     Map<String, dynamic> toJson() => _$CustomworkoutexerciseToJson(this);
 }
+
+

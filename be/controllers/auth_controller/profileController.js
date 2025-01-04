@@ -28,6 +28,9 @@ export const getProfile = async (req, res) => {
                 goal_type: true,
                 allergies: true,
                 profile_image: true,
+                card_number: true,
+                calorie_goals: true,
+
                 created_at: true,
                 updated_at: true
             }
@@ -126,6 +129,7 @@ export const updateProfile = async (req, res) => {
                     email: true,
                     phone_number: true,
                     address: true,
+                    birthdate : true,
                     height: true,
                     current_weight: true,
                     gender: true,
@@ -133,11 +137,15 @@ export const updateProfile = async (req, res) => {
                     fitness_level: true,
                     goal_type: true,
                     allergies: true,
+                    profile_image : true,
+                    card_number : true,
+                    calorie_goals: true,
                     created_at: true,
                     updated_at: true
                 }
             });
-
+            
+            
             // Log the weight change if current_weight is updated
             if (current_weight) {
                 await transaction.weight_logs.create({
@@ -162,7 +170,7 @@ export const updateProfile = async (req, res) => {
     }
 };
 
-
+//TODO: Add weight history , check error in deployment
 export const getWeightHistory = async (req, res) => {
     try {
         const { user_id } = req.user;

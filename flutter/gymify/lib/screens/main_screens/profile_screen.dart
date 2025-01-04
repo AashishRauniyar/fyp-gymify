@@ -519,19 +519,15 @@ class ProfileScreen extends StatelessWidget {
           final weightHistory = profileProvider.weightHistory ?? [];
 
           return Scaffold(
+            backgroundColor: CustomColors.backgroundColor,
             appBar: AppBar(
-              title: Text(
-                'Profile',
-                style: GoogleFonts.poppins(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-              backgroundColor: CustomColors.primary,
-              centerTitle: true,
+              scrolledUnderElevation: 0,
+              backgroundColor: CustomColors.backgroundColor,
+              title: const Text('Profile',
+                  style: TextStyle(color: CustomColors.secondary)),
               actions: [
                 IconButton(
+                  color: CustomColors.secondary,
                   icon: const Icon(Icons.exit_to_app),
                   onPressed: () => _logout(context),
                 ),
@@ -547,12 +543,13 @@ class ProfileScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(user.profileImage),
+                          backgroundImage:
+                              NetworkImage(user.profileImage ?? ''),
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          user.fullName,
-                          style: GoogleFonts.poppins(
+                          user.fullName ?? '',
+                          style: GoogleFonts.montserrat(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: CustomColors.primary,
@@ -560,10 +557,11 @@ class ProfileScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          user.email,
-                          style: GoogleFonts.poppins(
+                          user.email ?? '',
+                          style: GoogleFonts.montserrat(
                             fontSize: 16,
                             color: CustomColors.lightText,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -575,23 +573,26 @@ class ProfileScreen extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       children: [
-                        _buildDetailRow('Phone Number', user.phoneNumber),
-                        _buildDetailRow('Address', user.address),
+                        _buildDetailRow('Phone Number', user.phoneNumber ?? ''),
+                        _buildDetailRow('Address', user.address ?? ''),
                         _buildDetailRow('Height', '${user.height} cm'),
                         _buildDetailRow(
                             'Current Weight', '${user.currentWeight} kg'),
-                        _buildDetailRow('Fitness Level', user.fitnessLevel),
-                        _buildDetailRow('Goal Type', user.goalType),
-                        _buildDetailRow('Allergies', user.allergies),
+                        _buildDetailRow(
+                            'Fitness Level', user.fitnessLevel ?? ''),
+                        _buildDetailRow('Goal Type', user.goalType ?? ''),
+                        _buildDetailRow('Allergies', user.allergies ?? ''),
                         const SizedBox(height: 16),
 
                         // Edit Profile Button
                         ElevatedButton.icon(
                           onPressed: () {
-                            context.push(
-                              '/editProfile',
-                              extra: user,
-                            );
+                            // Navigate to EditProfileScreen
+                            final user = Provider.of<ProfileProvider>(context,
+                                    listen: false)
+                                .user!;
+                            context.push('/edit-profile',
+                                extra: user); // Pass the user as extra
                           },
                           icon: const Icon(Icons.edit),
                           label: const Text('Edit Profile'),
@@ -632,31 +633,104 @@ class ProfileScreen extends StatelessWidget {
                                   );
                                 },
                               ),
+
+                        InkWell(
+                          onTap: () {
+                            context.pushNamed('exercises');
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: CustomColors.primaryShade2,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 12.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.fitness_center,
+                                      size: 28, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'View Exercises',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Create Exercise Card
+                        InkWell(
+                          onTap: () {
+                            context.push('/createExercise');
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: CustomColors.primaryCompliment,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 12.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.add_circle_outline,
+                                      size: 28, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Create Exercise',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Create Workout Link
+                        InkWell(
+                          onTap: () {
+                            context.push('/createWorkout');
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.workspaces_outline,
+                                  size: 24, color: Colors.blue),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Create Workout",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
 
                   // Logout Button
-                  Center(
-                    child: ElevatedButton.icon(
-                      onPressed: () => _logout(context),
-                      icon: const Icon(Icons.logout),
-                      label: const Text("Logout"),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 24),
-                        backgroundColor: Colors.redAccent,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        textStyle: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

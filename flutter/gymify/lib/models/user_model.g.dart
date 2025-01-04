@@ -7,23 +7,31 @@ part of 'user_model.dart';
 // **************************************************************************
 
 Users _$UsersFromJson(Map<String, dynamic> json) => Users(
-      userId: (json['user_id'] as num).toInt(),
-      userName: json['user_name'] as String,
-      fullName: json['full_name'] as String,
-      email: json['email'] as String,
-      phoneNumber: json['phone_number'] as String,
-      address: json['address'] as String,
-      birthdate: DateTime.parse(json['birthdate'] as String),
-      height: json['height'] as String,
-      currentWeight: json['current_weight'] as String,
-      gender: json['gender'] as String,
-      role: json['role'] as String,
-      fitnessLevel: json['fitness_level'] as String,
-      goalType: json['goal_type'] as String,
-      allergies: json['allergies'] as String,
-      profileImage: json['profile_image'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
-      updatedAt: DateTime.parse(json['updated_at'] as String),
+      userId: (json['user_id'] as num?)?.toInt(),
+      userName: json['user_name'] as String?,
+      fullName: json['full_name'] as String?,
+      email: json['email'] as String?,
+      phoneNumber: json['phone_number'] as String?,
+      address: json['address'] as String?,
+      birthdate: json['birthdate'] == null
+          ? null
+          : DateTime.parse(json['birthdate'] as String),
+      height: json['height'] as String?,
+      currentWeight: json['current_weight'] as String?,
+      gender: json['gender'] as String?,
+      role: json['role'] as String?,
+      fitnessLevel: json['fitness_level'] as String?,
+      goalType: json['goal_type'] as String?,
+      allergies: json['allergies'] as String?,
+      profileImage: json['profile_image'] as String?,
+      cardNumber: json['card_number'] as String?,
+      calorieGoals: json['calorie_goals'] as String?,
+      createdAt: json['created_at'] == null
+          ? null
+          : DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$UsersToJson(Users instance) => <String, dynamic>{
@@ -33,7 +41,7 @@ Map<String, dynamic> _$UsersToJson(Users instance) => <String, dynamic>{
       'email': instance.email,
       'phone_number': instance.phoneNumber,
       'address': instance.address,
-      'birthdate': instance.birthdate.toIso8601String(),
+      'birthdate': instance.birthdate?.toIso8601String(),
       'height': instance.height,
       'current_weight': instance.currentWeight,
       'gender': instance.gender,
@@ -42,6 +50,8 @@ Map<String, dynamic> _$UsersToJson(Users instance) => <String, dynamic>{
       'goal_type': instance.goalType,
       'allergies': instance.allergies,
       'profile_image': instance.profileImage,
-      'created_at': instance.createdAt.toIso8601String(),
-      'updated_at': instance.updatedAt.toIso8601String(),
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+      'card_number': instance.cardNumber,
+      'calorie_goals': instance.calorieGoals,
     };

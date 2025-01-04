@@ -34,7 +34,6 @@ class _UserNamePageState extends State<UserNamePage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -98,7 +97,6 @@ class _FullNamePageState extends State<FullNamePage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -128,7 +126,123 @@ class _FullNamePageState extends State<FullNamePage> {
               text: 'NEXT',
               onPressed: () {
                 if (provider.fullName.isNotEmpty) {
-                  context.pushNamed('email'); // Navigate to the next screen
+                  context.pushNamed('gender'); // Navigate to the next screen
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class GenderSelectionPage extends StatefulWidget {
+  const GenderSelectionPage({super.key});
+
+  @override
+  State<GenderSelectionPage> createState() => _GenderSelectionPageState();
+}
+
+class _GenderSelectionPageState extends State<GenderSelectionPage> {
+  @override
+  Widget build(BuildContext context) {
+    final provider = Provider.of<RegistrationProvider>(context);
+
+    return Scaffold(
+      backgroundColor: CustomColors.backgroundColor,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                const Text(
+                  "What’s your gender?",
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () => provider.setGender('Male'),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        decoration: BoxDecoration(
+                          color: provider.gender == 'Male'
+                              ? CustomColors.primary.withOpacity(0.2)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: provider.gender == 'Male'
+                                ? CustomColors.primary
+                                : Colors.grey,
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'assets/images/gender/male.png',
+                              height: 120,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Male",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => provider.setGender('Female'),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        decoration: BoxDecoration(
+                          color: provider.gender == 'Female'
+                              ? CustomColors.primary.withOpacity(0.2)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: provider.gender == 'Female'
+                                ? CustomColors.primary
+                                : Colors.grey,
+                            width: 2,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'assets/images/gender/female.png',
+                              height: 120,
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Female",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            CustomButton(
+              text: 'NEXT',
+              onPressed: () {
+                if (provider.gender.isNotEmpty) {
+                  context.pushNamed('email'); // Update with the next route
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Please select your gender')),
+                  );
                 }
               },
             ),
@@ -162,7 +276,6 @@ class _EmailPageState extends State<EmailPage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: Colors.white, // Custom background color
 
       body: Padding(
@@ -193,8 +306,8 @@ class _EmailPageState extends State<EmailPage> {
               text: 'Next',
               onPressed: () {
                 if (provider.emailError == null && provider.email.isNotEmpty) {
-                  context.pushNamed(
-                      'phonenumber'); // Navigate to the next screen
+                  context
+                      .pushNamed('phonenumber'); // Navigate to the next screen
                 }
               },
             ),
@@ -229,7 +342,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
 
     return Scaffold(
       backgroundColor: Colors.white, // Custom background color
-      
+
       body: Padding(
         padding: const EdgeInsets.all(16.0), // Same padding as EmailPage
         child: Column(
@@ -263,8 +376,7 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
                 if (provider.phoneNumberError == null &&
                     provider.phoneNumber.isNotEmpty) {
                   // Navigate to the password page
-                      context.pushNamed(
-                      'password'); 
+                  context.pushNamed('password');
                 }
               },
             ),
@@ -314,7 +426,7 @@ class _PasswordPageState extends State<PasswordPage> {
     return Scaffold(
       backgroundColor: CustomColors
           .white, // Set background color to white, matching other pages
-      
+
       body: Padding(
         padding: const EdgeInsets.all(
             16.0), // Padding around the content, same as other pages
@@ -373,9 +485,7 @@ class _PasswordPageState extends State<PasswordPage> {
                 // If passwords match and there is no error, navigate to the next page
                 if (provider.passwordError == null &&
                     provider.password.isNotEmpty) {
-                  
-                      context.pushNamed(
-                      'address');  // Navigate to the address page
+                  context.pushNamed('address'); // Navigate to the address page
                 }
               },
             ),
@@ -408,7 +518,6 @@ class _AddressPageState extends State<AddressPage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -436,9 +545,7 @@ class _AddressPageState extends State<AddressPage> {
               text: 'Next',
               onPressed: () {
                 if (provider.address.isNotEmpty) {
-                  
-                  context.pushNamed(
-                      'birthdate'); 
+                  context.pushNamed('birthdate');
                 }
               },
             ),
@@ -458,7 +565,6 @@ class BirthDatePage extends StatelessWidget {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -468,7 +574,6 @@ class BirthDatePage extends StatelessWidget {
             const Text("Enter Birthdate",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 16),
-            
             TextButton(
                 onPressed: () async {
                   DatePicker.showDatePicker(context,
@@ -491,9 +596,7 @@ class BirthDatePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 if (provider.birthdate.isNotEmpty) {
-                  
-                  context.pushNamed(
-                      'height'); 
+                  context.pushNamed('height');
                 }
               },
               child: const Text('Next'),
@@ -504,7 +607,6 @@ class BirthDatePage extends StatelessWidget {
     );
   }
 }
-
 
 class FitnessLevelPage extends StatefulWidget {
   const FitnessLevelPage({super.key});
@@ -519,7 +621,6 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -567,9 +668,7 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
             CustomButton(
               text: 'Next',
               onPressed: () {
-                
-                    context.pushNamed(
-                      'goaltype');  // Navigate to the goal type page
+                context.pushNamed('goaltype'); // Navigate to the goal type page
               },
             ),
           ],
@@ -627,8 +726,6 @@ class FitnessLevelButton extends StatelessWidget {
   }
 }
 
-
-
 class GoalTypePage extends StatelessWidget {
   const GoalTypePage({super.key});
 
@@ -637,7 +734,6 @@ class GoalTypePage extends StatelessWidget {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -693,9 +789,7 @@ class GoalTypePage extends StatelessWidget {
             CustomButton(
               text: 'Next',
               onPressed: () {
-                
-                    context.pushNamed(
-                      'caloriegoals');  // Navigate to the next page
+                context.pushNamed('caloriegoals'); // Navigate to the next page
               },
             ),
           ],
@@ -776,7 +870,6 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -804,9 +897,7 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
               text: 'Next',
               onPressed: () {
                 if (provider.calorieGoals.isNotEmpty) {
-                  
-                  context.pushNamed(
-                      'allergies'); 
+                  context.pushNamed('allergies');
                 }
               },
             ),
@@ -839,7 +930,6 @@ class _AllergiesPageState extends State<AllergiesPage> {
     final provider = Provider.of<RegistrationProvider>(context);
 
     return Scaffold(
-      
       backgroundColor: CustomColors.backgroundColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -866,9 +956,7 @@ class _AllergiesPageState extends State<AllergiesPage> {
             CustomButton(
               text: 'Next',
               onPressed: () {
-                
-                context.pushNamed(
-                      'confirm'); 
+                context.pushNamed('confirm');
               },
             ),
           ],
@@ -877,7 +965,6 @@ class _AllergiesPageState extends State<AllergiesPage> {
     );
   }
 }
-
 
 class ConfirmRegistrationPage extends StatefulWidget {
   const ConfirmRegistrationPage({super.key});

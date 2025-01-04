@@ -27,6 +27,12 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Public method to reset error state
+  void resetError() {
+    _hasError = false;
+    notifyListeners();
+  }
+
   // Fetch user profile
   Future<void> fetchProfile() async {
     _setLoading(true);
@@ -39,6 +45,7 @@ class ProfileProvider with ChangeNotifier {
 
       if (apiResponse.status == 'success') {
         _user = apiResponse.data;
+        print(user?.birthdate);
       } else {
         _setError(true);
         throw Exception(apiResponse.message);
@@ -70,12 +77,10 @@ class ProfileProvider with ChangeNotifier {
       }
     } catch (e) {
       _setError(true);
-      print('Error updating profile: $e');
     } finally {
       _setLoading(false);
     }
   }
-
 
   // Fetch weight history
   Future<void> fetchWeightHistory() async {
@@ -102,5 +107,4 @@ class ProfileProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
-
 }

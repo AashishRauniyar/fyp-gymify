@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/models/user_model.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
+import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
+import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
 import 'package:gymify/screens/weight_selecter.dart';
 import 'package:gymify/screens/authentication/trying/multi_register.dart';
@@ -67,6 +70,11 @@ final GoRouter router = GoRouter(
           path: '/register/fullname',
           name: 'fullname',
           builder: (context, state) => const FullNamePage(),
+        ),
+        GoRoute(
+          path: '/register/gender',
+          name: 'gender',
+          builder: (context, state) => const GenderSelectionPage(),
         ),
         GoRoute(
           path: '/register/email',
@@ -261,7 +269,10 @@ final GoRouter router = GoRouter(
         name: 'createCustomWorkout',
         path: '/createCustomWorkout',
         builder: (context, state) => const CreateCustomWorkoutScreen()),
-
+    GoRoute(
+        name: 'customWorkout',
+        path: '/customWorkout',
+        builder: (context, state) => const CustomWorkoutListScreen()),
     GoRoute(
         name: 'customWorkoutDetail',
         path: '/customWorkoutDetail',
@@ -274,5 +285,17 @@ final GoRouter router = GoRouter(
         name: 'allWorkouts',
         path: '/allWorkouts',
         builder: (context, state) => const AllWorkouts()),
+    // GoRoute(
+    //   name: 'editProfile',
+    //   path: '/editProfile',
+    //   builder: (context, state) =>  EditProfileScreen(),
+    // ),
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) {
+        final user = state.extra as Users; // Extract the passed user object
+        return EditProfileScreen(user: user);
+      },
+    ),
   ],
 );

@@ -192,15 +192,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 // Footer Text
-                Center(
-                  child: Text(
-                    "Let's build a stronger you 💪",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: CustomColors.lightText,
-                    ),
-                  ),
-                ),
               ],
             ),
           );

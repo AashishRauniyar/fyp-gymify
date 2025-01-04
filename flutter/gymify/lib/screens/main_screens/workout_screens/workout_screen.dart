@@ -692,6 +692,74 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                       ),
 
                     // Custom Workouts Section
+                    // if (filteredCustomWorkouts.isNotEmpty)
+                    //   Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Row(
+                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //         children: [
+                    //           const Text(
+                    //             'Your Custom Workouts',
+                    //             style: TextStyle(
+                    //                 fontSize: 18, fontWeight: FontWeight.bold),
+                    //           ),
+                    //           TextButton(
+                    //             onPressed: () {
+                    //               context.pushNamed(
+                    //                   'customWorkout'); // Navigate to all custom workouts
+                    //             },
+                    //             child: const Text('See All'),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       LimitedBox(
+                    //         maxHeight: 200,
+                    //         child: ListView.builder(
+                    //           shrinkWrap: true,
+                    //           scrollDirection: Axis.horizontal,
+                    //           itemCount:
+                    //               filteredCustomWorkouts.length.clamp(0, 5),
+                    //           itemBuilder: (context, index) {
+                    //             final customWorkout =
+                    //                 filteredCustomWorkouts[index];
+                    //             return SizedBox(
+                    //               width: 150,
+                    //               child: Card(
+                    //                 margin: const EdgeInsets.symmetric(
+                    //                     vertical: 10, horizontal: 8),
+                    //                 elevation: 5,
+                    //                 shape: RoundedRectangleBorder(
+                    //                   borderRadius: BorderRadius.circular(12),
+                    //                 ),
+                    //                 child: InkWell(
+                    //                   onTap: () {
+                    //                     context.pushNamed(
+                    //                       'customWorkoutDetail',
+                    //                       queryParameters: {
+                    //                         'id': customWorkout.customWorkoutId
+                    //                             .toString(),
+                    //                       },
+                    //                     );
+                    //                   },
+                    //                   child: Container(
+                    //                     alignment: Alignment.bottomCenter,
+                    //                     padding: const EdgeInsets.all(8),
+                    //                     child: Text(
+                    //                       customWorkout.customWorkoutName,
+                    //                       style: const TextStyle(
+                    //                           fontSize: 16,
+                    //                           fontWeight: FontWeight.bold),
+                    //                     ),
+                    //                   ),
+                    //                 ),
+                    //               ),
+                    //             );
+                    //           },
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
                     if (filteredCustomWorkouts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -713,74 +781,48 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                               ),
                             ],
                           ),
-                          LimitedBox(
-                            maxHeight: 200,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  filteredCustomWorkouts.length.clamp(0, 5),
-                              itemBuilder: (context, index) {
-                                final customWorkout =
-                                    filteredCustomWorkouts[index];
-                                return SizedBox(
-                                  width: 150,
-                                  child: Card(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 8),
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: InkWell(
-                                      onTap: () {
-                                        context.pushNamed(
-                                          'customWorkoutDetail',
-                                          queryParameters: {
-                                            'id': customWorkout.customWorkoutId
-                                                .toString(),
-                                          },
-                                        );
+                          ListView.builder(
+                            shrinkWrap: true, // Prevents infinite height issues
+                            physics:
+                                const NeverScrollableScrollPhysics(), // Disables inner scrolling
+                            itemCount:
+                                filteredCustomWorkouts.length.clamp(0, 5),
+                            itemBuilder: (context, index) {
+                              final customWorkout =
+                                  filteredCustomWorkouts[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 6, horizontal: 8),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    context.pushNamed(
+                                      'customWorkoutDetail',
+                                      queryParameters: {
+                                        'id': customWorkout.customWorkoutId
+                                            .toString(),
                                       },
-                                      child: Container(
-                                        alignment: Alignment.bottomCenter,
-                                        padding: const EdgeInsets.all(8),
-                                        child: Text(
-                                          customWorkout.customWorkoutName,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                    );
+                                  },
+                                  title: Text(
+                                    customWorkout.customWorkoutName,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                );
-                              },
-                            ),
+                                  trailing: const Icon(Icons.arrow_forward_ios),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
 
                     // Create Custom Workout Button
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          context.pushNamed('createCustomWorkout');
-                        },
-                        icon: const Icon(Icons.add),
-                        label: const Text('Create Custom Workout'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: CustomColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 24),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

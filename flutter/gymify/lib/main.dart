@@ -40,6 +40,7 @@ import 'package:gymify/providers/custom_workout_provider/custom_workout_provider
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
 import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
+import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
 import 'package:gymify/colors/custom_colors.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => WorkoutLogProvider()),
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CustomWorkoutProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileProvider()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
