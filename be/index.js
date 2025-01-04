@@ -3,7 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import mainRouter from './routes/routes.js';
-import swaggerJSDoc from 'swagger-jsdoc';
+
+import { swaggerSpec } from './config/swagger.js';
+
 dotenv.config();
 
 // Create express app
@@ -15,42 +17,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-// Swagger Setup
-const swaggerOptions = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Gymify API ',
-      version: '1.0.0',
-      description: 'API to test gymify',
-      contact: {
-        name: 'Aashish Prasad Gupta',
-        email: 'rauniyaaraashish@gmail.com',
-      },
-    },
-    servers: [
-      {
-        url: 'http://localhost:8000/api', 
-      },
-    ],
-    components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-  },
-  apis: ['./routes/*.js'],  // Path to your API files (where JSDoc comments are present)
-};
-
-const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
-// Serve Swagger UI
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 
 app.use(mainRouter);

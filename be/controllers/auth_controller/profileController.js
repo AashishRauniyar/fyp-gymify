@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import {body, ExpressValidator } from 'express-validator';
 
 const prisma = new PrismaClient();
 
@@ -50,17 +51,38 @@ export const getProfile = async (req, res) => {
 };
 
 
+
+
+
+// Validation Middleware
+export const validateUpdateProfile = [
+    body('full_name').optional().isString().withMessage('Full name must be a string'),
+    body('phone_number').optional().isMobilePhone().withMessage('Invalid phone number'),
+    body('address').optional().isString().withMessage('Address must be a string'),
+    body('height').optional().isFloat({ min: 0 }).withMessage('Height must be a positive number'),
+    body('current_weight').optional().isFloat({ min: 0 }).withMessage('Weight must be a positive number'),
+    body('fitness_level').optional().isString().withMessage('Fitness level must be a string'),
+    body('goal_type').optional().isString().withMessage('Goal type must be a string'),
+    body('allergies').optional().isString().withMessage('Allergies must be a string'),
+    (req, res, next) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ status: 'failure', errors: errors.array() });
+        }
+        next();
+    }
+];
+
+
+
 export const updateProfile = async (req, res) => {
     try {
-        // Access the authenticated user's details from req.user (set by the middleware)
         const { user_id } = req.user;
 
-        // Extract fields to update from the request body
         const {
             full_name,
             phone_number,
             address,
-            
             height,
             current_weight,
             fitness_level,
@@ -68,7 +90,6 @@ export const updateProfile = async (req, res) => {
             goal_type
         } = req.body;
 
-        // Validate that at least one field is being updated
         if (
             !full_name &&
             !phone_number &&
@@ -82,38 +103,54 @@ export const updateProfile = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'No fields to update' });
         }
 
-        // Update the user's profile in the database
-        const updatedUser = await prisma.users.update({
-            where: { user_id },
-            data: {
-                full_name,
-                phone_number,
-                address,
-                height,
-                current_weight,
-                fitness_level,
-                allergies,
-                goal_type,
-                updated_at: new Date()
-            },
-            select: {
-                user_id: true,
-                user_name: true,
-                full_name: true,
-                email: true,
-                phone_number: true,
-                address: true,
-                height: true,
-                current_weight: true,
-                gender: true,
-                role: true,
-                fitness_level: true,
-                goal_type: true,
-                allergies: true
+        // Start a database transaction
+        const updatedUser = await prisma.$transaction(async (transaction) => {
+            // Update the user's profile
+            const user = await transaction.users.update({
+                where: { user_id },
+                data: {
+                    full_name,
+                    phone_number,
+                    address,
+                    height,
+                    current_weight,
+                    fitness_level,
+                    allergies,
+                    goal_type,
+                    updated_at: new Date()
+                },
+                select: {
+                    user_id: true,
+                    user_name: true,
+                    full_name: true,
+                    email: true,
+                    phone_number: true,
+                    address: true,
+                    height: true,
+                    current_weight: true,
+                    gender: true,
+                    role: true,
+                    fitness_level: true,
+                    goal_type: true,
+                    allergies: true,
+                    created_at: true,
+                    updated_at: true
+                }
+            });
+
+            // Log the weight change if current_weight is updated
+            if (current_weight) {
+                await transaction.weight_logs.create({
+                    data: {
+                        user_id,
+                        weight: current_weight
+                    }
+                });
             }
+
+            return user;
         });
 
-        // Return the updated profile data
         res.status(200).json({
             status: 'success',
             message: 'Profile updated successfully',
@@ -121,6 +158,32 @@ export const updateProfile = async (req, res) => {
         });
     } catch (error) {
         console.error('Error updating profile:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
+
+
+export const getWeightHistory = async (req, res) => {
+    try {
+        const { user_id } = req.user;
+
+        // Fetch the user's weight history
+        const weightHistory = await prisma.weight_logs.findMany({
+            where: { user_id },
+            orderBy: { logged_at: 'desc' },
+            select: {
+                weight: true,
+                logged_at: true,
+            },
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Weight history retrieved successfully',
+            data: weightHistory,
+        });
+    } catch (error) {
+        console.error('Error retrieving weight history:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };

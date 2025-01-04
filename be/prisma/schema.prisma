@@ -212,6 +212,7 @@ model users {
   workouts_workouts_trainer_idTousers                   workouts[]          @relation("workouts_trainer_idTousers")
   workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
   personal_bests                                        personal_bests[]
+  weight_logs   weight_logs[] // One-to-many relation with weight_logs
 }
 
 model workoutexercises {
@@ -308,6 +309,17 @@ model supported_exercises{
   updated_at DateTime @updatedAt // Timestamp of last update
   personal_bests personal_bests[]
 }
+
+model weight_logs {
+  id        Int      @id @default(autoincrement()) // Unique ID for each weight log
+  user_id   Int      // ID of the user
+  weight    Decimal  @db.Decimal(6, 2) // User's weight at the time of the log
+  logged_at DateTime @default(now())   // Timestamp of when the weight was logged
+
+  users     users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade) // Relation to the users model
+}
+
+
 
 enum difficulty_level {
   Easy
