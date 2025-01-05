@@ -63,7 +63,6 @@ export const validateUpdateProfile = [
     body('phone_number').optional().isMobilePhone().withMessage('Invalid phone number'),
     body('address').optional().isString().withMessage('Address must be a string'),
     body('height').optional().isFloat({ min: 0 }).withMessage('Height must be a positive number'),
-    body('current_weight').optional().isFloat({ min: 0 }).withMessage('Weight must be a positive number'),
     body('fitness_level').optional().isString().withMessage('Fitness level must be a string'),
     body('goal_type').optional().isString().withMessage('Goal type must be a string'),
     body('allergies').optional().isString().withMessage('Allergies must be a string'),
@@ -87,7 +86,6 @@ export const updateProfile = async (req, res) => {
             phone_number,
             address,
             height,
-            current_weight,
             fitness_level,
             allergies,
             goal_type
@@ -98,7 +96,7 @@ export const updateProfile = async (req, res) => {
             !phone_number &&
             !address &&
             !height &&
-            !current_weight &&
+            
             !fitness_level &&
             !allergies &&
             !goal_type
@@ -116,7 +114,6 @@ export const updateProfile = async (req, res) => {
                     phone_number,
                     address,
                     height,
-                    current_weight,
                     fitness_level,
                     allergies,
                     goal_type,
@@ -146,15 +143,7 @@ export const updateProfile = async (req, res) => {
             });
             
             
-            // Log the weight change if current_weight is updated
-            if (current_weight) {
-                await transaction.weight_logs.create({
-                    data: {
-                        user_id,
-                        weight: current_weight
-                    }
-                });
-            }
+           
 
             return user;
         });
@@ -169,6 +158,63 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
+
+
+
+
+export const updateWeight = async (req, res) => {
+    try {
+        const { user_id } = req.user; // Extract authenticated user's ID
+        const { current_weight } = req.body; // Get the new weight from the request body
+
+        // Validate weight input
+        if (!current_weight || typeof current_weight !== 'number' || current_weight <= 0) {
+            return res.status(400).json({ status: 'failure', message: 'Invalid weight input' });
+        }
+
+        // Start a transaction to update weight and log the change
+        const updatedUser = await prisma.$transaction(async (transaction) => {
+            // Update the user's weight in the users table
+            const user = await transaction.users.update({
+                where: { user_id },
+                data: {
+                    current_weight, // Update current weight
+                    updated_at: new Date() // Update the timestamp
+                },
+                select: {
+                    user_id: true,
+                    current_weight: true,
+                    updated_at: true
+                }
+            });
+
+            // Log the weight change in the weight_logs table
+            await transaction.weight_logs.create({
+                data: {
+                    user_id, // Foreign key linking the log to the user
+                    weight: current_weight, // The updated weight
+                    logged_at: new Date() // Timestamp for the log
+                }
+            });
+
+            return user;
+        });
+
+        // Respond with the updated user details
+        res.status(200).json({
+            status: 'success',
+            message: 'Weight updated and logged successfully',
+            data: updatedUser
+        });
+    } catch (error) {
+        console.error('Error updating weight:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
+
+
+
+
 
 //TODO: Add weight history , check error in deployment
 export const getWeightHistory = async (req, res) => {

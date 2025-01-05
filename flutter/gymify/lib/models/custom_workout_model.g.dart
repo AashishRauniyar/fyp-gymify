@@ -9,7 +9,7 @@ part of 'custom_workout_model.dart';
 CustomWorkoutModel _$CustomWorkoutModelFromJson(Map<String, dynamic> json) =>
     CustomWorkoutModel(
       customWorkoutId: (json['custom_workout_id'] as num).toInt(),
-      userId: (json['user_id'] as num).toInt(),
+      userId: (json['user_id'] as num?)?.toInt(),
       customWorkoutName: json['custom_workout_name'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       customworkoutexercises: (json['customworkoutexercises'] as List<dynamic>)
