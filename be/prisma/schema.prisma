@@ -270,25 +270,6 @@ model workoutlogs {
 }
 
 
-// model personal_bests {
-//   personal_best_id  Int       @id @default(autoincrement()) // Unique ID for the personal best entry
-//   user_id           Int       // The user who achieved the personal best
-//   exercise          supported_exercises // The exercise for which the personal best is logged (only Squat, Bench Press, Deadlift)
-//   weight            Decimal   @db.Decimal(6, 2) // The weight lifted in the personal best
-//   reps              Int       // The number of reps for the personal best (if relevant)
-//   achieved_at       DateTime  @default(now()) // Date when the personal best was achieved
-  
-//   users             users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-// }
-
-
-// enum supported_exercises {
-//   //TODO! add mode all exercises that should be logged in competitive level
-//   Squat
-//   Bench_Press @map("Bench Press")
-//   Deadlift
-
-// }
 
 
 model personal_bests {

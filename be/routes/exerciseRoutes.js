@@ -14,10 +14,6 @@ exerciseRouter.get('/exercises/:id', authenticate, getExerciseById);
 
 
 
-// Routes restricted to trainers
-//? working
-// exerciseRouter.post('/exercises', upload.single('exercise_image'),authenticate, createExercise);
-
 //! testing
 // Routes restricted to trainers
 exerciseRouter.post('/exercises', upload.fields([
@@ -26,3 +22,10 @@ exerciseRouter.post('/exercises', upload.fields([
 ]), authenticate, createExercise);
 exerciseRouter.put('/exercises/:id', authenticate, updateExercise);
 exerciseRouter.delete('/exercises/:id', authenticate, deleteExercise);
+
+
+
+
+// Routes restricted to trainers
+//? working
+// exerciseRouter.post('/exercises', upload.single('exercise_image'),authenticate, createExercise);

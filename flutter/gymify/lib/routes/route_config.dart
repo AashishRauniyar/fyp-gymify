@@ -5,6 +5,7 @@ import 'package:gymify/screens/custom_workout_screen/create_custom_workout_scree
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
@@ -295,6 +296,15 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final user = state.extra as Users; // Extract the passed user object
         return EditProfileScreen(user: user);
+      },
+    ),
+    GoRoute(
+      path: '/workoutHistory',
+      name:
+          'workoutHistory', // Ensure the name matches the one used in context.pushNamed()
+      builder: (context, state) {
+        final userId = state.extra as String; // Get the userId passed as extra
+        return WorkoutHistoryScreen(userId: userId);
       },
     ),
   ],

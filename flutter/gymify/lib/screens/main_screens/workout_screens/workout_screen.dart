@@ -791,11 +791,12 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                               final customWorkout =
                                   filteredCustomWorkouts[index];
                               return Card(
+                                
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 6, horizontal: 8),
-                                elevation: 3,
+                                elevation: 0,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: ListTile(
                                   onTap: () {

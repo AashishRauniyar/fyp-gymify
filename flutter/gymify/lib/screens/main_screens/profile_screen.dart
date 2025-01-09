@@ -511,6 +511,9 @@ class ProfileScreen extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
 
+          final userId =
+              profileProvider.user?.userId.toString() ?? 'No user ID';
+
           if (profileProvider.hasError || profileProvider.user == null) {
             return const Center(child: Text('Error loading profile.'));
           }
@@ -702,7 +705,39 @@ class ProfileScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
+                        InkWell(
+                          onTap: () => context.pushNamed('workoutHistory',
+                              extra: userId),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            color: CustomColors.primaryCompliment,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0, horizontal: 12.0),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.add_circle_outline,
+                                      size: 28, color: Colors.white),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Workout History',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
 
+                        const SizedBox(height: 16),
                         // Create Workout Link
                         InkWell(
                           onTap: () {
