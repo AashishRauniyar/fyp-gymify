@@ -195,7 +195,6 @@ import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/workout_model.dart'; // Import the Workout model.
 import 'package:gymify/network/http.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:gymify/services/storage_service.dart'; // Make sure the httpClient is properly set up.
 import 'package:provider/provider.dart';
 
 class WorkoutProvider with ChangeNotifier {
@@ -211,7 +210,7 @@ class WorkoutProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  final StorageService _storageService = SharedPrefsService();
+  
 
   void _setLoading(bool loading) {
     _isLoading = loading;

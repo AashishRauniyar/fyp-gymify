@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {

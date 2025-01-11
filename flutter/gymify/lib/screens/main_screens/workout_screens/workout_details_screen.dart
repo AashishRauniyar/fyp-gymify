@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
-import 'package:gymify/routes/route_config.dart';
 import 'package:gymify/screens/exercise_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_log_screen.dart';
 import 'package:provider/provider.dart';

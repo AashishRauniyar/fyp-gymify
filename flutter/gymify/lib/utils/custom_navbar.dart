@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:gymify/colors/custom_colors.dart';
 
 // class CustomBottomNavigationBar extends StatefulWidget {
 //   final Function(int tabIndex) onTabChange;
@@ -12,7 +13,7 @@
 
 // class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 //   final List<IconData> _icons = [
-//     Icons.home,
+//     Icons.home_filled,
 //     Icons.fitness_center,
 //     Icons.dining,
 //     Icons.chat,
@@ -34,36 +35,19 @@
 //   Widget build(BuildContext context) {
 //     return SafeArea(
 //       child: Container(
-//         margin: const EdgeInsets.fromLTRB(24, 0, 24, 8),
+//         margin: const EdgeInsets.fromLTRB(20, 0, 20, 18),
 //         padding: const EdgeInsets.all(1),
 //         constraints: const BoxConstraints(maxWidth: 768),
-//         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(24),
-//           gradient: LinearGradient(
-//             colors: [
-//               Colors.white.withOpacity(0.5),
-//               Colors.white.withOpacity(0)
-//             ],
-//           ),
-//         ),
 //         child: Container(
 //           clipBehavior: Clip.hardEdge,
 //           decoration: BoxDecoration(
-//             color: const Color(0xFF434C5E),
+//             color: CustomColors.primary, // Main background color
 //             borderRadius: BorderRadius.circular(24),
-//             boxShadow: [
-//               BoxShadow(
-//                 color: Colors.black.withOpacity(0.1),
-//                 blurRadius: 15,
-//                 offset: const Offset(0, 5),
-//               ),
-//             ],
 //           ),
 //           child: Row(
 //             mainAxisAlignment: MainAxisAlignment.spaceAround,
 //             children: List.generate(_icons.length, (index) {
 //               IconData icon = _icons[index];
-
 //               return Expanded(
 //                 child: GestureDetector(
 //                   onTap: () => onTabPress(index),
@@ -74,6 +58,7 @@
 //                     child: Column(
 //                       mainAxisSize: MainAxisSize.min,
 //                       children: [
+//                         // Animated Icon
 //                         AnimatedOpacity(
 //                           opacity: _selectedTab == index ? 1 : 0.6,
 //                           duration: const Duration(milliseconds: 200),
@@ -81,12 +66,13 @@
 //                             icon,
 //                             size: _selectedTab == index ? 30 : 25,
 //                             color: _selectedTab == index
-//                                 // use this color #434c5e
-//                                 ? Colors.white
-//                                 : Colors.white70,
+//                                 ? CustomColors.backgroundLight // Selected color
+//                                 : Colors.white70, // Unselected color
 //                           ),
 //                         ),
 //                         const SizedBox(height: 4),
+
+//                         // Animated Line Indicator
 //                         AnimatedOpacity(
 //                           opacity: _selectedTab == index ? 1 : 0,
 //                           duration: const Duration(milliseconds: 200),
@@ -94,7 +80,8 @@
 //                             duration: const Duration(milliseconds: 300),
 //                             width: _selectedTab == index ? 20 : 0,
 //                             height: 2,
-//                             color: Colors.white,
+//                             color:
+//                                 CustomColors.backgroundLight, // Whiteish line
 //                           ),
 //                         ),
 //                       ],
@@ -109,8 +96,9 @@
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
-import 'package:gymify/colors/custom_colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomBottomNavigationBar extends StatefulWidget {
   final Function(int tabIndex) onTabChange;
@@ -123,12 +111,12 @@ class CustomBottomNavigationBar extends StatefulWidget {
 }
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  final List<IconData> _icons = [
-    Icons.home_filled,
-    Icons.fitness_center,
-    Icons.dining,
-    Icons.chat,
-    Icons.account_circle,
+  final List<_NavigationItem> _navItems = [
+    _NavigationItem(icon: FontAwesomeIcons.home, label: 'Home'),
+    _NavigationItem(icon: FontAwesomeIcons.dumbbell, label: 'Workouts'),
+    _NavigationItem(icon: FontAwesomeIcons.utensils, label: 'Nutrition'),
+    _NavigationItem(icon: FontAwesomeIcons.rocketchat, label: 'Community'),
+    _NavigationItem(icon: FontAwesomeIcons.user, label: 'Profile'),
   ];
 
   int _selectedTab = 0;
@@ -144,59 +132,48 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
-      child: Container(
-        margin: const EdgeInsets.fromLTRB(20, 0, 20, 18),
-        padding: const EdgeInsets.all(1),
-        constraints: const BoxConstraints(maxWidth: 768),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Container(
-          clipBehavior: Clip.hardEdge,
+          height: 60,
           decoration: BoxDecoration(
-            color: CustomColors.primary, // Main background color
-            borderRadius: BorderRadius.circular(24),
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(30),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_icons.length, (index) {
-              IconData icon = _icons[index];
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => onTabPress(index),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        // Animated Icon
-                        AnimatedOpacity(
-                          opacity: _selectedTab == index ? 1 : 0.6,
-                          duration: const Duration(milliseconds: 200),
-                          child: Icon(
-                            icon,
-                            size: _selectedTab == index ? 30 : 25,
-                            color: _selectedTab == index
-                                ? CustomColors.backgroundLight // Selected color
-                                : Colors.white70, // Unselected color
-                          ),
-                        ),
-                        const SizedBox(height: 4),
+            children: List.generate(_navItems.length, (index) {
+              final item = _navItems[index];
+              final isSelected = _selectedTab == index;
 
-                        // Animated Line Indicator
-                        AnimatedOpacity(
-                          opacity: _selectedTab == index ? 1 : 0,
-                          duration: const Duration(milliseconds: 200),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            width: _selectedTab == index ? 20 : 0,
-                            height: 2,
-                            color:
-                                CustomColors.backgroundLight, // Whiteish line
-                          ),
-                        ),
-                      ],
-                    ),
+              return GestureDetector(
+                onTap: () => onTabPress(index),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? theme.colorScheme.primary.withOpacity(0.1)
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Icon(
+                    item.icon,
+                    size: 28,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface.withOpacity(0.6),
                   ),
                 ),
               );
@@ -206,4 +183,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
       ),
     );
   }
+}
+
+class _NavigationItem {
+  final IconData icon;
+  final String label;
+
+  _NavigationItem({required this.icon, required this.label});
 }

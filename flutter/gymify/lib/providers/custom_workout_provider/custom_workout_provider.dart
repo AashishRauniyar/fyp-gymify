@@ -173,7 +173,6 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/custom_workout_model.dart'; // CustomWorkoutModel and related classes
 import 'package:gymify/network/http.dart';
-import 'package:gymify/services/storage_service.dart';
 
 class CustomWorkoutProvider with ChangeNotifier {
   List<CustomWorkoutModel> _customWorkouts = [];
@@ -188,7 +187,6 @@ class CustomWorkoutProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  final StorageService _storageService = SharedPrefsService();
 
   void _setLoading(bool loading) {
     _isLoading = loading;

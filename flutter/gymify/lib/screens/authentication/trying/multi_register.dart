@@ -1044,6 +1044,7 @@ class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
               onPressed: () async {
                 final result = await provider.submitRegistration();
                 if (result['success']) {
+                  
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Registration Successful!')),
                   );

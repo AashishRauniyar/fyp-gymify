@@ -494,13 +494,283 @@
 // }
 
 //! v3 try
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:gymify/colors/custom_colors.dart';
+// import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
+// import 'package:gymify/providers/workout_provider/workout_provider.dart';
+// import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
+// import 'package:provider/provider.dart';
+
+// class WorkoutListScreen extends StatefulWidget {
+//   const WorkoutListScreen({super.key});
+
+//   @override
+//   _WorkoutListScreenState createState() => _WorkoutListScreenState();
+// }
+
+// class _WorkoutListScreenState extends State<WorkoutListScreen> {
+//   final TextEditingController _searchController = TextEditingController();
+//   String _searchQuery = '';
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: CustomColors.backgroundColor,
+//       appBar: AppBar(
+//         actions: [
+//           // Text('Create Custom Workout plan'),
+//           IconButton(
+//             icon: const Icon(Icons.add, color: CustomColors.primary),
+//             onPressed: () {
+//               context.pushNamed('createCustomWorkout');
+//             },
+//           ),
+//         ],
+//         title: const Text(
+//           'Workouts',
+//           style: TextStyle(
+//             color: CustomColors.primary,
+//           ),
+//         ),
+//         backgroundColor: CustomColors.backgroundColor,
+//       ),
+//       body: MultiProvider(
+//         providers: [
+//           ChangeNotifierProvider(
+//               create: (_) => WorkoutProvider()..fetchAllWorkouts()),
+//           ChangeNotifierProvider(
+//               create: (_) => CustomWorkoutProvider()..fetchCustomWorkouts()),
+//         ],
+//         child: Consumer2<WorkoutProvider, CustomWorkoutProvider>(
+//           builder: (context, workoutProvider, customWorkoutProvider, child) {
+//             if (workoutProvider.isLoading || customWorkoutProvider.isLoading) {
+//               return const Center(child: CircularProgressIndicator());
+//             }
+
+//             if (workoutProvider.workouts.isEmpty &&
+//                 customWorkoutProvider.customWorkouts.isEmpty) {
+//               return const Center(child: Text('No workouts found.'));
+//             }
+
+//             // Filter default workouts based on the search query
+//             final filteredDefaultWorkouts =
+//                 workoutProvider.workouts.where((workout) {
+//               final workoutName = workout.workoutName.toLowerCase();
+//               final targetMuscleGroup = workout.targetMuscleGroup.toLowerCase();
+//               return workoutName.contains(_searchQuery) ||
+//                   targetMuscleGroup.contains(_searchQuery);
+//             }).toList();
+
+//             // Filter custom workouts based on the search query
+//             final filteredCustomWorkouts =
+//                 customWorkoutProvider.customWorkouts.where((workout) {
+//               return workout.customWorkoutName
+//                   .toLowerCase()
+//                   .contains(_searchQuery);
+//             }).toList();
+
+//             return SingleChildScrollView(
+//               child: Padding(
+//                 padding: const EdgeInsets.symmetric(horizontal: 16),
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     // Search Bar
+//                     Padding(
+//                       padding: const EdgeInsets.only(top: 16, bottom: 10),
+//                       child: TextField(
+//                         controller: _searchController,
+//                         onChanged: (value) {
+//                           setState(() {
+//                             _searchQuery = value.toLowerCase();
+//                           });
+//                         },
+//                         decoration: InputDecoration(
+//                           hintText: 'Search Workouts...',
+//                           prefixIcon: const Icon(Icons.search),
+//                           filled: true,
+//                           fillColor: Colors.grey[200],
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(12),
+//                             borderSide: BorderSide.none,
+//                           ),
+//                           contentPadding:
+//                               const EdgeInsets.symmetric(vertical: 10),
+//                         ),
+//                       ),
+//                     ),
+
+//                     // Default Workouts Section
+//                     if (filteredDefaultWorkouts.isNotEmpty)
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               const Text(
+//                                 'Default Workouts',
+//                                 style: TextStyle(
+//                                     fontSize: 18, fontWeight: FontWeight.bold),
+//                               ),
+//                               TextButton(
+//                                 onPressed: () {
+//                                   context.pushNamed(
+//                                       'allWorkouts'); // Navigate to all workouts
+//                                 },
+//                                 child: const Text('See All'),
+//                               ),
+//                             ],
+//                           ),
+//                           LimitedBox(
+//                             maxHeight: 200,
+//                             child: ListView.builder(
+//                               shrinkWrap: true,
+//                               scrollDirection: Axis.horizontal,
+//                               itemCount:
+//                                   filteredDefaultWorkouts.length.clamp(0, 5),
+//                               itemBuilder: (context, index) {
+//                                 final workout = filteredDefaultWorkouts[index];
+//                                 return SizedBox(
+//                                   width: 150,
+//                                   child: Card(
+//                                     margin: const EdgeInsets.symmetric(
+//                                         vertical: 10, horizontal: 8),
+//                                     elevation: 5,
+//                                     shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(12),
+//                                     ),
+//                                     child: InkWell(
+//                                       onTap: () {
+//                                         Navigator.push(
+//                                           context,
+//                                           MaterialPageRoute(
+//                                             builder: (context) =>
+//                                                 WorkoutDetailScreen(
+//                                                     workoutId:
+//                                                         workout.workoutId),
+//                                           ),
+//                                         );
+//                                       },
+//                                       child: Container(
+//                                         decoration: BoxDecoration(
+//                                           image: DecorationImage(
+//                                             image: workout
+//                                                     .workoutImage.isNotEmpty
+//                                                 ? NetworkImage(
+//                                                     workout.workoutImage)
+//                                                 : const AssetImage(
+//                                                         'assets/images/workout_image/defaultWorkoutImage.jpg')
+//                                                     as ImageProvider,
+//                                             fit: BoxFit.cover,
+//                                             colorFilter: ColorFilter.mode(
+//                                               Colors.black.withOpacity(0.5),
+//                                               BlendMode.darken,
+//                                             ),
+//                                           ),
+//                                           borderRadius:
+//                                               BorderRadius.circular(12),
+//                                         ),
+//                                         alignment: Alignment.bottomCenter,
+//                                         padding: const EdgeInsets.all(8),
+//                                         child: Text(
+//                                           workout.workoutName,
+//                                           style: const TextStyle(
+//                                               color: Colors.white,
+//                                               fontSize: 16,
+//                                               fontWeight: FontWeight.bold),
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 );
+//                               },
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     if (filteredCustomWorkouts.isNotEmpty)
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         children: [
+//                           Row(
+//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                             children: [
+//                               const Text(
+//                                 'Your Custom Workouts',
+//                                 style: TextStyle(
+//                                     fontSize: 18, fontWeight: FontWeight.bold),
+//                               ),
+//                               TextButton(
+//                                 onPressed: () {
+//                                   context.pushNamed(
+//                                       'customWorkout'); // Navigate to all custom workouts
+//                                 },
+//                                 child: const Text('See All'),
+//                               ),
+//                             ],
+//                           ),
+//                           ListView.builder(
+//                             shrinkWrap: true, // Prevents infinite height issues
+//                             physics:
+//                                 const NeverScrollableScrollPhysics(), // Disables inner scrolling
+//                             itemCount:
+//                                 filteredCustomWorkouts.length.clamp(0, 5),
+//                             itemBuilder: (context, index) {
+//                               final customWorkout =
+//                                   filteredCustomWorkouts[index];
+//                               return Card(
+
+//                                 margin: const EdgeInsets.symmetric(
+//                                     vertical: 6, horizontal: 8),
+//                                 elevation: 0,
+//                                 shape: RoundedRectangleBorder(
+//                                   borderRadius: BorderRadius.circular(8),
+//                                 ),
+//                                 child: ListTile(
+//                                   onTap: () {
+//                                     context.pushNamed(
+//                                       'customWorkoutDetail',
+//                                       queryParameters: {
+//                                         'id': customWorkout.customWorkoutId
+//                                             .toString(),
+//                                       },
+//                                     );
+//                                   },
+//                                   title: Text(
+//                                     customWorkout.customWorkoutName,
+//                                     style: const TextStyle(
+//                                       fontSize: 16,
+//                                       fontWeight: FontWeight.bold,
+//                                     ),
+//                                   ),
+//                                   trailing: const Icon(Icons.arrow_forward_ios),
+//                                 ),
+//                               );
+//                             },
+//                           ),
+//                         ],
+//                       ),
+
+//                     // Create Custom Workout Button
+//                   ],
+//                 ),
+//               ),
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/colors/custom_colors.dart';
+import 'package:provider/provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
-import 'package:provider/provider.dart';
 
 class WorkoutListScreen extends StatefulWidget {
   const WorkoutListScreen({super.key});
@@ -515,25 +785,26 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         actions: [
-          // Text('Create Custom Workout plan'),
           IconButton(
-            icon: const Icon(Icons.add, color: CustomColors.primary),
+            icon: Icon(Icons.add, color: theme.colorScheme.primary),
             onPressed: () {
               context.pushNamed('createCustomWorkout');
             },
           ),
         ],
-        title: const Text(
+        title: Text(
           'Workouts',
           style: TextStyle(
-            color: CustomColors.primary,
+            color: theme.colorScheme.primary,
           ),
         ),
-        backgroundColor: CustomColors.backgroundColor,
+        backgroundColor: theme.colorScheme.surface,
       ),
       body: MultiProvider(
         providers: [
@@ -553,7 +824,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
               return const Center(child: Text('No workouts found.'));
             }
 
-            // Filter default workouts based on the search query
             final filteredDefaultWorkouts =
                 workoutProvider.workouts.where((workout) {
               final workoutName = workout.workoutName.toLowerCase();
@@ -562,7 +832,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                   targetMuscleGroup.contains(_searchQuery);
             }).toList();
 
-            // Filter custom workouts based on the search query
             final filteredCustomWorkouts =
                 customWorkoutProvider.customWorkouts.where((workout) {
               return workout.customWorkoutName
@@ -576,7 +845,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Search Bar
                     Padding(
                       padding: const EdgeInsets.only(top: 16, bottom: 10),
                       child: TextField(
@@ -590,7 +858,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           hintText: 'Search Workouts...',
                           prefixIcon: const Icon(Icons.search),
                           filled: true,
-                          fillColor: Colors.grey[200],
+                          fillColor: theme.colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
@@ -600,8 +868,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                         ),
                       ),
                     ),
-
-                    // Default Workouts Section
                     if (filteredDefaultWorkouts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -609,17 +875,18 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Default Workouts',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                style: theme.textTheme.headlineSmall,
                               ),
                               TextButton(
                                 onPressed: () {
-                                  context.pushNamed(
-                                      'allWorkouts'); // Navigate to all workouts
+                                  context.pushNamed('allWorkouts');
                                 },
-                                child: const Text('See All'),
+                                child: Text('See All',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    )),
                               ),
                             ],
                           ),
@@ -676,10 +943,11 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                                         padding: const EdgeInsets.all(8),
                                         child: Text(
                                           workout.workoutName,
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold),
+                                          style: theme.textTheme.bodyLarge
+                                              ?.copyWith(
+                                            color: theme.colorScheme.onPrimary,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -690,76 +958,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           ),
                         ],
                       ),
-
-                    // Custom Workouts Section
-                    // if (filteredCustomWorkouts.isNotEmpty)
-                    //   Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       Row(
-                    //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //         children: [
-                    //           const Text(
-                    //             'Your Custom Workouts',
-                    //             style: TextStyle(
-                    //                 fontSize: 18, fontWeight: FontWeight.bold),
-                    //           ),
-                    //           TextButton(
-                    //             onPressed: () {
-                    //               context.pushNamed(
-                    //                   'customWorkout'); // Navigate to all custom workouts
-                    //             },
-                    //             child: const Text('See All'),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       LimitedBox(
-                    //         maxHeight: 200,
-                    //         child: ListView.builder(
-                    //           shrinkWrap: true,
-                    //           scrollDirection: Axis.horizontal,
-                    //           itemCount:
-                    //               filteredCustomWorkouts.length.clamp(0, 5),
-                    //           itemBuilder: (context, index) {
-                    //             final customWorkout =
-                    //                 filteredCustomWorkouts[index];
-                    //             return SizedBox(
-                    //               width: 150,
-                    //               child: Card(
-                    //                 margin: const EdgeInsets.symmetric(
-                    //                     vertical: 10, horizontal: 8),
-                    //                 elevation: 5,
-                    //                 shape: RoundedRectangleBorder(
-                    //                   borderRadius: BorderRadius.circular(12),
-                    //                 ),
-                    //                 child: InkWell(
-                    //                   onTap: () {
-                    //                     context.pushNamed(
-                    //                       'customWorkoutDetail',
-                    //                       queryParameters: {
-                    //                         'id': customWorkout.customWorkoutId
-                    //                             .toString(),
-                    //                       },
-                    //                     );
-                    //                   },
-                    //                   child: Container(
-                    //                     alignment: Alignment.bottomCenter,
-                    //                     padding: const EdgeInsets.all(8),
-                    //                     child: Text(
-                    //                       customWorkout.customWorkoutName,
-                    //                       style: const TextStyle(
-                    //                           fontSize: 16,
-                    //                           fontWeight: FontWeight.bold),
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             );
-                    //           },
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
                     if (filteredCustomWorkouts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -767,31 +965,30 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
+                              Text(
                                 'Your Custom Workouts',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                style: theme.textTheme.headlineSmall,
                               ),
                               TextButton(
                                 onPressed: () {
-                                  context.pushNamed(
-                                      'customWorkout'); // Navigate to all custom workouts
+                                  context.pushNamed('customWorkout');
                                 },
-                                child: const Text('See All'),
+                                child: Text('See All',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    )),
                               ),
                             ],
                           ),
                           ListView.builder(
-                            shrinkWrap: true, // Prevents infinite height issues
-                            physics:
-                                const NeverScrollableScrollPhysics(), // Disables inner scrolling
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount:
                                 filteredCustomWorkouts.length.clamp(0, 5),
                             itemBuilder: (context, index) {
                               final customWorkout =
                                   filteredCustomWorkouts[index];
                               return Card(
-                                
                                 margin: const EdgeInsets.symmetric(
                                     vertical: 6, horizontal: 8),
                                 elevation: 0,
@@ -810,8 +1007,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                                   },
                                   title: Text(
                                     customWorkout.customWorkoutName,
-                                    style: const TextStyle(
-                                      fontSize: 16,
+                                    style: theme.textTheme.bodyLarge?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -822,8 +1018,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           ),
                         ],
                       ),
-
-                    // Create Custom Workout Button
                   ],
                 ),
               ),
