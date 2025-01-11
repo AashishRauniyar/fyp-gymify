@@ -15,7 +15,7 @@ class AppColors {
   // Dark Theme Colors
   static const Color darkPrimary = Color(0xFFFF764A);
   static const Color darkSecondary = Color(0xFF383838);
-  static const Color darkSurface = Color.fromARGB(255, 27, 27, 27);
+  static const Color darkSurface = Color.fromARGB(255, 29, 29, 29);
   static const Color darkBackground = Color(0xFF1D1D1F);
   static const Color darkOnPrimary = Colors.white;
   static const Color darkOnSecondary = Colors.white;
