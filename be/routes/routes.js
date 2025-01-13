@@ -10,6 +10,7 @@ import { workoutLogRouter } from './workoutLogRoutes.js';
 import { dietPlanRouter } from './dietRoutes.js';
 import attendanceRouter from './attendanceRoutes.js';
 import membershipRouter from './membershipRoutes.js';
+import chatRouter from './chatRoutes.js';
 
 
 const mainRouter = express.Router();
@@ -26,5 +27,6 @@ mainRouter.use('/api', workoutLogRouter)
 mainRouter.use('/api', dietPlanRouter);
 mainRouter.use('/api', attendanceRouter);
 mainRouter.use('/api', membershipRouter);
+mainRouter.use('/api', chatRouter);
 
 export default mainRouter;

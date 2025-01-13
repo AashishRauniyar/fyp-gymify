@@ -19,7 +19,7 @@ class LoginScreen extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Login successful! Welcome back, ${data.name}.'),
-            backgroundColor: Colors.redAccent,
+            backgroundColor: Colors.greenAccent,
           ),
         );
         return null; // Returning null indicates success in FlutterLogin

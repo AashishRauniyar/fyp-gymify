@@ -810,6 +810,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -902,6 +903,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        actions: [
+
+          // button for change theme
+          IconButton(
+            icon: const Icon(Icons.brightness_4),
+            onPressed: () {
+              
+            },
+          ),
+        ],
         title: Text(
           'Profile Settings',
           style: theme.textTheme.headlineSmall?.copyWith(
@@ -1084,6 +1095,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _logout(context);
               },
             ),
+
             ListTile(
               leading:
                   Icon(Icons.delete_forever, color: theme.colorScheme.error),

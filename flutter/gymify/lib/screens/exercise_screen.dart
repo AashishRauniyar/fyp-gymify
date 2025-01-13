@@ -249,7 +249,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           "Exercises",
           style: TextStyle(
             color: CustomColors.secondary,
@@ -354,10 +354,11 @@ class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
   void initState() {
     super.initState();
     if (widget.exercise.videoUrl.isNotEmpty) {
-      _videoController = VideoPlayerController.network(widget.exercise.videoUrl)
-        ..initialize().then((_) {
-          setState(() {});
-        });
+      _videoController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.exercise.videoUrl))
+            ..initialize().then((_) {
+              setState(() {});
+            });
     }
   }
 

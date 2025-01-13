@@ -70,6 +70,8 @@ dependencies:
   line_awesome_flutter: ^3.0.1
   dots_indicator: ^3.0.0
   font_awesome_flutter: ^10.8.0
+  flutter_advanced_switch: ^3.1.0
+  flutter_chat_types: ^3.6.2
 
 dev_dependencies:
   flutter_test:

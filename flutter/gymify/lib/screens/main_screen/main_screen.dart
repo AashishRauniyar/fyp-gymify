@@ -22,7 +22,9 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const WorkoutListScreen(),
     const DietScreen(),
-    const ChatScreen(),
+    const ChatScreen(
+      
+    ),
     const ProfileScreen(),
   ];
 
