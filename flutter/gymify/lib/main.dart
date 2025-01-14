@@ -103,9 +103,10 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
 import 'package:gymify/theme/app_theme.dart';
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
@@ -126,8 +127,11 @@ void main() {
         ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CustomWorkoutProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
-        ChangeNotifierProvider(create: (context) => ThemeNotifier()), // Add ThemeNotifier
-        ChangeNotifierProvider(create: (context) => TrainerProvider()), // Add SocketProvider
+        ChangeNotifierProvider(
+            create: (context) => ThemeNotifier()), // Add ThemeNotifier
+        ChangeNotifierProvider(
+            create: (context) => TrainerProvider()), // Add SocketProvider
+        ChangeNotifierProvider(create: (context) => ChatProvider()) //
       ],
       child: const MyApp(),
     ),
@@ -141,7 +145,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
 
-    return MaterialApp.router(  
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'Gymify',
       theme: AppTheme.lightTheme, // Light theme

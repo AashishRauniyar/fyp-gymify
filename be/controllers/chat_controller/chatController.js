@@ -262,8 +262,8 @@ export const startConversation = async (req, res) => {
     }
 
     try {
-        const sortedIds = [userId, trainerId].sort();
-        const chatId = sortedIds.join("_");
+        const sortedIds = [userId, trainerId].sort((a, b) => a - b); // Ensure consistent order
+        const chatId = parseInt(sortedIds.join("")); // Combine IDs into a numeric valu/ Combine IDs into a numeric value
 
         let conversation = await prisma.chatconversations.findUnique({
             where: { chat_id: chatId },

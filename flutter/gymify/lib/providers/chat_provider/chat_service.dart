@@ -1,91 +1,111 @@
-// import 'package:flutter/material.dart';
-// import 'package:gymify/network/http.dart';
-// import 'package:gymify/models/api_response.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-// class ChatProvider with ChangeNotifier {
-//   List<dynamic> _conversations = [];
-//   List<dynamic> get conversations => _conversations;
+class ChatProvider extends ChangeNotifier {
+  IO.Socket? _socket;
+  final List<Map<String, dynamic>> _messages = [];
+  String _connectionStatus = 'Disconnected';
 
-//   List<dynamic> _messages = [];
-//   List<dynamic> get messages => _messages;
+  IO.Socket? get socket => _socket;
+  List<Map<String, dynamic>> get messages => _messages;
+  String get connectionStatus => _connectionStatus;
 
-//   bool _isLoading = false;
-//   bool get isLoading => _isLoading;
+  Future<int> startConversation(int userId, int trainerId) async {
+    const url =
+        'http://172.25.0.153:8000/api/start'; // Replace with your API URL
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'userId': userId, 'trainerId': trainerId}),
+    );
 
-//   void _setLoading(bool loading) {
-//     _isLoading = loading;
-//     notifyListeners();
-//   }
+    if (response.statusCode == 201) {
+      final data = jsonDecode(response.body);
+      return data['data']['chat_id'];
+    } else {
+      throw Exception('Failed to start conversation');
+    }
+  }
 
+  void initializeSocket(String userId) {
+    if (_socket != null && _socket!.connected) {
+      print('Socket is already initialized and connected');
+      return;
+    }
 
-//   Future<void> fetchTrainers() async {
-//     _setLoading(true);
-//     try {
-//       final response = await httpClient.get('/trainers');
-//       if (response.data['status'] == 'success') {
-//         _trainers = response.data['data'];
-//       }
-//     } catch (e) {
-//       print('Error fetching trainers: $e');
-//     } finally {
-//       _setLoading(false);
-//     }
-//   }
+    _socket = IO.io(
+      'ws://172.25.0.153:8000/', // Replace with your server IP address
+      IO.OptionBuilder()
+          .setTransports(['websocket']) // Use WebSocket transport
+          .disableAutoConnect()
+          .build(),
+    );
 
+    _socket!.connect();
 
+    // Handle successful connection
+    _socket!.onConnect((_) {
+      print("Socket connected");
+      _socket!.emit('register', {'userId': userId});
+      _connectionStatus = 'Connected';
+      notifyListeners();
+    });
 
-//   Future<void> fetchConversations(int userId) async {
-//     _setLoading(true);
-//     try {
-//       final response = await httpClient.get('/get-all-conversations/$userId');
-//       final apiResponse = ApiResponse<List<dynamic>>.fromJson(
-//         response.data,
-//         (data) => data as List,
-//       );
-//       if (apiResponse.status == 'success') {
-//         _conversations = apiResponse.data;
-//       }
-//     } catch (e) {
-//       print('Error fetching conversations: $e');
-//     } finally {
-//       _setLoading(false);
-//     }
-//   }
+    // Handle disconnection
+    _socket!.onDisconnect((_) {
+      print("Socket disconnected");
+      _connectionStatus = 'Disconnected';
+      notifyListeners();
+    });
 
-//   Future<void> fetchMessages(int chatId, {int limit = 50, int offset = 0}) async {
-//     _setLoading(true);
-//     try {
-//       final response = await httpClient.get('/get-messages/$chatId', queryParameters: {
-//         'limit': limit,
-//         'offset': offset,
-//       });
-//       final apiResponse = ApiResponse<List<dynamic>>.fromJson(
-//         response.data,
-//         (data) => data as List,
-//       );
-//       if (apiResponse.status == 'success') {
-//         _messages = apiResponse.data;
-//       }
-//     } catch (e) {
-//       print('Error fetching messages: $e');
-//     } finally {
-//       _setLoading(false);
-//     }
-//   }
+    // Handle connection errors
+    _socket!.on('connect_error', (data) {
+      print('Connection Error: $data');
+      _connectionStatus = 'Connection Error';
+      notifyListeners();
+    });
 
-//   Future<void> sendMessage(Map<String, dynamic> messageData) async {
-//     try {
-//       final response = await httpClient.post('/send-message', data: messageData);
-//       final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-//         response.data,
-//         (data) => data as Map<String, dynamic>,
-//       );
-//       if (apiResponse.status == 'success') {
-//         _messages.add(apiResponse.data);
-//         notifyListeners();
-//       }
-//     } catch (e) {
-//       print('Error sending message: $e');
-//     }
-//   }
-// }
+    listenToMessages();
+  }
+
+  void listenToMessages() {
+    _socket!.on('receive_message', (data) {
+      print('Message Received: $data');
+      _messages.add(data); // Add the received message to the local list
+      notifyListeners();
+    });
+
+    _socket!.on('user_typing', (data) {
+      print('User Typing: $data');
+    });
+
+    _socket!.on('user_stopped_typing', (data) {
+      print('User Stopped Typing: $data');
+    });
+  }
+
+  void sendMessage(int chatId, String userId, String message) {
+    if (_socket != null && _socket!.connected) {
+      _socket!.emit('send_message', {
+        'chatId': chatId,
+        'userId': userId,
+        'messageContent': {'text': message},
+      });
+
+      _messages.add({'userId': userId, 'text': message});
+      notifyListeners();
+    } else {
+      print('Socket is not connected. Cannot send message.');
+    }
+  }
+
+  void disconnectSocket() {
+    if (_socket != null) {
+      _socket!.disconnect();
+      _connectionStatus = 'Disconnected';
+      notifyListeners();
+    }
+  }
+}
