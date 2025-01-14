@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gymify/constant/api_constant.dart';
 import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -8,13 +9,14 @@ class ChatProvider extends ChangeNotifier {
   final List<Map<String, dynamic>> _messages = [];
   String _connectionStatus = 'Disconnected';
 
-  IO.Socket? get socket => _socket;
+  bool _isListening = false; // Prevent multiple listener
+
+IO.Socket? get socket => _socket;
   List<Map<String, dynamic>> get messages => _messages;
   String get connectionStatus => _connectionStatus;
 
   Future<int> startConversation(int userId, int trainerId) async {
-    const url =
-        'http://172.25.0.153:8000/api/start'; // Replace with your API URL
+    const url = "$baseUrl/start";
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},
@@ -36,7 +38,7 @@ class ChatProvider extends ChangeNotifier {
     }
 
     _socket = IO.io(
-      'ws://172.25.0.153:8000/', // Replace with your server IP address
+      'ws://192.168.31.96:8000/', // Replace with your server IP address
       IO.OptionBuilder()
           .setTransports(['websocket']) // Use WebSocket transport
           .disableAutoConnect()
@@ -71,10 +73,23 @@ class ChatProvider extends ChangeNotifier {
   }
 
   void listenToMessages() {
+    if (_isListening) return; // Exit if listeners are already set up
+    _isListening = true;
+
+    _socket!.on('register-success', (data) {
+      print('register-success: $data');
+    });
+
     _socket!.on('receive_message', (data) {
       print('Message Received: $data');
-      _messages.add(data); // Add the received message to the local list
-      notifyListeners();
+      if (data != null) {
+        _messages.add(data); // Add the received message to the list
+        notifyListeners(); // Notify the UI to rebuild
+      }
+    });
+
+    _socket!.on('joined_room', (data) {
+      print('User Joined: $data');
     });
 
     _socket!.on('user_typing', (data) {
@@ -98,6 +113,15 @@ class ChatProvider extends ChangeNotifier {
       notifyListeners();
     } else {
       print('Socket is not connected. Cannot send message.');
+    }
+  }
+
+  void joinRoom(int chatId, int userId) {
+    if (_socket != null && _socket!.connected) {
+      print('Joining room: $chatId');
+      _socket!.emit('join_room', {'chatId': chatId, 'userId': userId});
+    } else {
+      print('Socket is not connected. Cannot join room.');
     }
   }
 

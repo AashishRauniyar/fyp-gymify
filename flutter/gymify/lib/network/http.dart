@@ -11,17 +11,6 @@ StorageService _storageService = SharedPrefsService();
 
 var token = _storageService.getString('auth_token');
 
-// final Dio httpClient = Dio(BaseOptions(
-//   baseUrl: baseUrl,
-//   connectTimeout: const Duration(seconds: 10),
-//   receiveTimeout: const Duration(seconds: 10),
-//   headers: {
-//             'Authorization': 'Bearer $token',
-//             'Accept': 'application/json',
-//             'Content-Type': 'application/json',
-//           },
-// )
-// );
 
 final Dio httpClient = Dio(BaseOptions(
   baseUrl: baseUrl,

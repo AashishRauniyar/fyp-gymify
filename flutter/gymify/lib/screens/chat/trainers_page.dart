@@ -194,7 +194,7 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
                           );
                           print(chatId);
                           print(user.userId);
-
+                          
                           // Navigate to ChatScreen
                           Navigator.push(
                             context,

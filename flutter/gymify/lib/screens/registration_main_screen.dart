@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/colors/custom_colors.dart';
 
 class RegistrationMainScreen extends StatelessWidget {
   final Widget
@@ -10,15 +9,20 @@ class RegistrationMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: CustomColors
-          .backgroundColor, // Set the background color for registration flow
+      backgroundColor:
+          theme.colorScheme.surface, // Use dynamic background color
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_sharp,
-              color: Color(0xFFFF5E3A)),
+          icon: Icon(
+            Icons.arrow_back_ios_new_sharp,
+            color: theme.colorScheme.primary, // Use primary color for the icon
+          ),
           onPressed: () {
             if (Navigator.of(context).canPop()) {
               Navigator.of(context).pop(); // Navigate back to the previous page
@@ -35,8 +39,7 @@ class RegistrationMainScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
-              child:
-                  child, // The child widget representing each registration page (e.g., UserNamePage)
+              child: child, // The child widget for each registration page
             ),
           ],
         ),

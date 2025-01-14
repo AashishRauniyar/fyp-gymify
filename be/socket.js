@@ -135,7 +135,11 @@ const initSocket = (server) => {
                     },
                 });
 
+                console.log(`Emitting message to room: ${numericChatId}`); // Log the emission
+                console.log(newMessage); // Log the new message object
+
                 io.to(numericChatId).emit("receive_message", newMessage);
+                
                 socket.emit("message_sent", {
                     status: "success",
                     message: "Message delivered successfully.",

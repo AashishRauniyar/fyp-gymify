@@ -1,123 +1,143 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_login/flutter_login.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:gymify/providers/auth_provider/auth_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
+import 'package:gymify/utils/custom_button.dart';
+import 'package:gymify/utils/custom_input.dart';
+import 'package:gymify/utils/custom_loader.dart';
+import 'package:provider/provider.dart';
+
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
-  // Login logic
-  Future<String?> _authUser(LoginData data, BuildContext context) async {
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
 
-      // Attempt login with the email and password
-      final response = await authProvider.login(data.name, data.password);
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  bool _isLoading = false;
 
-      if (response) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Login successful! Welcome back, ${data.name}.'),
-            backgroundColor: Colors.greenAccent,
-          ),
-        );
-        return null; // Returning null indicates success in FlutterLogin
-      } else {
-        return 'Login failed. Please check your credentials and try again.';
-      }
-    } catch (error) {
-      return 'An unexpected error occurred. Please try again.';
-    }
-  }
-
-  // Placeholder for password recovery logic
-  Future<String?> _recoverPassword(String email) async {
-    await Future.delayed(const Duration(seconds: 2));
-    return 'Password recovery is not implemented yet.';
-  }
-
-  // Placeholder for sign-up logic
-  Future<String?> _signupUser(SignupData data, BuildContext context) async {
-    await Future.delayed(const Duration(seconds: 2));
-    context.go('/register');
-    return null;
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      body: Consumer<AuthProvider>(
-        builder: (context, authProvider, child) {
-          return FlutterLogin(
-            title: 'GYMIFY',
-            theme: LoginTheme(
-              primaryColor: theme.colorScheme.primary,
-              accentColor: theme.colorScheme.secondary,
-              errorColor: theme.colorScheme.error,
-              titleStyle: theme.textTheme.headlineMedium?.copyWith(
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/onboarding/workout.png',
+                width: 120,
+                height: 120,
               ),
-              bodyStyle: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface,
+              const SizedBox(height: 32),
+              CustomInput(
+                controller: _emailController,
+                hintText: 'Enter your email',
+                backgroundColor: theme.colorScheme.surface,
+                onChanged: (value) {},
+                leadingIcon:
+                    Icon(Icons.email, color: Theme.of(context).iconTheme.color),
               ),
-              inputTheme: InputDecorationTheme(
-                filled: true,
-                fillColor: theme.colorScheme.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary.withOpacity(0.5),
+              const SizedBox(height: 16),
+              CustomInput(
+                controller: _passwordController,
+                hintText: 'Enter your password',
+                backgroundColor: theme.colorScheme.surface,
+                obscureText: _obscurePassword,
+                onChanged: (value) {},
+                suffixIcon: IconButton(
+                  icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Theme.of(context).iconTheme.color),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
+                leadingIcon:
+                    Icon(Icons.lock, color: Theme.of(context).iconTheme.color),
+              ),
+              const SizedBox(height: 24),
+              _isLoading
+                  ? const CustomLoadingAnimation()
+                  : CustomButton(
+                      text: "Login",
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+
+                        final authProvider =
+                            Provider.of<AuthProvider>(context, listen: false);
+                        final response = await authProvider.login(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+
+                        if (response) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  'Login successful! Welcome back, ${_emailController.text}.'),
+                              backgroundColor: theme.colorScheme.primary,
+                            ),
+                          );
+                          if (authProvider.isLoggedIn) {
+                            if (context.mounted) {
+                              await Future.delayed(
+                                const Duration(milliseconds: 500),
+                                () => context.go('/home'),
+                              );
+                            }
+                          }
+                        } else {
+                          if (context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text(
+                                    'Login failed. Please check your credentials and try again.'),
+                                backgroundColor: theme.colorScheme.error,
+                              ),
+                            );
+                          }
+                        }
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                    ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () {
+                  context.go('/register');
+                },
+                child: const Text(
+                  'Don’t have an account? Sign up',
+                  style: TextStyle(
+                    fontSize: 14,
                   ),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary.withOpacity(0.3),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary,
-                  ),
-                ),
-                labelStyle: theme.textTheme.bodyMedium,
               ),
-              buttonStyle: TextStyle(
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.bold,
-              ),
-              cardTheme: CardTheme(
-                color: theme.colorScheme.surface,
-                elevation: 8,
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-              ),
-              buttonTheme: LoginButtonTheme(
-                backgroundColor: theme.colorScheme.primary,
-                highlightColor: theme.colorScheme.primary.withOpacity(0.8),
-                elevation: 4,
-                highlightElevation: 2,
-              ),
-            ),
-            onLogin: (data) => _authUser(data, context),
-            onRecoverPassword: _recoverPassword,
-            onSignup: (data) => _signupUser(data, context),
-            onSubmitAnimationCompleted: () {
-              if (authProvider.isLoggedIn) {
-                context.go('/home');
-              }
-            },
-          );
-        },
+            ],
+          ),
+        ),
       ),
     );
   }

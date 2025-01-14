@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymify/services/login_service.dart';  // Import your LoginService
+import 'package:gymify/services/login_service.dart'; // Import your LoginService
 
 class AuthProvider extends ChangeNotifier {
   final LoginService _loginService = LoginService();
@@ -27,7 +27,8 @@ class AuthProvider extends ChangeNotifier {
 
   /// Login the user
   Future<bool> login(String email, String password) async {
-    final response = await _loginService.login(email: email, password: password);
+    final response =
+        await _loginService.login(email: email, password: password);
     if (response['success']) {
       _isLoggedIn = true;
       _userId = response['user']['user_id'].toString();

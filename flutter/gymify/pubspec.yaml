@@ -63,7 +63,7 @@ dependencies:
   video_player: ^2.9.2
   google_fonts: ^6.2.1
   flutter_heatmap_calendar: ^1.0.5
-  flutter_datetime_picker: ^1.5.1
+  # flutter_datetime_picker: ^1.5.1
   flutter_datetime_picker_plus: ^2.2.0
   carousel_slider: ^5.0.0
   line_awesome_flutter: ^3.0.1

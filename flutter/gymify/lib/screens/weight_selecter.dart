@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
 import 'package:gymify/utils/custom_button.dart';
 import 'package:provider/provider.dart';
 
 class WeightSelector extends StatefulWidget {
+  const WeightSelector({super.key});
+
   @override
   _WeightSelectorState createState() => _WeightSelectorState();
 }
@@ -17,24 +18,26 @@ class _WeightSelectorState extends State<WeightSelector> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             "What Is Your Weight?",
-            style: TextStyle(
-              color: Color(0xFF666666),
-              fontSize: 24,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              color: theme.colorScheme.onSurface,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 10),
-          const Text(
+          Text(
             "Please scroll to select your weight.",
-            style: TextStyle(color: Color(0xFF666666), fontSize: 14),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 30),
@@ -52,7 +55,9 @@ class _WeightSelectorState extends State<WeightSelector> {
                   style: TextStyle(
                     fontSize: 18,
                     // use FF5E3A color
-                    color: isKg ? CustomColors.primary : CustomColors.secondary,
+                    color: isKg
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -68,8 +73,9 @@ class _WeightSelectorState extends State<WeightSelector> {
                   "LB",
                   style: TextStyle(
                     fontSize: 18,
-                    color:
-                        !isKg ? CustomColors.primary : CustomColors.secondary,
+                    color: !isKg
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -91,7 +97,7 @@ class _WeightSelectorState extends State<WeightSelector> {
                   left:
                       138, // Adjust this value to move the triangle to the left
                   child: CustomPaint(
-                    size: Size(15, 15),
+                    size: const Size(15, 15),
                     painter: TrianglePointerPainter(),
                   ),
                 ),
@@ -118,7 +124,9 @@ class _WeightSelectorState extends State<WeightSelector> {
                             fontWeight: isSelected
                                 ? FontWeight.bold
                                 : FontWeight.normal,
-                            color: isSelected ? Color(0xFFFF5E3A) : Colors.grey,
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : Theme.of(context).colorScheme.inverseSurface,
                           ),
                           child: Text(weightValue.toStringAsFixed(1)),
                         ),
@@ -133,8 +141,8 @@ class _WeightSelectorState extends State<WeightSelector> {
           const SizedBox(height: 10),
           Text(
             "${selectedWeight.toStringAsFixed(1)} ${isKg ? 'Kg' : 'Lb'}",
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: theme.colorScheme.onSurface,
               fontSize: 40,
               fontWeight: FontWeight.bold,
             ),
@@ -154,42 +162,12 @@ class _WeightSelectorState extends State<WeightSelector> {
   }
 }
 
-// Custom Painter for Vertical Lines
-class LineIndicatorPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.grey[600]!
-      ..strokeWidth = 2;
-
-    const double lineWidthSmall = 30; // Small lines width
-    const double lineWidthBig = 60; // Major lines width
-    const double spacing = 10; // Space between lines
-
-    for (double i = 0; i < size.height; i += spacing) {
-      bool isMajorLine = (i % 50 == 0); // Every 50th line is major
-      canvas.drawLine(
-        Offset(
-            size.width / 2 - (isMajorLine ? lineWidthBig : lineWidthSmall) / 2,
-            i),
-        Offset(
-            size.width / 2 + (isMajorLine ? lineWidthBig : lineWidthSmall) / 2,
-            i),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 // Custom Painter for Triangle Pointer
 class TrianglePointerPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Color(0xFFFF5E3A)
+      ..color = const Color(0xFFFF5E3A)
       ..style = PaintingStyle.fill;
 
     // Create a right-pointing triangle

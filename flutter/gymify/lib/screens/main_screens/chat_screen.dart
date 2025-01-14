@@ -19,13 +19,14 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     final chatProvider = context.read<ChatProvider>();
-    chatProvider.listenToMessages(); // No need to reinitialize the socket
+    chatProvider.joinRoom(
+        widget.chatId, int.parse(widget.userId)); // Join the chat room
+    chatProvider.listenToMessages(); // Listen for incoming messages
   }
 
   @override
   void dispose() {
     _messageController.dispose();
-    // Do not disconnect the socket here
     super.dispose();
   }
 
@@ -54,7 +55,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: chatProvider.messages.length,
                   itemBuilder: (context, index) {
                     final message = chatProvider.messages[index];
-                    final isMe = message['userId'] == widget.userId;
+                    final isMe =
+                        message['sender_id'].toString() == widget.userId;
+
+                    // Safely access nested `message_content['text']`
+                    final messageText = message['message_content']?['text'] ??
+                        'Message unavailable';
+
+
                     return Align(
                       alignment:
                           isMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -67,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
-                          message['text'],
+                          messageText,
                           style: TextStyle(
                             color: isMe ? Colors.white : Colors.black,
                           ),
@@ -85,6 +93,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 Expanded(
                   child: TextField(
+                    style: const TextStyle(color: Colors.black),
                     controller: _messageController,
                     decoration: InputDecoration(
                       hintText: "Type a message...",

@@ -4,13 +4,13 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
 import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_input.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gymify/colors/custom_colors.dart';
 
-// Username Page
 class UserNamePage extends StatefulWidget {
   const UserNamePage({super.key});
 
@@ -19,12 +19,10 @@ class UserNamePage extends StatefulWidget {
 }
 
 class _UserNamePageState extends State<UserNamePage> {
-  // Create a single controller instance for the username input field
   final TextEditingController _usernameController = TextEditingController();
 
   @override
   void dispose() {
-    // Dispose of the controller to prevent memory leaks
     _usernameController.dispose();
     super.dispose();
   }
@@ -32,26 +30,31 @@ class _UserNamePageState extends State<UserNamePage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final textTheme =
+        Theme.of(context).textTheme; // Access text styles from the theme
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
-                const Text("How do you want us to  know you",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(
+                  "How do you want us to know you?",
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 32),
                 CustomInput(
                   controller: _usernameController,
-                  hintText: 'Username',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
+                  hintText: 'Enter your username',
+                  fontSize: textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
                   errorText: provider.usernameError,
                   onChanged: provider.setUserName,
                 ),
@@ -60,8 +63,9 @@ class _UserNamePageState extends State<UserNamePage> {
             CustomButton(
               text: 'NEXT',
               onPressed: () {
-                if (provider.usernameError == null &&
-                    provider.userName.isNotEmpty) {
+                if (_usernameController.text.trim().isEmpty) {
+                  provider.usernameError = 'Username cannot be empty';
+                } else if (provider.usernameError == null) {
                   context.pushNamed('fullname');
                 }
               },
@@ -74,7 +78,6 @@ class _UserNamePageState extends State<UserNamePage> {
 }
 
 // Full Name Page
-
 class FullNamePage extends StatefulWidget {
   const FullNamePage({super.key});
 
@@ -95,38 +98,44 @@ class _FullNamePageState extends State<FullNamePage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Full Name input section
             Column(
               children: [
-                const Text(
+                Text(
                   "Tell us your full name",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: textTheme.headlineMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 CustomInput(
                   controller: _fullNameController,
                   hintText: 'Full Name',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
+                  fontSize: textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  errorText: provider.fullName.isEmpty
+                      ? 'Full name cannot be empty'
+                      : null,
                   onChanged: provider.setFullName,
                 ),
               ],
             ),
-            // Custom "Next" button
             CustomButton(
               text: 'NEXT',
               onPressed: () {
-                if (provider.fullName.isNotEmpty) {
-                  context.pushNamed('gender'); // Navigate to the next screen
+                if (_fullNameController.text.trim().isEmpty) {
+                  provider.setFullName(''); // Trigger error message
+                } else {
+                  context.pushNamed('gender');
                 }
               },
             ),
@@ -148,9 +157,10 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -158,9 +168,12 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
           children: [
             Column(
               children: [
-                const Text(
+                Text(
                   "What’s your gender?",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 Row(
@@ -172,13 +185,13 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         decoration: BoxDecoration(
                           color: provider.gender == 'Male'
-                              ? CustomColors.primary.withOpacity(0.2)
-                              : Colors.white,
+                              ? theme.colorScheme.primary.withOpacity(0.2)
+                              : theme.colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: provider.gender == 'Male'
-                                ? CustomColors.primary
-                                : Colors.grey,
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline,
                             width: 1,
                           ),
                         ),
@@ -189,10 +202,11 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
                               height: 120,
                             ),
                             const SizedBox(height: 8),
-                            const Text(
+                            Text(
                               "Male",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -204,14 +218,14 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         decoration: BoxDecoration(
                           color: provider.gender == 'Female'
-                              ? CustomColors.primary.withOpacity(0.2)
-                              : Colors.white,
+                              ? theme.colorScheme.primary.withOpacity(0.2)
+                              : theme.colorScheme.surface,
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                             color: provider.gender == 'Female'
-                                ? CustomColors.primary
-                                : Colors.grey,
-                            width: 2,
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline,
+                            width: 1,
                           ),
                         ),
                         child: Column(
@@ -221,10 +235,11 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
                               height: 120,
                             ),
                             const SizedBox(height: 8),
-                            const Text(
+                            Text(
                               "Female",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
@@ -241,7 +256,15 @@ class _GenderSelectionPageState extends State<GenderSelectionPage> {
                   context.pushNamed('email'); // Update with the next route
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please select your gender')),
+                    SnackBar(
+                      content: Text(
+                        'Please select your gender',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
                   );
                 }
               },
@@ -274,38 +297,45 @@ class _EmailPageState extends State<EmailPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white, // Custom background color
-
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
-                const Text("Enter your email",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(
+                  "Enter your email",
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 32),
                 // Custom Input widget
                 CustomInput(
-                  controller: _emailController, // Use the controller for email
-                  hintText: 'email',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
-                  errorText:
-                      provider.emailError, // Bind error text from provider
-                  onChanged: provider.setEmail, // Update email state on change
+                  controller: _emailController,
+                  hintText: 'Email',
+                  fontSize: theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: theme.colorScheme.surface,
+                  errorText: provider.emailError ??
+                      (_emailController.text.trim().isEmpty
+                          ? 'Email cannot be empty'
+                          : null),
+                  onChanged: provider.setEmail,
                 ),
               ],
             ),
             CustomButton(
-              text: 'Next',
+              text: 'NEXT',
               onPressed: () {
-                if (provider.emailError == null && provider.email.isNotEmpty) {
+                if (_emailController.text.trim().isEmpty) {
+                  provider.emailError = 'Email cannot be empty';
+                } else if (provider.emailError == null) {
                   context
                       .pushNamed('phonenumber'); // Navigate to the next screen
                 }
@@ -339,44 +369,47 @@ class _PhoneNumberPageState extends State<PhoneNumberPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white, // Custom background color
-
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
-        padding: const EdgeInsets.all(16.0), // Same padding as EmailPage
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
-                const Text(
+                Text(
                   "Enter Phone Number to let us contact you",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 // Custom Input widget for phone number
                 CustomInput(
-                  controller:
-                      _phoneNumberController, // Use the controller for phone number
+                  controller: _phoneNumberController,
                   hintText: 'Phone Number',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
-                  errorText: provider
-                      .phoneNumberError, // Bind error text from provider
-                  onChanged: provider
-                      .setPhoneNumber, // Update phone number state on change
+                  fontSize: theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: theme.colorScheme.surface,
+                  errorText: provider.phoneNumberError ??
+                      (_phoneNumberController.text.trim().isEmpty
+                          ? 'Phone number cannot be empty'
+                          : null),
+                  onChanged: provider.setPhoneNumber,
                 ),
               ],
             ),
             CustomButton(
-              text: 'Next',
+              text: 'NEXT',
               onPressed: () {
-                if (provider.phoneNumberError == null &&
-                    provider.phoneNumber.isNotEmpty) {
-                  // Navigate to the password page
-                  context.pushNamed('password');
+                if (_phoneNumberController.text.trim().isEmpty) {
+                  provider.phoneNumberError = 'Phone number cannot be empty';
+                } else if (provider.phoneNumberError == null) {
+                  context
+                      .pushNamed('password'); // Navigate to the password page
                 }
               },
             ),
@@ -396,10 +429,12 @@ class PasswordPage extends StatefulWidget {
 }
 
 class _PasswordPageState extends State<PasswordPage> {
-  // Create a single controller instance for the password input field
+  // Create controller instances for the password and confirm password input fields
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -412,11 +447,11 @@ class _PasswordPageState extends State<PasswordPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     // Password match validation only when "Next" button is clicked
     void validatePasswordMatch() {
       if (_passwordController.text != _confirmPasswordController.text) {
-        //show error dialogue
         provider.passwordError = 'Passwords do not match';
       } else {
         provider.passwordError = null; // Clear error if passwords match
@@ -424,63 +459,78 @@ class _PasswordPageState extends State<PasswordPage> {
     }
 
     return Scaffold(
-      backgroundColor: CustomColors
-          .white, // Set background color to white, matching other pages
-
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
-        padding: const EdgeInsets.all(
-            16.0), // Padding around the content, same as other pages
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
-                const Text(
+                Text(
                   "Enter Password",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
                 // Custom Input widget for password
                 CustomInput(
-                  controller:
-                      _passwordController, // Use the controller for password
+                  controller: _passwordController,
                   hintText: 'Password',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(
-                      0xFFF6F6F6), // Light gray background for input
-                  errorText:
-                      provider.passwordError, // Bind error text from provider
+                  fontSize: theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: theme.colorScheme.surface,
+                  errorText: provider.passwordError,
                   onChanged: (password) {
                     provider.setPassword(password);
-                    // No validation here anymore
                   },
-                  obscureText: true, // Obscure the password text
+                  obscureText: _obscurePassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: CustomColors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ),
                 ),
                 const SizedBox(height: 16),
                 // Custom Input widget for confirm password
                 CustomInput(
-                  controller:
-                      _confirmPasswordController, // Use the controller for confirm password
+                  controller: _confirmPasswordController,
                   hintText: 'Confirm Password',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(
-                      0xFFF6F6F6), // Light gray background for input
-                  errorText:
-                      provider.passwordError, // Bind error text from provider
-                  onChanged: (confirmPassword) {
-                    // No validation here anymore
-                  },
-                  obscureText: true, // Obscure the password text
+                  fontSize: theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: theme.colorScheme.surface,
+                  errorText: provider.passwordError,
+                  onChanged: (confirmPassword) {},
+                  obscureText: _obscureConfirmPassword,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureConfirmPassword
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: CustomColors.black,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                  ),
                 ),
               ],
             ),
             CustomButton(
-              text: 'Next',
+              text: 'NEXT',
               onPressed: () {
                 // Validate passwords on button press
-                validatePasswordMatch(); // Check if passwords match
+                validatePasswordMatch();
 
                 // If passwords match and there is no error, navigate to the next page
                 if (provider.passwordError == null &&
@@ -496,9 +546,8 @@ class _PasswordPageState extends State<PasswordPage> {
   }
 }
 
-// Address Page
 class AddressPage extends StatefulWidget {
-  const AddressPage({Key? key}) : super(key: key);
+  const AddressPage({super.key});
 
   @override
   State<AddressPage> createState() => _AddressPageState();
@@ -516,35 +565,44 @@ class _AddressPageState extends State<AddressPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.white,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
-                const Text("Enter Address",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text(
+                  "Enter Address",
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
                 const SizedBox(height: 16),
                 CustomInput(
                   controller: _addressController,
                   hintText: 'Address',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
+                  fontSize: theme.textTheme.bodyMedium?.fontSize ?? 14,
+                  backgroundColor: theme.colorScheme.surface,
+                  errorText: _addressController.text.trim().isEmpty
+                      ? 'Address cannot be empty'
+                      : null,
                   onChanged: provider.setAddress,
                 ),
                 const SizedBox(height: 16),
               ],
             ),
             CustomButton(
-              text: 'Next',
+              text: 'NEXT',
               onPressed: () {
-                if (provider.address.isNotEmpty) {
+                if (_addressController.text.trim().isEmpty) {
+                  provider.setAddress(''); // Trigger validation
+                } else {
                   context.pushNamed('birthdate');
                 }
               },
@@ -556,50 +614,93 @@ class _AddressPageState extends State<AddressPage> {
   }
 }
 
-// Birthdate Page
 class BirthDatePage extends StatelessWidget {
   const BirthDatePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.white,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Enter Birthdate",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            TextButton(
-                onPressed: () async {
-                  DatePicker.showDatePicker(context,
+            Column(
+              children: [
+                Text(
+                  "When is your birthday?",
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                GestureDetector(
+                  onTap: () async {
+                    DatePicker.showDatePicker(
+                      context,
                       showTitleActions: true,
-                      minTime: DateTime(1990, 3, 5),
-                      maxTime: DateTime(2011, 6, 7), onChanged: (date) {
-                    print('change $date');
-                  }, onConfirm: (date) {
-                    final finalDate = DateFormat('yyyy-MM-dd').format(date);
-
-                    provider.setBirthdate(finalDate);
-                  }, currentTime: DateTime.now(), locale: LocaleType.en);
-                },
-                child: const Text(
-                  'show date time picker ',
-                  style: TextStyle(color: CustomColors.primary, fontSize: 20),
-                )),
-            const SizedBox(height: 16),
-            Text(provider.birthdate),
-            ElevatedButton(
+                      minTime: DateTime(1990, 1, 1),
+                      maxTime: DateTime(DateTime.now().year - 12, 12, 31),
+                      onConfirm: (date) {
+                        final formattedDate =
+                            DateFormat('yyyy-MM-dd').format(date);
+                        provider.setBirthdate(formattedDate);
+                      },
+                      currentTime: DateTime.now(),
+                      locale: LocaleType.en,
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.colorScheme.outline,
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      provider.birthdate.isEmpty
+                          ? 'Tap to select your birthdate'
+                          : 'Selected Date: ${provider.birthdate}',
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: provider.birthdate.isEmpty
+                            ? theme.colorScheme.onSurface.withOpacity(0.6)
+                            : theme.colorScheme.onSurface,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            CustomButton(
+              text: 'NEXT',
               onPressed: () {
-                if (provider.birthdate.isNotEmpty) {
+                if (provider.birthdate.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please select your birthdate',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
+                  );
+                } else {
                   context.pushNamed('height');
                 }
               },
-              child: const Text('Next'),
             ),
           ],
         ),
@@ -619,56 +720,79 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               "What’s your fitness level?",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
-            // Fitness Level Buttons
+            const SizedBox(height: 24),
             FitnessLevelButton(
               level: "Beginner",
               isSelected: provider.fitnessLevel == "Beginner",
+              theme: theme,
               onPressed: () {
                 provider.setFitnessLevel("Beginner");
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             FitnessLevelButton(
               level: "Intermediate",
               isSelected: provider.fitnessLevel == "Intermediate",
+              theme: theme,
               onPressed: () {
                 provider.setFitnessLevel("Intermediate");
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             FitnessLevelButton(
               level: "Advanced",
               isSelected: provider.fitnessLevel == "Advanced",
+              theme: theme,
               onPressed: () {
                 provider.setFitnessLevel("Advanced");
               },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             FitnessLevelButton(
               level: "Athlete",
               isSelected: provider.fitnessLevel == "Athlete",
+              theme: theme,
               onPressed: () {
                 provider.setFitnessLevel("Athlete");
               },
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             CustomButton(
               text: 'Next',
               onPressed: () {
-                context.pushNamed('goaltype'); // Navigate to the goal type page
+                if (provider.fitnessLevel.isNotEmpty) {
+                  context
+                      .pushNamed('goaltype'); // Navigate to the goal type page
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please select your fitness level',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -681,50 +805,52 @@ class _FitnessLevelPageState extends State<FitnessLevelPage> {
 class FitnessLevelButton extends StatelessWidget {
   final String level;
   final bool isSelected;
+  final ThemeData theme;
   final VoidCallback onPressed;
 
   const FitnessLevelButton({
     super.key,
     required this.level,
     required this.isSelected,
+    required this.theme,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onPressed,
       child: Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 16),
-        margin: const EdgeInsets.only(bottom: 8), // Spacing between buttons
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.transparent
-              : CustomColors.grey, // No background when selected
-          borderRadius: BorderRadius.circular(8),
+              ? theme.colorScheme.primary.withOpacity(0.2)
+              : theme.colorScheme.surfaceContainerHighest,
           border: Border.all(
             color: isSelected
-                ? CustomColors.primary
-                : Colors.transparent, // Add border when selected
-            width: 2.0, // Border width
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline,
+            width: 1.5,
           ),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: Center(
-          child: Text(
-            level,
-            style: TextStyle(
-              color: isSelected
-                  ? CustomColors.primary
-                  : Colors.black, // Change text color when selected
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
+        child: Text(
+          level,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: isSelected
+                ? theme.colorScheme.primary
+                : theme.colorScheme.onSurface.withOpacity(0.7),
+            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
+          textAlign: TextAlign.center,
         ),
       ),
     );
   }
 }
+
+
 
 class GoalTypePage extends StatelessWidget {
   const GoalTypePage({super.key});
@@ -732,64 +858,70 @@ class GoalTypePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Select Goal Type",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              "Select your goal type",
+              style: theme.textTheme.headlineMedium?.copyWith(
+                color: theme.colorScheme.onSurface,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 16),
-            // Goal Type Buttons
+            const SizedBox(height: 24),
             GoalTypeButton(
               level: "Endurance",
               isSelected: provider.goalType == "Endurance",
-              onPressed: () {
-                provider.setGoalType("Endurance");
-              },
+              theme: theme,
+              onPressed: () => provider.setGoalType("Endurance"),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             GoalTypeButton(
               level: "Muscle Gain",
               isSelected: provider.goalType == "Muscle_Gain",
-              onPressed: () {
-                provider.setGoalType("Muscle_Gain");
-              },
+              theme: theme,
+              onPressed: () => provider.setGoalType("Muscle_Gain"),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             GoalTypeButton(
               level: "Maintain Weight",
               isSelected: provider.goalType == "Maintain_Weight",
-              onPressed: () {
-                provider.setGoalType("Maintain_Weight");
-              },
+              theme: theme,
+              onPressed: () => provider.setGoalType("Maintain_Weight"),
             ),
-            const SizedBox(height: 8),
-            GoalTypeButton(
-              level: "Maintenance",
-              isSelected: provider.goalType == "Maintenance",
-              onPressed: () {
-                provider.setGoalType("Maintenance");
-              },
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
             GoalTypeButton(
               level: "Flexibility",
               isSelected: provider.goalType == "Flexibility",
-              onPressed: () {
-                provider.setGoalType("Flexibility");
-              },
+              theme: theme,
+              onPressed: () => provider.setGoalType("Flexibility"),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 32),
             CustomButton(
               text: 'Next',
               onPressed: () {
-                context.pushNamed('caloriegoals'); // Navigate to the next page
+                if (provider.goalType.isNotEmpty) {
+                  context.pushNamed('caloriegoals');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please select a goal type',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -799,47 +931,46 @@ class GoalTypePage extends StatelessWidget {
   }
 }
 
-// GoalTypeButton widget for individual goal type buttons
 class GoalTypeButton extends StatelessWidget {
   final String level;
   final bool isSelected;
+  final ThemeData theme;
   final VoidCallback onPressed;
 
   const GoalTypeButton({
     super.key,
     required this.level,
     required this.isSelected,
+    required this.theme,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        margin: const EdgeInsets.only(bottom: 8), // Spacing between buttons
         decoration: BoxDecoration(
           color: isSelected
-              ? Colors.transparent
-              : CustomColors.grey, // No background when selected
-          borderRadius: BorderRadius.circular(8),
+              ? theme.colorScheme.primary.withOpacity(0.2)
+              : theme.colorScheme.surfaceContainerHighest,
           border: Border.all(
             color: isSelected
-                ? CustomColors.primary
-                : Colors.transparent, // Add border when selected
-            width: 2.0, // Border width
+                ? theme.colorScheme.primary
+                : theme.colorScheme.outline,
+            width: 1.5,
           ),
+          borderRadius: BorderRadius.circular(12),
         ),
         child: Center(
           child: Text(
             level,
-            style: TextStyle(
+            style: theme.textTheme.bodyLarge?.copyWith(
               color: isSelected
-                  ? CustomColors.primary
-                  : Colors.black, // Change text color when selected
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.onSurface.withOpacity(0.7),
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
         ),
@@ -848,7 +979,6 @@ class GoalTypeButton extends StatelessWidget {
   }
 }
 
-// Calorie Goals Page
 class CalorieGoalsPage extends StatefulWidget {
   const CalorieGoalsPage({super.key});
 
@@ -868,9 +998,21 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Calorie Goals",
+      //     style: theme.textTheme.headlineSmall?.copyWith(
+      //       color: theme.colorScheme.onPrimary,
+      //     ),
+      //   ),
+      //   backgroundColor: theme.colorScheme.primary,
+      //   centerTitle: true,
+      //   elevation: 0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -878,19 +1020,21 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
           children: [
             Column(
               children: [
-                const Text("Enter Calorie Goals",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
+                Text(
+                  "Enter your calorie goals",
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
                 CustomInput(
                   controller: _calorieGoalsController,
                   hintText: 'Calorie Goals',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
+                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
                   onChanged: provider.setCalorieGoals,
                 ),
-                const SizedBox(height: 16),
               ],
             ),
             CustomButton(
@@ -898,6 +1042,18 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
               onPressed: () {
                 if (provider.calorieGoals.isNotEmpty) {
                   context.pushNamed('allergies');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please enter calorie goals',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
+                  );
                 }
               },
             ),
@@ -908,7 +1064,6 @@ class _CalorieGoalsPageState extends State<CalorieGoalsPage> {
   }
 }
 
-// Allergies Page
 class AllergiesPage extends StatefulWidget {
   const AllergiesPage({super.key});
 
@@ -928,9 +1083,21 @@ class _AllergiesPageState extends State<AllergiesPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
+      // appBar: AppBar(
+      //   // title: Text(
+      //   //   "Allergies",
+      //   //   style: theme.textTheme.headlineSmall?.copyWith(
+      //   //     color: theme.colorScheme.onPrimary,
+      //   //   ),
+      //   // ),
+      //   // backgroundColor: theme.colorScheme.primary,
+      //   centerTitle: true,
+      //   elevation: 0,
+      // ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -938,25 +1105,41 @@ class _AllergiesPageState extends State<AllergiesPage> {
           children: [
             Column(
               children: [
-                const Text("Enter Allergies",
-                    style:
-                        TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                CustomInput(
-                  hintText: 'Allergies',
-                  fontSize: 14,
-                  textColor: Colors.black,
-                  backgroundColor: const Color(0xFFF6F6F6),
-                  onChanged: provider.setAllergies,
-                  controller: _allergiesController,
+                Text(
+                  "Enter your allergies (if any)",
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: theme.colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
+                CustomInput(
+                  controller: _allergiesController,
+                  hintText: 'Allergies',
+                  backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                  onChanged: provider.setAllergies,
+                ),
               ],
             ),
             CustomButton(
               text: 'Next',
               onPressed: () {
-                context.pushNamed('confirm');
+                if (provider.allergies.isNotEmpty) {
+                  context.pushNamed('confirm');
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        'Please enter allergies or type "None"',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onError,
+                        ),
+                      ),
+                      backgroundColor: theme.colorScheme.error,
+                    ),
+                  );
+                }
               },
             ),
           ],
@@ -977,6 +1160,7 @@ class ConfirmRegistrationPage extends StatefulWidget {
 class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
   File? _profilePicture;
   final ImagePicker _picker = ImagePicker();
+  bool _isLoading = false;
 
   // Function to pick profile picture
   Future<void> _pickProfilePicture() async {
@@ -991,18 +1175,10 @@ class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<RegistrationProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_sharp,
-              color: CustomColors.primary),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -1021,7 +1197,11 @@ class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
                     ? FileImage(_profilePicture!)
                     : null,
                 child: _profilePicture == null
-                    ? const Icon(Icons.camera_alt, size: 40, color: Colors.grey)
+                    ? Icon(
+                        Icons.camera_alt,
+                        size: 40,
+                        color: theme.colorScheme.onSurface.withOpacity(0.5),
+                      )
                     : null,
               ),
             ),
@@ -1030,34 +1210,72 @@ class _ConfirmRegistrationPageState extends State<ConfirmRegistrationPage> {
             // Welcome Text
             Text(
               'Hi ${provider.userName}, Ready to build your body?',
-              style: const TextStyle(
-                fontSize: 18,
+              style: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: CustomColors.secondary,
+                color: theme.colorScheme.onSurface,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
 
-            // Register Button
-            CustomButton(
-              text: 'Register',
-              onPressed: () async {
-                final result = await provider.submitRegistration();
-                if (result['success']) {
-                  
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Registration Successful!')),
-                  );
-                  context.go('/login');
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text(result['message'] ?? 'Registration Failed')),
-                  );
-                }
-              },
-            )
+            // Register Button or Loading Spinner
+            _isLoading
+                ? const CustomLoadingAnimation()
+                : CustomButton(
+                    text: 'Register',
+                    onPressed: () async {
+                      if (_profilePicture == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Profile picture is required!',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onError,
+                              ),
+                            ),
+                            backgroundColor: theme.colorScheme.error,
+                          ),
+                        );
+                        return;
+                      }
+
+                      setState(() {
+                        _isLoading = true;
+                      });
+
+                      final result = await provider.submitRegistration();
+                      setState(() {
+                        _isLoading = false;
+                      });
+
+                      if (result['success']) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Registration Successful!',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                            ),
+                            backgroundColor: theme.colorScheme.primary,
+                          ),
+                        );
+                        context.go('/login');
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              result['message'] ?? 'Registration Failed',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onError,
+                              ),
+                            ),
+                            backgroundColor: theme.colorScheme.error,
+                          ),
+                        );
+                      }
+                    },
+                  )
           ],
         ),
       ),

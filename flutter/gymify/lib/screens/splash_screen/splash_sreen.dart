@@ -72,8 +72,6 @@
 //   }
 // }
 
-
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -103,6 +101,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await authProvider.checkLoginStatus();
 
     if (authProvider.isLoggedIn) {
+      print('socket ma pugyo');
       final userId = authProvider.userId;
       if (userId != null) {
         chatProvider.initializeSocket(userId);
