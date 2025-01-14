@@ -139,7 +139,7 @@ const initSocket = (server) => {
                 console.log(newMessage); // Log the new message object
 
                 io.to(numericChatId).emit("receive_message", newMessage);
-                
+
                 socket.emit("message_sent", {
                     status: "success",
                     message: "Message delivered successfully.",
@@ -150,6 +150,60 @@ const initSocket = (server) => {
                 console.error(`Send message error: ${error.message}`);
             }
         });
+
+
+        socket.on("user_typing", ({ chatId, userId }) => {
+            try {
+                const numericUserId = parseInt(userId);
+                const numericChatId = parseInt(chatId);
+
+                if (!connectedUsers[numericUserId]) {
+                    throw new Error("User is not registered. Please register first.");
+                }
+
+                if (!numericChatId) {
+                    throw new Error("ChatId is required.");
+                }
+
+                // Broadcast the typing event to other users in the room
+                socket.to(numericChatId).emit("user_typing", {
+                    chatId: numericChatId,
+                    userId: numericUserId,
+                });
+
+                console.log(`User ${numericUserId} is typing in chat room ${numericChatId}`);
+            } catch (error) {
+                socket.emit("typing-error", { message: error.message });
+                console.error(`Typing error: ${error.message}`);
+            }
+        });
+
+        socket.on("user_stopped_typing", ({ chatId, userId }) => {
+            try {
+                const numericUserId = parseInt(userId);
+                const numericChatId = parseInt(chatId);
+
+                if (!connectedUsers[numericUserId]) {
+                    throw new Error("User is not registered. Please register first.");
+                }
+
+                if (!numericChatId) {
+                    throw new Error("ChatId is required.");
+                }
+
+                // Broadcast the stopped typing event to other users in the room
+                socket.to(numericChatId).emit("user_stopped_typing", {
+                    chatId: numericChatId,
+                    userId: numericUserId,
+                });
+
+                console.log(`User ${numericUserId} stopped typing in chat room ${numericChatId}`);
+            } catch (error) {
+                socket.emit("stopped-typing-error", { message: error.message });
+                console.error(`Stopped typing error: ${error.message}`);
+            }
+        });
+
 
         // **Handle Disconnection**
         socket.on("disconnect", () => {
