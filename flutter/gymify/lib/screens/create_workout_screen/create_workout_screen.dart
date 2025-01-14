@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -167,7 +168,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
   //             const Text('Select Exercises'),
   //             if (exerciseProvider.exercises.isEmpty)
-  //               const Center(child: CircularProgressIndicator())
+  //               const Center(child: CustomLoadingAnimation())
   //             else
   //               Expanded(
   //                 child: ListView.builder(
@@ -422,7 +423,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                 // Exercise Selection
                 const Text('Select Exercises'),
                 if (exerciseProvider.exercises.isEmpty)
-                  const Center(child: CircularProgressIndicator())
+                  const Center(child: CustomLoadingAnimation())
                 else
                   ListView.builder(
                     shrinkWrap: true,

@@ -19,7 +19,7 @@
 //         child: Consumer<CustomWorkoutProvider>(
 //           builder: (context, customWorkoutProvider, child) {
 //             if (customWorkoutProvider.isLoading) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             final exercises = customWorkoutProvider.customWorkouts
@@ -84,6 +84,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
 class CustomWorkoutDetailScreen extends StatelessWidget {
@@ -112,7 +113,7 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
           builder: (context, customWorkoutProvider, child) {
             if (customWorkoutProvider.selectedCustomWorkout == null &&
                 !customWorkoutProvider.hasError) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CustomLoadingAnimation());
             }
 
             if (customWorkoutProvider.hasError) {

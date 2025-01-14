@@ -53,7 +53,7 @@
 //       body: Consumer<WorkoutProvider>(
 //         builder: (context, workoutProvider, child) {
 //           if (workoutProvider.isLoading) {
-//             return const Center(child: CircularProgressIndicator());
+//             return const Center(child: CustomLoadingAnimation());
 //           }
 
 //           if (workoutProvider.hasError) {
@@ -303,6 +303,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/workout_model.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 // Import the theme
@@ -333,7 +334,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
-        toolbarHeight: 40,
+        toolbarHeight: 60,
         title: Text(
           'Gymify',
           style: Theme.of(context).textTheme.headlineMedium,
@@ -354,7 +355,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<WorkoutProvider>(
         builder: (context, workoutProvider, child) {
           if (workoutProvider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingAnimation());
           }
 
           if (workoutProvider.hasError) {

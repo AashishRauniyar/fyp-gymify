@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/user_model.dart';
+import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
@@ -255,10 +256,16 @@ final GoRouter router = GoRouter(
           path: '/diet',
           builder: (context, state) => const DietScreen(),
         ),
+        // GoRoute(
+        //   path: '/chat',
+        //   builder: (context, state) => const ChatScreen(),
+        // ),
         GoRoute(
           path: '/chat',
-          builder: (context, state) => const ChatScreen(),
+          builder: (context, state) => const UserTrainerPage(),
         ),
+
+        
         GoRoute(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),

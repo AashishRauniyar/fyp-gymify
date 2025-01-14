@@ -1,39 +1,91 @@
-// lib/services/chat_service.dart
-import 'package:gymify/models/chat_conversation.dart';
-import 'package:gymify/models/chat_message.dart';
-import 'package:gymify/network/http.dart';
-import 'package:gymify/services/storage_service.dart';
+// import 'package:flutter/material.dart';
+// import 'package:gymify/network/http.dart';
+// import 'package:gymify/models/api_response.dart';
 
-class ChatService {
-  
-  final StorageService storageService;
+// class ChatProvider with ChangeNotifier {
+//   List<dynamic> _conversations = [];
+//   List<dynamic> get conversations => _conversations;
 
-  ChatService({
-    
-    required this.storageService,
-  });
+//   List<dynamic> _messages = [];
+//   List<dynamic> get messages => _messages;
 
-  Future<List<ChatConversation>> getConversations() async {
-    final userId = await storageService.getString('user_id');
-    final response = await httpClient.get('/chat/conversations/$userId');
-    return (response.data['data'] as List)
-        .map((json) => ChatConversation.fromJson(json))
-        .toList();
-  }
+//   bool _isLoading = false;
+//   bool get isLoading => _isLoading;
 
-  Future<List<ChatMessage>> getMessages(int chatId) async {
-    final response = await httpClient.get('/chat/messages/$chatId');
-    return (response.data['data'] as List)
-        .map((json) => ChatMessage.fromJson(json))
-        .toList();
-  }
+//   void _setLoading(bool loading) {
+//     _isLoading = loading;
+//     notifyListeners();
+//   }
 
-  Future<ChatConversation> startConversation(int trainerId) async {
-    final userId = await storageService.getString('user_id');
-    final response = await httpClient.post('/chat/start', data: {
-      'userId': userId,
-      'trainerId': trainerId,
-    });
-    return ChatConversation.fromJson(response.data['data']);
-  }
-}
+
+//   Future<void> fetchTrainers() async {
+//     _setLoading(true);
+//     try {
+//       final response = await httpClient.get('/trainers');
+//       if (response.data['status'] == 'success') {
+//         _trainers = response.data['data'];
+//       }
+//     } catch (e) {
+//       print('Error fetching trainers: $e');
+//     } finally {
+//       _setLoading(false);
+//     }
+//   }
+
+
+
+//   Future<void> fetchConversations(int userId) async {
+//     _setLoading(true);
+//     try {
+//       final response = await httpClient.get('/get-all-conversations/$userId');
+//       final apiResponse = ApiResponse<List<dynamic>>.fromJson(
+//         response.data,
+//         (data) => data as List,
+//       );
+//       if (apiResponse.status == 'success') {
+//         _conversations = apiResponse.data;
+//       }
+//     } catch (e) {
+//       print('Error fetching conversations: $e');
+//     } finally {
+//       _setLoading(false);
+//     }
+//   }
+
+//   Future<void> fetchMessages(int chatId, {int limit = 50, int offset = 0}) async {
+//     _setLoading(true);
+//     try {
+//       final response = await httpClient.get('/get-messages/$chatId', queryParameters: {
+//         'limit': limit,
+//         'offset': offset,
+//       });
+//       final apiResponse = ApiResponse<List<dynamic>>.fromJson(
+//         response.data,
+//         (data) => data as List,
+//       );
+//       if (apiResponse.status == 'success') {
+//         _messages = apiResponse.data;
+//       }
+//     } catch (e) {
+//       print('Error fetching messages: $e');
+//     } finally {
+//       _setLoading(false);
+//     }
+//   }
+
+//   Future<void> sendMessage(Map<String, dynamic> messageData) async {
+//     try {
+//       final response = await httpClient.post('/send-message', data: messageData);
+//       final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+//         response.data,
+//         (data) => data as Map<String, dynamic>,
+//       );
+//       if (apiResponse.status == 'success') {
+//         _messages.add(apiResponse.data);
+//         notifyListeners();
+//       }
+//     } catch (e) {
+//       print('Error sending message: $e');
+//     }
+//   }
+// }

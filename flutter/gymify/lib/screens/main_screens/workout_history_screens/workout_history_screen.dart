@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutHistoryScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
         centerTitle: true,
       ),
       body: workoutLogProvider.isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CustomLoadingAnimation())
           : workoutLogProvider.hasError
               ? const Center(
                   child: Text(
@@ -134,7 +135,7 @@ class _WorkoutLogTileState extends State<WorkoutLogTile> {
       child: ExpansionTile(
         leading: Icon(Icons.fitness_center, color: CustomColors.primary),
         title: _isLoading
-            ? const CircularProgressIndicator()
+            ? const CustomLoadingAnimation()
             : Text(
                 "${_formatDate(workoutDate)} - $_workoutName - $workoutNotes",
                 style: GoogleFonts.poppins(fontWeight: FontWeight.bold),

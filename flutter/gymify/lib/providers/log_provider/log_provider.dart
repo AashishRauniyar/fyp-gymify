@@ -141,7 +141,8 @@ class WorkoutLogProvider with ChangeNotifier {
     required int workoutId,
   }) async {
     // Log the workout
-    final isWorkoutLogged = await logWorkout(userId: userId, workoutId: workoutId);
+    final isWorkoutLogged =
+        await logWorkout(userId: userId, workoutId: workoutId);
 
     // If workout is logged successfully, log the exercises
     if (isWorkoutLogged) {
@@ -166,7 +167,7 @@ class WorkoutLogProvider with ChangeNotifier {
 
   List<Map<String, dynamic>> _userLogs = [];
   List<Map<String, dynamic>> get userLogs => _userLogs;
-   // Fetch user logs
+  // Fetch user logs
   Future<void> fetchUserLogs(String userId) async {
     _setLoading(true);
     _setError(false);

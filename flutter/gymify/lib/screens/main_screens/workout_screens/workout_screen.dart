@@ -17,7 +17,7 @@
 //         child: Consumer<WorkoutProvider>(
 //           builder: (context, workoutProvider, child) {
 //             if (workoutProvider.workouts.isEmpty) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             return ListView.builder(
@@ -121,7 +121,7 @@
 //         child: Consumer<WorkoutProvider>(
 //           builder: (context, workoutProvider, child) {
 //             if (workoutProvider.isLoading) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             if (workoutProvider.workouts.isEmpty) {
@@ -289,7 +289,7 @@
 //         child: Consumer2<WorkoutProvider, CustomWorkoutProvider>(
 //           builder: (context, workoutProvider, customWorkoutProvider, child) {
 //             if (workoutProvider.isLoading || customWorkoutProvider.isLoading) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             if (workoutProvider.workouts.isEmpty &&
@@ -545,7 +545,7 @@
 //         child: Consumer2<WorkoutProvider, CustomWorkoutProvider>(
 //           builder: (context, workoutProvider, customWorkoutProvider, child) {
 //             if (workoutProvider.isLoading || customWorkoutProvider.isLoading) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             if (workoutProvider.workouts.isEmpty &&
@@ -767,6 +767,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
@@ -798,13 +799,13 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
             },
           ),
         ],
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 60,
         title: Text(
           'Workouts',
-          style: TextStyle(
-            color: theme.colorScheme.primary,
-          ),
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
-        backgroundColor: theme.colorScheme.surface,
       ),
       body: MultiProvider(
         providers: [
@@ -816,7 +817,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
         child: Consumer2<WorkoutProvider, CustomWorkoutProvider>(
           builder: (context, workoutProvider, customWorkoutProvider, child) {
             if (workoutProvider.isLoading || customWorkoutProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CustomLoadingAnimation());
             }
 
             if (workoutProvider.workouts.isEmpty &&

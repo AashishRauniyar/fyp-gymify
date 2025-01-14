@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +15,7 @@ class CreateCustomWorkoutScreen extends StatefulWidget {
       _CreateCustomWorkoutScreenState();
 }
 
-class _CreateCustomWorkoutScreenState
-    extends State<CreateCustomWorkoutScreen> {
+class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
   final _formKey = GlobalKey<FormState>();
   String? customWorkoutName;
   File? customWorkoutImage;
@@ -34,8 +34,7 @@ class _CreateCustomWorkoutScreenState
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
-    final customWorkoutProvider =
-        Provider.of<CustomWorkoutProvider>(context);
+    final customWorkoutProvider = Provider.of<CustomWorkoutProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -67,7 +66,7 @@ class _CreateCustomWorkoutScreenState
               const Text('Select Exercises'),
               const SizedBox(height: 8),
               exerciseProvider.exercises.isEmpty
-                  ? const Center(child: CircularProgressIndicator())
+                  ? const Center(child: CustomLoadingAnimation())
                   : Expanded(
                       child: ListView.builder(
                         itemCount: exerciseProvider.exercises.length,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/colors/custom_colors.dart';
+import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/main_screens/home_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
@@ -22,9 +23,9 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const WorkoutListScreen(),
     const DietScreen(),
-    const ChatScreen(
-      
-    ),
+    // const ChatScreen(
+    // ),
+    const UserTrainerPage(),
     const ProfileScreen(),
   ];
 

@@ -32,7 +32,7 @@
 //           title: const Text('Edit Profile'),
 //         ),
 //         body: const Center(
-//           child: CircularProgressIndicator(),
+//           child: CustomLoadingAnimation(),
 //         ),
 //       );
 //     }
@@ -177,7 +177,7 @@
 //                 ),
 //               ),
 //               child: profileProvider.isLoading
-//                   ? const CircularProgressIndicator(color: Colors.white)
+//                   ? const CustomLoadingAnimation(color: Colors.white)
 //                   : const Text('Save Changes'),
 //             ),
 //           ],

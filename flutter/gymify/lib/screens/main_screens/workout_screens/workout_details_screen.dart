@@ -33,7 +33,7 @@
 //           builder: (context, workoutProvider, child) {
 //             if (workoutProvider.selectedWorkout == null &&
 //                 !workoutProvider.hasError) {
-//               return const Center(child: CircularProgressIndicator());
+//               return const Center(child: CustomLoadingAnimation());
 //             }
 
 //             if (workoutProvider.hasError) {
@@ -258,6 +258,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/screens/exercise_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_log_screen.dart';
@@ -290,7 +291,7 @@ class WorkoutDetailScreen extends StatelessWidget {
           builder: (context, workoutProvider, child) {
             if (workoutProvider.selectedWorkout == null &&
                 !workoutProvider.hasError) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CustomLoadingAnimation());
             }
 
             if (workoutProvider.hasError) {

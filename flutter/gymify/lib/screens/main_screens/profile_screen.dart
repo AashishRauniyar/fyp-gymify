@@ -277,7 +277,7 @@
 //       child: Consumer<ProfileProvider>(
 //         builder: (context, profileProvider, child) {
 //           if (profileProvider.isLoading) {
-//             return const Center(child: CircularProgressIndicator());
+//             return const Center(child: CustomLoadingAnimation());
 //           }
 
 //           if (profileProvider.hasError || profileProvider.user == null) {
@@ -509,7 +509,7 @@
 //       child: Consumer<ProfileProvider>(
 //         builder: (context, profileProvider, child) {
 //           if (profileProvider.isLoading) {
-//             return const Center(child: CircularProgressIndicator());
+//             return const Center(child: CustomLoadingAnimation());
 //           }
 
 //           final userId =
@@ -809,6 +809,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 
@@ -858,7 +859,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (profileProvider.isLoading) {
       return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(child: CustomLoadingAnimation()),
       );
     }
 
@@ -904,13 +905,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
-
           // button for change theme
           IconButton(
             icon: const Icon(Icons.brightness_4),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ],
         title: Text(

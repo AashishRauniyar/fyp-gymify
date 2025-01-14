@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
 class CustomWorkoutListScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
         child: Consumer<CustomWorkoutProvider>(
           builder: (context, customWorkoutProvider, child) {
             if (customWorkoutProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: CustomLoadingAnimation());
             }
 
             if (customWorkoutProvider.customWorkouts.isEmpty) {

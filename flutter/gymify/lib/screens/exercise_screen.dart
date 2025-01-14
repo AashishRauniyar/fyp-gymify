@@ -41,7 +41,7 @@
 //         builder: (context, exerciseProvider, child) {
 //           // Check if exercises are still being loaded
 //           if (exerciseProvider.exercises.isEmpty) {
-//             return const Center(child: CircularProgressIndicator());
+//             return const Center(child: CustomLoadingAnimation());
 //           }
 
 //           return Padding(
@@ -146,7 +146,7 @@
 //                             aspectRatio: _videoController!.value.aspectRatio,
 //                             child: VideoPlayer(_videoController!),
 //                           )
-//                         : const CircularProgressIndicator(),
+//                         : const CustomLoadingAnimation(),
 //                     IconButton(
 //                       icon: Icon(
 //                         _videoController!.value.isPlaying
@@ -212,6 +212,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
@@ -273,7 +274,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
       body: Consumer<ExerciseProvider>(
         builder: (context, exerciseProvider, child) {
           if (exerciseProvider.exercises.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CustomLoadingAnimation());
           }
 
           return ListView.builder(
