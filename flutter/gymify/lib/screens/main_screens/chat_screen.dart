@@ -5,8 +5,13 @@ import 'package:provider/provider.dart';
 class ChatScreen extends StatefulWidget {
   final int chatId;
   final String userId;
+  final String userName;
 
-  const ChatScreen({super.key, required this.chatId, required this.userId});
+  const ChatScreen(
+      {super.key,
+      required this.chatId,
+      required this.userId,
+      required this.userName});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -19,9 +24,13 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     super.initState();
     final chatProvider = context.read<ChatProvider>();
-    chatProvider.joinRoom(
-        widget.chatId, int.parse(widget.userId)); // Join the chat room
-    chatProvider.listenToMessages(); // Listen for incoming messages
+
+    // Fetch old messages
+    chatProvider.fetchMessages(widget.chatId).then((_) {
+      // After fetching old messages, join the room for real-time updates
+      chatProvider.joinRoom(widget.chatId, int.parse(widget.userId));
+      chatProvider.listenToMessages();
+    });
   }
 
   @override
@@ -44,7 +53,8 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Chat (${context.watch<ChatProvider>().connectionStatus})"),
+        title: Text(
+            "${widget.userName}  (${context.watch<ChatProvider>().connectionStatus})"),
       ),
       body: Column(
         children: [
@@ -58,10 +68,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     final isMe =
                         message['sender_id'].toString() == widget.userId;
 
-                    // Safely access nested `message_content['text']`
                     final messageText = message['message_content']?['text'] ??
                         'Message unavailable';
-
 
                     return Align(
                       alignment:

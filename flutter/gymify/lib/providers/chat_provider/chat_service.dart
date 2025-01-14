@@ -8,10 +8,9 @@ class ChatProvider extends ChangeNotifier {
   IO.Socket? _socket;
   final List<Map<String, dynamic>> _messages = [];
   String _connectionStatus = 'Disconnected';
+  bool _isListening = false;
 
-  bool _isListening = false; // Prevent multiple listener
-
-IO.Socket? get socket => _socket;
+  IO.Socket? get socket => _socket;
   List<Map<String, dynamic>> get messages => _messages;
   String get connectionStatus => _connectionStatus;
 
@@ -31,23 +30,41 @@ IO.Socket? get socket => _socket;
     }
   }
 
+  Future<void> fetchMessages(int chatId) async {
+    final url = "$baseUrl/messages/$chatId";
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final fetchedMessages = List<Map<String, dynamic>>.from(data['data']);
+        _messages.clear();
+        _messages.addAll(fetchedMessages); // Add old messages
+        notifyListeners();
+      } else {
+        throw Exception('Failed to fetch messages');
+      }
+    } catch (e) {
+      print('Error fetching messages: $e');
+    }
+  }
+
   void initializeSocket(String userId) {
     if (_socket != null && _socket!.connected) {
       print('Socket is already initialized and connected');
+
       return;
     }
 
     _socket = IO.io(
-      'ws://192.168.31.96:8000/', // Replace with your server IP address
+      'ws://192.168.31.96:8000/',
       IO.OptionBuilder()
-          .setTransports(['websocket']) // Use WebSocket transport
+          .setTransports(['websocket'])
           .disableAutoConnect()
           .build(),
     );
 
     _socket!.connect();
 
-    // Handle successful connection
     _socket!.onConnect((_) {
       print("Socket connected");
       _socket!.emit('register', {'userId': userId});
@@ -73,7 +90,7 @@ IO.Socket? get socket => _socket;
   }
 
   void listenToMessages() {
-    if (_isListening) return; // Exit if listeners are already set up
+    if (_isListening) return;
     _isListening = true;
 
     _socket!.on('register-success', (data) {
@@ -99,6 +116,31 @@ IO.Socket? get socket => _socket;
     _socket!.on('user_stopped_typing', (data) {
       print('User Stopped Typing: $data');
     });
+
+    _socket!.on('receive_message', (data) {
+      print('Message Received: $data');
+      if (data != null) {
+        // Avoid duplicates by checking if the message ID already exists
+        final isDuplicate = _messages.any(
+          (message) => message['message_id'] == data['message_id'],
+        );
+
+        if (!isDuplicate) {
+          _messages
+              .add(data); // Add the new message only if it's not a duplicate
+          notifyListeners();
+        }
+      }
+    });
+  }
+
+  void joinRoom(int chatId, int userId) {
+    if (_socket != null && _socket!.connected) {
+      print('Joining room: $chatId');
+      _socket!.emit('join_room', {'chatId': chatId, 'userId': userId});
+    } else {
+      print('Socket is not connected. Cannot join room.');
+    }
   }
 
   void sendMessage(int chatId, String userId, String message) {
@@ -109,19 +151,10 @@ IO.Socket? get socket => _socket;
         'messageContent': {'text': message},
       });
 
-      _messages.add({'userId': userId, 'text': message});
-      notifyListeners();
+      // Do not manually add the message to the list here
+      // Let the server broadcast the message and handle it via `receive_message`
     } else {
       print('Socket is not connected. Cannot send message.');
-    }
-  }
-
-  void joinRoom(int chatId, int userId) {
-    if (_socket != null && _socket!.connected) {
-      print('Joining room: $chatId');
-      _socket!.emit('join_room', {'chatId': chatId, 'userId': userId});
-    } else {
-      print('Socket is not connected. Cannot join room.');
     }
   }
 

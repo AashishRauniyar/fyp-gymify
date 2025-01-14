@@ -303,6 +303,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/workout_model.dart';
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
+import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
@@ -321,6 +323,17 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<WorkoutProvider>().fetchAllWorkouts();
+
+      final authProvider = context.read<AuthProvider>();
+      final chatProvider = context.read<ChatProvider>();
+      if (authProvider.isLoggedIn) {
+        print('socket ma pugyo');
+        final userId = authProvider.userId;
+        print("yeta aayo $userId");
+        if (userId != null) {
+          chatProvider.initializeSocket(userId);
+        }
+      }
     });
   }
 

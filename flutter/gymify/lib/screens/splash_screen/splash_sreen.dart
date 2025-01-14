@@ -96,17 +96,17 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _initializeApp() async {
     final authProvider = context.read<AuthProvider>();
-    final chatProvider = context.read<ChatProvider>();
 
     await authProvider.checkLoginStatus();
 
-    if (authProvider.isLoggedIn) {
-      print('socket ma pugyo');
-      final userId = authProvider.userId;
-      if (userId != null) {
-        chatProvider.initializeSocket(userId);
-      }
-    }
+    // final chatProvider = context.read<ChatProvider>();
+    // if (authProvider.isLoggedIn) {
+    //   print('socket ma pugyo');
+    //   final userId = authProvider.userId;
+    //   if (userId != null) {
+    //     chatProvider.initializeSocket(userId);
+    //   }
+    // }
 
     Future.delayed(const Duration(seconds: 5), () {
       if (authProvider.isLoggedIn) {
