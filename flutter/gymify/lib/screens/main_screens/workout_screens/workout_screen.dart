@@ -877,7 +877,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Default Workouts',
+                                'Our Workouts',
                                 style: theme.textTheme.headlineSmall,
                               ),
                               TextButton(
@@ -959,6 +959,26 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                           ),
                         ],
                       ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Explore Exercises',
+                          style: theme.textTheme.headlineSmall,
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            context.pushNamed('exercises');
+                          },
+                          child: Text(
+                            'See Exercises',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     if (filteredCustomWorkouts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

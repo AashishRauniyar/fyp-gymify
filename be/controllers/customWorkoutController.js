@@ -143,6 +143,48 @@ export const getCustomWorkoutExercisesById = async (req, res) => {
     }
 };
 
+//! in use, working for flutter
+export const getCustomWorkoutById = async (req, res) => {
+    const { user_id } = req.user;
+
+    // Ensure the user is authenticated
+    if (!user_id) {
+        return res.status(403).json({ status: 'failure', message: 'Access denied. Please login first' });
+    }
+
+    try {
+        const customWorkoutId = parseInt(req.params.id);
+
+        // Fetch the custom workout by ID, including exercises
+        const customWorkout = await prisma.customworkouts.findUnique({
+            where: { custom_workout_id: customWorkoutId },
+            include: {
+                customworkoutexercises: {
+                    include: {
+                        exercises: true // Include detailed information about each exercise
+                    }
+                }
+            }
+        });
+
+        // If the custom workout doesn't exist
+        if (!customWorkout) {
+            return res.status(404).json({ status: 'failure', message: 'Custom workout not found' });
+        }
+
+        // Respond with the custom workout data
+        res.status(200).json({
+            status: 'success',
+            message: 'Successfully fetched custom workout by ID',
+            data: customWorkout,
+        });
+    } catch (error) {
+        console.error('Error fetching custom workout:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
+
+
 
 // remove exercise from custom workout
 export const removeExerciseFromCustomWorkout = async (req, res) => {

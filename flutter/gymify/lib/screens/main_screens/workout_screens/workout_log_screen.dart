@@ -1,3 +1,5 @@
+// ! donot touch above code
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,10 +7,7 @@ import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
-
 import 'package:provider/provider.dart';
-
-
 
 class ExerciseLogScreen extends StatefulWidget {
   final int workoutId;
@@ -47,10 +46,13 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
   }
 
   void _startExerciseTimer() {
-    _timer?.cancel(); // Cancel previous timer
-    _elapsedSeconds = 0;
-    _isResting = false;
-    _exerciseLogged = false; // Reset logged state
+    _timer?.cancel(); // Cancel any previous timers
+    setState(() {
+      _elapsedSeconds = 0;
+      _isResting = false;
+      _exerciseLogged = false; // Reset logged state
+    });
+
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
         _elapsedSeconds++;
@@ -59,7 +61,7 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
   }
 
   void _startRestTimer() {
-    _timer?.cancel(); // Cancel exercise timer
+    _timer?.cancel(); // Cancel the exercise timer
     setState(() {
       _restSeconds = 30; // Reset rest timer
       _isResting = true;
@@ -83,17 +85,22 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
     final logProvider = Provider.of<WorkoutLogProvider>(context, listen: false);
     final currentExercise = widget.exercises[currentExerciseIndex];
 
+    double exerciseDuration =
+        skipped ? 0.0 : _elapsedSeconds / 60.0; // In minutes
+    double restDuration = _isResting ? _restSeconds / 60.0 : 0.0;
+
     logProvider.addExerciseLog(
       exerciseId: currentExercise.exerciseId,
-      exerciseDuration:
-          skipped ? 0.0 : _elapsedSeconds / 60, // Convert seconds to minutes
-      restDuration: _isResting
-          ? _restSeconds / 60
-          : 0.0, // Include rest only if applicable
+      exerciseDuration: exerciseDuration,
+      restDuration: restDuration,
       skipped: skipped,
     );
 
-    _exerciseLogged = true; // Mark as logged
+    _exerciseLogged = true;
+
+    // Debugging to verify logs
+    debugPrint(
+        'Exercise Logged: ID: ${currentExercise.exerciseId}, Duration: $exerciseDuration mins, Rest: $restDuration mins, Skipped: $skipped');
   }
 
   void _nextExercise() {
@@ -305,41 +312,98 @@ class PerformanceNotesScreen extends StatelessWidget {
     final performanceNotesController = TextEditingController();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Performance Notes')),
+      appBar: AppBar(
+        title: Text(
+          'Performance Notes',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: CustomColors.primary,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: performanceNotesController,
-              decoration: const InputDecoration(
-                labelText: 'Performance Notes',
-                border: OutlineInputBorder(),
+            Text(
+              'Add notes about your workout performance:',
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
               ),
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                final logProvider =
-                    Provider.of<WorkoutLogProvider>(context, listen: false);
-                logProvider.performanceNotes = performanceNotesController.text;
-                // get current user id from auth provider
+            TextField(
+              controller: performanceNotesController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                labelText: 'Performance Notes',
+                labelStyle: GoogleFonts.poppins(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                filled: true,
+                fillColor: CustomColors.primaryShade2.withOpacity(0.1),
+              ),
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  final logProvider =
+                      Provider.of<WorkoutLogProvider>(context, listen: false);
 
-                int userId = int.parse(context.read<AuthProvider>().userId!);
+                  // Save the notes in the provider
+                  logProvider.performanceNotes =
+                      performanceNotesController.text;
 
-                await logProvider.finalizeWorkout(
-                    userId: userId, workoutId: workoutId);
+                  // Finalize the workout (this includes logging exercises)
+                  int userId = int.parse(context
+                      .read<AuthProvider>()
+                      .userId!); // Replace with actual user ID retrieval
+                  await logProvider.finalizeWorkout(
+                    userId: userId,
+                    workoutId: workoutId,
+                  );
 
-                // Clear states and navigate to confirmation
-                logProvider.clearStates();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const WorkoutCompleteScreen(),
+                  // Clear state after successful logging
+                  logProvider.clearStates();
+
+                  // Navigate to the Workout Complete Screen
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const WorkoutCompleteScreen(),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CustomColors.primary,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 12,
+                    horizontal: 24,
                   ),
-                );
-              },
-              child: const Text('End Workout'),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  'Finish Workout',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -354,32 +418,58 @@ class WorkoutCompleteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Workout Complete')),
+      appBar: AppBar(
+        title: Text(
+          'Workout Complete',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: CustomColors.primary,
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Workout and exercises logged successfully!'),
+            const Icon(
+              Icons.check_circle_outline,
+              color: Colors.green,
+              size: 100,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Workout Logged Successfully!',
+              style: GoogleFonts.poppins(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: CustomColors.primary,
+              ),
+            ),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('OK'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors.primary,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 24,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                'Go Back',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class FinalScreen extends StatelessWidget {
-  const FinalScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Workout Complete')),
-      body: const Center(
-        child: Text('Workout and exercises logged successfully!'),
       ),
     );
   }

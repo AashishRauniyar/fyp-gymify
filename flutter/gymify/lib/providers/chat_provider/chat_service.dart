@@ -228,7 +228,8 @@ class ChatProvider extends ChangeNotifier {
     }
 
     _socket = IO.io(
-      'ws://192.168.31.96:8000/',
+      // 'ws://192.168.31.96:8000/',
+      socketUrl,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .disableAutoConnect()
@@ -347,6 +348,7 @@ class ChatProvider extends ChangeNotifier {
     if (_socket != null) {
       _socket!.disconnect();
       _connectionStatus = 'Disconnected';
+
       notifyListeners();
     }
   }

@@ -187,7 +187,6 @@ class CustomWorkoutProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -226,7 +225,7 @@ class CustomWorkoutProvider with ChangeNotifier {
     _setLoading(true);
     try {
       final response =
-          await httpClient.get('/custom-workouts/$customWorkoutId/exercises');
+          await httpClient.get('/custom-workouts/$customWorkoutId');
       // final responseData = response.data;
       final apiResponse = ApiResponse<CustomWorkoutModel>.fromJson(
         response.data,
@@ -234,6 +233,10 @@ class CustomWorkoutProvider with ChangeNotifier {
       );
       if (apiResponse.status == 'success') {
         _selectedCustomWorkout = apiResponse.data;
+        _selectedCustomWorkout?.customworkoutexercises.forEach((element) {
+          print(element.exercises.exerciseName);
+        });
+        print(selectedCustomWorkout?.customWorkoutId);
       } else {
         throw Exception(apiResponse.message);
       }

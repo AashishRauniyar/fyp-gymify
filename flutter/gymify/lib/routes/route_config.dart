@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/user_model.dart';
 import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
@@ -110,7 +111,7 @@ final GoRouter router = GoRouter(
         GoRoute(
           path: '/register/weight',
           name: 'weight',
-          builder: (context, state) => WeightSelector(),
+          builder: (context, state) => const WeightSelector(),
         ),
         GoRoute(
           path: '/register/fitnesslevel',
@@ -216,7 +217,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/weight',
-      builder: (context, state) => WeightSelector(),
+      builder: (context, state) => const WeightSelector(),
     ),
 
     GoRoute(
@@ -265,7 +266,6 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const UserTrainerPage(),
         ),
 
-        
         GoRoute(
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
@@ -292,6 +292,14 @@ final GoRouter router = GoRouter(
         name: 'allWorkouts',
         path: '/allWorkouts',
         builder: (context, state) => const AllWorkouts()),
+
+    GoRoute(
+      name: 'exerciseDetails',
+      path: '/exerciseDetails',
+      builder: (context, state) => ExerciseDetailScreen(
+        exercise: state.extra as Exercise,
+      ),
+    ),
     // GoRoute(
     //   name: 'editProfile',
     //   path: '/editProfile',

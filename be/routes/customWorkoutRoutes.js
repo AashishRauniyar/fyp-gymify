@@ -2,7 +2,7 @@ import express from 'express';
 
 
 import { authenticate } from '../middleware/authMiddleware.js';
-import { addExerciseToCustomWorkout, createCustomWorkout, getCustomWorkoutExercisesById, getCustomWorkoutsOfUser, removeExerciseFromCustomWorkout } from '../controllers/customWorkoutController.js';
+import { addExerciseToCustomWorkout, createCustomWorkout, getCustomWorkoutById, getCustomWorkoutExercisesById, getCustomWorkoutsOfUser, removeExerciseFromCustomWorkout } from '../controllers/customWorkoutController.js';
 
 export const customWorkoutRouter = express.Router();
 
@@ -16,4 +16,8 @@ customWorkoutRouter.post('/custom-workouts/add-exercise', authenticate, addExerc
 customWorkoutRouter.get('/custom-workouts/:id/exercises', authenticate, getCustomWorkoutExercisesById);
 // Route to remove an exercise from a custom workout
 customWorkoutRouter.delete('/custom-workouts/exercises/:id', authenticate, removeExerciseFromCustomWorkout);
+
+
+
+customWorkoutRouter.get('/custom-workouts/:id', authenticate, getCustomWorkoutById);
 
