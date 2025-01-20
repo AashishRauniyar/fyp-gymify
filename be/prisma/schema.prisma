@@ -213,6 +213,8 @@ model users {
   workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
   personal_bests                                        personal_bests[]
   weight_logs   weight_logs[] // One-to-many relation with weight_logs
+  otp          String?   @db.VarChar(6)     // OTP code
+  otp_expiry   DateTime? // Expiry time
 }
 
 model workoutexercises {

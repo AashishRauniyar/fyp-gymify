@@ -810,6 +810,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
+import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/providers/socket_provider/socket_service.dart';
 import 'package:gymify/utils/custom_loader.dart';
@@ -834,7 +835,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
       // Disconnect socket connection
-
+      final socketService = Provider.of<ChatProvider>(context, listen: false);
+      socketService.handleLogout();
       await authProvider.logout();
       if (context.mounted) {
         context.go('/welcome');

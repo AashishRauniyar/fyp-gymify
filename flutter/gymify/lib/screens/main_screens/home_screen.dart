@@ -326,12 +326,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final authProvider = context.read<AuthProvider>();
       final chatProvider = context.read<ChatProvider>();
-      if (authProvider.isLoggedIn) {
-        print('socket ma pugyo');
-        final userId = authProvider.userId;
-        print("yeta aayo $userId");
-        if (userId != null) {
-          chatProvider.initializeSocket(userId);
+      // if (authProvider.isLoggedIn) {
+      //   print('socket ma pugyo');
+      //   final userId = authProvider.userId;
+      //   print("yeta aayo $userId");
+      //   if (userId != null) {
+      //     chatProvider.initializeSocket(userId);
+      //   }
+      // }
+      if (authProvider.isLoggedIn && authProvider.userId != null) {
+        if (!chatProvider.isInitialized) {
+          chatProvider.initializeSocket(authProvider.userId!);
         }
       }
     });
