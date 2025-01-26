@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             SnackBar(
                               content: Text(
                                   'Login successful! Welcome back, ${_emailController.text}.'),
-                              backgroundColor: theme.colorScheme.primary,
+                              backgroundColor: Colors.green,
                             ),
                           );
                           if (authProvider.isLoggedIn) {

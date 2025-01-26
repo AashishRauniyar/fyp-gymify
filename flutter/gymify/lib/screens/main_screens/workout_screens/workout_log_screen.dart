@@ -475,6 +475,292 @@
 //   }
 // }
 
+// import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:video_player/video_player.dart';
+// import 'package:gymify/colors/custom_colors.dart';
+// import 'package:gymify/models/workout_model.dart';
+// import 'package:gymify/providers/log_provider/log_provider.dart';
+// import 'package:provider/provider.dart';
+
+// class ExerciseLogScreen extends StatefulWidget {
+//   final int workoutId;
+//   final List<Workoutexercise> exercises;
+
+//   const ExerciseLogScreen({
+//     super.key,
+//     required this.workoutId,
+//     required this.exercises,
+//   });
+
+//   @override
+//   State<ExerciseLogScreen> createState() => _ExerciseLogScreenState();
+// }
+
+// class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
+//   late VideoPlayerController _videoController;
+//   int currentExerciseIndex = 0;
+//   Timer? _timer;
+//   Timer? _restTimer;
+//   int _elapsedSeconds = 0;
+//   int _restSeconds = 30;
+//   bool _isResting = false;
+//   bool _exerciseLogged = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _initializeVideo();
+//     _startExerciseTimer();
+//   }
+
+//   @override
+//   void dispose() {
+//     _timer?.cancel();
+//     _restTimer?.cancel();
+//     _videoController.dispose();
+//     super.dispose();
+//   }
+
+//   void _initializeVideo() {
+//     final currentExercise = widget.exercises[currentExerciseIndex];
+//     _videoController = VideoPlayerController.networkUrl(
+//         Uri.parse(currentExercise.exercises?.videoUrl ?? ''))
+//       ..initialize().then((_) {
+//         setState(() {});
+//         _videoController.play();
+//       });
+//   }
+
+//   void _startExerciseTimer() {
+//     _timer?.cancel();
+//     _restTimer?.cancel();
+//     setState(() {
+//       _elapsedSeconds = 0;
+//       _isResting = false;
+//       _exerciseLogged = false;
+//     });
+
+//     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+//       setState(() {
+//         _elapsedSeconds++;
+//       });
+//     });
+//   }
+
+//   void _startRestTimer() {
+//     _timer?.cancel();
+//     setState(() {
+//       _restSeconds = 30;
+//       _isResting = true;
+//       _exerciseLogged = true;
+//     });
+
+//     _restTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+//       setState(() {
+//         _restSeconds--;
+//         if (_restSeconds == 0) {
+//           _restTimer?.cancel();
+//           _nextExercise();
+//         }
+//       });
+//     });
+//   }
+
+//   void _logCurrentExercise({bool skipped = false}) {
+//     if (_exerciseLogged) return;
+
+//     final logProvider = Provider.of<WorkoutLogProvider>(context, listen: false);
+//     final currentExercise = widget.exercises[currentExerciseIndex];
+
+//     double exerciseDuration = skipped ? 0.0 : _elapsedSeconds / 60.0;
+//     double restDuration = _isResting ? _restSeconds / 60.0 : 0.0;
+
+//     logProvider.addExerciseLog(
+//       exerciseId: currentExercise.exerciseId,
+//       exerciseDuration: exerciseDuration,
+//       restDuration: restDuration,
+//       skipped: skipped,
+//     );
+
+//     _exerciseLogged = true;
+//   }
+
+//   void _nextExercise() {
+//     if (currentExerciseIndex < widget.exercises.length - 1) {
+//       setState(() {
+//         currentExerciseIndex++;
+//       });
+//       _initializeVideo();
+//       _startExerciseTimer();
+//     } else {
+//       _completeWorkout();
+//     }
+//   }
+
+//   void _skipExercise() {
+//     _logCurrentExercise(skipped: true);
+//     _startRestTimer();
+//   }
+
+//   void _skipRest() {
+//     _restTimer?.cancel();
+//     _nextExercise();
+//   }
+
+//   void _completeWorkout() {
+//     Navigator.pushReplacement(
+//       context,
+//       MaterialPageRoute(
+//         builder: (context) => const WorkoutCompleteScreen(),
+//       ),
+//     );
+//   }
+
+//   String _formattedTime(int seconds) {
+//     final minutes = seconds ~/ 60;
+//     final remainder = seconds % 60;
+//     return "${minutes.toString().padLeft(2, '0')}:${remainder.toString().padLeft(2, '0')}";
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final currentExercise = widget.exercises[currentExerciseIndex];
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(
+//           _isResting
+//               ? "Rest Time"
+//               : 'Exercise ${currentExerciseIndex + 1}/${widget.exercises.length}',
+//           style: GoogleFonts.poppins(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 20,
+//           ),
+//         ),
+//         backgroundColor: CustomColors.primary,
+//         centerTitle: true,
+//       ),
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             children: [
+//               if (_videoController.value.isInitialized)
+//                 AspectRatio(
+//                   aspectRatio: _videoController.value.aspectRatio,
+//                   child: VideoPlayer(_videoController),
+//                 ),
+//               const SizedBox(height: 16),
+//               Text(
+//                 _isResting
+//                     ? "Rest Timer: ${_formattedTime(_restSeconds)}"
+//                     : "Time Elapsed: ${_formattedTime(_elapsedSeconds)}",
+//                 style: GoogleFonts.poppins(
+//                   fontSize: 24,
+//                   fontWeight: FontWeight.bold,
+//                   color: CustomColors.primary,
+//                 ),
+//               ),
+//               const SizedBox(height: 16),
+//               if (!_isResting)
+//                 Column(
+//                   children: [
+//                     Text(
+//                       currentExercise.exercises?.description ??
+//                           'No Description',
+//                       style: GoogleFonts.poppins(
+//                         fontSize: 16,
+//                         color: Colors.grey[700],
+//                       ),
+//                     ),
+//                     const SizedBox(height: 8),
+//                     Text(
+//                       "Target Muscle Group: ${currentExercise.exercises?.targetMuscleGroup ?? 'N/A'}",
+//                       style: GoogleFonts.poppins(
+//                         fontSize: 16,
+//                         color: CustomColors.primary,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               const SizedBox(height: 16),
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: [
+//                   if (!_isResting)
+//                     ElevatedButton.icon(
+//                       onPressed: _skipExercise,
+//                       icon: const Icon(Icons.skip_next),
+//                       label: const Text("Skip"),
+//                     ),
+//                   if (_isResting)
+//                     ElevatedButton.icon(
+//                       onPressed: _skipRest,
+//                       icon: const Icon(Icons.skip_next),
+//                       label: const Text("Skip Rest"),
+//                     ),
+//                   if (!_isResting)
+//                     ElevatedButton.icon(
+//                       onPressed: () {
+//                         _logCurrentExercise();
+//                         _startRestTimer();
+//                       },
+//                       icon: const Icon(Icons.check),
+//                       label: const Text("Log & Rest"),
+//                     ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class WorkoutCompleteScreen extends StatelessWidget {
+//   const WorkoutCompleteScreen({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(
+//           'Workout Complete',
+//           style: GoogleFonts.poppins(
+//             fontWeight: FontWeight.bold,
+//           ),
+//         ),
+//         backgroundColor: CustomColors.primary,
+//         centerTitle: true,
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             const Icon(
+//               Icons.check_circle_outline,
+//               color: Colors.green,
+//               size: 100,
+//             ),
+//             const SizedBox(height: 16),
+//             Text(
+//               'Workout Logged Successfully!',
+//               style: GoogleFonts.poppins(
+//                 fontSize: 22,
+//                 fontWeight: FontWeight.bold,
+//                 color: CustomColors.primary,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -507,6 +793,7 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
   int _restSeconds = 30;
   bool _isResting = false;
   bool _exerciseLogged = false;
+  bool _isVideoPlaying = true;
 
   @override
   void initState() {
@@ -525,12 +812,25 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
 
   void _initializeVideo() {
     final currentExercise = widget.exercises[currentExerciseIndex];
-    _videoController =
-        VideoPlayerController.network(currentExercise.exercises?.videoUrl ?? '')
-          ..initialize().then((_) {
-            setState(() {});
-            _videoController.play();
-          });
+    _videoController = VideoPlayerController.networkUrl(
+        Uri.parse(currentExercise.exercises?.videoUrl ?? ''))
+      ..initialize().then((_) {
+        setState(() {});
+        _videoController.play();
+        _videoController.setLooping(true);
+      });
+  }
+
+  void _toggleVideoPlayPause() {
+    setState(() {
+      if (_videoController.value.isPlaying) {
+        _videoController.pause();
+        _isVideoPlaying = false;
+      } else {
+        _videoController.play();
+        _isVideoPlaying = true;
+      }
+    });
   }
 
   void _startExerciseTimer() {
@@ -642,75 +942,136 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
         backgroundColor: CustomColors.primary,
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            if (_videoController.value.isInitialized)
-              AspectRatio(
-                aspectRatio: _videoController.value.aspectRatio,
-                child: VideoPlayer(_videoController),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              if (_videoController.value.isInitialized)
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: _videoController.value.aspectRatio,
+                      child: VideoPlayer(_videoController),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          _isVideoPlaying ? Icons.pause : Icons.play_arrow,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                        onPressed: _toggleVideoPlayPause,
+                      ),
+                    ),
+                  ],
+                ),
+              if (_videoController.value.isInitialized)
+                VideoProgressIndicator(
+                  _videoController,
+                  allowScrubbing: true,
+                  colors: VideoProgressColors(
+                    playedColor: CustomColors.primary,
+                    bufferedColor: Colors.grey,
+                    backgroundColor: Colors.grey[300]!,
+                  ),
+                ),
+              const SizedBox(height: 16),
+              Text(
+                _isResting
+                    ? "Rest Timer: ${_formattedTime(_restSeconds)}"
+                    : "Time Elapsed: ${_formattedTime(_elapsedSeconds)}",
+                style: GoogleFonts.poppins(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: CustomColors.primary,
+                ),
               ),
-            const SizedBox(height: 16),
-            Text(
-              _isResting
-                  ? "Rest Timer: ${_formattedTime(_restSeconds)}"
-                  : "Time Elapsed: ${_formattedTime(_elapsedSeconds)}",
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: CustomColors.primary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (!_isResting)
-              Column(
+              const SizedBox(height: 16),
+              if (!_isResting)
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          currentExercise.exercises?.description ??
+                              'No Description',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.grey[700],
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Target Muscle Group: ${currentExercise.exercises?.targetMuscleGroup ?? 'N/A'}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: CustomColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text(
-                    currentExercise.exercises?.description ?? 'No Description',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: Colors.grey[700],
+                  if (!_isResting)
+                    ElevatedButton.icon(
+                      onPressed: _skipExercise,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.skip_next),
+                      label: const Text("Skip"),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    "Target Muscle Group: ${currentExercise.exercises?.targetMuscleGroup ?? 'N/A'}",
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      color: CustomColors.primary,
+                  if (_isResting)
+                    ElevatedButton.icon(
+                      onPressed: _skipRest,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.skip_next),
+                      label: const Text("Skip Rest"),
                     ),
-                  ),
+                  if (!_isResting)
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        _logCurrentExercise();
+                        _startRestTimer();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: const Icon(Icons.check),
+                      label: const Text("Log & Rest"),
+                    ),
                 ],
               ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                if (!_isResting)
-                  ElevatedButton.icon(
-                    onPressed: _skipExercise,
-                    icon: const Icon(Icons.skip_next),
-                    label: const Text("Skip"),
-                  ),
-                if (_isResting)
-                  ElevatedButton.icon(
-                    onPressed: _skipRest,
-                    icon: const Icon(Icons.skip_next),
-                    label: const Text("Skip Rest"),
-                  ),
-                if (!_isResting)
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      _logCurrentExercise();
-                      _startRestTimer();
-                    },
-                    icon: const Icon(Icons.check),
-                    label: const Text("Log & Rest"),
-                  ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -749,6 +1110,28 @@ class WorkoutCompleteScreen extends StatelessWidget {
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 color: CustomColors.primary,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors.primary,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                'Back to Workouts',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
