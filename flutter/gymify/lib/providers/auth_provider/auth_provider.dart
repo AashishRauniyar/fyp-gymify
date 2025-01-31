@@ -25,6 +25,9 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners(); // Notify listeners when state changes
   }
 
+
+  
+
   /// Login the user
   Future<bool> login(String email, String password) async {
     final response =

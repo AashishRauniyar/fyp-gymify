@@ -870,7 +870,7 @@ class GoalTypePage extends StatelessWidget {
             Text(
               "Select your goal type",
               style: theme.textTheme.headlineMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
+                color: theme.colorScheme.onSurface, 
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,

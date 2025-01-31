@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -298,8 +300,13 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
     final workoutProvider = Provider.of<WorkoutProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Workout'),
+      // appBar: AppBar(
+      //   title: const Text('Create Workout'),
+
+      // ),
+      appBar: CustomAppBar(
+        title: "create workout",
+        onBackPressed: () => context.pop(),
       ),
       body: SingleChildScrollView(
         child: Padding(

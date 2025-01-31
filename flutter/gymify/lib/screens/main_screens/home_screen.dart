@@ -300,20 +300,331 @@
 //   }
 // }
 
+// import 'package:flutter/material.dart';
+// import 'package:go_router/go_router.dart';
+// import 'package:gymify/models/workout_model.dart';
+// import 'package:gymify/providers/auth_provider/auth_provider.dart';
+// import 'package:gymify/providers/chat_provider/chat_service.dart';
+// import 'package:gymify/providers/profile_provider/profile_provider.dart';
+// import 'package:gymify/utils/custom_loader.dart';
+// import 'package:intl/intl.dart';
+// import 'package:provider/provider.dart';
+// import 'package:gymify/providers/workout_provider/workout_provider.dart';
+// // Import the theme
+
+// class HomeScreen extends StatefulWidget {
+//   const HomeScreen({super.key});
+
+//   @override
+//   _HomeScreenState createState() => _HomeScreenState();
+// }
+
+// class _HomeScreenState extends State<HomeScreen> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       // context.read<WorkoutProvider>().fetchAllWorkouts();
+//       if (mounted) {
+//         context.read<WorkoutProvider>().fetchAllWorkouts();
+//         context.read<ProfileProvider>().fetchProfile();
+//       }
+
+//       final authProvider = context.read<AuthProvider>();
+//       final chatProvider = context.read<ChatProvider>();
+//       if (authProvider.isLoggedIn && authProvider.userId != null) {
+//         if (!chatProvider.isInitialized) {
+//           chatProvider.initializeSocket(authProvider.userId!);
+//         }
+//       }
+//     });
+//   }
+
+//   // Method to format the current date
+//   String getFormattedDate() {
+//     final DateFormat dateFormat = DateFormat('MMMM dd, yyyy');
+//     return dateFormat.format(DateTime.now());
+//   }
+
+//   final TextEditingController _searchController = TextEditingController();
+//   String _searchQuery = '';
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Theme.of(context).colorScheme.surface,
+//       appBar: AppBar(
+//         backgroundColor: Colors.transparent,
+//         scrolledUnderElevation: 0,
+//         toolbarHeight: 60,
+//         title: Text(
+//           'Gymify',
+//           style: Theme.of(context).textTheme.headlineMedium,
+//         ),
+//         actions: [
+//           IconButton(
+//             icon: Icon(
+//               Icons.settings,
+//               color: Theme.of(context).iconTheme.color,
+//             ),
+//             onPressed: () {
+//               // Navigate to Settings Screen
+//               context.pushNamed('profile');
+
+//             },
+//           ),
+//         ],
+//       ),
+//       body: Consumer<WorkoutProvider>(
+//         builder: (context, workoutProvider, child) {
+//           if (workoutProvider.isLoading) {
+//             return const Center(child: CustomLoadingAnimation());
+//           }
+
+//           if (workoutProvider.hasError) {
+//             return const Center(child: Text('Error fetching workouts.'));
+//           }
+
+//           final filteredWorkouts = workoutProvider.workouts.where((workout) {
+//             final workoutName = workout.workoutName.toLowerCase();
+//             final targetMuscleGroup = workout.targetMuscleGroup.toLowerCase();
+//             return workoutName.contains(_searchQuery) ||
+//                 targetMuscleGroup.contains(_searchQuery);
+//           }).toList();
+
+//           return Padding(
+//             padding: const EdgeInsets.all(16.0),
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Search Bar
+//                 if (user != null)
+//                   Padding(
+//                     padding: const EdgeInsets.only(bottom: 16.0),
+//                     child: Text(
+//                       'Welcome, ${user.firstName}!',
+//                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                             fontWeight: FontWeight.bold,
+//                           ),
+//                     ),
+//                   ),
+//                 // Display Current Date
+//                 Padding(
+//                   padding: const EdgeInsets.only(bottom: 24.0),
+//                   child: Text(
+//                     'Today is $currentDate',
+//                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+//                           color: Colors.grey,
+//                         ),
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: const EdgeInsets.symmetric(vertical: 10),
+//                   child: TextField(
+//                     controller: _searchController,
+//                     onChanged: (value) {
+//                       setState(() {
+//                         _searchQuery = value.toLowerCase();
+//                       });
+//                     },
+//                     decoration: InputDecoration(
+//                       hintText: 'Search Workouts...',
+//                       prefixIcon: const Icon(Icons.search),
+//                       filled: true,
+//                       fillColor: Theme.of(context).colorScheme.surface,
+//                       border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(12),
+//                         borderSide: BorderSide.none,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 16),
+//                 // Workout Plans Section
+//                 Text(
+//                   "Workout Plans",
+//                   style: Theme.of(context).textTheme.headlineMedium,
+//                 ),
+//                 const SizedBox(height: 10),
+//                 // Horizontal List of Workouts
+//                 SingleChildScrollView(
+//                   scrollDirection: Axis.horizontal,
+//                   child: Row(
+//                     children: filteredWorkouts.map((workout) {
+//                       return WorkoutCard(
+//                         workout: workout,
+//                         onTap: () {
+//                           context.pushNamed(
+//                             'workoutDetail',
+//                             queryParameters: {
+//                               'workoutId': workout.workoutId.toString(),
+//                             },
+//                           );
+//                         },
+//                       );
+//                     }).toList(),
+//                   ),
+//                 ),
+//                 const SizedBox(height: 20),
+//                 // All Workouts Section
+//                 Text(
+//                   "All Workouts",
+//                   style: Theme.of(context).textTheme.headlineMedium,
+//                 ),
+//                 const SizedBox(height: 10),
+//                 // Vertical ListView of Workouts
+//                 Expanded(
+//                   child: ListView.builder(
+//                     itemCount: workoutProvider.workouts.length,
+//                     itemBuilder: (context, index) {
+//                       final workout = workoutProvider.workouts[index];
+//                       return Card(
+//                         margin: const EdgeInsets.symmetric(vertical: 4),
+//                         shape: RoundedRectangleBorder(
+//                           borderRadius: BorderRadius.circular(12),
+//                         ),
+//                         elevation: 0.5,
+//                         child: ListTile(
+//                           contentPadding: const EdgeInsets.all(8),
+//                           leading: ClipRRect(
+//                             borderRadius: BorderRadius.circular(12),
+//                             child: Image.network(
+//                               workout.workoutImage.isNotEmpty
+//                                   ? workout.workoutImage
+//                                   : 'https://via.placeholder.com/150',
+//                               width: 70,
+//                               height: 70,
+//                               fit: BoxFit.cover,
+//                             ),
+//                           ),
+//                           title: Text(
+//                             workout.workoutName,
+//                             style: Theme.of(context).textTheme.headlineSmall,
+//                           ),
+//                           subtitle: Text(
+//                             '${workout.fitnessLevel} • ${workout.goalType}',
+//                             style: Theme.of(context).textTheme.bodyMedium,
+//                           ),
+//                           trailing: const Icon(Icons.arrow_forward_ios),
+//                           onTap: () {
+//                             context.pushNamed(
+//                               'workoutDetail',
+//                               queryParameters: {
+//                                 'workoutId': workout.workoutId.toString(),
+//                               },
+//                             );
+//                           },
+//                         ),
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
+// class WorkoutCard extends StatelessWidget {
+//   final Workout workout;
+//   final VoidCallback onTap;
+
+//   const WorkoutCard({
+//     super.key,
+//     required this.workout,
+//     required this.onTap,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GestureDetector(
+//       onTap: onTap,
+//       child: Card(
+//         margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+//         shape: RoundedRectangleBorder(
+//           borderRadius: BorderRadius.circular(12),
+//         ),
+//         elevation: 5,
+//         child: ClipRRect(
+//           borderRadius: BorderRadius.circular(12),
+//           child: Stack(
+//             children: [
+//               Image.network(
+//                 workout.workoutImage.isNotEmpty
+//                     ? workout.workoutImage
+//                     : 'https://via.placeholder.com/150',
+//                 fit: BoxFit.cover,
+//                 height: 200,
+//                 width: 320,
+//               ),
+//               Positioned(
+//                 bottom: 0,
+//                 left: 0,
+//                 right: 0,
+//                 child: Container(
+//                   padding: const EdgeInsets.all(10),
+//                   color: Colors.black.withOpacity(0.6),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         workout.fitnessLevel,
+//                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
+//                               color: Colors.white,
+//                             ),
+//                       ),
+//                       Text(
+//                         workout.workoutName,
+//                         style:
+//                             Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                                   color: Colors.white,
+//                                 ),
+//                       ),
+//                       const SizedBox(height: 8),
+//                       ElevatedButton(
+//                         onPressed: onTap,
+//                         style: ElevatedButton.styleFrom(
+//                           padding: const EdgeInsets.symmetric(
+//                             vertical: 10,
+//                             horizontal: 16,
+//                           ),
+//                         ),
+//                         child: const Text('Start'),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
+import 'package:gymify/providers/profile_provider/profile_provider.dart';
+import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
-// Import the theme
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -322,18 +633,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<WorkoutProvider>().fetchAllWorkouts();
+      // Fetch workouts and profile information
+      if (mounted) {
+        context.read<WorkoutProvider>().fetchAllWorkouts();
+        context.read<ProfileProvider>().fetchProfile();
+      }
 
       final authProvider = context.read<AuthProvider>();
       final chatProvider = context.read<ChatProvider>();
-      // if (authProvider.isLoggedIn) {
-      //   print('socket ma pugyo');
-      //   final userId = authProvider.userId;
-      //   print("yeta aayo $userId");
-      //   if (userId != null) {
-      //     chatProvider.initializeSocket(userId);
-      //   }
-      // }
       if (authProvider.isLoggedIn && authProvider.userId != null) {
         if (!chatProvider.isInitialized) {
           chatProvider.initializeSocket(authProvider.userId!);
@@ -342,11 +649,26 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Method to format the current date
+  String getFormattedDate() {
+    final DateFormat dateFormat = DateFormat('MMMM dd, yyyy');
+    return dateFormat.format(DateTime.now());
+  }
+
+  // get current year, month and day as integer values
+  final year = DateTime.now().year;
+  final month = DateTime.now().month;
+  final day = DateTime.now().day;
+
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
+    // Fetch user data from ProfileProvider
+    final user = context.watch<ProfileProvider>().user;
+    final currentDate = getFormattedDate();
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
@@ -365,91 +687,327 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             onPressed: () {
               // Navigate to Settings Screen
-              context.push('/settings');
+              context.pushNamed('profile');
             },
           ),
         ],
       ),
-      body: Consumer<WorkoutProvider>(
-        builder: (context, workoutProvider, child) {
-          if (workoutProvider.isLoading) {
-            return const Center(child: CustomLoadingAnimation());
-          }
+      body: SingleChildScrollView(
+        // Make the body scrollable
+        child: Consumer<WorkoutProvider>(
+          builder: (context, workoutProvider, child) {
+            if (workoutProvider.isLoading) {
+              return const Center(child: CustomLoadingAnimation());
+            }
 
-          if (workoutProvider.hasError) {
-            return const Center(child: Text('Error fetching workouts.'));
-          }
+            if (workoutProvider.hasError) {
+              return const Center(child: Text('Error fetching workouts.'));
+            }
 
-          final filteredWorkouts = workoutProvider.workouts.where((workout) {
-            final workoutName = workout.workoutName.toLowerCase();
-            final targetMuscleGroup = workout.targetMuscleGroup.toLowerCase();
-            return workoutName.contains(_searchQuery) ||
-                targetMuscleGroup.contains(_searchQuery);
-          }).toList();
+            final filteredWorkouts = workoutProvider.workouts.where((workout) {
+              final workoutName = workout.workoutName.toLowerCase();
+              final targetMuscleGroup = workout.targetMuscleGroup.toLowerCase();
+              return workoutName.contains(_searchQuery) ||
+                  targetMuscleGroup.contains(_searchQuery);
+            }).toList();
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Search Bar
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: (value) {
-                      setState(() {
-                        _searchQuery = value.toLowerCase();
-                      });
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Search Workouts...',
-                      prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      fillColor: Theme.of(context).colorScheme.surface,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Welcome Message with User's Name
+                  if (user != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        'Welcome, ${user.userName}!',
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ),
+                  // Display Current Date
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: Text(
+                      'Today is $currentDate',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Colors.grey,
+                          ),
+                    ),
+                  ),
+
+                  // Row(
+                  //   children: [
+                  //     HeatMap(
+                  //       colorTipCount: 3,
+                  //       defaultColor: const Color(0xFFE0E0E0),
+                  //       datasets: {
+                  //         DateTime.now(): 1,
+                  //         DateTime(2024, 1, 7): 7,
+                  //         DateTime(2025, 1, 8): 10,
+                  //         DateTime(2025, 1, 9): 13,
+                  //         DateTime(2025, 1, 30): 100,
+                  //       },
+                  //       colorMode: ColorMode.opacity,
+                  //       startDate: DateTime.now(),
+                  //       endDate: DateTime.now().add(const Duration(days: 30)),
+                  //       showText: false,
+                  //       // theme color
+                  //       textColor: Theme.of(context).primaryColor,
+                  //       scrollable: true,
+                  //       colorsets: const {
+                  //         1: Color(0xFFFF5E3A),
+                  //       },
+                  //       onClick: (value) {
+                  //         ScaffoldMessenger.of(context).showSnackBar(
+                  //             SnackBar(content: Text(value.toString())));
+                  //       },
+                  //     ),
+                  //     // Card to display the user's Profile
+                  //     Card(
+                  //       color: Theme.of(context).cardColor,
+                  //       elevation: 4,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //       ),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.all(16.0),
+                  //         child: Column(
+                  //           crossAxisAlignment: CrossAxisAlignment.start,
+                  //           children: [
+                  //             Row(
+                  //               children: [
+                  //                 ClipOval(
+                  //                   child: CachedNetworkImage(
+                  //                     imageUrl: user?.profileImage ??
+                  //                         'https://via.placeholder.com/150',
+                  //                     width: 50,
+                  //                     height: 50,
+                  //                     fit: BoxFit.cover,
+                  //                   ),
+                  //                 ),
+                  //                 const SizedBox(width: 16),
+                  //                 Column(
+                  //                   crossAxisAlignment:
+                  //                       CrossAxisAlignment.start,
+                  //                   children: [
+                  //                     Text(
+                  //                       user?.userName ?? 'User Name',
+                  //                       style: Theme.of(context)
+                  //                           .textTheme
+                  //                           .headlineMedium,
+                  //                     ),
+                  //                     const SizedBox(height: 4),
+                  //                   ],
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //             const SizedBox(height: 16),
+                  //             Text(
+                  //               'Membership: Active',
+                  //               style:
+                  //                   Theme.of(context).textTheme.headlineSmall,
+                  //             ),
+                  //             // height and weight data
+                  //             Text(
+                  //               'Height: ${user?.height ?? '0'} cm',
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .bodyMedium
+                  //                   ?.copyWith(
+                  //                     color: Theme.of(context)
+                  //                         .colorScheme
+                  //                         .onSurface,
+                  //                   ),
+                  //             ),
+                  //             Text(
+                  //               'Weight: ${user?.currentWeight ?? '0'} kg',
+                  //               style: Theme.of(context)
+                  //                   .textTheme
+                  //                   .bodyMedium
+                  //                   ?.copyWith(
+                  //                     color: Theme.of(context)
+                  //                         .colorScheme
+                  //                         .onSurface,
+                  //                   ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // // Search Bar
+                  Row(
+                    children: [
+                      // HeatMap widget, make it scrollable if it overflows
+                      Expanded(
+                        child: HeatMap(
+                          colorTipCount: 3,
+                          defaultColor: const Color(0xFFE0E0E0),
+                          datasets: {
+                            DateTime(year, month, day): 100,
+                          },
+                          colorMode: ColorMode.opacity,
+                          startDate: DateTime.now(),
+                          endDate: DateTime.now().add(const Duration(days: 30)),
+                          showText: false,
+                          textColor: Theme.of(context).colorScheme.onSurface,
+                          scrollable: true,
+                          colorsets: {
+                            1: const Color(0xFFFF5E3A),
+                            DateTime.now().day: Colors.black,
+                          },
+                          onClick: (value) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(value.toString())));
+                          },
+                        ),
+                      ),
+                      // Card to display the user's profile, inside an Expanded widget to handle overflow
+                      const SizedBox(
+                          width:
+                              8), // Add spacing between HeatMap and profile card
+                      Expanded(
+                        child: Card(
+                          color: Theme.of(context).cardColor,
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipOval(
+                                      child: CachedNetworkImage(
+                                        imageUrl: user?.profileImage ??
+                                            'https://via.placeholder.com/150',
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user?.userName ?? 'User Name',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineMedium,
+                                        ),
+                                        const SizedBox(height: 4),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  'Membership: Active',
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                                const SizedBox(height: 8),
+                                // Height and Weight data
+                                Text(
+                                  'Height: ${user?.height ?? '0'} cm',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                      ),
+                                ),
+                                Text(
+                                  'Weight: ${user?.currentWeight ?? '0'} kg',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value.toLowerCase();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Search Workouts...',
+                        prefixIcon: const Icon(Icons.search),
+                        filled: true,
+                        fillColor: Theme.of(context).colorScheme.surface,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                // Workout Plans Section
-                Text(
-                  "Workout Plans",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 10),
-                // Horizontal List of Workouts
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: filteredWorkouts.map((workout) {
-                      return WorkoutCard(
-                        workout: workout,
-                        onTap: () {
-                          context.pushNamed(
-                            'workoutDetail',
-                            queryParameters: {
-                              'workoutId': workout.workoutId.toString(),
-                            },
-                          );
-                        },
-                      );
-                    }).toList(),
+                  const SizedBox(height: 16),
+                  // Workout Plans Section
+                  Text(
+                    "Workouts",
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                ),
-                const SizedBox(height: 20),
-                // All Workouts Section
-                Text(
-                  "All Workouts",
-                  style: Theme.of(context).textTheme.headlineMedium,
-                ),
-                const SizedBox(height: 10),
-                // Vertical ListView of Workouts
-                Expanded(
-                  child: ListView.builder(
+                  const SizedBox(height: 10),
+                  // Horizontal List of Workouts
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: filteredWorkouts.map((workout) {
+                        return WorkoutCard(
+                          workout: workout,
+                          onTap: () {
+                            context.pushNamed(
+                              'workoutDetail',
+                              queryParameters: {
+                                'workoutId': workout.workoutId.toString(),
+                              },
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  // All Workouts Section
+                  Text(
+                    "All Workouts",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  // Vertical ListView of Workouts
+                  ListView.builder(
+                    shrinkWrap:
+                        true, // Ensure the list doesn't take up all space
+                    physics:
+                        const NeverScrollableScrollPhysics(), // Disable internal scrolling
                     itemCount: workoutProvider.workouts.length,
                     itemBuilder: (context, index) {
                       final workout = workoutProvider.workouts[index];
@@ -493,11 +1051,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     },
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

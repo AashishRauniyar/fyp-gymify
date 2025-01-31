@@ -832,15 +832,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _logout(BuildContext context) async {
     try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      // Show a dialog to confirm logout
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final authProvider =
+                        Provider.of<AuthProvider>(context, listen: false);
 
-      // Disconnect socket connection
-      final socketService = Provider.of<ChatProvider>(context, listen: false);
-      socketService.handleLogout();
-      await authProvider.logout();
-      if (context.mounted) {
-        context.go('/welcome');
-      }
+                    // Disconnect socket connection
+                    final socketService =
+                        Provider.of<ChatProvider>(context, listen: false);
+                    socketService.handleLogout();
+                    await authProvider.logout();
+                    if (context.mounted) {
+                      context.go('/welcome');
+                    }
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
+            );
+          });
+
+      // final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      // // Disconnect socket connection
+      // final socketService = Provider.of<ChatProvider>(context, listen: false);
+      // socketService.handleLogout();
+      // await authProvider.logout();
+      // if (context.mounted) {
+      //   context.go('/welcome');
+      // }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -1047,6 +1079,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Handle change password
               },
             ),
+
             ListTile(
               leading: Icon(Icons.security, color: theme.colorScheme.primary),
               title: Text('Two-Factor Authentication',
@@ -1058,7 +1091,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Handle two-factor authentication
               },
             ),
+
+            ListTile(
+              leading: Icon(Icons.circle, color: theme.colorScheme.primary),
+              title: Text('Create Workout',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                context.pushNamed('createWorkout');
+              },
+            ),
             const SizedBox(height: 20),
+            ListTile(
+              leading: Icon(Icons.circle, color: theme.colorScheme.primary),
+              title: Text('Create Exercise',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                context.pushNamed('createExercise');
+              },
+            ),
 
             // Support Section
             Text('Support', style: theme.textTheme.headlineSmall),

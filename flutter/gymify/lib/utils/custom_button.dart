@@ -8,17 +8,19 @@ class CustomButton extends StatelessWidget {
   final double height;
   final double fontSize;
   final Color textColor;
+  final double? width; // Optional width parameter
 
-  const CustomButton(
-      {super.key,
-      required this.text,
-      required this.onPressed,
-      this.color = CustomColors.primary, // Default color if not provided
-      this.height = 56.0, // Default height if not provided
-      this.fontSize = 16.0,
-      this.textColor =
-          CustomColors.buttonText // Default font size if not provided
-      });
+  const CustomButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.color = CustomColors.primary, // Default color if not provided
+    this.height = 56.0, // Default height if not provided
+    this.fontSize = 16.0,
+    this.textColor =
+        CustomColors.buttonText, // Default text color if not provided
+    this.width, // Optional width parameter
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,9 @@ class CustomButton extends StatelessWidget {
 
     return Container(
       height: height,
-      width: screenWidth * 0.9, // 80% of the screen width, adjust as needed
+      width: width ??
+          screenWidth *
+              0.9, // Use the provided width or default to 90% of the screen width
       decoration: BoxDecoration(
         color: color,
         borderRadius: BorderRadius.circular(12),

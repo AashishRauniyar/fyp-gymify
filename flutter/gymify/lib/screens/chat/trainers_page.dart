@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
@@ -40,11 +41,13 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
     final currentUserId = authProvider.userId;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers',
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers',
+      //   ),
+      // ),
+      appBar: CustomAppBar(
+          title: role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers'),
       body: _fetchFuture == null
           ? const Center(child: CustomLoadingAnimation())
           : FutureBuilder(

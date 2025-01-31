@@ -16,7 +16,6 @@ import 'package:gymify/screens/weight_selecter.dart';
 import 'package:gymify/screens/authentication/trying/multi_register.dart';
 import 'package:gymify/screens/exercise_screen.dart';
 import 'package:gymify/screens/main_screen/main_screen.dart';
-import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
 import 'package:gymify/screens/main_screens/home_screen.dart';
 import 'package:gymify/screens/main_screens/profile_screen.dart';
@@ -204,6 +203,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const LoginScreen(), // Login screen
     ),
     GoRoute(
+      name: "createWorkout",
         path: '/createWorkout',
         builder: (context, state) => const CreateWorkoutScreen()),
     GoRoute(
@@ -212,6 +212,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const ExerciseScreen(),
     ),
     GoRoute(
+      name: 'createExercise',
       path: '/createExercise',
       builder: (context, state) => const CreateExerciseScreen(),
     ),
@@ -267,6 +268,7 @@ final GoRouter router = GoRouter(
         ),
 
         GoRoute(
+          name: 'profile',
           path: '/profile',
           builder: (context, state) => const ProfileScreen(),
         ),

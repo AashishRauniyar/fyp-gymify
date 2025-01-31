@@ -29,15 +29,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: Theme.of(context).textTheme.headlineMedium,
       ),
-      actions: [
-        IconButton(
-          icon: Icon(Icons.settings, color: Theme.of(context).iconTheme.color),
-          onPressed: () {
-            // Navigate to Settings Screen
-            Navigator.of(context).pushNamed('/settings');
-          },
-        ),
-      ],
+      // actions: [
+      //   IconButton(
+      //     icon: Icon(Icons.settings, color: Theme.of(context).iconTheme.color),
+      //     onPressed: () {
+      //       // Navigate to Settings Screen
+      //       Navigator.of(context).pushNamed('/settings');
+      //     },
+      //   ),
+      // ],
     );
   }
 
