@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/user_model.dart';
 import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
+import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
@@ -203,7 +205,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const LoginScreen(), // Login screen
     ),
     GoRoute(
-      name: "createWorkout",
+        name: "createWorkout",
         path: '/createWorkout',
         builder: (context, state) => const CreateWorkoutScreen()),
     GoRoute(
@@ -321,6 +323,17 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final userId = state.extra as String; // Get the userId passed as extra
         return WorkoutHistoryScreen(userId: userId);
+      },
+    ),
+    GoRoute(
+      name: 'dietDetail',
+      path: '/dietDetail',
+      builder: (context, state) {
+        // Retrieve the DietPlan object from state.extra
+        final dietPlan =
+            state.extra as DietPlan; // Cast state.extra to DietPlan
+        return DietDetailScreen(
+            dietPlan: dietPlan); // Pass dietPlan to the DietDetailScreen
       },
     ),
   ],

@@ -72,6 +72,7 @@ model dietlogs {
 
 model dietplans {
   diet_plan_id                      Int        @id @default(autoincrement())
+  name                              String     @unique @db.VarChar(100)
   user_id                           Int?
   trainer_id                        Int?
   calorie_goal                      Decimal?   @db.Decimal(6, 2)
@@ -180,7 +181,7 @@ model users {
   user_name                                             String              @unique @db.VarChar(100)
   full_name                                             String              @db.VarChar(100)
   address                                               String?             @db.VarChar(255)
-  birthdate                                             DateTime? 
+  birthdate                                             DateTime?
   height                                                Decimal             @db.Decimal
   current_weight                                        Decimal             @db.Decimal
   gender                                                gender
@@ -212,9 +213,9 @@ model users {
   workouts_workouts_trainer_idTousers                   workouts[]          @relation("workouts_trainer_idTousers")
   workouts_workouts_user_idTousers                      workouts[]          @relation("workouts_user_idTousers")
   personal_bests                                        personal_bests[]
-  weight_logs   weight_logs[] // One-to-many relation with weight_logs
-  otp          String?   @db.VarChar(6)     // OTP code
-  otp_expiry   DateTime? // Expiry time
+  weight_logs                                           weight_logs[] // One-to-many relation with weight_logs
+  otp                                                   String?             @db.VarChar(6) // OTP code
+  otp_expiry                                            DateTime? // Expiry time
 }
 
 model workoutexercises {
@@ -271,38 +272,33 @@ model workoutlogs {
   workouts             workouts?              @relation(fields: [workout_id], references: [workout_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-
-
-
 model personal_bests {
-  personal_best_id  Int       @id @default(autoincrement()) // Unique ID for the personal best entry
-  user_id           Int       // The user who achieved the personal best
-  supported_exercise_id          Int // The exercise for which the personal best is logged (only Squat, Bench Press, Deadlift)
-  weight            Decimal   @db.Decimal(6, 2) // The weight lifted in the personal best
-  reps              Int       // The number of reps for the personal best (if relevant)
-  achieved_at       DateTime  @default(now()) // Date when the personal best was achieved
-  users             users     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
-  supported_exercises supported_exercises @relation(fields: [supported_exercise_id], references: [supported_exercise_id], onDelete: Cascade)
+  personal_best_id      Int                 @id @default(autoincrement()) // Unique ID for the personal best entry
+  user_id               Int // The user who achieved the personal best
+  supported_exercise_id Int // The exercise for which the personal best is logged (only Squat, Bench Press, Deadlift)
+  weight                Decimal             @db.Decimal(6, 2) // The weight lifted in the personal best
+  reps                  Int // The number of reps for the personal best (if relevant)
+  achieved_at           DateTime            @default(now()) // Date when the personal best was achieved
+  users                 users               @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  supported_exercises   supported_exercises @relation(fields: [supported_exercise_id], references: [supported_exercise_id], onDelete: Cascade)
 }
 
-model supported_exercises{
-  supported_exercise_id Int @id @default(autoincrement())
-  exercise_name String @unique @db.VarChar(100) // Name of the supported exercise
-  created_at DateTime? @default(now()) @db.Timestamp(6) // Timestamp of creation
-  updated_at DateTime @updatedAt // Timestamp of last update
-  personal_bests personal_bests[]
+model supported_exercises {
+  supported_exercise_id Int              @id @default(autoincrement())
+  exercise_name         String           @unique @db.VarChar(100) // Name of the supported exercise
+  created_at            DateTime?        @default(now()) @db.Timestamp(6) // Timestamp of creation
+  updated_at            DateTime         @updatedAt // Timestamp of last update
+  personal_bests        personal_bests[]
 }
 
 model weight_logs {
   id        Int      @id @default(autoincrement()) // Unique ID for each weight log
-  user_id   Int      // ID of the user
+  user_id   Int // ID of the user
   weight    Decimal  @db.Decimal(6, 2) // User's weight at the time of the log
-  logged_at DateTime @default(now())   // Timestamp of when the weight was logged
+  logged_at DateTime @default(now()) // Timestamp of when the weight was logged
 
-  users     users    @relation(fields: [user_id], references: [user_id], onDelete: Cascade) // Relation to the users model
+  users users @relation(fields: [user_id], references: [user_id], onDelete: Cascade) // Relation to the users model
 }
-
-
 
 enum difficulty_level {
   Easy
@@ -322,6 +318,7 @@ enum gender {
   Female
   Other
 }
+
 //TODO: goal strength, and hypertrophy
 enum goal_type {
   Weight_Loss @map("Weight Loss")

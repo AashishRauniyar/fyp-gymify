@@ -3,7 +3,6 @@ import { body, validationResult } from 'express-validator';
 
 const prisma = new PrismaClient();
 
-// Create a new diet plan
 export const createDietPlan = [
     body('calorie_goal').notEmpty().withMessage('Calorie goal is required').isDecimal().withMessage('Calorie goal must be a decimal'),
     body('goal_type').notEmpty().withMessage('Goal type is required'),
@@ -14,12 +13,23 @@ export const createDietPlan = [
         }
 
         try {
-            const { user_id } = req.user;
-            const { calorie_goal, goal_type, description } = req.body;
+            // Get the user from the request (from the authentication middleware)
+            const { user_id, role } = req.user;
 
+            // Check if the user has the role of trainer
+            if (role !== 'Trainer') {
+                return res.status(403).json({ status: 'failure', message: 'Only trainers can create diet plans' });
+            }
+
+            // Extract other data from the request
+            const { name, calorie_goal, goal_type, description } = req.body;
+
+            // Create the diet plan in the database
             const dietPlan = await prisma.dietplans.create({
                 data: {
-                    user_id,
+                    name,
+                    user_id,  // The user creating the diet plan is the trainer
+                    trainer_id: user_id,  // Set trainer_id to the current trainer's user_id
                     calorie_goal,
                     goal_type,
                     description,
@@ -28,6 +38,7 @@ export const createDietPlan = [
                 }
             });
 
+            // Send the success response
             res.status(201).json({ status: 'success', message: 'Diet plan created successfully', data: dietPlan });
         } catch (error) {
             console.error('Error creating diet plan:', error);
@@ -50,6 +61,17 @@ export const addMealToDietPlan = [
         }
 
         try {
+
+            // Get the user from the request (from the authentication middleware)
+            const { user_id, role } = req.user;
+
+
+            // Check if the user has the role of trainer
+            if (role !== 'Trainer') {
+                return res.status(403).json({ status: 'failure', message: 'Only trainers can add meals to diet plans' });
+            }
+
+
             const { diet_plan_id, meals } = req.body;
 
             const addedMeals = [];
@@ -117,23 +139,47 @@ export const logMeal = [
 ];
 
 // Get all diet plans of a user
-export const getDietPlansOfUser = async (req, res) => {
-    try {
-        const { user_id } = req.user;
+// export const getDietPlansOfUser = async (req, res) => {
+//     try {
+//         const { user_id } = req.user;
 
+//         const dietPlans = await prisma.dietplans.findMany({
+//             where: { user_id },
+//             include: {
+//                 meals: true
+//             }
+//         });
+
+//         res.status(200).json({ status: 'success', message: 'Diet plans fetched successfully', data: dietPlans });
+//     } catch (error) {
+//         console.error('Error fetching diet plans:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
+
+
+// get all the diet plans
+export const getAllDietPlans = async (req, res) => {
+    try {
+        // Fetching all diet plans from all trainers
         const dietPlans = await prisma.dietplans.findMany({
-            where: { user_id },
             include: {
-                meals: true
+                meals: true,
             }
         });
 
-        res.status(200).json({ status: 'success', message: 'Diet plans fetched successfully', data: dietPlans });
+        // Return the fetched diet plans with all related data
+        res.status(200).json({
+            status: 'success',
+            message: 'Diet plans fetched successfully',
+            data: dietPlans
+        });
     } catch (error) {
         console.error('Error fetching diet plans:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
+
 
 // Get meal logs of a user
 export const getMealLogsOfUser = async (req, res) => {
