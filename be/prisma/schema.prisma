@@ -114,6 +114,7 @@ model gym {
 
 model meals {
   meal_id        Int        @id @default(autoincrement())
+  image          String?    @db.VarChar(255)
   diet_plan_id   Int?
   meal_name      String     @unique @db.VarChar(100)
   meal_time      meal_time

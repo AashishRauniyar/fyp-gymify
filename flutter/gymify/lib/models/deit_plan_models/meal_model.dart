@@ -9,6 +9,8 @@ class Meal {
     final int mealId;
     @JsonKey(name: "diet_plan_id")
     final int dietPlanId;
+    @JsonKey(name: "image")
+    final String image;
     @JsonKey(name: "meal_name")
     final String mealName;
     @JsonKey(name: "meal_time")
@@ -25,6 +27,7 @@ class Meal {
     Meal({
         required this.mealId,
         required this.dietPlanId,
+        required this.image,
         required this.mealName,
         required this.mealTime,
         required this.calories,

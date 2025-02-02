@@ -1115,6 +1115,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 context.pushNamed('createExercise');
               },
             ),
+            ListTile(
+              leading: Icon(Icons.circle, color: theme.colorScheme.primary),
+              title: Text('Create Diet Plan',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                context.pushNamed('createDietPlan');
+              },
+            ),
 
             // Support Section
             Text('Support', style: theme.textTheme.headlineSmall),

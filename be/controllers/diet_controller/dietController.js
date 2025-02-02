@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
+import { uploadMealPhotoToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -23,6 +24,7 @@ export const createDietPlan = [
 
             // Extract other data from the request
             const { name, calorie_goal, goal_type, description } = req.body;
+
 
             // Create the diet plan in the database
             const dietPlan = await prisma.dietplans.create({
@@ -48,45 +50,136 @@ export const createDietPlan = [
 ];
 
 // Add meals to a diet plan
+// export const addMealToDietPlan = [
+//     body('diet_plan_id').notEmpty().withMessage('Diet plan ID is required').isInt().withMessage('Diet plan ID must be an integer'),
+//     body('meals').isArray({ min: 1 }).withMessage('Meals must be an array with at least one item'),
+//     body('meals.*.meal_name').notEmpty().withMessage('Meal name is required'),
+//     body('meals.*.meal_time').notEmpty().withMessage('Meal time is required'),
+//     body('meals.*.calories').notEmpty().withMessage('Calories are required').isDecimal().withMessage('Calories must be a decimal'),
+
+//     async (req, res) => {
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({ status: 'failure', errors: errors.array() });
+//         }
+
+//         try {
+
+//             // Get the user from the request (from the authentication middleware)
+//             const { user_id, role } = req.user;
+
+
+//             // Check if the user has the role of trainer
+//             if (role !== 'Trainer') {
+//                 return res.status(403).json({ status: 'failure', message: 'Only trainers can add meals to diet plans' });
+//             }
+
+
+//             const { diet_plan_id, meals } = req.body;
+
+//             const addedMeals = [];
+
+//             for (const meal of meals) {
+//                 const { meal_name, meal_time, calories, description, macronutrients } = meal;
+
+
+//                 let image = null;
+//                 if (req.file) {
+//                     console.log('Received file:', req.file);  // Log the file details
+//                     try {
+//                         image = await uploadMealPhotoToCloudinary(req.file.buffer); // Pass the file buffer directly
+//                     } catch (error) {
+//                         console.error('Error uploading image:', error);
+//                         return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+//                     }
+//                 }
+
+
+//                 const mealEntry = await prisma.meals.create({
+//                     data: {
+//                         diet_plan_id,
+//                         image: image,
+//                         meal_name,
+//                         meal_time,
+//                         calories,
+//                         description,
+//                         macronutrients,
+//                         created_at: new Date()
+//                     }
+//                 });
+
+//                 addedMeals.push(mealEntry);
+//             }
+
+//             res.status(201).json({ status: 'success', message: 'Meals added to diet plan successfully', data: addedMeals });
+//         } catch (error) {
+//             console.error('Error adding meals to diet plan:', error);
+//             res.status(500).json({ status: 'failure', message: 'Server error' });
+//         }
+//     }
+// ];
 export const addMealToDietPlan = [
     body('diet_plan_id').notEmpty().withMessage('Diet plan ID is required').isInt().withMessage('Diet plan ID must be an integer'),
-    body('meals').isArray({ min: 1 }).withMessage('Meals must be an array with at least one item'),
-    body('meals.*.meal_name').notEmpty().withMessage('Meal name is required'),
-    body('meals.*.meal_time').notEmpty().withMessage('Meal time is required'),
-    body('meals.*.calories').notEmpty().withMessage('Calories are required').isDecimal().withMessage('Calories must be a decimal'),
+    body('meals')
+        .notEmpty().withMessage('Meals are required')
+        .custom((value, { req }) => {
+            try {
+                // If meals is a string, try to parse it
+                const mealsArray = typeof value === 'string' ? JSON.parse(value) : value;
+                
+                // Check if it's an array with at least one item
+                if (!Array.isArray(mealsArray) || mealsArray.length === 0) {
+                    throw new Error('Meals must be an array with at least one item');
+                }
+                
+                // Store the parsed array for later use
+                req.body.meals = mealsArray;
+                return true;
+            } catch (error) {
+                throw new Error('Invalid meals format. Must be a valid JSON array');
+            }
+        }),
+
     async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ status: 'failure', errors: errors.array() });
-        }
-
         try {
-
             // Get the user from the request (from the authentication middleware)
             const { user_id, role } = req.user;
-
 
             // Check if the user has the role of trainer
             if (role !== 'Trainer') {
                 return res.status(403).json({ status: 'failure', message: 'Only trainers can add meals to diet plans' });
             }
 
+            // Parse diet_plan_id as integer
+            const diet_plan_id = parseInt(req.body.diet_plan_id);
+            const mealsData = Array.isArray(req.body.meals) ? req.body.meals : JSON.parse(req.body.meals);
 
-            const { diet_plan_id, meals } = req.body;
+            let image = null;
+            if (req.file) {
+                console.log('Received file:', req.file);
+                try {
+                    image = await uploadMealPhotoToCloudinary(req.file.buffer);
+                } catch (error) {
+                    console.error('Error uploading image:', error);
+                    return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+                }
+            }
 
             const addedMeals = [];
 
-            for (const meal of meals) {
-                const { meal_name, meal_time, calories, description, macronutrients } = meal;
+            // Process each meal in the array
+            for (const meal of mealsData) {
+                console.log('Processing meal:', meal); // Debug log
 
                 const mealEntry = await prisma.meals.create({
                     data: {
                         diet_plan_id,
-                        meal_name,
-                        meal_time,
-                        calories,
-                        description,
-                        macronutrients,
+                        image,
+                        meal_name: meal.meal_name,
+                        meal_time: meal.meal_time,
+                        calories: parseFloat(meal.calories),
+                        description: meal.description,
+                        macronutrients: meal.macronutrients,
                         created_at: new Date()
                     }
                 });
@@ -94,13 +187,22 @@ export const addMealToDietPlan = [
                 addedMeals.push(mealEntry);
             }
 
-            res.status(201).json({ status: 'success', message: 'Meals added to diet plan successfully', data: addedMeals });
+            res.status(201).json({ 
+                status: 'success', 
+                message: 'Meals added to diet plan successfully', 
+                data: addedMeals 
+            });
         } catch (error) {
             console.error('Error adding meals to diet plan:', error);
-            res.status(500).json({ status: 'failure', message: 'Server error' });
+            res.status(500).json({ 
+                status: 'failure', 
+                message: 'Server error', 
+                error: error.message 
+            });
         }
     }
 ];
+
 
 // Log a meal
 export const logMeal = [

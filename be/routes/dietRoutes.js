@@ -8,6 +8,8 @@ import {
     deleteMealLog,
     getAllDietPlans
 } from '../controllers/diet_controller/dietController.js';
+import upload from '../middleware/multerMiddleware.js';
+
 
 export const dietPlanRouter = express.Router();
 
@@ -17,11 +19,11 @@ dietPlanRouter.post('/diet-plans', authenticate, createDietPlan); // Create a ne
 //! This route is not necessary for the MVP
 // dietPlanRouter.get('/diet-plans', authenticate, getDietPlansOfUser); // Get all diet plans for a user
 
-dietPlanRouter.get('/diet-plans', authenticate,getAllDietPlans); // Get all diet plans for a user
+dietPlanRouter.get('/diet-plans', authenticate, getAllDietPlans); // Get all diet plans for a user
 
 
 // Routes for managing meals within a diet plan
-dietPlanRouter.post('/diet-plans/add-meal', authenticate, addMealToDietPlan); // Add meals to a diet plan
+dietPlanRouter.post('/diet-plans/add-meal', upload.single('meal_image'), authenticate, addMealToDietPlan); // Add meals to a diet plan
 dietPlanRouter.post('/diet-plans/log-meal', authenticate, logMeal); // Log a meal for a diet plan
 dietPlanRouter.get('/diet-plans/meals', authenticate, getMealLogsOfUser); // Get meal logs of a user
 

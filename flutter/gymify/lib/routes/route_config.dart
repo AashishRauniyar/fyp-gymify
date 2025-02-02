@@ -7,6 +7,7 @@ import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
+import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
@@ -316,6 +317,10 @@ final GoRouter router = GoRouter(
         return EditProfileScreen(user: user);
       },
     ),
+    GoRoute(
+        name: 'createDietPlan',
+        path: '/createDietPlan',
+        builder: (context, state) => const CreateDietPlanScreen()),
     GoRoute(
       path: '/workoutHistory',
       name:

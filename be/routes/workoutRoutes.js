@@ -9,7 +9,7 @@ export const workoutRouter = express.Router();
 
 
 // Route to create a new workout (Trainers only)
-workoutRouter.post('/create-workouts',upload.single('workout_image'), authenticate, createWorkout);
+workoutRouter.post('/create-workouts', upload.single('workout_image'), authenticate, createWorkout);
 
 // Route to add an exercise to a workout (Trainer Only)
 workoutRouter.post('/workouts/:workoutId/exercises', authenticate, addExerciseToWorkout);
