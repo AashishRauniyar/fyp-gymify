@@ -106,6 +106,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
+import 'package:gymify/providers/multipage_register_provider/signup_provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/theme/app_theme.dart';
 import 'package:provider/provider.dart';
@@ -135,7 +136,8 @@ void main() {
             create: (context) => TrainerProvider()), // Add SocketProvider
         ChangeNotifierProvider(create: (context) => ChatProvider()), //
         ChangeNotifierProvider(create: (context) => PersonalBestProvider()), //
-        ChangeNotifierProvider(create: (context) => DietProvider()) //
+        ChangeNotifierProvider(create: (context) => DietProvider()), //
+        ChangeNotifierProvider(create: (context) => SignupProvider()) //
       ],
       child: const MyApp(),
     ),

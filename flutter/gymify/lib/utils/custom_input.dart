@@ -1,175 +1,262 @@
 // import 'package:flutter/material.dart';
-// import 'package:gymify/colors/custom_colors.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:gymify/colors/app_colors.dart';
 
-// class CustomInput extends StatelessWidget {
-//   final String hintText;
-//   final Color backgroundColor;
-//   final Color textColor;
-//   final double fontSize;
+// class CustomInput extends StatefulWidget {
+//   final String labelText; // Updated: Label instead of Hint
 //   final TextEditingController controller;
-//   final String? errorText;
-//   final Function(String) onChanged;
-//   final bool obscureText;
-//   final IconButton? suffixIcon;
-//   final double height;
+//   final String? Function(String?)? validator;
+//   final Function(String)? onChanged;
+//   final bool isPassword;
+//   final TextInputType keyboardType;
+//   final Widget? leadingIcon;
+//   final Widget? trailingIcon;
+//   final bool enabled;
 
 //   const CustomInput({
 //     super.key,
-//     this.hintText = 'Enter Username',
-//     this.backgroundColor = CustomColors.secondary,
-//     this.textColor = const Color(0xFF000000),
-//     this.fontSize = 14.0,
+//     required this.labelText, // Updated: Label text
 //     required this.controller,
-//     required this.onChanged,
-//     this.errorText,
-//     this.obscureText = false,
-//     this.suffixIcon,
-//     this.height = 56.0,
+//     this.validator,
+//     this.onChanged,
+//     this.isPassword = false,
+//     this.keyboardType = TextInputType.text,
+//     this.leadingIcon,
+//     this.trailingIcon,
+//     this.enabled = true,
 //   });
 
 //   @override
-//   Widget build(BuildContext context) {
-//     double screenWidth = MediaQuery.of(context).size.width;
+//   State<CustomInput> createState() => _CustomInputState();
+// }
 
+// class _CustomInputState extends State<CustomInput> {
+//   bool _isObscured = false;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _isObscured =
+//         widget.isPassword; // Initialize visibility based on isPassword
+//   }
+
+//   void _toggleVisibility() {
+//     setState(() {
+//       _isObscured = !_isObscured;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
 //     return Column(
 //       crossAxisAlignment: CrossAxisAlignment.start,
 //       children: [
-//         Container(
-//           height: height,
-//           width: screenWidth * 0.9,
-//           decoration: BoxDecoration(
-//             color: backgroundColor,
-//             borderRadius: BorderRadius.circular(8),
+//         TextFormField(
+//           controller: widget.controller,
+//           obscureText: _isObscured,
+//           keyboardType: widget.keyboardType,
+//           enabled: widget.enabled,
+//           onChanged: widget.onChanged,
+//           validator: widget.validator,
+//           style: GoogleFonts.poppins(
+//             fontSize: 14,
+//             fontWeight: FontWeight.w400,
+//             color: widget.enabled
+//                 ? AppColors.inputText
+//                 : AppColors.inputText.withOpacity(0.6),
 //           ),
-//           child: TextFormField(
-//             controller: controller,
-//             style: TextStyle(
-//               fontSize: fontSize,
-//               color: textColor,
+//           decoration: InputDecoration(
+//             labelText: widget.labelText, // Floating label
+//             labelStyle: GoogleFonts.poppins(
+//               fontSize: 14,
+//               color: AppColors.lightSecondary,
 //             ),
-//             obscureText: obscureText,
-//             onChanged: onChanged, // Call onChanged function to update state
-//             decoration: InputDecoration(
-//               hintText: hintText,
-//               hintStyle: TextStyle(color: Colors.grey, fontSize: fontSize),
-//               contentPadding:
-//                   const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-//               border: InputBorder.none, // No border when not focused
-//               focusedBorder: OutlineInputBorder(
-//                 borderSide: const BorderSide(
-//                   color: Color(0xFFFF5E3A), // Orange color when focused
-//                   width: 2.0, // Border width when focused
-//                 ),
-//                 borderRadius: BorderRadius.circular(8), // Same border radius
+//             filled: true,
+//             fillColor: widget.enabled
+//                 ? AppColors.inputFill
+//                 : AppColors.inputFill.withOpacity(0.5),
+//             contentPadding: const EdgeInsets.symmetric(
+//               vertical: 14,
+//               horizontal: 16,
+//             ),
+//             border: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10),
+//               borderSide: BorderSide(
+//                 color: AppColors.lightSecondary.withOpacity(0.2),
+//                 width: 1.5,
 //               ),
-//               suffixIcon: suffixIcon,
 //             ),
+//             enabledBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10),
+//               borderSide: BorderSide(
+//                 color: AppColors.lightSecondary.withOpacity(0.2),
+//                 width: 1.5,
+//               ),
+//             ),
+//             focusedBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10),
+//               borderSide: const BorderSide(
+//                 color: AppColors.lightPrimary,
+//                 width: 2,
+//               ),
+//             ),
+//             errorBorder: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(10),
+//               borderSide: const BorderSide(
+//                 color: AppColors.lightError,
+//                 width: 1.5,
+//               ),
+//             ),
+//             prefixIcon: widget.leadingIcon != null
+//                 ? Padding(
+//                     padding: const EdgeInsets.only(left: 12, right: 8),
+//                     child: widget.leadingIcon,
+//                   )
+//                 : null,
+//             suffixIcon: widget.isPassword
+//                 ? IconButton(
+//                     icon: Icon(
+//                       _isObscured ? Icons.visibility_off : Icons.visibility,
+//                       color: AppColors.lightSecondary,
+//                     ),
+//                     onPressed: _toggleVisibility,
+//                   )
+//                 : widget.trailingIcon,
 //           ),
 //         ),
-//         if (errorText != null) ...[
-//           const SizedBox(height: 4), // Add some space between input and error
-//           Text(
-//             errorText!,
-//             style: const TextStyle(
-//               color: Colors.red,
-//               fontSize: 12,
-//             ),
-//           ),
-//         ],
 //       ],
 //     );
 //   }
 // }
 
 import 'package:flutter/material.dart';
-import 'package:gymify/colors/custom_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class CustomInput extends StatelessWidget {
-  final String hintText;
-  final Color backgroundColor;
-  final Color textColor;
-  final double fontSize;
+class CustomInput extends StatefulWidget {
+  final String labelText; // Floating label text
   final TextEditingController controller;
-  final String? errorText;
-  final Function(String) onChanged;
-  final bool obscureText;
-  final Widget? suffixIcon;
-  final Icon? leadingIcon;
-  final double height;
+  final String? Function(String?)? validator;
+  final Function(String)? onChanged;
+  final bool isPassword;
+  final TextInputType keyboardType;
+  final Widget? leadingIcon;
+  final Widget? trailingIcon;
+  final bool enabled;
 
   const CustomInput({
     super.key,
-    this.hintText = 'Enter Username',
-    this.backgroundColor = CustomColors.secondary,
-    this.textColor = const Color(0xFF000000),
-    this.fontSize = 14.0,
+    required this.labelText, // Label text for floating effect
     required this.controller,
-    required this.onChanged,
-    this.errorText,
-    this.obscureText = false,
-    this.suffixIcon,
+    this.validator,
+    this.onChanged,
+    this.isPassword = false,
+    this.keyboardType = TextInputType.text,
     this.leadingIcon,
-    this.height = 56.0,
+    this.trailingIcon,
+    this.enabled = true,
   });
 
   @override
+  State<CustomInput> createState() => _CustomInputState();
+}
+
+class _CustomInputState extends State<CustomInput> {
+  bool _isObscured = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isObscured =
+        widget.isPassword; // Initialize visibility based on isPassword
+  }
+
+  void _toggleVisibility() {
+    setState(() {
+      _isObscured = !_isObscured;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final theme = Theme.of(context); // Dynamically fetch current theme
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          height: height,
-          width: screenWidth * 0.9,
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(8),
+        TextFormField(
+          controller: widget.controller,
+          obscureText: _isObscured,
+          keyboardType: widget.keyboardType,
+          enabled: widget.enabled,
+          onChanged: widget.onChanged,
+          validator: widget.validator,
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: widget.enabled
+                ? theme.colorScheme.onSurface
+                : theme.colorScheme.onSurface.withOpacity(0.6),
           ),
-          child: Row(
-            children: [
-              if (leadingIcon != null) ...[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: leadingIcon,
-                ),
-              ],
-              Expanded(
-                child: TextFormField(
-                  controller: controller,
-                  style: TextStyle(
-                    fontSize: fontSize,
-                    color: textColor,
-                  ),
-                  obscureText: obscureText,
-                  onChanged:
-                      onChanged, // Call onChanged function to update state
-                  decoration: InputDecoration(
-                    hintText: hintText,
-                    hintStyle:
-                        TextStyle(color: Colors.grey, fontSize: fontSize),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 16),
-                    border: InputBorder.none, // No border when not focused
-                    suffixIcon: suffixIcon,
-                  ),
-                ),
+          decoration: InputDecoration(
+            labelText: widget.labelText, // Floating label
+            labelStyle: GoogleFonts.poppins(
+              fontSize: 14,
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
+            ),
+            filled: true,
+            fillColor: widget.enabled
+                ? theme.colorScheme.surface
+                : theme.colorScheme.surface.withOpacity(0.5),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 14,
+              horizontal: 16,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: theme.colorScheme.onSurface.withOpacity(0.2),
+                width: 1.5,
               ),
-            ],
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: theme.colorScheme.onSurface.withOpacity(0.2),
+                width: 1.5,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: theme.colorScheme.primary,
+                width: 2,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: theme.colorScheme.error,
+                width: 1.5,
+              ),
+            ),
+            prefixIcon: widget.leadingIcon != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 12, right: 8),
+                    child: widget.leadingIcon,
+                  )
+                : null,
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: Icon(
+                      _isObscured ? Icons.visibility_off : Icons.visibility,
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    ),
+                    onPressed: _toggleVisibility,
+                  )
+                : widget.trailingIcon,
           ),
         ),
-        if (errorText != null) ...[
-          const SizedBox(height: 4), // Add some space between input and error
-          Text(
-            errorText!,
-            style: const TextStyle(
-              color: Colors.red,
-              fontSize: 12,
-            ),
-          ),
-        ],
       ],
     );
   }
 }
-

@@ -269,7 +269,8 @@ class WelcomeScreen extends StatelessWidget {
                     textColor: theme.colorScheme.onPrimary,
                     color: theme.colorScheme.primary,
                     onPressed: () {
-                      context.go('/register');
+                      // context.go('/register');
+                      context.go('/signup');
                     },
                   ),
                 ),

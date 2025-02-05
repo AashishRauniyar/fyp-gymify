@@ -237,38 +237,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     'Exercises',
-      //     style: GoogleFonts.poppins(
-      //       fontSize: 20,
-      //       fontWeight: FontWeight.bold,
-      //       color: CustomColors.secondary,
-      //     ),
-      //   ),
-      //   backgroundColor: CustomColors.backgroundColor,
-      //   centerTitle: true,
-      // ),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          "Exercises",
-          style: theme.textTheme.headlineSmall,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_sharp,
-              color: Color(0xFFFF5E3A)),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop(); // Navigate back to the previous page
-            } else {
-              context
-                  .pop(); // Navigate to the welcome page if there's nothing to pop
-            }
-          },
-        ),
-      ),
+      appBar: const CustomAppBar(title: "Exercises", showBackButton: true),
       body: Consumer<ExerciseProvider>(
         builder: (context, exerciseProvider, child) {
           if (exerciseProvider.exercises.isEmpty) {
