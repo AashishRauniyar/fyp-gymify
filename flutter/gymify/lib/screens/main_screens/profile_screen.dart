@@ -812,10 +812,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
-import 'package:gymify/providers/socket_provider/socket_service.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});

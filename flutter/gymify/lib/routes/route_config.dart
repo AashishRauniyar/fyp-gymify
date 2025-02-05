@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/user_model.dart';
+import 'package:gymify/screens/authentication/trying/otp_verification.dart';
+import 'package:gymify/screens/authentication/trying/signup.dart';
 import 'package:gymify/screens/chat/trainers_page.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
@@ -50,98 +52,109 @@ final GoRouter router = GoRouter(
       builder: (context, state) =>
           const WelcomeScreen(), // Show welcome screen if not logged in
     ),
-    // GoRoute(
-    //   path: '/register',
-    //   builder: (context, state) =>
-    //       const RegisterScreen(), // Registration screen
-    // ),
+    GoRoute(
+      name: 'signup',
+      path: '/signup',
+      builder: (context, state) => const SignupPage(), // Registration screen
+    ),
+    GoRoute(
+      name: 'otp',
+      path: '/otp',
+      builder: (context, state) {
+        final extra =
+            state.extra as Map<String, dynamic>?; // Handle null safely
+        final email = extra?['email'] ?? ''; // Avoid null issue
+
+        return OtpVerificationPage(email: email);
+      },
+    ),
 
     // Register Flow - encapsulated in ShellRoute
     // New ShellRoute for Registration Flow
-    ShellRoute(
-      navigatorKey:
-          _registrationNavigatorKey, // Use a new navigator key for registration flow
-      builder: (context, state, child) {
-        return RegistrationMainScreen(
-            child: child); // Your main screen for registration flow
-      },
-      routes: [
-        GoRoute(
-          path: '/register',
-          builder: (context, state) => const UserNamePage(),
-        ),
-        GoRoute(
-          path: '/register/fullname',
-          name: 'fullname',
-          builder: (context, state) => const FullNamePage(),
-        ),
-        GoRoute(
-          path: '/register/gender',
-          name: 'gender',
-          builder: (context, state) => const GenderSelectionPage(),
-        ),
-        GoRoute(
-          path: '/register/email',
-          name: 'email',
-          builder: (context, state) => const EmailPage(),
-        ),
-        GoRoute(
-          path: '/register/password',
-          name: 'password',
-          builder: (context, state) => const PasswordPage(),
-        ),
-        GoRoute(
-          path: '/register/phonenumber',
-          name: 'phonenumber',
-          builder: (context, state) => const PhoneNumberPage(),
-        ),
-        GoRoute(
-          path: '/register/address',
-          name: 'address',
-          builder: (context, state) => const AddressPage(),
-        ),
-        GoRoute(
-          path: '/register/birthdate',
-          name: 'birthdate',
-          builder: (context, state) => const BirthDatePage(),
-        ),
-        GoRoute(
-          path: '/register/height',
-          name: 'height',
-          builder: (context, state) => const HeightSelector(),
-        ),
-        GoRoute(
-          path: '/register/weight',
-          name: 'weight',
-          builder: (context, state) => const WeightSelector(),
-        ),
-        GoRoute(
-          path: '/register/fitnesslevel',
-          name: 'fitnesslevel',
-          builder: (context, state) => const FitnessLevelPage(),
-        ),
-        GoRoute(
-          path: '/register/goaltype',
-          name: 'goaltype',
-          builder: (context, state) => const GoalTypePage(),
-        ),
-        GoRoute(
-          path: '/register/caloriegoals',
-          name: 'caloriegoals',
-          builder: (context, state) => const CalorieGoalsPage(),
-        ),
-        GoRoute(
-          path: '/register/allergies',
-          name: 'allergies',
-          builder: (context, state) => const AllergiesPage(),
-        ),
-        GoRoute(
-          path: '/register/confirm',
-          name: 'confirm',
-          builder: (context, state) => const ConfirmRegistrationPage(),
-        ),
-      ],
-    ),
+    // ShellRoute(
+    //   navigatorKey:
+    //       _registrationNavigatorKey, // Use a new navigator key for registration flow
+    //   builder: (context, state, child) {
+    //     return RegistrationMainScreen(
+    //         child: child); // Your main screen for registration flow
+    //   },
+    //   routes: [
+    //     GoRoute(
+    //       path: '/register',
+    //       builder: (context, state) => const UserNamePage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/fullname',
+    //       name: 'fullname',
+    //       builder: (context, state) => const FullNamePage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/gender',
+    //       name: 'gender',
+    //       builder: (context, state) => const GenderSelectionPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/email',
+    //       name: 'email',
+    //       builder: (context, state) => const EmailPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/password',
+    //       name: 'password',
+    //       builder: (context, state) => const PasswordPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/phonenumber',
+    //       name: 'phonenumber',
+    //       builder: (context, state) => const PhoneNumberPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/address',
+    //       name: 'address',
+    //       builder: (context, state) => const AddressPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/birthdate',
+    //       name: 'birthdate',
+    //       builder: (context, state) => const BirthDatePage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/height',
+    //       name: 'height',
+    //       builder: (context, state) => const HeightSelector(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/weight',
+    //       name: 'weight',
+    //       builder: (context, state) => const WeightSelector(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/fitnesslevel',
+    //       name: 'fitnesslevel',
+    //       builder: (context, state) => const FitnessLevelPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/goaltype',
+    //       name: 'goaltype',
+    //       builder: (context, state) => const GoalTypePage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/caloriegoals',
+    //       name: 'caloriegoals',
+    //       builder: (context, state) => const CalorieGoalsPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/allergies',
+    //       name: 'allergies',
+    //       builder: (context, state) => const AllergiesPage(),
+    //     ),
+    //     GoRoute(
+    //       path: '/register/confirm',
+    //       name: 'confirm',
+    //       builder: (context, state) => const ConfirmRegistrationPage(),
+    //     ),
+    //   ],
+    // ),
 
     // GoRoute(
     //   path: '/register',
@@ -202,6 +215,7 @@ final GoRouter router = GoRouter(
     //   builder: (context, state) => const ConfirmRegistrationPage(),
     // ),
     GoRoute(
+      name: 'login',
       path: '/login',
       builder: (context, state) => const LoginScreen(), // Login screen
     ),

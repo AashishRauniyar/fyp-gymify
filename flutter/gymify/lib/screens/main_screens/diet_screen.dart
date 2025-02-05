@@ -508,6 +508,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart'; // Make sure to import your colors and theme.
 
@@ -539,14 +540,9 @@ class _DietScreenState extends State<DietScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-        title: Text(
-          "Diet Plans",
-          style: theme.textTheme.headlineSmall,
-        ),
-        backgroundColor: theme.colorScheme.surface,
-        elevation: 0,
+      appBar: CustomAppBar(
+        title: "Diet Plans",
+        showBackButton: true,
         actions: [
           IconButton(
             icon: Icon(Icons.filter_list, color: theme.colorScheme.primary),
@@ -559,9 +555,9 @@ class _DietScreenState extends State<DietScreen>
           unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
           indicatorColor: theme.colorScheme.primary,
           tabs: const [
-            Tab(text: "Weight Loss", icon: Icon(Icons.fitness_center)),
-            Tab(text: "Muscle Gain", icon: Icon(Icons.monitor_weight)),
-            Tab(text: "Maintenance", icon: Icon(Icons.home)),
+            Tab(text: "Weight Loss"),
+            Tab(text: "Muscle Gain"),
+            Tab(text: "Maintenance"),
           ],
         ),
       ),

@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "users" ALTER COLUMN "full_name" DROP NOT NULL,
+ALTER COLUMN "height" DROP NOT NULL,
+ALTER COLUMN "current_weight" DROP NOT NULL,
+ALTER COLUMN "gender" DROP NOT NULL,
+ALTER COLUMN "phone_number" DROP NOT NULL,
+ALTER COLUMN "fitness_level" DROP NOT NULL,
+ALTER COLUMN "goal_type" DROP NOT NULL;

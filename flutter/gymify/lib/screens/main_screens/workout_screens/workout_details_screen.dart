@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_log_screen.dart';
@@ -18,40 +19,9 @@ class WorkoutDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: theme.colorScheme.surface,
-      //   elevation: 0,
-      //   leading: IconButton(
-      //     icon: Icon(FontAwesomeIcons.arrowLeft,
-      //         color: theme.colorScheme.primary),
-      //     onPressed: () {
-      //       Navigator.pop(context);
-      //     },
-      //   ),
-      // ),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          'Workout Details',
-          style: TextStyle(
-            color: theme.colorScheme.primary,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_sharp,
-              color: Color(0xFFFF5E3A)),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop(); // Navigate back to the previous page
-            } else {
-              context
-                  .pop(); // Navigate to the welcome page if there's nothing to pop
-            }
-          },
-        ),
+      appBar: const CustomAppBar(
+        title: 'Workout Details',
+        showBackButton: true,
       ),
       body: ChangeNotifierProvider(
         create: (_) => WorkoutProvider()..fetchWorkoutById(workoutId),

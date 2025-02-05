@@ -26,4 +26,7 @@ class AppColors {
   // Common Colors
   static const Color buttonText = Colors.white;
   static const Color inputFill = Color(0xFFEFEFEF);
+
+  // **Add the missing inputText color**
+  static const Color inputText = Color(0xFF333333); // Neutral dark text color
 }

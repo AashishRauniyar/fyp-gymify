@@ -179,19 +179,19 @@ model subscription_changes {
 
 model users {
   user_id                                               Int                 @id @default(autoincrement())
-  user_name                                             String              @unique @db.VarChar(100)
-  full_name                                             String              @db.VarChar(100)
+  user_name                                             String?             @unique @db.VarChar(100)
+  full_name                                             String?             @db.VarChar(100)
   address                                               String?             @db.VarChar(255)
   birthdate                                             DateTime?
-  height                                                Decimal             @db.Decimal
-  current_weight                                        Decimal             @db.Decimal
-  gender                                                gender
+  height                                                Decimal?            @db.Decimal
+  current_weight                                        Decimal?            @db.Decimal
+  gender                                                gender?
   email                                                 String              @unique @db.VarChar(255)
   password                                              String              @db.VarChar(255)
-  phone_number                                          String              @unique @db.VarChar(20)
+  phone_number                                          String?             @unique @db.VarChar(20)
   role                                                  role
-  fitness_level                                         fitness_level
-  goal_type                                             goal_type
+  fitness_level                                         fitness_level?
+  goal_type                                             goal_type?
   allergies                                             String?             @db.VarChar(255)
   calorie_goals                                         Decimal?            @db.Decimal(6, 2)
   card_number                                           String?             @db.VarChar(50)
@@ -217,6 +217,7 @@ model users {
   weight_logs                                           weight_logs[] // One-to-many relation with weight_logs
   otp                                                   String?             @db.VarChar(6) // OTP code
   otp_expiry                                            DateTime? // Expiry time
+  verified                                              Boolean?            @default(false) // Email verification status
 }
 
 model workoutexercises {

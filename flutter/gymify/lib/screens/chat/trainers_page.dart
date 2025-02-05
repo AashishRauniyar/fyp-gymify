@@ -5,6 +5,7 @@ import 'package:gymify/providers/chat_provider/trainer_provider.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/models/all_user_model.dart';
@@ -41,12 +42,8 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
     final currentUserId = authProvider.userId;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers',
-      //   ),
-      // ),
       appBar: CustomAppBar(
+          showBackButton: false,
           title: role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers'),
       body: _fetchFuture == null
           ? const Center(child: CustomLoadingAnimation())
@@ -100,11 +97,10 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
                             ),
                           );
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Error starting conversation: $e'),
-                            ),
-                          );
+                          if (context.mounted) {
+                            showCoolSnackBar(context,
+                                "Errpr Starting Conversation: $e", false);
+                          }
                         }
                       },
                     );
