@@ -285,6 +285,7 @@ import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class AllWorkouts extends StatefulWidget {
   const AllWorkouts({super.key});
@@ -327,6 +328,18 @@ class _AllWorkoutsState extends State<AllWorkouts>
             onPressed: () => _openFilterDrawer(context),
           ),
         ],
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
+          },
+        ),
         bottom: TabBar(
           controller: _tabController,
           labelColor: theme.colorScheme.primary,

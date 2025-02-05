@@ -65,15 +65,27 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Exercise'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Text(
+          "Create Exercise",
+          style: theme.textTheme.headlineSmall,
+        ),
         leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
           onPressed: () {
-            context.pop();
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
           },
-          icon: const Icon(Icons.arrow_back),
         ),
       ),
       body: Padding(

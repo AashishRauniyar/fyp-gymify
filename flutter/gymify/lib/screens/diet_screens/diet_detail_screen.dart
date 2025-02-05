@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/colors/app_colors.dart';
@@ -13,16 +14,36 @@ class DietDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      // appBar: AppBar(
+      //   title: Text(
+      //     dietPlan.name,
+      //     style: theme.textTheme.headlineSmall?.copyWith(
+      //       fontWeight: FontWeight.bold,
+      //       color: AppColors.lightOnPrimary,
+      //     ),
+      //   ),
+      //   backgroundColor: theme.colorScheme.primary,
+      //   elevation: 0,
+      // ),
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text(
           dietPlan.name,
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: AppColors.lightOnPrimary,
-          ),
+          style: theme.textTheme.headlineSmall,
         ),
-        backgroundColor: theme.colorScheme.primary,
-        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -182,7 +203,6 @@ class DietDetailScreen extends StatelessWidget {
 //   }
 // }
 
-
 class MealCard extends StatelessWidget {
   final Meal meal;
   final ThemeData theme;
@@ -203,11 +223,11 @@ class MealCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Show the meal image if available
-            if (meal.image != null && meal.image!.isNotEmpty) 
+            if (meal.image.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: Image.network(
-                  meal.image!,  // Assuming meal.image contains the image URL
+                  meal.image, // Assuming meal.image contains the image URL
                   width: double.infinity,
                   height: 200,
                   fit: BoxFit.cover,

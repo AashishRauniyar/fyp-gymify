@@ -195,7 +195,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
-import 'package:gymify/screens/main_screens/workout_screens/workout_log_screen.dart';
 import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
@@ -251,9 +250,12 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
                       Container(
                         height: 200,
                         width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.primary,
-                          borderRadius: const BorderRadius.only(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/exercise.jpeg'),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(24),
                             bottomRight: Radius.circular(24),
                           ),
@@ -264,10 +266,9 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
                           alignment: Alignment.center,
                           child: Text(
                             workout.customWorkoutName,
-                            style: GoogleFonts.poppins(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
+                            style: theme.textTheme.headlineLarge?.copyWith(
                               color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.center,
                           ),

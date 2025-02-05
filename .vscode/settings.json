@@ -3,4 +3,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll": "explicit"
     },
+    "cmake.sourceDirectory": "D:/Final Year Project/Development_Github/fyp-gymify/flutter/gymify/linux",
 }

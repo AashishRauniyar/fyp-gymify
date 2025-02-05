@@ -661,7 +661,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final day = DateTime.now().day;
 
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  final String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -844,29 +844,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     children: [
                       // HeatMap widget, make it scrollable if it overflows
-                      Expanded(
-                        child: HeatMap(
-                          colorTipCount: 3,
-                          defaultColor: const Color(0xFFE0E0E0),
-                          datasets: {
-                            DateTime(year, month, day): 100,
-                          },
-                          colorMode: ColorMode.opacity,
-                          startDate: DateTime.now(),
-                          endDate: DateTime.now().add(const Duration(days: 30)),
-                          showText: false,
-                          textColor: Theme.of(context).colorScheme.onSurface,
-                          scrollable: true,
-                          colorsets: {
-                            1: const Color(0xFFFF5E3A),
-                            DateTime.now().day: Colors.black,
-                          },
-                          onClick: (value) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(value.toString())));
-                          },
-                        ),
-                      ),
+                      // Expanded(
+                      //   child: HeatMap(
+                      //     colorTipCount: 3,
+                      //     defaultColor: const Color(0xFFE0E0E0),
+                      //     datasets: {
+                      //       DateTime(year, month, day): 100,
+                      //     },
+                      //     colorMode: ColorMode.opacity,
+                      //     startDate: DateTime.now(),
+                      //     endDate: DateTime.now().add(const Duration(days: 30)),
+                      //     showText: false,
+                      //     textColor: Theme.of(context).colorScheme.onSurface,
+                      //     scrollable: true,
+                      //     colorsets: {
+                      //       1: const Color(0xFFFF5E3A),
+                      //       DateTime.now().day: Colors.black,
+                      //     },
+                      //     onClick: (value) {
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //           SnackBar(content: Text(value.toString())));
+                      //     },
+                      //   ),
+                      // ),
                       // Card to display the user's profile, inside an Expanded widget to handle overflow
                       const SizedBox(
                           width:
@@ -874,7 +874,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Expanded(
                         child: Card(
                           color: Theme.of(context).cardColor,
-                          elevation: 4,
+                          elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -948,27 +948,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: (value) {
-                        setState(() {
-                          _searchQuery = value.toLowerCase();
-                        });
-                      },
-                      decoration: InputDecoration(
-                        hintText: 'Search Workouts...',
-                        prefixIcon: const Icon(Icons.search),
-                        filled: true,
-                        fillColor: Theme.of(context).colorScheme.surface,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: BorderSide.none,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 10),
+                  //   child: TextField(
+                  //     controller: _searchController,
+                  //     onChanged: (value) {
+                  //       setState(() {
+                  //         _searchQuery = value.toLowerCase();
+                  //       });
+                  //     },
+                  //     decoration: InputDecoration(
+                  //       hintText: 'Search Workouts...',
+                  //       prefixIcon: const Icon(Icons.search),
+                  //       filled: true,
+                  //       fillColor: Theme.of(context).colorScheme.surface,
+                  //       border: OutlineInputBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //         borderSide: BorderSide.none,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 16),
                   // Workout Plans Section
                   Text(

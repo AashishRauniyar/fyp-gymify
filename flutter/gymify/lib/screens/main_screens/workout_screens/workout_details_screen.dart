@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -17,14 +18,38 @@ class WorkoutDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
+      // appBar: AppBar(
+      //   backgroundColor: theme.colorScheme.surface,
+      //   elevation: 0,
+      //   leading: IconButton(
+      //     icon: Icon(FontAwesomeIcons.arrowLeft,
+      //         color: theme.colorScheme.primary),
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //     },
+      //   ),
+      // ),
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
+        title: Text(
+          'Workout Details',
+          style: TextStyle(
+            color: theme.colorScheme.primary,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
-          icon: Icon(FontAwesomeIcons.arrowLeft,
-              color: theme.colorScheme.primary),
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
           onPressed: () {
-            Navigator.pop(context);
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
           },
         ),
       ),
@@ -178,11 +203,19 @@ class WorkoutDetailScreen extends StatelessWidget {
                                 ),
                                 child: ListTile(
                                   contentPadding: const EdgeInsets.all(12.0),
-                                  leading: CircleAvatar(
-                                    backgroundColor: theme.colorScheme.primary,
-                                    child: Icon(
-                                      FontAwesomeIcons.dumbbell,
-                                      color: theme.colorScheme.onPrimary,
+                                  leading: SizedBox(
+                                    width: 48,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      // child: Icon(
+                                      //   FontAwesomeIcons.dumbbell,
+                                      //   color: theme.colorScheme.onPrimary,
+                                      // ),
+                                      child: CachedNetworkImage(
+                                          imageUrl: exercise
+                                                  ?.exercises?.imageUrl
+                                                  .toString() ??
+                                              ''),
                                     ),
                                   ),
                                   title: Text(

@@ -351,7 +351,8 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                     'Shoulders',
                     'Arms',
                     'Core',
-                    'Lower Back'
+                    'Lower Back',
+                    'Full Body'
                   ].map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,

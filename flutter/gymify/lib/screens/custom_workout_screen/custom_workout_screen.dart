@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
+import 'package:gymify/colors/custom_colors.dart';
 
 class CustomWorkoutListScreen extends StatefulWidget {
   const CustomWorkoutListScreen({super.key});
@@ -15,12 +17,43 @@ class CustomWorkoutListScreen extends StatefulWidget {
 class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
+  late ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
+    theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Custom Workouts'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: const Text(
+          "Custom Workout Plan",
+          style: TextStyle(
+            color: CustomColors.secondary,
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_sharp,
+              color: Color(0xFFFF5E3A)),
+          onPressed: () {
+            if (Navigator.of(context).canPop()) {
+              Navigator.of(context).pop(); // Navigate back to the previous page
+            } else {
+              context
+                  .pop(); // Navigate to the welcome page if there's nothing to pop
+            }
+          },
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.add, color: theme.colorScheme.primary),
+            onPressed: () {
+              context.pushNamed('createCustomWorkout');
+            },
+          ),
+        ],
       ),
       body: ChangeNotifierProvider(
         create: (_) => CustomWorkoutProvider()..fetchCustomWorkouts(),
@@ -93,6 +126,10 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
                             );
                           },
                           child: ListTile(
+                            leading: Icon(
+                              Icons.fitness_center,
+                              color: theme.colorScheme.primary,
+                            ),
                             title: Text(
                               workout.customWorkoutName,
                               style: const TextStyle(
@@ -100,8 +137,6 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text(
-                                'Created on: ${workout.createdAt.toLocal()}'),
                           ),
                         ),
                       );

@@ -235,6 +235,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       // appBar: AppBar(
       //   title: Text(
@@ -251,13 +252,9 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text(
+        title: Text(
           "Exercises",
-          style: TextStyle(
-            color: CustomColors.secondary,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+          style: theme.textTheme.headlineSmall,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_sharp,
