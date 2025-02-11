@@ -102,6 +102,7 @@ flutter:
     - assets/images/gender/
     - assets/images/workout_image/
     - assets/images/onboarding/
+    - assets/images/profile/default_avatar.jpg
     - assets/gif/
     - assets/images/loading_screen/1.jpg
     - assets/images/loading_screen/2.jpg

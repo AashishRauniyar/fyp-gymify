@@ -8,7 +8,6 @@ abstract class StorageService {
 }
 
 
-
 // SharedPreferences implementation for mobile
 class SharedPrefsService implements StorageService {
   @override

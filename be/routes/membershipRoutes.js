@@ -1,16 +1,29 @@
 // routes/membershipRoutes.js
 import express from 'express';
-import { createMembership, createMembershipPlan, getActiveMembership, getAllPlans } from '../controllers/membership_controller/membershipController.js';
-
+import { approveMembership, createMembership, createMembershipPlan, getActiveMembership, getAllPlans, getPendingMemberships, getUserMembershipStatus, updateUserCard } from '../controllers/membership_controller/membershipController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
 
 const membershipRouter = express.Router();
 
 // Membership plan routes
-membershipRouter.post('/plans', createMembershipPlan);
-membershipRouter.get('/plans', getAllPlans);
+membershipRouter.get('/plans', authenticate, getAllPlans);
+membershipRouter.post('/memberships', authenticate, createMembership);
+membershipRouter.get('/memberships/status/:user_id', authenticate, getUserMembershipStatus);
 
-// Membership routes
-membershipRouter.post('/memberships', createMembership);
-membershipRouter.get('/memberships/active/:user_id', getActiveMembership);
+
+// Admin routes
+membershipRouter.post('/plans',authenticate , createMembershipPlan);
+membershipRouter.get('/memberships/active/:user_id', authenticate, getActiveMembership);
+membershipRouter.get('/admin/pending', authenticate, getPendingMemberships);
+membershipRouter.put('/admin/approve/:membershipId', authenticate, approveMembership);
+
+// User card update (admin only)
+membershipRouter.put('/users/:userId/card', authenticate, updateUserCard);
+
+
+
+
+// User Membership Status Route
+
 
 export default membershipRouter;

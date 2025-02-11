@@ -608,13 +608,12 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
+import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
-import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -637,6 +636,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         context.read<WorkoutProvider>().fetchAllWorkouts();
         context.read<ProfileProvider>().fetchProfile();
+        context.read<MembershipProvider>().fetchMembershipStatus(context);
       }
 
       final authProvider = context.read<AuthProvider>();
@@ -661,6 +661,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final day = DateTime.now().day;
 
   final TextEditingController _searchController = TextEditingController();
+
   final String _searchQuery = '';
 
   @override
@@ -721,7 +722,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 16.0),
                       child: Text(
-                        'Welcome, ${user.userName}!',
+                        'Welcome, ${user.userName ?? "User"}!',
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
@@ -738,135 +739,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                     ),
                   ),
-
-                  // Row(
-                  //   children: [
-                  //     HeatMap(
-                  //       colorTipCount: 3,
-                  //       defaultColor: const Color(0xFFE0E0E0),
-                  //       datasets: {
-                  //         DateTime.now(): 1,
-                  //         DateTime(2024, 1, 7): 7,
-                  //         DateTime(2025, 1, 8): 10,
-                  //         DateTime(2025, 1, 9): 13,
-                  //         DateTime(2025, 1, 30): 100,
-                  //       },
-                  //       colorMode: ColorMode.opacity,
-                  //       startDate: DateTime.now(),
-                  //       endDate: DateTime.now().add(const Duration(days: 30)),
-                  //       showText: false,
-                  //       // theme color
-                  //       textColor: Theme.of(context).primaryColor,
-                  //       scrollable: true,
-                  //       colorsets: const {
-                  //         1: Color(0xFFFF5E3A),
-                  //       },
-                  //       onClick: (value) {
-                  //         ScaffoldMessenger.of(context).showSnackBar(
-                  //             SnackBar(content: Text(value.toString())));
-                  //       },
-                  //     ),
-                  //     // Card to display the user's Profile
-                  //     Card(
-                  //       color: Theme.of(context).cardColor,
-                  //       elevation: 4,
-                  //       shape: RoundedRectangleBorder(
-                  //         borderRadius: BorderRadius.circular(12),
-                  //       ),
-                  //       child: Padding(
-                  //         padding: const EdgeInsets.all(16.0),
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             Row(
-                  //               children: [
-                  //                 ClipOval(
-                  //                   child: CachedNetworkImage(
-                  //                     imageUrl: user?.profileImage ??
-                  //                         'https://via.placeholder.com/150',
-                  //                     width: 50,
-                  //                     height: 50,
-                  //                     fit: BoxFit.cover,
-                  //                   ),
-                  //                 ),
-                  //                 const SizedBox(width: 16),
-                  //                 Column(
-                  //                   crossAxisAlignment:
-                  //                       CrossAxisAlignment.start,
-                  //                   children: [
-                  //                     Text(
-                  //                       user?.userName ?? 'User Name',
-                  //                       style: Theme.of(context)
-                  //                           .textTheme
-                  //                           .headlineMedium,
-                  //                     ),
-                  //                     const SizedBox(height: 4),
-                  //                   ],
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //             const SizedBox(height: 16),
-                  //             Text(
-                  //               'Membership: Active',
-                  //               style:
-                  //                   Theme.of(context).textTheme.headlineSmall,
-                  //             ),
-                  //             // height and weight data
-                  //             Text(
-                  //               'Height: ${user?.height ?? '0'} cm',
-                  //               style: Theme.of(context)
-                  //                   .textTheme
-                  //                   .bodyMedium
-                  //                   ?.copyWith(
-                  //                     color: Theme.of(context)
-                  //                         .colorScheme
-                  //                         .onSurface,
-                  //                   ),
-                  //             ),
-                  //             Text(
-                  //               'Weight: ${user?.currentWeight ?? '0'} kg',
-                  //               style: Theme.of(context)
-                  //                   .textTheme
-                  //                   .bodyMedium
-                  //                   ?.copyWith(
-                  //                     color: Theme.of(context)
-                  //                         .colorScheme
-                  //                         .onSurface,
-                  //                   ),
-                  //             ),
-                  //           ],
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   // // Search Bar
                   Row(
                     children: [
-                      // HeatMap widget, make it scrollable if it overflows
-                      // Expanded(
-                      //   child: HeatMap(
-                      //     colorTipCount: 3,
-                      //     defaultColor: const Color(0xFFE0E0E0),
-                      //     datasets: {
-                      //       DateTime(year, month, day): 100,
-                      //     },
-                      //     colorMode: ColorMode.opacity,
-                      //     startDate: DateTime.now(),
-                      //     endDate: DateTime.now().add(const Duration(days: 30)),
-                      //     showText: false,
-                      //     textColor: Theme.of(context).colorScheme.onSurface,
-                      //     scrollable: true,
-                      //     colorsets: {
-                      //       1: const Color(0xFFFF5E3A),
-                      //       DateTime.now().day: Colors.black,
-                      //     },
-                      //     onClick: (value) {
-                      //       ScaffoldMessenger.of(context).showSnackBar(
-                      //           SnackBar(content: Text(value.toString())));
-                      //     },
-                      //   ),
-                      // ),
                       // Card to display the user's profile, inside an Expanded widget to handle overflow
                       const SizedBox(
                           width:
@@ -887,11 +762,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     ClipOval(
                                       child: CachedNetworkImage(
-                                        imageUrl: user?.profileImage ??
-                                            'https://via.placeholder.com/150',
+                                        imageUrl: user?.profileImage ?? '',
                                         width: 50,
                                         height: 50,
                                         fit: BoxFit.cover,
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(
+                                          'assets/images/profile/default_avatar.jpg',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.cover,
+                                        ),
+                                        placeholder: (context, url) =>
+                                            const CustomLoadingAnimation(),
                                       ),
                                     ),
                                     const SizedBox(width: 8),
@@ -911,11 +794,22 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                Text(
-                                  'Membership: Active',
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Membership: ${context.watch<MembershipProvider>().membershipStatus?['status'] ?? "Not Applied"} ',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .headlineSmall,
+                                    ),
+                                    TextButton(
+                                        onPressed: () {
+                                          context.pushNamed('membershipPlans');
+                                        },
+                                        child: const Text('Manage')),
+                                  ],
                                 ),
+
                                 const SizedBox(height: 8),
                                 // Height and Weight data
                                 Text(

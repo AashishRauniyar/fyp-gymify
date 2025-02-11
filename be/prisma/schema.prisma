@@ -139,9 +139,9 @@ model memberships {
   membership_id Int               @id @default(autoincrement()) // Unique ID for each subscription
   user_id       Int? // ID of the user who subscribes
   plan_id       Int // ID of the plan subscribed
-  start_date    DateTime          @db.Date // Start date of the subscription
-  end_date      DateTime          @db.Date // End date of the subscription
-  status        membership_status // Enum for membership status (Active, Expired, etc.)
+  start_date    DateTime?          @db.Date // Start date of the subscription
+  end_date      DateTime?          @db.Date // End date of the subscription
+  status        membership_status   @default(Pending)// Enum for membership status (Active, Expired, etc.)
   created_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription creation timestamp
   updated_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription update timestamp
 
@@ -338,6 +338,7 @@ enum meal_time {
 }
 
 enum membership_status {
+  Pending   // New status for admin approval
   Active
   Expired
   Cancelled

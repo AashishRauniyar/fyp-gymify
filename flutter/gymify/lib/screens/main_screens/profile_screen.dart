@@ -805,12 +805,11 @@
 //   }
 // }
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
+import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
@@ -861,16 +860,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             );
           });
-
-      // final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-      // // Disconnect socket connection
-      // final socketService = Provider.of<ChatProvider>(context, listen: false);
-      // socketService.handleLogout();
-      // await authProvider.logout();
-      // if (context.mounted) {
-      //   context.go('/welcome');
-      // }
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -887,6 +876,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final profileProvider =
           Provider.of<ProfileProvider>(context, listen: false);
       profileProvider.fetchProfile(); // Fetch profile data on page load
+      final membershipProvider =
+          Provider.of<MembershipProvider>(context, listen: false);
+      membershipProvider.fetchMembershipStatus(context);
     });
   }
 
@@ -1041,18 +1033,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 20),
 
             // Subscriptions Section
-            Text('Subscriptions', style: theme.textTheme.headlineSmall),
+            Text('Gym Subscriptions', style: theme.textTheme.headlineSmall),
             const SizedBox(height: 10),
-            ListTile(
-              title: Text('Current Plan: Premium',
-                  style: theme.textTheme.bodyLarge),
-              trailing: ElevatedButton(
-                onPressed: () {
-                  // Handle upgrade/cancel subscription
-                },
-                child: const Text('Manage'),
-              ),
+            // ListTile(
+            //   title: Text(
+            //       'Current Plan: ${context.read<MembershipProvider>().membershipStatus ?? 'Not Applied'}',
+            //       style: theme.textTheme.bodyLarge),
+            //   trailing: ElevatedButton(
+            //     onPressed: () {
+            //       // Handle upgrade/cancel subscription
+            //       context.pushNamed('membershipPlans');
+            //     },
+            //     child: const Text('Manage'),
+            //   ),
+            // ),
+            Consumer<MembershipProvider>(
+              builder: (context, membershipProvider, child) {
+                final membershipStatus = membershipProvider.membershipStatus;
+                final currentPlan = membershipStatus != null &&
+                        membershipStatus['status'] != null
+                    ? membershipStatus['status']
+                    : 'Not Applied';
+
+                return ListTile(
+                  title: Text(
+                    'Mebership Status: $currentPlan',
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  trailing: ElevatedButton(
+                    onPressed: () {
+                      context.pushNamed('membershipPlans');
+                    },
+                    child: const Text('Manage'),
+                  ),
+                );
+              },
             ),
+
             const SizedBox(height: 20),
 
             // Preferences Section
@@ -1075,18 +1092,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: () {
                 // Handle change password
-              },
-            ),
-
-            ListTile(
-              leading: Icon(Icons.security, color: theme.colorScheme.primary),
-              title: Text('Two-Factor Authentication',
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  )),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                // Handle two-factor authentication
               },
             ),
 
