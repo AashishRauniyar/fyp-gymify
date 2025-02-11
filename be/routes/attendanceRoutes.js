@@ -1,7 +1,7 @@
 
 // routes/attendanceRoutes.js
 import express from 'express';
-import { getAttendanceHistory, getTodayAttendance, markAttendance } from '../controllers/membership_controller/membershipController.js';
+import { getAttendanceHistory, getTodayAttendance, markAttendance } from '../controllers/attendance_controller/attendanceController.js';
 
 
 const attendanceRouter = express.Router();
