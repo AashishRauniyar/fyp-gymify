@@ -243,7 +243,7 @@ class _SignupPageState extends State<SignupPage> {
 
                       // Email Input
                       CustomInput(
-                        labelText: 'Enter your email',
+                        labelText: 'Email',
                         controller: _emailController,
                         onChanged: provider.setEmail,
                         keyboardType: TextInputType.emailAddress,
@@ -265,7 +265,7 @@ class _SignupPageState extends State<SignupPage> {
 
                       // Password Input
                       CustomInput(
-                        labelText: 'Create a password',
+                        labelText: 'Password',
                         controller: _passwordController,
                         isPassword: true,
                         onChanged: provider.setPassword,

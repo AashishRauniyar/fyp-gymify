@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,9 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ExerciseProvider>(context, listen: false).fetchAllExercises();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ExerciseProvider>(context, listen: false).fetchAllExercises();
+    });
   }
 
   @override
@@ -37,9 +40,10 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
     final customWorkoutProvider = Provider.of<CustomWorkoutProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Custom Workout'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Create Custom Workout'),
+      // ),
+      appBar: const CustomAppBar(title: 'Create Custom Workout'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -120,20 +124,20 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
 
               // Image Picker Button
               const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: () async {
-                  final ImagePicker picker = ImagePicker();
-                  final pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
-                  if (pickedFile != null) {
-                    setState(() {
-                      customWorkoutImage = File(pickedFile.path);
-                    });
-                  }
-                },
-                icon: const Icon(Icons.image),
-                label: const Text('Pick Custom Workout Image'),
-              ),
+              // ElevatedButton.icon(
+              //   onPressed: () async {
+              //     final ImagePicker picker = ImagePicker();
+              //     final pickedFile =
+              //         await picker.pickImage(source: ImageSource.gallery);
+              //     if (pickedFile != null) {
+              //       setState(() {
+              //         customWorkoutImage = File(pickedFile.path);
+              //       });
+              //     }
+              //   },
+              //   icon: const Icon(Icons.image),
+              //   label: const Text('Pick Custom Workout Image'),
+              // ),
 
               // Display Selected Image
               if (customWorkoutImage != null)

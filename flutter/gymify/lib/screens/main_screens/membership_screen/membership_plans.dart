@@ -1169,7 +1169,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
             ),
             Text(
-              'Price: NRS $price',
+              'NRS $price',
               style:
                   const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
             ),
@@ -1333,7 +1333,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                 children: [
                                   const SizedBox(height: 8),
                                   Text(
-                                    'Price: NRS ${plan['price']}',
+                                    'NRS ${plan['price']}',
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -1343,7 +1343,6 @@ class _MembershipScreenState extends State<MembershipScreen> {
                               ),
                               trailing: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),

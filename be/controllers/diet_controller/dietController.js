@@ -126,12 +126,12 @@ export const addMealToDietPlan = [
             try {
                 // If meals is a string, try to parse it
                 const mealsArray = typeof value === 'string' ? JSON.parse(value) : value;
-                
+
                 // Check if it's an array with at least one item
                 if (!Array.isArray(mealsArray) || mealsArray.length === 0) {
                     throw new Error('Meals must be an array with at least one item');
                 }
-                
+
                 // Store the parsed array for later use
                 req.body.meals = mealsArray;
                 return true;
@@ -187,17 +187,17 @@ export const addMealToDietPlan = [
                 addedMeals.push(mealEntry);
             }
 
-            res.status(201).json({ 
-                status: 'success', 
-                message: 'Meals added to diet plan successfully', 
-                data: addedMeals 
+            res.status(201).json({
+                status: 'success',
+                message: 'Meals added to diet plan successfully',
+                data: addedMeals
             });
         } catch (error) {
             console.error('Error adding meals to diet plan:', error);
-            res.status(500).json({ 
-                status: 'failure', 
-                message: 'Server error', 
-                error: error.message 
+            res.status(500).json({
+                status: 'failure',
+                message: 'Server error',
+                error: error.message
             });
         }
     }

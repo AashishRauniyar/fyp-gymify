@@ -794,21 +794,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'Membership: ${context.watch<MembershipProvider>().membershipStatus?['status'] ?? "Not Applied"} ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
-                                    ),
-                                    TextButton(
-                                        onPressed: () {
-                                          context.pushNamed('membershipPlans');
-                                        },
-                                        child: const Text('Manage')),
-                                  ],
+                                Text(
+                                  'Membership: ${context.watch<MembershipProvider>().membershipStatus?['status'] ?? "Not Applied"} ',
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
                                 ),
+                                TextButton(
+                                    onPressed: () {
+                                      context.pushNamed('membershipPlans');
+                                    },
+                                    child: const Text('Manage')),
 
                                 const SizedBox(height: 8),
                                 // Height and Weight data
