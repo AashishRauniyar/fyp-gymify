@@ -11,6 +11,7 @@ import { dietPlanRouter } from './dietRoutes.js';
 import attendanceRouter from './attendanceRoutes.js';
 import membershipRouter from './membershipRoutes.js';
 import chatRouter from './chatRoutes.js';
+import khaltiRouter from './khaltiRoutes.js';
 
 
 const mainRouter = express.Router();
@@ -28,5 +29,6 @@ mainRouter.use('/api', dietPlanRouter);
 mainRouter.use('/api', attendanceRouter);
 mainRouter.use('/api', membershipRouter);
 mainRouter.use('/api', chatRouter);
+mainRouter.use('/api', khaltiRouter);
 
 export default mainRouter;
