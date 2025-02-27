@@ -103,7 +103,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:gymify/screens/main_screens/membership_screen/membership_plans.dart';
+import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';

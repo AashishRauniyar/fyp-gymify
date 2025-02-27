@@ -75,6 +75,7 @@ dependencies:
   table_calendar: ^3.2.0
   pinput: ^5.0.1
   circular_countdown_timer: ^0.2.4
+  flutter_inappwebview: ^6.1.5
 
 dev_dependencies:
   flutter_test:

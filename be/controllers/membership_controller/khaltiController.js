@@ -168,9 +168,10 @@ export const initiatePayment = async (req, res) => {
         const transactionId = `TXN-${Date.now()}-${user_id}`;
 
         const paymentPayload = {
-            return_url: `${BASE_URL}/payment-success?transaction_id=${transactionId}`,
+            return_url: `${BASE_URL}payment-success?transaction_id=${transactionId}`,
             website_url: BASE_URL,
             amount: Math.round(amount * 100), // Convert amount to paisa
+
             purchase_order_id: transactionId,
             purchase_order_name: plan.plan_type,
         };
@@ -182,6 +183,10 @@ export const initiatePayment = async (req, res) => {
             }
         });
 
+        if (!khaltiResponse.data.pidx) {
+            throw new Error("Failed to get Khalti pidx");
+        }
+
         // Create a payment entry linked to the new membership
         await prisma.payments.create({
             data: {
@@ -190,6 +195,7 @@ export const initiatePayment = async (req, res) => {
                 price: amount,
                 payment_method: 'Khalti',
                 transaction_id: transactionId,
+                pidx: khaltiResponse.data.pidx,
                 payment_status: 'Pending',
                 payment_date: new Date()
             }
@@ -197,7 +203,15 @@ export const initiatePayment = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            payment_url: khaltiResponse.data.payment_url
+            // pidx: khaltiResponse.data.pidx,
+            // transaction_id: transactionId,
+            // payment_url: khaltiResponse.data.payment_url
+            data: {
+                pidx: khaltiResponse.data.pidx,
+                transaction_id: transactionId,
+                payment_url: khaltiResponse.data.payment_url
+            },
+            message: 'Payment initiated successfully',
         });
 
     } catch (error) {
@@ -251,6 +265,7 @@ export const verifyPayment = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
+            data: res.data,
             message: 'Payment verified, membership activated'
         });
 

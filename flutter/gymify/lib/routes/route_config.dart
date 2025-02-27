@@ -12,7 +12,7 @@ import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart'
 import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
-import 'package:gymify/screens/main_screens/membership_screen/membership_plans.dart';
+import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';

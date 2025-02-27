@@ -9,6 +9,9 @@ class MembershipProvider with ChangeNotifier {
   Map<String, dynamic>? _membershipStatus;
   String _error = '';
   bool _isLoading = false;
+  String pidx = '';
+  String transactionId = '';
+  String paymentUrl = '';
 
   // Getters
   List<dynamic> get plans => _plans;
@@ -66,6 +69,45 @@ class MembershipProvider with ChangeNotifier {
   }
 
   // Apply for membership
+  Future<void> applyForMembershipUsingKhalti(BuildContext context, int planId,
+      int amount, String paymentMethod) async {
+    await handleApiCall(() async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userId = authProvider.userId;
+
+      if (userId == null) {
+        throw Exception('User ID not found. Please log in again.');
+      }
+      // final intUserId = int.parse(userId.toString());
+
+      final response = await httpClient.post('/initiate-payment', data: {
+        'user_id': userId,
+        'plan_id': planId,
+        'amount': amount,
+        'payment_method': paymentMethod,
+      });
+
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data,
+        (data) => data as Map<String, dynamic>,
+      );
+
+      if (apiResponse.status == 'success') {
+        pidx = apiResponse.data['pidx'];
+        transactionId = apiResponse.data['transaction_id'];
+        paymentUrl = apiResponse.data['payment_url'];
+        notifyListeners();
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Error applying for membership');
+      }
+    });
+  }
+
+
+
+
   Future<void> applyForMembership(
       BuildContext context, int planId, String paymentMethod) async {
     await handleApiCall(() async {
@@ -75,7 +117,6 @@ class MembershipProvider with ChangeNotifier {
       if (userId == null) {
         throw Exception('User ID not found. Please log in again.');
       }
-
       // final intUserId = int.parse(userId.toString());
 
       final response = await httpClient.post('/memberships', data: {
@@ -100,66 +141,38 @@ class MembershipProvider with ChangeNotifier {
     });
   }
 
-  // Get user membership status
-  // Future<void> fetchMembershipStatus(BuildContext context) async {
-  //   await handleApiCall(() async {
-  //     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-  //     final userId = authProvider.userId;
+  Future<void> fetchMembershipStatus(BuildContext context) async {
+    await handleApiCall(() async {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final userId = authProvider.userId;
 
-  //     if (userId == null) {
-  //       throw Exception('User ID not found. Please log in again.');
-  //     }
-
-  //     final response = await httpClient.get('/memberships/status/$userId');
-  //     final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-  //       response.data,
-  //       (data) => data as Map<String, dynamic>,
-  //     );
-
-  //     if (apiResponse.status == 'success') {
-  //       _membershipStatus = apiResponse.data;
-  //       notifyListeners();
-  //     } else {
-  //       throw Exception(apiResponse.message.isNotEmpty
-  //           ? apiResponse.message
-  //           : 'Error fetching membership status');
-  //     }
-  //   });
-  // }
-
-Future<void> fetchMembershipStatus(BuildContext context) async {
-  await handleApiCall(() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final userId = authProvider.userId;
-
-    if (userId == null) {
-      setError('User ID not found. Please log in again.');
-      return;
-    }
-
-    try {
-      final response = await httpClient.get('/memberships/status/$userId');
-      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-        response.data,
-        (data) => data as Map<String, dynamic>,
-      );
-
-      if (apiResponse.status == 'success') {
-        _membershipStatus = apiResponse.data; // Store membership details
-      } else if (apiResponse.status == 'failure' &&
-          apiResponse.message.contains("No membership found")) {
-        _membershipStatus = null; // No membership exists, set to null
-      } else {
-        throw Exception(apiResponse.message.isNotEmpty
-            ? apiResponse.message
-            : 'Error fetching membership status');
+      if (userId == null) {
+        setError('User ID not found. Please log in again.');
+        return;
       }
 
-      notifyListeners();
-    } catch (e) {
-      setError('Failed to fetch membership status: $e');
-    }
-  });
-}
+      try {
+        final response = await httpClient.get('/memberships/status/$userId');
+        final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+          response.data,
+          (data) => data as Map<String, dynamic>,
+        );
 
+        if (apiResponse.status == 'success') {
+          _membershipStatus = apiResponse.data; // Store membership details
+        } else if (apiResponse.status == 'failure' &&
+            apiResponse.message.contains("No membership found")) {
+          _membershipStatus = null; // No membership exists, set to null
+        } else {
+          throw Exception(apiResponse.message.isNotEmpty
+              ? apiResponse.message
+              : 'Error fetching membership status');
+        }
+
+        notifyListeners();
+      } catch (e) {
+        setError('Failed to fetch membership status: $e');
+      }
+    });
+  }
 }
