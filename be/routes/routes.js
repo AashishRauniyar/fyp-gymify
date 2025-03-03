@@ -7,7 +7,7 @@ import { workoutRouter } from './workoutRoutes.js';
 import { customWorkoutRouter } from './customWorkoutRoutes.js';
 import { personalBestRouter } from './personalBestRoutes.js';
 import { workoutLogRouter } from './workoutLogRoutes.js';
-import { dietPlanRouter } from './dietRoutes.js';
+import {dietPlanRouter} from './dietRoutes.js';
 import attendanceRouter from './attendanceRoutes.js';
 import membershipRouter from './membershipRoutes.js';
 import chatRouter from './chatRoutes.js';

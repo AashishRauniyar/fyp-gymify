@@ -56,53 +56,94 @@ model customworkouts {
   users                  users?                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
+// model dietplans {
+//   diet_plan_id                      Int        @id @default(autoincrement())
+//   name                              String     @unique @db.VarChar(100)
+//   user_id                           Int?
+//   trainer_id                        Int?
+//   calorie_goal                      Decimal?   @db.Decimal(6, 2)
+//   goal_type                         goal_type
+//   description                       String?
+//   created_at                        DateTime?  @default(now()) @db.Timestamp(6)
+//   updated_at                        DateTime?  @default(now()) @db.Timestamp(6)
+//   dietlogs                          dietlogs[]
+//   users_dietplans_trainer_idTousers users?     @relation("dietplans_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
+//   users_dietplans_user_idTousers    users?     @relation("dietplans_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+//   meals                             meals[]
+// }
 
+// model meals {
+//   meal_id        Int        @id @default(autoincrement())
+//   image          String?    @db.VarChar(255)
+//   diet_plan_id   Int?
+//   meal_name      String     @unique @db.VarChar(100)
+//   meal_time      meal_time
+//   calories       Decimal    @db.Decimal(5, 2)
+//   description    String?
+//   macronutrients String?    @db.VarChar(100)
+//   created_at     DateTime?  @default(now()) @db.Timestamp(6)
+//   dietlogs       dietlogs[]
+//   dietplans      dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: Cascade, onUpdate: NoAction)
+// }
+
+// model dietlogs {
+//   log_id            Int        @id @default(autoincrement())
+//   user_id           Int?
+//   diet_plan_id      Int?
+//   meal_id           Int?
+//   consumed_calories Decimal?   @db.Decimal(5, 2)
+//   custom_meal       String?    @db.VarChar(100)
+//   notes             String?
+//   log_date          DateTime?  @default(now()) @db.Timestamp(6)
+//   dietplans         dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: NoAction, onUpdate: NoAction)
+//   meals             meals?     @relation(fields: [meal_id], references: [meal_id], onDelete: NoAction, onUpdate: NoAction)
+//   users             users?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
+// }
 
 model dietplans {
-  diet_plan_id                      Int        @id @default(autoincrement())
-  name                              String     @unique @db.VarChar(100)
-  user_id                           Int?
-  trainer_id                        Int?
-  calorie_goal                      Decimal?   @db.Decimal(6, 2)
-  goal_type                         goal_type
-  description                       String?
-  created_at                        DateTime?  @default(now()) @db.Timestamp(6)
-  updated_at                        DateTime?  @default(now()) @db.Timestamp(6)
-  dietlogs                          dietlogs[]
-  users_dietplans_trainer_idTousers users?     @relation("dietplans_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
-  users_dietplans_user_idTousers    users?     @relation("dietplans_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-  meals                             meals[]
-}
+  diet_plan_id Int       @id @default(autoincrement())
+  name         String    @unique @db.VarChar(100)
+  user_id      Int // Linked to users
+  trainer_id   Int? // Linked to trainers
+  calorie_goal Decimal?  @db.Decimal(6, 2)
+  goal_type    goal_type
+  description  String?
+  created_at   DateTime  @default(now()) @db.Timestamp(6)
+  updated_at   DateTime  @updatedAt
 
+  // Relations
+  user    users?  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  trainer users?  @relation("dietplans_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
+  meals   meals[]
+}
 
 model meals {
-  meal_id        Int        @id @default(autoincrement())
-  image          String?    @db.VarChar(255)
-  diet_plan_id   Int?
-  meal_name      String     @unique @db.VarChar(100)
+  meal_id        Int       @id @default(autoincrement())
+  diet_plan_id   Int
+  meal_name      String    @db.VarChar(100)
   meal_time      meal_time
-  calories       Decimal    @db.Decimal(5, 2)
+  image          String?   @db.VarChar(255)
+  calories       Decimal   @db.Decimal(5, 2)
+  macronutrients Json? // JSON for better data storage
   description    String?
-  macronutrients String?    @db.VarChar(100)
-  created_at     DateTime?  @default(now()) @db.Timestamp(6)
-  dietlogs       dietlogs[]
-  dietplans      dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: Cascade, onUpdate: NoAction)
+  created_at     DateTime  @default(now()) @db.Timestamp(6)
+
+  // Relations
+  dietplan  dietplans  @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: Cascade)
+  meal_logs meallogs[]
 }
 
-model dietlogs {
-  log_id            Int        @id @default(autoincrement())
-  user_id           Int?
-  diet_plan_id      Int?
-  meal_id           Int?
-  consumed_calories Decimal?   @db.Decimal(5, 2)
-  custom_meal       String?    @db.VarChar(100)
-  notes             String?
-  log_date          DateTime?  @default(now()) @db.Timestamp(6)
-  dietplans         dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: NoAction, onUpdate: NoAction)
-  meals             meals?     @relation(fields: [meal_id], references: [meal_id], onDelete: NoAction, onUpdate: NoAction)
-  users             users?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-}
+model meallogs {
+  meal_log_id Int      @id @default(autoincrement())
+  user_id     Int // User who logs the meal
+  meal_id     Int // Meal that was logged
+  quantity    Decimal  @db.Decimal(5, 2) // e.g., 2 servings
+  log_time    DateTime @default(now()) @db.Timestamp(6)
 
+  // Relations
+  user users @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  meal meals @relation(fields: [meal_id], references: [meal_id], onDelete: Cascade)
+}
 
 model exercises {
   exercise_id                Int                      @id @default(autoincrement())
@@ -143,9 +184,9 @@ model memberships {
   membership_id Int               @id @default(autoincrement()) // Unique ID for each subscription
   user_id       Int? // ID of the user who subscribes
   plan_id       Int // ID of the plan subscribed
-  start_date    DateTime?          @db.Date // Start date of the subscription
-  end_date      DateTime?          @db.Date // End date of the subscription
-  status        membership_status   @default(Pending)// Enum for membership status (Active, Expired, etc.)
+  start_date    DateTime?         @db.Date // Start date of the subscription
+  end_date      DateTime?         @db.Date // End date of the subscription
+  status        membership_status @default(Pending) // Enum for membership status (Active, Expired, etc.)
   created_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription creation timestamp
   updated_at    DateTime?         @default(now()) @db.Timestamp(6) // Subscription update timestamp
 
@@ -162,22 +203,22 @@ model payments {
   price          Decimal        @db.Decimal(10, 2) // Payment amount
   payment_method payment_method // Enum for payment methods (Khalti, Cash, etc.)
   transaction_id String         @unique @db.VarChar(100) // Khalti payment details
-  pidx           String?        @db.VarChar(100) 
+  pidx           String?        @db.VarChar(100)
   payment_date   DateTime       @db.Date // Date of payment
   payment_status payment_status // Enum for payment status (Paid, Pending, etc.)
   created_at     DateTime?      @default(now()) @db.Timestamp(6) // Payment creation timestamp
-  memberships memberships? @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade, onUpdate: NoAction) // Relation to memberships
-  users       users?       @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
+  memberships    memberships?   @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade, onUpdate: NoAction) // Relation to memberships
+  users          users?         @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction) // Relation to users
 }
 
 model subscription_changes {
-  change_id     Int      @id @default(autoincrement())
+  change_id     Int         @id @default(autoincrement())
   membership_id Int
   previous_plan Int
   new_plan      Int
-  change_date   DateTime @default(now())
+  change_date   DateTime    @default(now())
   action        String
-  memberships memberships @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
+  memberships   memberships @relation(fields: [membership_id], references: [membership_id], onDelete: Cascade)
 }
 
 model users {
@@ -207,9 +248,8 @@ model users {
   chatconversations_chatconversations_trainer_idTousers chatconversations[] @relation("chatconversations_trainer_idTousers")
   chatconversations_chatconversations_user_idTousers    chatconversations[] @relation("chatconversations_user_idTousers")
   customworkouts                                        customworkouts[]
-  dietlogs                                              dietlogs[]
-  dietplans_dietplans_trainer_idTousers                 dietplans[]         @relation("dietplans_trainer_idTousers")
-  dietplans_dietplans_user_idTousers                    dietplans[]         @relation("dietplans_user_idTousers")
+  dietPlans                                             dietplans[]
+  mealLogs                                              meallogs[]
   gym                                                   gym[]
   memberships                                           memberships[]
   payments                                              payments[]
@@ -221,6 +261,8 @@ model users {
   otp                                                   String?             @db.VarChar(6) // OTP code
   otp_expiry                                            DateTime? // Expiry time
   verified                                              Boolean?            @default(false) // Email verification status
+
+  dietplans dietplans[] @relation("dietplans_trainer_idTousers")
 }
 
 model workoutexercises {
@@ -341,7 +383,7 @@ enum meal_time {
 }
 
 enum membership_status {
-  Pending   // New status for admin approval
+  Pending // New status for admin approval
   Active
   Expired
   Cancelled
