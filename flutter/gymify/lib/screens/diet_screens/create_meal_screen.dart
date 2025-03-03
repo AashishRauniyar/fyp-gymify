@@ -477,25 +477,28 @@ class _CreateMealScreenState extends State<CreateMealScreen> {
                       "fat": fat,
                     };
 
-                    await Provider.of<DietProvider>(context, listen: false)
-                        .createMeal(
-                      dietPlanId: widget.dietPlanId,
-                      mealName: mealName,
-                      mealTime: mealTime,
-                      calories: calories,
-                      description: description,
-                      macronutrients: macronutrients,
-                      mealImage: mealImage,
-                    );
+                    try {
+                      await Provider.of<DietProvider>(context, listen: false)
+                          .createMeal(
+                        dietPlanId: widget.dietPlanId,
+                        mealName: mealName,
+                        mealTime: mealTime,
+                        calories: calories,
+                        description: description,
+                        macronutrients: macronutrients,
+                        mealImage: mealImage,
+                      );
 
-                    // ScaffoldMessenger.of(context).showSnackBar(
-                    //   const SnackBar(
-                    //       content: Text("Meal created successfully")),
-                    // );
-                    if (context.mounted) {
+                      await Provider.of<DietProvider>(context, listen: false)
+                          .fetchAllDietPlans();
+                      if (context.mounted) {
+                        showCoolSnackBar(
+                            context, "Meal Successfully Created", true);
+                        Navigator.of(context).pop();
+                      }
+                    } catch (e) {
                       showCoolSnackBar(
-                          context, "Meal Successfully Created", true);
-                      Navigator.of(context).pop();
+                          context, "Error creating meal: $e", false);
                     }
                   }
                 },
