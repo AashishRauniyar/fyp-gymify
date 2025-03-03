@@ -10,6 +10,7 @@ import 'package:gymify/screens/custom_workout_screen/create_custom_workout_scree
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
 import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
+import 'package:gymify/screens/diet_screens/create_meal_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
@@ -18,6 +19,7 @@ import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart'
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
+import 'package:gymify/screens/trainer_screens/manage_diet_plans.dart';
 import 'package:gymify/screens/weight_selecter.dart';
 import 'package:gymify/screens/authentication/trying/multi_register.dart';
 import 'package:gymify/screens/exercise_screen.dart';
@@ -337,9 +339,23 @@ final GoRouter router = GoRouter(
         path: '/createDietPlan',
         builder: (context, state) => const CreateDietPlanScreen()),
     GoRoute(
+        name: 'createMealPlan',
+        path: '/createMealPlan',
+        builder: (context, state) => CreateMealScreen(
+              dietPlanId: int.parse(state.uri.queryParameters['dietPlanId']!),
+            )),
+    GoRoute(
+        name: 'manageDietPlans',
+        path: '/manageDietPlans',
+        builder: (context, state) => const ManageDietPlans()),
+    GoRoute(
         name: 'membershipPlans',
         path: '/membershipPlans',
-        builder: (context, state) =>  MembershipScreen()),
+        builder: (context, state) => const MembershipScreen()),
+    GoRoute(
+        name: 'dietSearch',
+        path: '/dietSearch',
+        builder: (context, state) => const DietSearchScreen()),
     GoRoute(
       path: '/workoutHistory',
       name:

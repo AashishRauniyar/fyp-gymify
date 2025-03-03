@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 
@@ -41,6 +45,7 @@ class DietProvider with ChangeNotifier {
 
       if (apiResponse.status == 'success') {
         _diets = apiResponse.data;
+        print(_diets);
         _setError(false);
         notifyListeners();
       } else {
@@ -82,7 +87,7 @@ class DietProvider with ChangeNotifier {
       );
 
       if (apiResponse.status == 'success') {
-         // Add the newly created diet plan
+        // Add the newly created diet plan
         _setError(false);
         notifyListeners();
       } else {
@@ -100,7 +105,6 @@ class DietProvider with ChangeNotifier {
     }
   }
 
-  
   Future<void> addMealToDietPlan({
     required int dietPlanId,
     required List<Map<String, dynamic>> meals,
@@ -142,7 +146,128 @@ class DietProvider with ChangeNotifier {
     }
   }
 
+  // Future<void> createMeal({
+  //   required int dietPlanId,
+  //   required String mealName,
+  //   required String mealTime,
+  //   required double calories,
+  //   required String description,
+  //   Map<String, dynamic>? macronutrients,
+  //   File? mealImage, // Optional image file path or URL
+  // }) async {
+  //   _setLoading(true);
+  //   try {
+  //     // Prepare the request data.
+  //     // If macronutrients is provided, you can send it as-is if your backend accepts JSON,
+  //     // otherwise convert it to a string using jsonEncode if needed.
+  //     final requestData = {
+  //       'diet_plan_id': dietPlanId,
+  //       'meal_name': mealName,
+  //       'meal_time': mealTime,
+  //       'calories': calories,
+  //       'description': description,
+  //       'macronutrients':
+  //           macronutrients, // or jsonEncode(macronutrients) if required
+  //       // 'meal_image': mealImage, // optional; send only if there's an image
+  //       if (mealImage != null)
+  //         'image': await MultipartFile.fromFile(
+  //           mealImage.path,
+  //           filename: 'exercise_image.jpeg',
+  //           contentType: getContentType(mealImage),
+  //         ),
+  //     };
 
+  //     final response = await httpClient.post(
+  //       '/meals',
+  //       data: requestData,
+  //     );
 
-   
+  //     // Parse the API response into a Meal object.
+  //     final apiResponse = ApiResponse<Meal>.fromJson(
+  //       response.data,
+  //       (data) => Meal.fromJson(data as Map<String, dynamic>),
+  //     );
+
+  //     if (apiResponse.status == 'success') {
+  //       // Optionally, you might update your local state to include this new meal.
+  //       // For example, find the diet plan in _diets and add the new meal to its meals list.
+  //       _setError(false);
+  //       notifyListeners();
+  //     } else {
+  //       print('Error: ${apiResponse.message}');
+  //       throw Exception(apiResponse.message.isNotEmpty
+  //           ? apiResponse.message
+  //           : 'Unknown error');
+  //     }
+  //   } catch (e) {
+  //     _setError(true);
+  //     print('Error creating meal: $e');
+  //     throw Exception('Error creating meal: $e');
+  //   } finally {
+  //     _setLoading(false);
+  //   }
+  // }
+
+  Future<void> createMeal({
+    required int dietPlanId,
+    required String mealName,
+    required String mealTime,
+    required double calories,
+    required String description,
+    Map<String, dynamic>? macronutrients,
+    File? mealImage, // Optional image file
+  }) async {
+    _setLoading(true);
+    try {
+      // Prepare base data.
+      final Map<String, dynamic> dataMap = {
+        'diet_plan_id': dietPlanId,
+        'meal_name': mealName,
+        'meal_time': mealTime,
+        'calories': calories,
+        'description': description,
+        // Convert macronutrients map to JSON string if provided.
+        if (macronutrients != null)
+          'macronutrients': jsonEncode(macronutrients),
+      };
+
+      // If an image file is provided, add it as a MultipartFile.
+      if (mealImage != null) {
+        dataMap['meal_image'] = await MultipartFile.fromFile(
+          mealImage.path,
+          filename: 'meal_image.jpeg',
+          contentType: getContentType(mealImage),
+        );
+      }
+
+      // Wrap the dataMap into FormData.
+      final formData = FormData.fromMap(dataMap);
+
+      final response = await httpClient.post(
+        '/meals',
+        data: formData,
+      );
+
+      final apiResponse = ApiResponse<Meal>.fromJson(
+        response.data,
+        (data) => Meal.fromJson(data as Map<String, dynamic>),
+      );
+
+      if (apiResponse.status == 'success') {
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error creating meal: $e');
+      throw Exception('Error creating meal: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
 }

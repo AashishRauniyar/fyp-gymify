@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
-import 'package:gymify/colors/app_colors.dart';
+
 
 class DietDetailScreen extends StatelessWidget {
   final DietPlan dietPlan;

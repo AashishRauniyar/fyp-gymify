@@ -256,11 +256,7 @@ class _CreateDietPlanScreenState extends State<CreateDietPlanScreen> {
                 },
               ),
 
-              // if (provider.hasError)
-              //   const Text(
-              //     'Error creating diet plan',
-              //     style: TextStyle(color: Colors.red),
-              //   ),
+              
             ],
           ),
         ),

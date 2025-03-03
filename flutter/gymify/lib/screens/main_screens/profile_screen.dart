@@ -1129,6 +1129,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 context.pushNamed('createDietPlan');
               },
             ),
+            // list tile to create meals
+            ListTile(
+              leading: Icon(Icons.circle, color: theme.colorScheme.primary),
+              title: Text('Create Meal',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                context.pushNamed('createMealPlan');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.circle, color: theme.colorScheme.primary),
+              title: Text('Manage Diet Plan',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  )),
+              trailing: const Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                context.pushNamed('manageDietPlans');
+              },
+            ),
 
             // Support Section
             Text('Support', style: theme.textTheme.headlineSmall),
