@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/user_model.dart';
+import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
+import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
 import 'package:gymify/screens/authentication/trying/otp_verification.dart';
 import 'package:gymify/screens/authentication/trying/signup.dart';
 import 'package:gymify/screens/chat/trainers_page.dart';
@@ -19,6 +21,7 @@ import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart'
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
+import 'package:gymify/screens/test/test_screen.dart';
 import 'package:gymify/screens/trainer_screens/manage_diet_plans.dart';
 import 'package:gymify/screens/weight_selecter.dart';
 import 'package:gymify/screens/authentication/trying/multi_register.dart';
@@ -356,6 +359,20 @@ final GoRouter router = GoRouter(
         name: 'dietSearch',
         path: '/dietSearch',
         builder: (context, state) => const DietSearchScreen()),
+    GoRoute(
+        name: 'test',
+        path: '/test',
+        builder: (context, state) => const TestScreen()),
+    GoRoute(
+        name: 'forgotPassword',
+        path: '/forgotPassword',
+        builder: (context, state) => const ForgotPasswordScreen()),
+    GoRoute(
+        name: 'resetPassword',
+        path: '/resetPassword',
+        builder: (context, state) => ResetPasswordScreen(
+              email: state.extra as String,
+            )),
     GoRoute(
       path: '/workoutHistory',
       name:

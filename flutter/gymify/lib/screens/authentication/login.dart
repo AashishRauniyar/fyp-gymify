@@ -487,7 +487,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Spacer(),
                     TextButton(
                       onPressed: () {
-                        context.go('/forgot-password');
+                        context.pushNamed('forgotPassword');
                       },
                       child: Text(
                         'Forgot Password?',

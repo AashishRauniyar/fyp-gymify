@@ -217,6 +217,116 @@ class SignupProvider with ChangeNotifier {
     }
   }
 
+
+  // Reset Password and forget password
+
+  // Forgot Password: Send OTP for password reset
+  Future<bool> forgotPassword(String email) async {
+    if (email.isEmpty) {
+      setError('Email is required for password reset');
+      return false;
+    }
+
+    setLoading(true);
+    clearError();
+
+    try {
+      final response = await httpClient.post('/auth/forgot-password', data: {
+        'email': email,
+      });
+
+      if (response.data['status'] == 'success') {
+        _isOtpSent = true;
+        notifyListeners();
+        return true;
+      } else {
+        setError(response.data['message'] ?? 'Failed to send OTP for password reset');
+        return false;
+      }
+    } on DioException catch (e) {
+      setError(_handleDioError(e));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // Reset Password: Verify OTP and update password
+  Future<bool> resetPassword(String newPassword, String email, String otp ) async {
+    if (email.isEmpty) {
+      setError('Email is required');
+      return false;
+    }
+    if (otp.isEmpty || otp.length != 6) {
+      setError('Please enter a valid 6-digit OTP');
+      return false;
+    }
+    // Validate new password meets criteria
+    if (!RegExp(r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
+        .hasMatch(newPassword)) {
+      setError(
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, one number, and one special character.");
+      return false;
+    }
+
+    setLoading(true);
+    clearError();
+
+    try {
+      final response = await httpClient.post('/auth/reset-password', data: {
+        'email': email,
+        'otp': otp,
+        'newPassword': newPassword,
+      });
+
+      if (response.data['status'] == 'success') {
+        _isVerified = true;
+        notifyListeners();
+        return true;
+      } else {
+        setError(response.data['message'] ?? 'Failed to reset password');
+        return false;
+      }
+    } on DioException catch (e) {
+      setError(_handleDioError(e));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  Future<bool> resendOtpForPasswordRecovery(String email) async {
+    if (email.isEmpty) {
+      setError('Email is required to resend OTP');
+      return false;
+    }
+
+    setLoading(true);
+    clearError();
+
+    try {
+      final response = await httpClient.post('/auth/resend-otp', data: {
+        'email': email,
+      });
+
+      if (response.data['status'] == 'success') {
+        _isOtpSent = true;
+        notifyListeners();
+        return true;
+      } else {
+        setError(response.data['message'] ?? 'Failed to resend OTP');
+        return false;
+      }
+    } on DioException catch (e) {
+      setError(_handleDioError(e));
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  }
+
+
+
   // Handle API errors
   String _handleDioError(DioException e) {
     if (e.response != null && e.response?.data is Map) {
