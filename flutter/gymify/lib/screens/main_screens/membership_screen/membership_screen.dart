@@ -989,6 +989,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
@@ -1186,7 +1187,21 @@ class _MembershipScreenState extends State<MembershipScreen> {
               title: const Text('Pay with Khalti'),
               onTap: () async {
                 Navigator.pop(dialogContext);
-                await _applyForMembership(context, planId, 'Khalti');
+                // await _applyForMembership(context, planId, 'Khalti');
+                final provider =
+                    Provider.of<MembershipProvider>(context, listen: false);
+
+                await provider.applyForMembershipUsingKhalti(
+                    context, planId, int.parse(price), 'Khalti');
+
+                // if (mounted) {
+                //   return;
+                // }
+                if(context.mounted){
+                  context.pushNamed('khalti');
+                }
+
+                // open khalti sdk
               },
             ),
             ListTile(
@@ -1221,6 +1236,9 @@ class _MembershipScreenState extends State<MembershipScreen> {
 
     try {
       final provider = Provider.of<MembershipProvider>(context, listen: false);
+
+      //
+
       await provider.applyForMembership(context, planId, paymentMethod);
 
       if (!mounted) return;

@@ -15,6 +15,7 @@ import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/create_meal_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/main_screens/membership_screen/khalti_payment_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
@@ -363,6 +364,10 @@ final GoRouter router = GoRouter(
         name: 'test',
         path: '/test',
         builder: (context, state) => const TestScreen()),
+    GoRoute(
+        name: 'khalti',
+        path: '/khalti',
+        builder: (context, state) => const KhaltiSDKDemo()),
     GoRoute(
         name: 'forgotPassword',
         path: '/forgotPassword',

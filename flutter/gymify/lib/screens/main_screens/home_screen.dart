@@ -739,6 +739,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                     ),
                   ),
+                  TextButton(
+                      onPressed: () {
+                        context.pushNamed('test');
+                      },
+                      child: const Text("Test Page")),
                   // // Search Bar
                   Row(
                     children: [
