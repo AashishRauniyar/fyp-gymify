@@ -201,3 +201,36 @@ export const removeExerciseFromCustomWorkout = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
+
+
+
+// Delete custom workout
+export const deleteCustomWorkout = async (req, res) => {
+    try {
+        const customWorkoutId = parseInt(req.params.id);
+
+        // Check if the custom workout exists
+        const customWorkout = await prisma.customworkouts.findUnique({
+            where: { custom_workout_id: customWorkoutId }
+        });
+
+        if (!customWorkout) {
+            return res.status(404).json({ status: 'failure', message: 'Custom workout not found' });
+        }
+
+        // Remove all exercises related to this custom workout
+        await prisma.customworkoutexercises.deleteMany({
+            where: { custom_workout_id: customWorkoutId }
+        });
+
+        // Delete the custom workout
+        await prisma.customworkouts.delete({
+            where: { custom_workout_id: customWorkoutId }
+        });
+
+        res.status(200).json({ status: 'success', message: 'Custom workout deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting custom workout:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};

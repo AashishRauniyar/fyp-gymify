@@ -2,7 +2,7 @@ import express from 'express';
 
 
 import { authenticate } from '../middleware/authMiddleware.js';
-import { addExerciseToCustomWorkout, createCustomWorkout, getCustomWorkoutById, getCustomWorkoutExercisesById, getCustomWorkoutsOfUser, removeExerciseFromCustomWorkout } from '../controllers/customWorkoutController.js';
+import { addExerciseToCustomWorkout, createCustomWorkout, deleteCustomWorkout, getCustomWorkoutById, getCustomWorkoutExercisesById, getCustomWorkoutsOfUser, removeExerciseFromCustomWorkout } from '../controllers/customWorkoutController.js';
 
 export const customWorkoutRouter = express.Router();
 
@@ -21,3 +21,4 @@ customWorkoutRouter.delete('/custom-workouts/exercises/:id', authenticate, remov
 
 customWorkoutRouter.get('/custom-workouts/:id', authenticate, getCustomWorkoutById);
 
+customWorkoutRouter.delete('/custom-workouts/:id', authenticate, deleteCustomWorkout);
