@@ -145,11 +145,9 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
-
 import 'package:gymify/network/http.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:provider/provider.dart';

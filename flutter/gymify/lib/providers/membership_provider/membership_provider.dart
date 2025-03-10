@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/network/http.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:khalti_checkout_flutter/khalti_checkout_flutter.dart';
 import 'package:provider/provider.dart';
 
 class MembershipProvider with ChangeNotifier {
@@ -211,33 +210,28 @@ class MembershipProvider with ChangeNotifier {
     });
   }
 
-  // Function to initiate Khalti payment in the app
-  // Future<void> initiateKhaltiPayment(BuildContext context) async {
-  //   // Make sure you have the pidx and paymentUrl before proceeding
-  //   if (pidx.isEmpty || paymentUrl.isEmpty) {
-  //     setError('Payment initiation failed. Please try again.');
-  //     return;
-  //   }
+  Future<void> verifyPayment(BuildContext context, String transactionId, String status) async {
+    await handleApiCall(() async {
+      final response = await httpClient.post('/verify-payment', data: {
+        'transaction_id': transactionId,
+        'status': status,
+      });
 
-  //   try {
-  //     // Assuming you're using Khalti SDK (using external method to open the Khalti payment page)
-  //     final khalti = Khalti.init(
-  //       publicKey: 'your_public_key',  // Replace with your actual Khalti public key
-  //       pidx: pidx,
-  //       environment: Environment.test,  // Can be Environment.prod for live environment
-  //     );
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data,
+        (data) => data as Map<String, dynamic>,
+      );
 
-  //     // Trigger the Khalti payment page
-  //     await khalti.open(context);
+      if (apiResponse.status == 'success') {
+        // Update membership status in the provider
+        _membershipStatus = apiResponse.data;
+        notifyListeners();
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Error verifying payment');
+      }
+    });
+  }
 
-  //     // After the payment is processed, handle the result in your callback
-  //     khalti.onPaymentResult = (result) {
-  //       log(result.toString());
-  //       // You can update the payment status or perform further actions here.
-  //       setError('Payment processed successfully.');
-  //     };
-  //   } catch (e) {
-  //     setError('Failed to initiate Khalti payment: $e');
-  //   }
-  // }
 }

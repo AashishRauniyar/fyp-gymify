@@ -109,9 +109,6 @@
 //   }
 // }
 
-
-
-
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/user_model.dart';
@@ -223,6 +220,40 @@ class ProfileProvider with ChangeNotifier {
       }
     } catch (e) {
       _setError('Error fetching weight history: ${e.toString()}');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Update weight
+  Future<void> updateWeight(BuildContext context, double newWeight) async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.post('/weight', data: {
+        'current_weight': newWeight,
+      });
+
+      // final apiResponse = ApiResponse<Users>.fromJson(
+      //   response.data,
+      //   (data) => Users.fromJson(data as Map<String, dynamic>),
+      // );
+
+      // Handle the response from the backend
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data,
+        (data) => data as Map<String, dynamic>,
+      );
+
+      if (apiResponse.status == 'success') {
+        _user?.currentWeight = apiResponse.data[
+            'current_weight']; // Update the user's profile with the new weight
+        resetError();
+        notifyListeners();
+      } else {
+        _setError(apiResponse.message);
+      }
+    } catch (e) {
+      _setError('Error updating weight: ${e.toString()}');
     } finally {
       _setLoading(false);
     }

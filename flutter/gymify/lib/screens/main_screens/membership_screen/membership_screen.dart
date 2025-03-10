@@ -1201,6 +1201,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                   context.pushNamed('khalti');
                 }
 
+                
+
                 // open khalti sdk
               },
             ),

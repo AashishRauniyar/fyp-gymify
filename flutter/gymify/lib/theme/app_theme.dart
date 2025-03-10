@@ -59,31 +59,31 @@ class AppTheme {
   }
 
   static TextTheme _textTheme(Color textColor) {
-    return GoogleFonts.poppinsTextTheme().copyWith(
-      headlineLarge: GoogleFonts.poppins(
+    return GoogleFonts.rubikTextTheme().copyWith(
+      headlineLarge: GoogleFonts.rubik(
         fontSize: 32,
         fontWeight: FontWeight.bold,
         color: textColor,
       ),
-      headlineMedium: GoogleFonts.poppins(
+      headlineMedium: GoogleFonts.rubik(
         fontSize: 24,
         fontWeight: FontWeight.bold,
         color: textColor,
       ),
-      headlineSmall: GoogleFonts.poppins(
+      headlineSmall: GoogleFonts.rubik(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: textColor,
       ),
-      bodyLarge: GoogleFonts.poppins(
+      bodyLarge: GoogleFonts.rubik(
         fontSize: 16,
         color: textColor,
       ),
-      bodyMedium: GoogleFonts.poppins(
+      bodyMedium: GoogleFonts.rubik(
         fontSize: 14,
         color: textColor,
       ),
-      bodySmall: GoogleFonts.poppins(
+      bodySmall: GoogleFonts.rubik(
         fontSize: 12,
         color: textColor,
       ),
@@ -99,7 +99,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        textStyle: GoogleFonts.poppins(
+        textStyle: GoogleFonts.rubik(
           fontSize: 16,
           fontWeight: FontWeight.bold,
         ),
@@ -115,7 +115,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        textStyle: GoogleFonts.poppins(
+        textStyle: GoogleFonts.rubik(
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: primaryColor,
@@ -129,7 +129,7 @@ class AppTheme {
       backgroundColor: primaryColor,
       elevation: 0,
       centerTitle: false,
-      titleTextStyle: GoogleFonts.poppins(
+      titleTextStyle: GoogleFonts.rubik(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: AppColors.lightOnPrimary,
@@ -159,12 +159,12 @@ class AppTheme {
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: primaryColor, width: 2),
       ),
-      labelStyle: GoogleFonts.poppins(
+      labelStyle: GoogleFonts.rubik(
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: textColor,
       ),
-      hintStyle: GoogleFonts.poppins(
+      hintStyle: GoogleFonts.rubik(
         fontSize: 14,
         color: textColor.withOpacity(0.6),
       ),

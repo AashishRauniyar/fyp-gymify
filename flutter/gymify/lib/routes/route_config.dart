@@ -271,11 +271,13 @@ final GoRouter router = GoRouter(
       routes: [
         GoRoute(
           path: '/home',
+          name: 'home',
           builder: (context, state) =>
               const HomeScreen(), // Home screen after login
         ),
         GoRoute(
           path: '/workout',
+          name: 'workout',
           builder: (context, state) => const WorkoutListScreen(),
         ),
         GoRoute(

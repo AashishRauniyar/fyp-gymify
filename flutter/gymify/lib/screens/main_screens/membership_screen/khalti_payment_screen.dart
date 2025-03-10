@@ -140,6 +140,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:khalti_checkout_flutter/khalti_checkout_flutter.dart';
@@ -155,6 +156,7 @@ class KhaltiSDKDemo extends StatefulWidget {
 
 class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
   String pidx = ''; // We'll store the pidx value here
+  String transactionId = '';
   PaymentResult? paymentResult;
   late Future<Khalti?>
       khaltiFuture; // Future to initialize Khalti SDK asynchronously
@@ -166,6 +168,7 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var membershipProvider = context.read<MembershipProvider>();
       pidx = membershipProvider.pidx;
+      transactionId = membershipProvider.transactionId;
       setState(() {
         khaltiFuture =
             _initializeKhalti(); // Initialize Khalti SDK and assign it to khaltiFuture
@@ -196,6 +199,9 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
         });
         print(paymentResult);
         if (paymentResult.payload?.status == 'Completed') {
+          final provider =
+              Provider.of<MembershipProvider>(context, listen: false);
+          provider.verifyPayment(context, transactionId, "Completed");
           showCoolSnackBar(context, "Payment Successful", true);
         } else {
           showCoolSnackBar(context, "Payment Failed", false);
@@ -274,8 +280,13 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
                           ],
                         ),
                   const SizedBox(height: 120),
+                  OutlinedButton(
+                      onPressed: () {
+                        context.pushNamed('home');
+                      },
+                      child: const Text('Go to Home')),
                   const Text(
-                    'This is a demo application developed by some merchant.',
+                    'Demo Payment Using Khalti.',
                     style: TextStyle(fontSize: 12),
                   ),
                 ],
