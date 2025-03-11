@@ -77,6 +77,7 @@ dependencies:
   circular_countdown_timer: ^0.2.4
   flutter_inappwebview: ^6.1.5
   khalti_checkout_flutter: ^1.0.0-dev.8
+  shimmer: ^3.0.0
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:

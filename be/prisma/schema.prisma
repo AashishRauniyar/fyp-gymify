@@ -56,49 +56,6 @@ model customworkouts {
   users                  users?                   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
-// model dietplans {
-//   diet_plan_id                      Int        @id @default(autoincrement())
-//   name                              String     @unique @db.VarChar(100)
-//   user_id                           Int?
-//   trainer_id                        Int?
-//   calorie_goal                      Decimal?   @db.Decimal(6, 2)
-//   goal_type                         goal_type
-//   description                       String?
-//   created_at                        DateTime?  @default(now()) @db.Timestamp(6)
-//   updated_at                        DateTime?  @default(now()) @db.Timestamp(6)
-//   dietlogs                          dietlogs[]
-//   users_dietplans_trainer_idTousers users?     @relation("dietplans_trainer_idTousers", fields: [trainer_id], references: [user_id], onUpdate: NoAction)
-//   users_dietplans_user_idTousers    users?     @relation("dietplans_user_idTousers", fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-//   meals                             meals[]
-// }
-
-// model meals {
-//   meal_id        Int        @id @default(autoincrement())
-//   image          String?    @db.VarChar(255)
-//   diet_plan_id   Int?
-//   meal_name      String     @unique @db.VarChar(100)
-//   meal_time      meal_time
-//   calories       Decimal    @db.Decimal(5, 2)
-//   description    String?
-//   macronutrients String?    @db.VarChar(100)
-//   created_at     DateTime?  @default(now()) @db.Timestamp(6)
-//   dietlogs       dietlogs[]
-//   dietplans      dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: Cascade, onUpdate: NoAction)
-// }
-
-// model dietlogs {
-//   log_id            Int        @id @default(autoincrement())
-//   user_id           Int?
-//   diet_plan_id      Int?
-//   meal_id           Int?
-//   consumed_calories Decimal?   @db.Decimal(5, 2)
-//   custom_meal       String?    @db.VarChar(100)
-//   notes             String?
-//   log_date          DateTime?  @default(now()) @db.Timestamp(6)
-//   dietplans         dietplans? @relation(fields: [diet_plan_id], references: [diet_plan_id], onDelete: NoAction, onUpdate: NoAction)
-//   meals             meals?     @relation(fields: [meal_id], references: [meal_id], onDelete: NoAction, onUpdate: NoAction)
-//   users             users?     @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction)
-// }
 
 model dietplans {
   diet_plan_id Int       @id @default(autoincrement())
