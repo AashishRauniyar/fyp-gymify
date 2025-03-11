@@ -200,6 +200,9 @@ export const createMembershipPlan = async (req, res) => {
         // Validation
         await body('plan_type').isIn(['Monthly', 'Yearly', 'Quaterly']).withMessage('Invalid plan type').run(req);
         await body('price').isFloat({ min: 0 }).withMessage('Invalid price').run(req);
+        await body('duration').isInt({ min: 1 }).withMessage('Invalid duration').run(req); // Duration should be an integer greater than 0
+        await body('description').isLength({ min: 1 }).withMessage('Description cannot be empty').run(req); // Ensure description is not empty
+
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -210,12 +213,14 @@ export const createMembershipPlan = async (req, res) => {
             });
         }
 
-        const { plan_type, price } = req.body;
+        const { plan_type, price, duration, description } = req.body;
 
         const plan = await prisma.membership_plan.create({
             data: {
                 plan_type,
-                price
+                price,
+                duration,
+                description
             }
         });
 

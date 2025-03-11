@@ -175,6 +175,8 @@ model membership_plan {
   plan_id     Int           @id @default(autoincrement()) // Unique ID for each plan
   plan_type   plan_type // Enum for plan types (Monthly, Yearly, etc.)
   price       Decimal       @db.Decimal(10, 2) // Price of the plan
+  duration    Int// Duration of the plan in months
+  description String        @db.VarChar(255)   
   created_at  DateTime?     @default(now()) @db.Timestamp(6) // Plan creation timestamp
   updated_at  DateTime?     @default(now()) @db.Timestamp(6) // Plan update timestamp
   memberships memberships[] // One-to-many relation with memberships

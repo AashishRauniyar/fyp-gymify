@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/exercise_model.dart';
+import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/user_model.dart';
 import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
 import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
@@ -20,6 +21,7 @@ import 'package:gymify/screens/main_screens/membership_screen/membership_screen.
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all%20workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
+import 'package:gymify/screens/personal_best_screens/personal_best_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
 import 'package:gymify/screens/test/test_screen.dart';
@@ -374,6 +376,10 @@ final GoRouter router = GoRouter(
         name: 'forgotPassword',
         path: '/forgotPassword',
         builder: (context, state) => const ForgotPasswordScreen()),
+    GoRoute(
+        name: 'personalBest',
+        path: '/personalBest',
+        builder: (context, state) => const PersonalBestScreen()),
     GoRoute(
         name: 'resetPassword',
         path: '/resetPassword',

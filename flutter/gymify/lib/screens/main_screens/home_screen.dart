@@ -609,10 +609,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/models/personal_best_model.dart';
+import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
+import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
@@ -640,6 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<WorkoutProvider>().fetchAllWorkouts();
         context.read<ProfileProvider>().fetchProfile();
         context.read<MembershipProvider>().fetchMembershipStatus(context);
+        context.read<PersonalBestProvider>().fetchSupportedExercises();
       }
 
       final authProvider = context.read<AuthProvider>();
@@ -672,6 +676,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // Fetch user data from ProfileProvider
     final user = context.watch<ProfileProvider>().user;
     final currentDate = getFormattedDate();
+    final personalBestProvider = context.watch<PersonalBestProvider>();
 
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -763,7 +768,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         context.pushNamed('test');
                       },
                       child: const Text("Test Page")),
-                  // // Search Bar
+                  TextButton(
+                      onPressed: () {
+                        context.pushNamed('personalBest');
+                      },
+                      child: const Text("Personal Best Page")),
+
+                  // _buildPBItem(context, exercise, data),
+                  Text(
+                    "Supported Exercises",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 10),
+
                   Row(
                     children: [
                       // Card to display the user's profile, inside an Expanded widget to handle overflow
@@ -861,27 +878,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
 
-                  // Padding(
-                  //   padding: const EdgeInsets.symmetric(vertical: 10),
-                  //   child: TextField(
-                  //     controller: _searchController,
-                  //     onChanged: (value) {
-                  //       setState(() {
-                  //         _searchQuery = value.toLowerCase();
-                  //       });
-                  //     },
-                  //     decoration: InputDecoration(
-                  //       hintText: 'Search Workouts...',
-                  //       prefixIcon: const Icon(Icons.search),
-                  //       filled: true,
-                  //       fillColor: Theme.of(context).colorScheme.surface,
-                  //       border: OutlineInputBorder(
-                  //         borderRadius: BorderRadius.circular(12),
-                  //         borderSide: BorderSide.none,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 16),
                   // Workout Plans Section
                   Text(
@@ -1129,35 +1125,30 @@ void _showBottomSheet(BuildContext context) {
                                   fontWeight: FontWeight.bold,
                                   color: colorScheme.onSurface,
                                 )),
-                            // Display the duration (monthly, quarterly, etc.)
-                            Text(plan['duration'] as String,
+
+                            const SizedBox(height: 16),
+                            Text("${plan['duration'].toString()} months",
                                 style: TextStyle(
-                                  color: colorScheme.onSurface.withOpacity(0.6),
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
                                 )),
                             const SizedBox(height: 16),
-                            // Loop through the features and display them
-                            ...(plan['features'] as List<String>)
-                                .map((feature) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(Icons.check_circle_outline,
-                                              size: 16,
-                                              color: colorScheme.primary),
-                                          const SizedBox(width: 8),
-                                          Expanded(
-                                            child: Text(feature,
-                                                style: TextStyle(
-                                                  color: colorScheme.onSurface
-                                                      .withOpacity(0.8),
-                                                )),
-                                          ),
-                                        ],
-                                      ),
-                                    )),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(Icons.check_circle_outline,
+                                    size: 16, color: colorScheme.primary),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(plan['description'] as String,
+                                      style: TextStyle(
+                                        color: colorScheme.onSurface
+                                            .withOpacity(0.8),
+                                      )),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 16),
                             // Select Plan Button
                             SizedBox(
@@ -1202,6 +1193,77 @@ void _showBottomSheet(BuildContext context) {
     backgroundColor: colorScheme.surface,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+  );
+}
+
+// Widget _buildPBItem(BuildContext context ,String exercise, Map<String, dynamic> data) {
+//     return Container(
+//       padding: const EdgeInsets.all(12),
+//       decoration: BoxDecoration(
+//         gradient: LinearGradient(
+//           colors: [
+//             Theme.of(context).colorScheme.primary.withOpacity(0.2),
+//             Theme.of(context).colorScheme.primary.withOpacity(0.1),
+//           ],
+//           begin: Alignment.topLeft,
+//           end: Alignment.bottomRight,
+//         ),
+//         borderRadius: BorderRadius.circular(12),
+//       ),
+//       child: Column(
+//         mainAxisAlignment: MainAxisAlignment.center,
+//         children: [
+//           Text(exercise,
+//               style: TextStyle(
+//                   fontWeight: FontWeight.bold,
+//                   color: Theme.of(context).colorScheme.onSurface)),
+//           const SizedBox(height: 4),
+//           Text('${data['weight']} kg',
+//               style:
+//                   const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+//           Text('${data['reps']} reps',
+//               style: TextStyle(
+//                   fontSize: 12,
+//                   color: Theme.of(context)
+//                       .colorScheme
+//                       .onSurface
+//                       .withOpacity(0.6))),
+//         ],
+//       ),
+//     );
+//   }
+Widget _buildPBItem(
+    BuildContext context, SupportedExercise exercise, PersonalBest data) {
+  return Container(
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          Theme.of(context).colorScheme.primary.withOpacity(0.2),
+          Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(12),
+    ),
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(exercise.exerciseName,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onSurface)),
+        const SizedBox(height: 4),
+        Text('${data.weight} kg',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('${data.reps} reps',
+            style: TextStyle(
+                fontSize: 12,
+                color:
+                    Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
+      ],
+    ),
   );
 }
 
