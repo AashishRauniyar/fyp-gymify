@@ -283,6 +283,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
@@ -315,44 +316,6 @@ class _AllWorkoutsState extends State<AllWorkouts>
     final theme = Theme.of(context);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: true,
-      //   title: Text(
-      //     "All Workouts",
-      //     style: theme.textTheme.headlineSmall,
-      //   ),
-      //   backgroundColor: theme.colorScheme.surface,
-      //   elevation: 0,
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.filter_list, color: theme.colorScheme.primary),
-      //       onPressed: () => _openFilterDrawer(context),
-      //     ),
-      //   ],
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios_new_sharp,
-      //         color: Color(0xFFFF5E3A)),
-      //     onPressed: () {
-      //       if (Navigator.of(context).canPop()) {
-      //         Navigator.of(context).pop(); // Navigate back to the previous page
-      //       } else {
-      //         context
-      //             .pop(); // Navigate to the welcome page if there's nothing to pop
-      //       }
-      //     },
-      //   ),
-      //   bottom: TabBar(
-      //     controller: _tabController,
-      //     labelColor: theme.colorScheme.primary,
-      //     unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
-      //     indicatorColor: theme.colorScheme.primary,
-      //     tabs: const [
-      //       Tab(text: "Easy"),
-      //       Tab(text: "Intermediate"),
-      //       Tab(text: "Hard"),
-      //     ],
-      //   ),
-      // ),
       appBar: CustomAppBar(
         title: "All Workouts",
         showBackButton: true,
@@ -451,6 +414,7 @@ class _AllWorkoutsState extends State<AllWorkouts>
     }
 
     return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: filteredByDifficulty.length,
       separatorBuilder: (context, index) {
         return Divider(
@@ -462,57 +426,89 @@ class _AllWorkoutsState extends State<AllWorkouts>
       },
       itemBuilder: (context, index) {
         final workout = filteredByDifficulty[index];
-        return Card(
-          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 0,
-          child: ListTile(
-            contentPadding: const EdgeInsets.all(12),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                workout.workoutImage.isNotEmpty
-                    ? workout.workoutImage
-                    : 'https://via.placeholder.com/70',
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-              ),
-            ),
-            title: Text(
-              workout.workoutName,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              '${workout.targetMuscleGroup} • ${workout.fitnessLevel}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.6),
-              ),
-            ),
-            trailing: Icon(
-              Icons.arrow_forward_ios,
-              color: theme.colorScheme.primary,
-              size: 20,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => WorkoutDetailScreen(
-                    workoutId: workout.workoutId,
-                  ),
-                ),
-              );
-            },
-          ),
-        );
+        return WorkoutListItem(
+            workout: workout); // Using WorkoutListItem widget
       },
     );
   }
+
+  // Widget _buildWorkoutList(List workouts, String difficulty, ThemeData theme) {
+  //   final filteredByDifficulty =
+  //       workouts.where((workout) => workout.difficulty == difficulty).toList();
+
+  //   if (filteredByDifficulty.isEmpty) {
+  //     return Center(
+  //       child: Text(
+  //         "No $difficulty workouts available.",
+  //         style: theme.textTheme.bodyMedium
+  //             ?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
+  //       ),
+  //     );
+  //   }
+
+  //   return ListView.separated(
+  //     itemCount: filteredByDifficulty.length,
+  //     separatorBuilder: (context, index) {
+  //       return Divider(
+  //         color: theme.colorScheme.onSurface.withOpacity(0.2),
+  //         thickness: 0.5,
+  //         indent: 16,
+  //         endIndent: 16,
+  //       );
+  //     },
+  //     itemBuilder: (context, index) {
+  //       final workout = filteredByDifficulty[index];
+  //       return Card(
+  //         margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 16),
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(12),
+  //         ),
+  //         elevation: 0,
+  //         child: ListTile(
+  //           contentPadding: const EdgeInsets.all(12),
+  //           leading: ClipRRect(
+  //             borderRadius: BorderRadius.circular(8),
+  //             child: Image.network(
+  //               workout.workoutImage.isNotEmpty
+  //                   ? workout.workoutImage
+  //                   : 'https://via.placeholder.com/70',
+  //               width: 70,
+  //               height: 70,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //           title: Text(
+  //             workout.workoutName,
+  //             style: theme.textTheme.bodyLarge?.copyWith(
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //           subtitle: Text(
+  //             '${workout.targetMuscleGroup} • ${workout.fitnessLevel}',
+  //             style: theme.textTheme.bodySmall?.copyWith(
+  //               color: theme.colorScheme.onSurface.withOpacity(0.6),
+  //             ),
+  //           ),
+  //           trailing: Icon(
+  //             Icons.arrow_forward_ios,
+  //             color: theme.colorScheme.primary,
+  //             size: 20,
+  //           ),
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => WorkoutDetailScreen(
+  //                   workoutId: workout.workoutId,
+  //                 ),
+  //               ),
+  //             );
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   List _getFilteredWorkouts(List workouts) {
     return workouts.where((workout) {

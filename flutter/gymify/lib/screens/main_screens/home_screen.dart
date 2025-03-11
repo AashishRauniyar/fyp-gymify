@@ -615,9 +615,12 @@ import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:intl/intl.dart';
+import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -670,30 +673,37 @@ class _HomeScreenState extends State<HomeScreen> {
     final user = context.watch<ProfileProvider>().user;
     final currentDate = getFormattedDate();
 
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 60,
-        title: Text(
-          'Gymify',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.settings,
-              color: Theme.of(context).iconTheme.color,
-            ),
-            onPressed: () {
-              // Navigate to Settings Screen
-              context.pushNamed('profile');
-            },
-          ),
-        ],
-      ),
+      //TODO: Uncomment here
+      // appBar: AppBar(
+      //   backgroundColor: Colors.transparent,
+      //   scrolledUnderElevation: 0,
+      //   toolbarHeight: 60,
+      //   title: Text(
+      //     // 'Gymify',
+      //     currentDate,
+      //     style: Theme.of(context).textTheme.titleMedium,
+      //   ),
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(
+      //         size: 18,
+      //         FontAwesomeIcons.user,
+      //         color: Theme.of(context).iconTheme.color,
+      //       ),
+      //       onPressed: () {
+      //         // Navigate to Settings Screen
+      //         //TODO: open bottom model sheet and show attendance and more
+      //         context.pushNamed('profile');
+      //       },
+      //     ),
+      //   ],
+      // ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
         // Make the body scrollable
         child: Consumer<WorkoutProvider>(
           builder: (context, workoutProvider, child) {
@@ -717,19 +727,26 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  _buildHeader(
+                      context,
+                      user?.userName.toString() ?? "username",
+                      user?.profileImage.toString() ??
+                          "assets/images/profile/default_avatar.jpg"),
                   // Welcome Message with User's Name
-                  if (user != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Text(
-                        'Welcome, ${user.userName ?? "User"}!',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                    ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(bottom: 16.0),
+                  //   child: Text(
+                  //     'Welcome, ${user.userName ?? "User"}!',
+                  //     style:
+                  //         Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  //               fontWeight: FontWeight.bold,
+                  //             ),
+                  //   ),
+                  // ),
                   // Display Current Date
+                  const SizedBox(
+                    height: 16,
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 24.0),
                     child: Text(
@@ -739,6 +756,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                     ),
                   ),
+
+                  _buildOfferBanner(context),
                   TextButton(
                       onPressed: () {
                         context.pushNamed('test');
@@ -898,53 +917,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 10),
                   // Vertical ListView of Workouts
                   ListView.builder(
-                    shrinkWrap:
-                        true, // Ensure the list doesn't take up all space
+                    shrinkWrap: true,
                     physics:
                         const NeverScrollableScrollPhysics(), // Disable internal scrolling
                     itemCount: workoutProvider.workouts.length,
                     itemBuilder: (context, index) {
                       final workout = workoutProvider.workouts[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0.5,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.all(8),
-                          leading: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              workout.workoutImage.isNotEmpty
-                                  ? workout.workoutImage
-                                  : 'https://via.placeholder.com/150',
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          title: Text(
-                            workout.workoutName,
-                            style: Theme.of(context).textTheme.headlineSmall,
-                          ),
-                          subtitle: Text(
-                            '${workout.fitnessLevel} • ${workout.goalType}',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            context.pushNamed(
-                              'workoutDetail',
-                              queryParameters: {
-                                'workoutId': workout.workoutId.toString(),
-                              },
-                            );
-                          },
-                        ),
-                      );
+                      return WorkoutListItem(workout: workout);
                     },
-                  ),
+                  )
                 ],
               ),
             );
@@ -953,6 +934,301 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+// have to give user name and profile image
+Widget _buildHeader(
+    BuildContext context, String username, String profileImage) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Welcome Back',
+              style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.6))),
+          const SizedBox(height: 4),
+          // make first letter capitalize
+          Text(username[0].toUpperCase() + username.substring(1),
+              style:
+                  const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        ],
+      ),
+      ClipOval(
+        child: CachedNetworkImage(
+          imageUrl: profileImage,
+          width: 50,
+          height: 50,
+          fit: BoxFit.cover,
+          errorWidget: (context, url, error) => Image.asset(
+            'assets/images/profile/default_avatar.jpg',
+            width: 50,
+            height: 50,
+            fit: BoxFit.cover,
+          ),
+          placeholder: (context, url) => const CustomLoadingAnimation(),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _buildOfferBanner(BuildContext context) {
+  return Container(
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Premium Membership',
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
+                  GestureDetector(
+                    onTap: () {
+                      _showBottomSheet(context);
+                    },
+                    child: const Icon(LineAwesomeIcons.info_circle_solid,
+                        color: Colors.white, size: 24),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              const Text('Get you gym membership\ntarting at Rs 1500',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold)),
+              const SizedBox(height: 12),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color(0xFF4A3298),
+                ),
+                onPressed: () => context.pushNamed('membershipPlans'),
+                child: const Text('Apply Now 💪'),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showBottomSheet(BuildContext context) {
+  final colorScheme = Theme.of(context).colorScheme;
+
+  showModalBottomSheet(
+    builder: (context) {
+      return SizedBox(
+        height: MediaQuery.of(context).size.height * 0.7,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 48,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.outline.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text('Choose Your Plan',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
+                  )),
+              const SizedBox(height: 16),
+              Text('Get full access to GYMIFY facilities',
+                  style: TextStyle(
+                    color: colorScheme.onSurface.withOpacity(0.6),
+                    fontSize: 16,
+                  )),
+              const SizedBox(height: 32),
+
+              // Using Consumer to access MembershipProvider and display plans dynamically
+              Consumer<MembershipProvider>(
+                builder: (context, membershipProvider, child) {
+                  // Check if the plans are still loading
+                  if (membershipProvider.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  // Check if plans are empty
+                  if (membershipProvider.plans.isEmpty) {
+                    return const Center(child: Text('No plans available.'));
+                  }
+
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: membershipProvider.plans.length,
+                    separatorBuilder: (context, index) =>
+                        const SizedBox(height: 16),
+                    itemBuilder: (context, index) {
+                      final plan = membershipProvider.plans[index];
+
+                      return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          gradient: LinearGradient(
+                            colors: [
+                              colorScheme.primary.withOpacity(0.1),
+                              colorScheme.surface,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          border: Border.all(
+                            color: colorScheme.outline.withOpacity(0.1),
+                          ),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(plan['plan_type'] as String,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.primary,
+                                    )),
+                                Icon(Icons.fitness_center,
+                                    color: colorScheme.primary),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Text(plan['price'] as String,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                )),
+                            // Display the duration (monthly, quarterly, etc.)
+                            Text(plan['duration'] as String,
+                                style: TextStyle(
+                                  color: colorScheme.onSurface.withOpacity(0.6),
+                                )),
+                            const SizedBox(height: 16),
+                            // Loop through the features and display them
+                            ...(plan['features'] as List<String>)
+                                .map((feature) => Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(Icons.check_circle_outline,
+                                              size: 16,
+                                              color: colorScheme.primary),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(feature,
+                                                style: TextStyle(
+                                                  color: colorScheme.onSurface
+                                                      .withOpacity(0.8),
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                            const SizedBox(height: 16),
+                            // Select Plan Button
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF4A3298),
+                                  foregroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  // When the user selects a plan, navigate to membership screen
+                                  context.pushNamed('membership', extra: plan);
+                                },
+                                child: const Text('Select Plan'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              Center(
+                child: TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Close'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: colorScheme.surface,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+  );
+}
+
+Widget _buildProgressCard(BuildContext context, String value, String label) {
+  return Expanded(
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Text(value,
+              style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 4),
+          Text(label,
+              style: TextStyle(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.6))),
+        ],
+      ),
+    ),
+  );
 }
 
 class WorkoutCard extends StatelessWidget {
