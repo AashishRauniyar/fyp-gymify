@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:video_player/video_player.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:gymify/models/exercise_model.dart';
-
-
 
 class ExerciseDetailScreen extends StatefulWidget {
   final Exercise exercise;

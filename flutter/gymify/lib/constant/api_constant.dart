@@ -16,7 +16,7 @@
 // const url = "192.168.31.96";
 
 // const url = "172.25.0.99";
-const url = "192.168.31.96";
+const url = "172.20.10.5";
 
 const baseUrl = "http://$url:8000/api";
 const socketUrl = "ws://$url:8000";

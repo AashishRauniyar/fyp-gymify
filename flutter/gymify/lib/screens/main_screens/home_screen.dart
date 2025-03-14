@@ -910,7 +910,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     "All Workouts",
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
-                  const SizedBox(height: 10),
+
                   // Vertical ListView of Workouts
                   ListView.builder(
                     shrinkWrap: true,
