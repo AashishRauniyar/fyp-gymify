@@ -644,6 +644,8 @@ class _HomeScreenState extends State<HomeScreen> {
         context.read<ProfileProvider>().fetchProfile();
         context.read<MembershipProvider>().fetchMembershipStatus(context);
         context.read<PersonalBestProvider>().fetchSupportedExercises();
+        context.read<PersonalBestProvider>().fetchCurrentPersonalBests();
+        context.read<MembershipProvider>().fetchMembershipPlans();
       }
 
       final authProvider = context.read<AuthProvider>();
@@ -683,30 +685,30 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       //TODO: Uncomment here
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   scrolledUnderElevation: 0,
-      //   toolbarHeight: 60,
-      //   title: Text(
-      //     // 'Gymify',
-      //     currentDate,
-      //     style: Theme.of(context).textTheme.titleMedium,
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(
-      //         size: 18,
-      //         FontAwesomeIcons.user,
-      //         color: Theme.of(context).iconTheme.color,
-      //       ),
-      //       onPressed: () {
-      //         // Navigate to Settings Screen
-      //         //TODO: open bottom model sheet and show attendance and more
-      //         context.pushNamed('profile');
-      //       },
-      //     ),
-      //   ],
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+        toolbarHeight: 60,
+        title: Text(
+          // 'Gymify',
+          currentDate,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              size: 18,
+              FontAwesomeIcons.user,
+              color: Theme.of(context).iconTheme.color,
+            ),
+            onPressed: () {
+              // Navigate to Settings Screen
+              //TODO: open bottom model sheet and show attendance and more
+              context.pushNamed('profile');
+            },
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
         // Make the body scrollable
@@ -737,17 +739,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       user?.userName.toString() ?? "username",
                       user?.profileImage.toString() ??
                           "assets/images/profile/default_avatar.jpg"),
-                  // Welcome Message with User's Name
-                  // Padding(
-                  //   padding: const EdgeInsets.only(bottom: 16.0),
-                  //   child: Text(
-                  //     'Welcome, ${user.userName ?? "User"}!',
-                  //     style:
-                  //         Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  //               fontWeight: FontWeight.bold,
-                  //             ),
-                  //   ),
-                  // ),
+                  
                   // Display Current Date
                   const SizedBox(
                     height: 16,
@@ -775,6 +767,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Text("Personal Best Page")),
 
                   // _buildPBItem(context, exercise, data),
+
+                  const SizedBox(height: 16),
+                  Text(
+                    "Personal Bests",
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildPersonalBestsGrid(context),
+
                   Text(
                     "Supported Exercises",
                     style: Theme.of(context).textTheme.headlineMedium,
@@ -1196,44 +1197,71 @@ void _showBottomSheet(BuildContext context) {
   );
 }
 
-// Widget _buildPBItem(BuildContext context ,String exercise, Map<String, dynamic> data) {
-//     return Container(
-//       padding: const EdgeInsets.all(12),
-//       decoration: BoxDecoration(
-//         gradient: LinearGradient(
-//           colors: [
-//             Theme.of(context).colorScheme.primary.withOpacity(0.2),
-//             Theme.of(context).colorScheme.primary.withOpacity(0.1),
-//           ],
-//           begin: Alignment.topLeft,
-//           end: Alignment.bottomRight,
-//         ),
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(exercise,
-//               style: TextStyle(
-//                   fontWeight: FontWeight.bold,
-//                   color: Theme.of(context).colorScheme.onSurface)),
-//           const SizedBox(height: 4),
-//           Text('${data['weight']} kg',
-//               style:
-//                   const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-//           Text('${data['reps']} reps',
-//               style: TextStyle(
-//                   fontSize: 12,
-//                   color: Theme.of(context)
-//                       .colorScheme
-//                       .onSurface
-//                       .withOpacity(0.6))),
-//         ],
-//       ),
-//     );
-//   }
+Widget _buildPersonalBestsGrid(BuildContext context) {
+  return Consumer<PersonalBestProvider>(
+    builder: (context, personalBestProvider, child) {
+      if (personalBestProvider.isLoading) {
+        return const Center(child: CustomLoadingAnimation());
+      }
+
+      if (personalBestProvider.currentBests.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "No personal bests recorded yet",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+              ),
+            ),
+          ),
+        );
+      }
+
+      return GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          childAspectRatio: 0.8,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+        ),
+        itemCount: personalBestProvider.currentBests.length,
+        itemBuilder: (context, index) {
+          final item = personalBestProvider.currentBests[index];
+          final exercise = item['exercise'] as SupportedExercise;
+          final personalBest = item['personalBest'] as PersonalBest?;
+
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                'personalBest',
+                extra: {
+                  'initialExercise': exercise,
+                  'initialTab': 1,
+                },
+              );
+            },
+            child: _buildPBItem(
+              context,
+              exercise.exerciseName,
+              personalBest != null
+                  ? {
+                      'weight': personalBest.weight,
+                      'reps': personalBest.reps,
+                    }
+                  : {'weight': '-', 'reps': '-'},
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 Widget _buildPBItem(
-    BuildContext context, SupportedExercise exercise, PersonalBest data) {
+    BuildContext context, String exercise, Map<String, dynamic> data) {
   return Container(
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
@@ -1250,18 +1278,28 @@ Widget _buildPBItem(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(exercise.exerciseName,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onSurface)),
+        Text(
+          exercise,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         const SizedBox(height: 4),
-        Text('${data.weight} kg',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        Text('${data.reps} reps',
-            style: TextStyle(
-                fontSize: 12,
-                color:
-                    Theme.of(context).colorScheme.onSurface.withOpacity(0.6))),
+        Text(
+          '${data['weight']} kg',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        Text(
+          '${data['reps']} reps',
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+          ),
+        ),
       ],
     ),
   );

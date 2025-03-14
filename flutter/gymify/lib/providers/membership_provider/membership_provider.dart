@@ -68,42 +68,6 @@ class MembershipProvider with ChangeNotifier {
     });
   }
 
-  // Apply for membership
-  // Future<void> applyForMembershipUsingKhalti(BuildContext context, int planId,
-  //     int amount, String paymentMethod) async {
-  //   await handleApiCall(() async {
-  //     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-  //     final userId = authProvider.userId;
-
-  //     if (userId == null) {
-  //       throw Exception('User ID not found. Please log in again.');
-  //     }
-  //     // final intUserId = int.parse(userId.toString());
-
-  //     final response = await httpClient.post('/initiate-payment', data: {
-  //       'user_id': userId,
-  //       'plan_id': planId,
-  //       'amount': amount,
-  //       'payment_method': paymentMethod,
-  //     });
-
-  //     final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-  //       response.data,
-  //       (data) => data as Map<String, dynamic>,
-  //     );
-
-  //     if (apiResponse.status == 'success') {
-  //       pidx = apiResponse.data['pidx'];
-  //       transactionId = apiResponse.data['transaction_id'];
-  //       paymentUrl = apiResponse.data['payment_url'];
-  //       notifyListeners();
-  //     } else {
-  //       throw Exception(apiResponse.message.isNotEmpty
-  //           ? apiResponse.message
-  //           : 'Error applying for membership');
-  //     }
-  //   });
-  // }
 
   Future<void> applyForMembership(
       BuildContext context, int planId, String paymentMethod) async {
