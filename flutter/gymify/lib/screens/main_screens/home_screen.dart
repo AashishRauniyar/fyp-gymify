@@ -739,7 +739,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       user?.userName.toString() ?? "username",
                       user?.profileImage.toString() ??
                           "assets/images/profile/default_avatar.jpg"),
-                  
+
                   // Display Current Date
                   const SizedBox(
                     height: 16,
@@ -955,19 +955,29 @@ Widget _buildHeader(
                   const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
         ],
       ),
-      ClipOval(
-        child: CachedNetworkImage(
-          imageUrl: profileImage,
-          width: 50,
-          height: 50,
-          fit: BoxFit.cover,
-          errorWidget: (context, url, error) => Image.asset(
-            'assets/images/profile/default_avatar.jpg',
-            width: 50,
-            height: 50,
-            fit: BoxFit.cover,
+      Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            width: 1.5,
           ),
-          placeholder: (context, url) => const CustomLoadingAnimation(),
+        ),
+        child: ClipOval(
+          child: CachedNetworkImage(
+            imageUrl: profileImage,
+            width: 60,
+            height: 60,
+            fit: BoxFit.cover,
+            errorWidget: (context, url, error) => Image.asset(
+              'assets/images/profile/default_avatar.jpg',
+              width: 50,
+              height: 50,
+              fit: BoxFit.cover,
+            ),
+            placeholder: (context, url) => const CustomLoadingAnimation(),
+          ),
         ),
       ),
     ],
@@ -1222,8 +1232,8 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          childAspectRatio: 0.8,
+          crossAxisCount: 2, // Changed from 3 to 2 columns
+          childAspectRatio: 1.4, // Adjust the ratio as needed
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
         ),
@@ -1232,7 +1242,6 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
           final item = personalBestProvider.currentBests[index];
           final exercise = item['exercise'] as SupportedExercise;
           final personalBest = item['personalBest'] as PersonalBest?;
-
           return GestureDetector(
             onTap: () {
               context.pushNamed(
@@ -1261,46 +1270,68 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
 }
 
 Widget _buildPBItem(
-    BuildContext context, String exercise, Map<String, dynamic> data) {
+  BuildContext context,
+  String exercise,
+  Map<String, dynamic> data,
+) {
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
+
   return Container(
-    padding: const EdgeInsets.all(12),
+    margin: const EdgeInsets.symmetric(vertical: 6),
     decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Theme.of(context).colorScheme.primary.withOpacity(0.2),
-          Theme.of(context).colorScheme.primary.withOpacity(0.1),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
+      color: theme.colorScheme.surface,
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(
+        color: theme.colorScheme.onSurface.withOpacity(0.1),
+        width: 1.5,
       ),
-      borderRadius: BorderRadius.circular(12),
     ),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          exercise,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onSurface,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top row: Exercise name with arrow icon
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  exercise,
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    color: isDarkMode ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey,
+              ),
+            ],
           ),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          '${data['weight']} kg',
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          '${data['reps']} reps',
-          style: TextStyle(
-            fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+          const SizedBox(height: 6),
+          // Middle line: Weight
+          Text(
+            '${data['weight']} kg',
+            style: theme.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.onSurface,
+            ),
           ),
-        ),
-      ],
+          // Bottom line: Reps
+          Text(
+            '${data['reps']} reps',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }

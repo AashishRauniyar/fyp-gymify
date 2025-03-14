@@ -13,6 +13,7 @@ import membershipRouter from './membershipRoutes.js';
 import chatRouter from './chatRoutes.js';
 import khaltiRouter from './khaltiRoutes.js';
 import esewaRouter from './esewaRoutes.js';
+import weightRouter from './weightRoutes.js';
 
 
 const mainRouter = express.Router();
@@ -31,6 +32,7 @@ mainRouter.use('/api', attendanceRouter);
 mainRouter.use('/api', membershipRouter);
 mainRouter.use('/api', chatRouter);
 mainRouter.use('/api', khaltiRouter);
-mainRouter.use('/api',esewaRouter);
+mainRouter.use('/api', esewaRouter);
+mainRouter.use('/api', weightRouter);
 
 export default mainRouter;

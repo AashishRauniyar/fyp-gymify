@@ -1,6 +1,6 @@
 import express from 'express';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { getProfile, updateProfile, getWeightHistory, updateWeight } from '../controllers/auth_controller/profileController.js';
+import { getProfile, updateProfile } from '../controllers/auth_controller/profileController.js';
 
 const profileRouter = express.Router();
 
@@ -9,11 +9,6 @@ const profileRouter = express.Router();
 profileRouter.get('/profile',authenticate, getProfile);
 profileRouter.put('/profile',authenticate, updateProfile);
 
-profileRouter.post('/weight',authenticate, updateWeight);
-
-// get users weight history
-// Route to fetch weight history
-profileRouter.get('/weight-history',authenticate, getWeightHistory);
 
 
 export default profileRouter;
