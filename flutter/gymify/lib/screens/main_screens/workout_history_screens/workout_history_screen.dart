@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/models/workout_log_models/workout_exercise_log_model.dart';
 import 'package:gymify/models/workout_log_models/workout_log_model.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -32,11 +33,12 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen> {
     final dateFormat = DateFormat('MMM dd, yyyy - h:mm a');
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Workout History'),
+      appBar: CustomAppBar(
+        title: 'Workout History',
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Icon(Icons.refresh,
+                color: Theme.of(context).colorScheme.onSurface),
             onPressed: () {
               Provider.of<WorkoutLogProvider>(context, listen: false)
                   .fetchUserLogs(widget.userId);

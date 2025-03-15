@@ -958,8 +958,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
+import 'package:gymify/models/workout_log_models/workout_exercise_log_model.dart';
+import 'package:gymify/models/workout_log_models/workout_log_model.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
@@ -984,35 +987,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     // Fetch workouts and profile information
-  //     if (mounted) {
-  //       context.read<WorkoutProvider>().fetchAllWorkouts();
-  //       context.read<ProfileProvider>().fetchProfile();
-  //       context.read<MembershipProvider>().fetchMembershipStatus(context);
-  //       context.read<PersonalBestProvider>().fetchSupportedExercises();
-  //       context.read<PersonalBestProvider>().fetchCurrentPersonalBests();
-  //       context.read<MembershipProvider>().fetchMembershipPlans();
-  //       final authProvider = context.read<AuthProvider>();
-  //       final chatProvider = context.read<ChatProvider>();
-  //       if (authProvider.isLoggedIn && authProvider.userId != null) {
-  //         if (!chatProvider.isInitialized) {
-  //           chatProvider.initializeSocket(authProvider.userId!);
-  //         }
-  //       }
-  //       // After fetching profile data, fetch the user logs:
-  //       final profile = context.read<ProfileProvider>().user;
-  //       if (profile != null && profile.userId != null) {
-  //         context
-  //             .read<WorkoutLogProvider>()
-  //             .fetchUserLogs(profile.userId.toString());
-  //       }
-  //     }
-  //   });
-  // }
   late Future<void> _initialData;
 
   Future<void> _fetchAllData() async {
@@ -1189,11 +1163,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             context.pushNamed('weightLog');
                           },
                           child: const Text("Weight History")),
-                      Text(
-                        "Workout Log History",
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+
                       const SizedBox(height: 10),
+
+                      _buildRecentWorkoutHistory(context),
 
                       TextButton(
                         onPressed: () {
@@ -1873,6 +1846,339 @@ Widget _buildProgressCard(BuildContext context, String value, String label) {
       ),
     ),
   );
+}
+
+// Add this widget in your home screen file
+Widget _buildRecentWorkoutHistory(BuildContext context) {
+  return Consumer<WorkoutLogProvider>(
+    builder: (context, workoutLogProvider, child) {
+      if (workoutLogProvider.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (workoutLogProvider.userLogs.isEmpty) {
+        return const Center(child: Text("No recent workout logs."));
+      }
+      // Show top 3 logs (sorted newest first)
+      final recentLogs = workoutLogProvider.userLogs.take(2).toList();
+      final dateFormat = DateFormat('MMM dd, yyyy - h:mm a');
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                "Recent Workout History",
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: () {
+                  context.pushNamed('workoutHistory',
+                      extra: context
+                              .read<ProfileProvider>()
+                              .user
+                              ?.userId
+                              .toString() ??
+                          '0');
+                },
+                child: const Text("View All"),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: recentLogs.length,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) {
+              final log = recentLogs[index];
+              return _WorkoutLogCard(log: log, dateFormat: dateFormat);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+//! with details
+class _WorkoutLogCard extends StatelessWidget {
+  final WorkoutLog log;
+  final DateFormat dateFormat;
+
+  const _WorkoutLogCard({
+    required this.log,
+    required this.dateFormat,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Workout?>(
+      future: Provider.of<WorkoutProvider>(context, listen: false)
+          .getWorkoutDetailsById(log.workoutId),
+      builder: (context, snapshot) {
+        Widget headerContent;
+        if (snapshot.connectionState != ConnectionState.done) {
+          headerContent = const SizedBox(
+            height: 60,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasError || !snapshot.hasData) {
+          headerContent = const ListTile(
+            title: Text(
+              'Workout details not available',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          );
+        } else {
+          final workout = snapshot.data!;
+          headerContent = ListTile(
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            leading: workout.workoutImage.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      workout.workoutImage,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) => Container(
+                        width: 60,
+                        height: 60,
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.fitness_center),
+                      ),
+                    ),
+                  )
+                : Container(
+                    width: 60,
+                    height: 60,
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.fitness_center),
+                  ),
+            title: Text(
+              workout.workoutName,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            subtitle: Text(
+              dateFormat.format(log.workoutDate),
+              style: const TextStyle(color: Colors.grey),
+            ),
+            trailing: ElevatedButton(
+              onPressed: () {
+                // Navigate to workout details screen
+                context.pushNamed(
+                  'workoutDetail',
+                  queryParameters: {'workoutId': workout.workoutId.toString()},
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('View'),
+            ),
+          );
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+              width: 1.5,
+            ),
+          ),
+          child: ExpansionTile(
+            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+            expandedAlignment: Alignment.topLeft,
+            tilePadding: const EdgeInsets.all(0),
+            title: headerContent,
+            childrenPadding: const EdgeInsets.all(16),
+            children: [
+              if (log.performanceNotes.isNotEmpty) ...[
+                const Text(
+                  'Performance Notes:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                Text(log.performanceNotes),
+                const Divider(),
+              ],
+              const Text(
+                'Exercises:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              if (log.workoutexerciseslogs.isNotEmpty)
+                ...log.workoutexerciseslogs.map(
+                  (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
+                )
+              else
+                const Text('No exercise details available'),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+// class _WorkoutLogCard extends StatelessWidget {
+//   final WorkoutLog log;
+//   final DateFormat dateFormat;
+
+//   const _WorkoutLogCard({
+//     required this.log,
+//     required this.dateFormat,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: BoxDecoration(
+//         color: Theme.of(context).colorScheme.surface,
+//         borderRadius: BorderRadius.circular(16),
+//         border: Border.all(
+//           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+//           width: 1.5,
+//         ),
+//       ),
+//       child: ExpansionTile(
+//         expandedCrossAxisAlignment: CrossAxisAlignment.start,
+//         expandedAlignment: Alignment.topLeft,
+//         tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+//         title: Text(
+//           'Workout on ${dateFormat.format(log.workoutDate)}',
+//           style: const TextStyle(fontWeight: FontWeight.bold),
+//         ),
+//         subtitle: Padding(
+//           padding: const EdgeInsets.only(top: 4.0),
+//           child: Text(
+//             'Duration: ${double.parse(log.totalDuration).toStringAsFixed(2)} min  |  Exercises: ${log.workoutexerciseslogs.length}',
+//             style: const TextStyle(color: Colors.grey),
+//           ),
+//         ),
+//         childrenPadding: const EdgeInsets.all(16),
+//         children: [
+//           if (log.performanceNotes.isNotEmpty) ...[
+//             const Text(
+//               'Performance Notes:',
+//               style: TextStyle(fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 4),
+//             Text(log.performanceNotes),
+//             const Divider(),
+//           ],
+//           const Text(
+//             'Exercises:',
+//             style: TextStyle(fontWeight: FontWeight.bold),
+//           ),
+//           const SizedBox(height: 8),
+//           if (log.workoutexerciseslogs.isNotEmpty)
+//             ...log.workoutexerciseslogs.map(
+//               (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
+//             )
+//           else
+//             const Text('No exercise details available'),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+class _ExerciseLogItem extends StatelessWidget {
+  final Workoutexerciseslog exerciseLog;
+
+  const _ExerciseLogItem({required this.exerciseLog});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to exercise details screen (if needed)
+        context.pushNamed('exerciseDetails', extra: exerciseLog.exercises);
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+            width: 1.5,
+          ),
+        ),
+        child: ListTile(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          leading: exerciseLog.exercises.imageUrl != null
+              ? ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    exerciseLog.exercises.imageUrl,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      width: 80,
+                      height: 80,
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.fitness_center),
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.grey[300],
+                  child: const Icon(Icons.fitness_center),
+                ),
+          title: Text(
+            exerciseLog.exercises.exerciseName ?? 'Unknown Exercise',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4),
+              Text(
+                'Target: ${exerciseLog.exercises.targetMuscleGroup ?? 'N/A'}',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Duration: ${double.parse(exerciseLog.exerciseDuration).toStringAsFixed(2)} min',
+              ),
+              if ((double.tryParse(exerciseLog.restDuration) ?? 0) > 0)
+                Text(
+                  'Rest: ${double.parse(exerciseLog.restDuration).toStringAsFixed(2)} min',
+                ),
+              if (exerciseLog.skipped)
+                const Text(
+                  'Skipped',
+                  style: TextStyle(color: Colors.red),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class WorkoutCard extends StatelessWidget {

@@ -4,8 +4,8 @@ import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_input.dart';
 import 'package:gymify/utils/custom_loader.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class CreateCustomWorkoutScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class CreateCustomWorkoutScreen extends StatefulWidget {
 
 class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? customWorkoutName;
+  final TextEditingController _workoutNameController = TextEditingController();
   File? customWorkoutImage;
 
   List<Map<String, dynamic>> selectedExercises = [];
@@ -35,14 +35,20 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
   }
 
   @override
+  void dispose() {
+    _workoutNameController.dispose();
+    repsController.dispose();
+    setsController.dispose();
+    durationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
     final customWorkoutProvider = Provider.of<CustomWorkoutProvider>(context);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Create Custom Workout'),
-      // ),
       appBar: const CustomAppBar(title: 'Create Custom Workout'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,22 +57,21 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Workout Name Input
-              TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Custom Workout Name',
-                ),
-                onSaved: (value) => customWorkoutName = value,
+              // Custom workout name input using CustomInput widget.
+              CustomInput(
+                labelText: 'Custom Workout Name',
+                controller: _workoutNameController,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter a custom workout name';
                   }
                   return null;
                 },
+                keyboardType: TextInputType.text,
               ),
               const SizedBox(height: 16),
 
-              // Exercise Selection
+              // Exercise Selection Section.
               const Text('Select Exercises'),
               const SizedBox(height: 8),
               exerciseProvider.exercises.isEmpty
@@ -90,7 +95,7 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                       ),
                     ),
 
-              // Display Selected Exercises
+              // Display Selected Exercises.
               const SizedBox(height: 16),
               const Text(
                 'Selected Exercises:',
@@ -122,24 +127,8 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                 ),
               ),
 
-              // Image Picker Button
+              // Image Picker Button (if needed).
               const SizedBox(height: 16),
-              // ElevatedButton.icon(
-              //   onPressed: () async {
-              //     final ImagePicker picker = ImagePicker();
-              //     final pickedFile =
-              //         await picker.pickImage(source: ImageSource.gallery);
-              //     if (pickedFile != null) {
-              //       setState(() {
-              //         customWorkoutImage = File(pickedFile.path);
-              //       });
-              //     }
-              //   },
-              //   icon: const Icon(Icons.image),
-              //   label: const Text('Pick Custom Workout Image'),
-              // ),
-
-              // Display Selected Image
               if (customWorkoutImage != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -150,20 +139,32 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                   ),
                 ),
 
-              // Create Custom Workout Button
+              // Create Custom Workout Button.
               const SizedBox(height: 16),
               ElevatedButton.icon(
                 onPressed: () async {
+                  // First validate the form.
                   if (_formKey.currentState?.validate() ?? false) {
-                    _formKey.currentState?.save();
+                    // Check if at least one exercise is added.
+                    if (selectedExercises.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please add at least one exercise.'),
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Save the workout name from the controller.
+                    final customWorkoutName = _workoutNameController.text;
                     try {
-                      // Create custom workout
+                      // Create custom workout.
                       final customWorkoutId =
                           await customWorkoutProvider.createCustomWorkout(
-                        customWorkoutName!,
+                        customWorkoutName,
                       );
 
-                      // Prepare exercises payload
+                      // Prepare exercises payload.
                       final exercisesPayload = selectedExercises.map((data) {
                         return {
                           'exercise_id': data['exercise'].exerciseId,
@@ -173,17 +174,18 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                         };
                       }).toList();
 
-                      // Add exercises to custom workout
+                      // Add exercises to custom workout.
                       await customWorkoutProvider.addExercisesToCustomWorkout(
                           customWorkoutId, exercisesPayload);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text(
-                                'Custom workout created and exercises added successfully!')),
+                          content: Text(
+                              'Custom workout created and exercises added successfully!'),
+                        ),
                       );
 
-                      Navigator.pop(context); // Go back after creation
+                      Navigator.pop(context); // Go back after creation.
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error: $e')),
@@ -210,20 +212,21 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
+              // Using CustomInput widgets for numeric fields.
+              CustomInput(
+                labelText: 'Reps',
                 controller: repsController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Reps'),
               ),
-              TextField(
+              CustomInput(
+                labelText: 'Sets',
                 controller: setsController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Sets'),
               ),
-              TextField(
+              CustomInput(
+                labelText: 'Duration (mins)',
                 controller: durationController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Duration (mins)'),
               ),
             ],
           ),
