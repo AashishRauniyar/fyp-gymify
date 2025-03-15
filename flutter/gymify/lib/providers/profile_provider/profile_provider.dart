@@ -122,11 +122,6 @@ class ProfileProvider with ChangeNotifier {
         'current_weight': newWeight,
       });
 
-      // final apiResponse = ApiResponse<Users>.fromJson(
-      //   response.data,
-      //   (data) => Users.fromJson(data as Map<String, dynamic>),
-      // );
-
       // Handle the response from the backend
       final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
         response.data,

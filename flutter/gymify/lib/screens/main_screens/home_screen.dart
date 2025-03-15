@@ -765,8 +765,14 @@ class _HomeScreenState extends State<HomeScreen> {
                         context.pushNamed('personalBest');
                       },
                       child: const Text("Personal Best Page")),
+                  TextButton(
+                      onPressed: () {
+                        context.pushNamed('weightLog');
+                      },
+                      child: const Text("Weight History")),
 
                   // _buildPBItem(context, exercise, data),
+                  _buildWeightSection(context, user!.currentWeight.toString()),
 
                   const SizedBox(height: 16),
                   Text(
@@ -804,7 +810,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     ClipOval(
                                       child: CachedNetworkImage(
-                                        imageUrl: user?.profileImage ?? '',
+                                        imageUrl: user.profileImage ?? '',
                                         width: 50,
                                         height: 50,
                                         fit: BoxFit.cover,
@@ -825,7 +831,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          user?.userName ?? 'User Name',
+                                          user.userName ?? 'User Name',
                                           style: Theme.of(context)
                                               .textTheme
                                               .headlineMedium,
@@ -850,7 +856,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(height: 8),
                                 // Height and Weight data
                                 Text(
-                                  'Height: ${user?.height ?? '0'} cm',
+                                  'Height: ${user.height ?? '0'} cm',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -861,7 +867,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                 ),
                                 Text(
-                                  'Weight: ${user?.currentWeight ?? '0'} kg',
+                                  'Weight: ${user.currentWeight ?? '0'} kg',
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyMedium
@@ -1332,6 +1338,70 @@ Widget _buildPBItem(
           ),
         ],
       ),
+    ),
+  );
+}
+
+Widget _buildWeightSection(BuildContext context, String weight) {
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 6),
+    padding: const EdgeInsets.all(16.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(16),
+      gradient: LinearGradient(
+        colors: [
+          Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+          Theme.of(context).colorScheme.secondary.withOpacity(0.05),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      border: Border.all(
+        color: isDarkMode
+            ? theme.colorScheme.onSurface.withOpacity(0.1)
+            : theme.colorScheme.onSurface.withOpacity(0.1),
+        width: 1.5,
+      ),
+    ),
+
+    // padding: const EdgeInsets.all(16),
+    // decoration: BoxDecoration(
+    //   gradient: LinearGradient(
+    //     colors: [
+    //       Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+    //       Theme.of(context).colorScheme.secondary.withOpacity(0.05),
+    //     ],
+    //     begin: Alignment.topLeft,
+    //     end: Alignment.bottomRight,
+    //   ),
+    //   borderRadius: BorderRadius.circular(16),
+    // ),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Current Weight',
+                style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6))),
+            const SizedBox(height: 8),
+            Text('$weight kg',
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        ElevatedButton.icon(
+          icon: const Icon(LineAwesomeIcons.play_circle),
+          label: const Text('Log Weight'),
+          onPressed: () => context.pushNamed('weightLog'),
+        ),
+      ],
     ),
   );
 }

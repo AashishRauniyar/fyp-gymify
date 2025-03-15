@@ -246,7 +246,8 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/seru.png', // Your image asset
+                    'assets/images/profile/default_avatar.jpg', // Your image asset
+
                     height: 200,
                     width: 200,
                   ),

@@ -97,7 +97,7 @@ class Users {
   final String? height;
 
   @JsonKey(name: "current_weight")
-  late final String? currentWeight;
+  String? currentWeight;
 
   @JsonKey(name: "gender")
   final String? gender;
