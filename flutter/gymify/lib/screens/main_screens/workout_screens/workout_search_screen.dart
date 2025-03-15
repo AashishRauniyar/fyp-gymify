@@ -1,107 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:provider/provider.dart';
-import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
-import 'package:gymify/providers/diet_provider/diet_provider.dart';
+import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 
-/// A custom widget that displays a diet plan tile.
-class DietPlanListItem extends StatelessWidget {
-  final DietPlan dietPlan;
-
-  const DietPlanListItem({super.key, required this.dietPlan});
+class WorkoutSearchScreen extends StatefulWidget {
+  const WorkoutSearchScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final theme = Theme.of(context);
-
-    return GestureDetector(
-      onTap: () {
-        context.pushNamed('dietDetail', extra: dietPlan);
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: theme.colorScheme.onSurface.withOpacity(0.1),
-            width: 1.5,
-          ),
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Diet Plan Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.network(
-                dietPlan.image.isNotEmpty
-                    ? dietPlan.image
-                    : 'https://via.placeholder.com/150',
-                width: 90,
-                height: 90,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
-            // Diet Plan Details
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    dietPlan.name,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: isDarkMode ? Colors.white : Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${dietPlan.calorieGoal} kcal • ${dietPlan.goalType}',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: isDarkMode
-                          ? Colors.white.withOpacity(0.6)
-                          : Colors.black.withOpacity(0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Visual Accent Icon
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.blue,
-              size: 22,
-            ),
-            const SizedBox(width: 12),
-          ],
-        ),
-      ),
-    );
-  }
+  State<WorkoutSearchScreen> createState() => _WorkoutSearchScreenState();
 }
 
-class DietSearchScreen extends StatefulWidget {
-  const DietSearchScreen({super.key});
-
-  @override
-  State<DietSearchScreen> createState() => _DietSearchScreenState();
-}
-
-class _DietSearchScreenState extends State<DietSearchScreen> {
+class _WorkoutSearchScreenState extends State<WorkoutSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
   String _searchQuery = '';
-  String? selectedGoalType;
+  String? selectedDifficulty; // Filter by difficulty: Easy, Intermediate, Hard
 
   @override
   void initState() {
     super.initState();
-    // Automatically focus on the search field when the screen loads.
+    // Automatically focus the search field when the screen loads.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _searchFocusNode.requestFocus();
     });
@@ -122,7 +42,7 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
       // When the bottom sheet closes, update the filter if a result was returned.
       if (result != null && result is String?) {
         setState(() {
-          selectedGoalType = result;
+          selectedDifficulty = result;
         });
       }
     });
@@ -130,8 +50,8 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
 
   Widget _buildFilterDrawer(BuildContext context) {
     final theme = Theme.of(context);
-    // Temporary variable to store changes until "Apply Filters" is tapped.
-    String? tempSelectedGoalType = selectedGoalType;
+    // Temporary variable so changes apply only when "Apply Filters" is tapped.
+    String? tempSelectedDifficulty = selectedDifficulty;
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -142,17 +62,17 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
             decoration: InputDecoration(
               fillColor: theme.colorScheme.surface,
               filled: true,
-              labelText: "Goal Type",
+              labelText: "Difficulty",
               labelStyle: theme.textTheme.bodyMedium,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            value: tempSelectedGoalType,
+            value: tempSelectedDifficulty,
             onChanged: (value) {
-              tempSelectedGoalType = value;
+              tempSelectedDifficulty = value;
             },
-            items: ['Weight_Loss', 'Muscle_Gain', 'Maintenance']
+            items: ['Easy', 'Intermediate', 'Hard']
                 .map((item) => DropdownMenuItem(
                       value: item,
                       child: Text(item, style: theme.textTheme.bodyMedium),
@@ -165,9 +85,9 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  tempSelectedGoalType = null;
+                  tempSelectedDifficulty = null;
                   setState(() {
-                    selectedGoalType = null;
+                    selectedDifficulty = null;
                   });
                 },
                 child: Text(
@@ -181,7 +101,7 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
                   backgroundColor: theme.colorScheme.primary,
                 ),
                 onPressed: () {
-                  Navigator.pop(context, tempSelectedGoalType);
+                  Navigator.pop(context, tempSelectedDifficulty);
                 },
                 child: const Text("Apply Filters"),
               ),
@@ -197,7 +117,7 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: CustomAppBar(
-        title: "Search Diet Plans",
+        title: "Search Workouts",
         showBackButton: true,
         actions: [
           IconButton(
@@ -207,31 +127,32 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
         ],
       ),
       body: ChangeNotifierProvider(
-        create: (_) => DietProvider()..fetchAllDietPlans(),
-        child: Consumer<DietProvider>(
-          builder: (context, dietProvider, child) {
-            if (dietProvider.isLoading) {
+        create: (_) => WorkoutProvider()..fetchAllWorkouts(),
+        child: Consumer<WorkoutProvider>(
+          builder: (context, workoutProvider, child) {
+            if (workoutProvider.isLoading) {
               return const Center(child: CustomLoadingAnimation());
             }
-            if (dietProvider.hasError) {
+            if (workoutProvider.hasError) {
               return Center(
                 child: Text(
-                  "Error loading diet plans.",
+                  "Error loading workouts.",
                   style: theme.textTheme.headlineSmall
                       ?.copyWith(color: theme.colorScheme.error),
                 ),
               );
             }
-            final filteredDietPlans = dietProvider.diets.where((dietPlan) {
-              final matchesSearch = dietPlan.name
+
+            final filteredWorkouts = workoutProvider.workouts.where((workout) {
+              final matchesSearch = workout.workoutName
                   .toLowerCase()
                   .contains(_searchQuery.toLowerCase());
-              final matchesFilter = selectedGoalType == null ||
-                  dietPlan.goalType == selectedGoalType;
+              final matchesFilter = selectedDifficulty == null ||
+                  workout.difficulty == selectedDifficulty;
               return matchesSearch && matchesFilter;
             }).toList();
 
-            if (filteredDietPlans.isEmpty) {
+            if (filteredWorkouts.isEmpty) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -239,7 +160,7 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
                     const Icon(Icons.search_off, size: 80, color: Colors.grey),
                     const SizedBox(height: 20),
                     Text(
-                      "No diet plans found.",
+                      "No workouts found.",
                       style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 10),
@@ -266,7 +187,7 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search Diet Plans...',
+                      hintText: 'Search Workouts...',
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
@@ -290,10 +211,11 @@ class _DietSearchScreenState extends State<DietSearchScreen> {
                 ),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: filteredDietPlans.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: filteredWorkouts.length,
                     itemBuilder: (context, index) {
-                      final dietPlan = filteredDietPlans[index];
-                      return DietPlanListItem(dietPlan: dietPlan);
+                      final workout = filteredWorkouts[index];
+                      return WorkoutListItem(workout: workout);
                     },
                   ),
                 ),

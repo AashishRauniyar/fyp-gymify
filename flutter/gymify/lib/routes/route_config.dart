@@ -14,7 +14,7 @@ import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_scree
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
 import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/create_meal_screen.dart';
-import 'package:gymify/screens/diet_screens/deit_search_screen.dart';
+import 'package:gymify/screens/diet_screens/diet_search_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
@@ -23,6 +23,7 @@ import 'package:gymify/screens/main_screens/membership_screen/membership_screen.
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all_workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
+import 'package:gymify/screens/main_screens/workout_screens/workout_search_screen.dart';
 import 'package:gymify/screens/personal_best_screens/personal_best_screen.dart';
 import 'package:gymify/screens/personal_best_screens/weight_update_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
@@ -367,6 +368,10 @@ final GoRouter router = GoRouter(
         name: 'dietSearch',
         path: '/dietSearch',
         builder: (context, state) => const DietSearchScreen()),
+    GoRoute(
+        name: 'workoutSearch',
+        path: '/workoutSearch',
+        builder: (context, state) => const WorkoutSearchScreen()),
     GoRoute(
         name: 'test',
         path: '/test',

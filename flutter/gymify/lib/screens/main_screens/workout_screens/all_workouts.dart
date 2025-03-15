@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
@@ -36,9 +37,19 @@ class _AllWorkoutsState extends State<AllWorkouts>
         title: "All Workouts",
         showBackButton: true,
         actions: [
+          // Search action.
+          IconButton(
+            icon: Icon(Icons.search, color: theme.colorScheme.primary),
+            onPressed: () {
+              context.pushNamed('workoutSearch');
+            },
+          ),
+          // Filter action.
           IconButton(
             icon: Icon(Icons.filter_list, color: theme.colorScheme.primary),
-            onPressed: () => _openFilterDrawer(context),
+            onPressed: () {
+              context.pushNamed('workoutSearch');
+            },
           ),
         ],
         bottom: TabBar(
@@ -78,7 +89,6 @@ class _AllWorkoutsState extends State<AllWorkouts>
 
             return Column(
               children: [
-                _buildSearchBar(theme),
                 const SizedBox(height: 10),
                 Expanded(
                   child: TabBarView(
@@ -99,29 +109,29 @@ class _AllWorkoutsState extends State<AllWorkouts>
     );
   }
 
-  Widget _buildSearchBar(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value.toLowerCase();
-          });
-        },
-        decoration: InputDecoration(
-          hintText: 'Search Workouts...',
-          prefixIcon: const Icon(Icons.search),
-          filled: true,
-          fillColor: theme.colorScheme.surface,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildSearchBar(ThemeData theme) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+  //     child: TextField(
+  //       controller: _searchController,
+  //       onChanged: (value) {
+  //         setState(() {
+  //           _searchQuery = value.toLowerCase();
+  //         });
+  //       },
+  //       decoration: InputDecoration(
+  //         hintText: 'Search Workouts...',
+  //         prefixIcon: const Icon(Icons.search),
+  //         filled: true,
+  //         fillColor: theme.colorScheme.surface,
+  //         border: OutlineInputBorder(
+  //           borderRadius: BorderRadius.circular(12),
+  //           borderSide: BorderSide.none,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildWorkoutList(List workouts, String difficulty, ThemeData theme) {
     final filteredByDifficulty =

@@ -83,14 +83,24 @@ class _DietScreenState extends State<DietScreen>
             if (dietProvider.diets.isEmpty) {
               return _buildEmptyState(theme);
             }
-            return TabBarView(
-              controller: _tabController,
-              children: [
-                _buildDietPlanList(dietProvider.diets, "Weight_Loss", theme),
-                _buildDietPlanList(dietProvider.diets, "Muscle_Gain", theme),
-                _buildDietPlanList(dietProvider.diets, "Maintenance", theme),
-              ],
-            );
+            return Column(children: [
+              const SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    _buildDietPlanList(
+                        dietProvider.diets, "Weight_Loss", theme),
+                    _buildDietPlanList(
+                        dietProvider.diets, "Muscle_Gain", theme),
+                    _buildDietPlanList(
+                        dietProvider.diets, "Maintenance", theme),
+                  ],
+                ),
+              ),
+            ]);
           },
         ),
       ),

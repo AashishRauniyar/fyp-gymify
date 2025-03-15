@@ -4,7 +4,6 @@ import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
-import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 
 class WorkoutListScreen extends StatefulWidget {
   const WorkoutListScreen({super.key});
@@ -15,7 +14,7 @@ class WorkoutListScreen extends StatefulWidget {
 
 class _WorkoutListScreenState extends State<WorkoutListScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
+  final String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -79,29 +78,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16, bottom: 10),
-                      child: TextField(
-                        controller: _searchController,
-                        onChanged: (value) {
-                          setState(() {
-                            _searchQuery = value.toLowerCase();
-                          });
-                        },
-                        decoration: InputDecoration(
-                          hintText: 'Search Workouts...',
-                          prefixIcon: const Icon(Icons.search),
-                          filled: true,
-                          fillColor: theme.colorScheme.surface,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 10),
-                        ),
-                      ),
-                    ),
+                    _buildSearchBar(theme),
                     if (filteredDefaultWorkouts.isNotEmpty)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,6 +285,33 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
               ),
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSearchBar(ThemeData theme) {
+    return Hero(
+      tag: 'searchBar',
+      child: Material(
+        color: Colors.transparent,
+        child: TextField(
+          readOnly: true, // Prevent keyboard from appearing
+          onTap: () {
+            // When tapped, navigate to the search screen with a smooth Hero animation.
+            context.pushNamed('workoutSearch');
+          },
+          decoration: InputDecoration(
+            hintText: 'Search Workouts...',
+            prefixIcon: const Icon(Icons.search),
+            filled: true,
+            fillColor: theme.colorScheme.surface,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
+            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+          ),
         ),
       ),
     );
