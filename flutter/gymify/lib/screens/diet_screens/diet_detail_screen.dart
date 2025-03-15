@@ -1,8 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
-
+import 'package:gymify/utils/custom_appbar.dart';
 
 class DietDetailScreen extends StatelessWidget {
   final DietPlan dietPlan;
@@ -14,41 +14,28 @@ class DietDetailScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     dietPlan.name,
-      //     style: theme.textTheme.headlineSmall?.copyWith(
-      //       fontWeight: FontWeight.bold,
-      //       color: AppColors.lightOnPrimary,
-      //     ),
-      //   ),
-      //   backgroundColor: theme.colorScheme.primary,
-      //   elevation: 0,
-      // ),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text(
-          dietPlan.name,
-          style: theme.textTheme.headlineSmall,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_sharp,
-              color: Color(0xFFFF5E3A)),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop(); // Navigate back to the previous page
-            } else {
-              context
-                  .pop(); // Navigate to the welcome page if there's nothing to pop
-            }
-          },
-        ),
+      appBar: CustomAppBar(
+        title: dietPlan.name,
+        showBackButton: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            // Diet Plan Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: CachedNetworkImage(
+                imageUrl: dietPlan.image,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+              ),
+            ),
             // Diet Plan Details Section
             Card(
               shape: RoundedRectangleBorder(
@@ -105,7 +92,6 @@ class DietDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-
             // Meals Section
             Text(
               'Meals',
@@ -123,7 +109,6 @@ class DietDetailScreen extends StatelessWidget {
     );
   }
 }
-
 
 class MealCard extends StatelessWidget {
   final Meal meal;

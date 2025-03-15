@@ -65,6 +65,7 @@ model dietplans {
   calorie_goal Decimal?  @db.Decimal(6, 2)
   goal_type    goal_type
   description  String?
+  image        String?   @db.VarChar(255)
   created_at   DateTime  @default(now()) @db.Timestamp(6)
   updated_at   DateTime  @updatedAt
 

@@ -14,6 +14,7 @@ DietPlan _$DietPlanFromJson(Map<String, dynamic> json) => DietPlan(
       calorieGoal: json['calorie_goal'] as String,
       goalType: json['goal_type'] as String,
       description: json['description'] as String,
+      image: json['image'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
       meals: (json['meals'] as List<dynamic>)
@@ -29,6 +30,7 @@ Map<String, dynamic> _$DietPlanToJson(DietPlan instance) => <String, dynamic>{
       'calorie_goal': instance.calorieGoal,
       'goal_type': instance.goalType,
       'description': instance.description,
+      'image': instance.image,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
       'meals': instance.meals,

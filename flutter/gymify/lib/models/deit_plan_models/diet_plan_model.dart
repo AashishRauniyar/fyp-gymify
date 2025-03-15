@@ -20,6 +20,8 @@ class DietPlan {
     final String goalType;
     @JsonKey(name: "description")
     final String description;
+    @JsonKey(name: "image")
+    final String image;
     @JsonKey(name: "created_at")
     final DateTime createdAt;
     @JsonKey(name: "updated_at")
@@ -35,6 +37,7 @@ class DietPlan {
         required this.calorieGoal,
         required this.goalType,
         required this.description,
+        required this.image,
         required this.createdAt,
         required this.updatedAt,
         required this.meals,

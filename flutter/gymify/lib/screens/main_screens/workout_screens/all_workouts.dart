@@ -45,6 +45,14 @@ class _AllWorkoutsState extends State<AllWorkouts>
           controller: _tabController,
           labelColor: theme.colorScheme.primary,
           unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
+          indicator: UnderlineTabIndicator(
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 4,
+            ),
+            // Negative insets will extend the line beyond the default bounds.
+            insets: const EdgeInsets.symmetric(horizontal: -25),
+          ),
           indicatorColor: theme.colorScheme.primary,
           tabs: const [
             Tab(text: "Easy"),

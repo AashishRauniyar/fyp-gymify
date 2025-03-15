@@ -14,6 +14,7 @@ import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_scree
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
 import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/create_meal_screen.dart';
+import 'package:gymify/screens/diet_screens/deit_search_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';

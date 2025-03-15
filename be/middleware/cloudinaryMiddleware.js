@@ -146,3 +146,23 @@ export const uploadMealPhotoToCloudinary = async (buffer, folder = 'meal_images'
         stream.end(buffer); // end the stream   
     });
 };
+
+
+// upload deit photo to Cloudinary in folder 'diet_images'
+export const uploadDietPhotoToCloudinary = async (buffer, folder = 'diet_images') => {
+    return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+            { folder, resource_type: 'image' },
+            (error, result) => {
+                if (error) {
+                    console.error('Cloudinary upload error:', error);
+                    reject(error);
+                } else {
+                    resolve(result.secure_url); // Return the Cloudinary URL
+                }
+            }
+        );
+        // Pipe the buffer into the Cloudinary upload stream
+        stream.end(buffer); // end the stream   
+    });
+};
