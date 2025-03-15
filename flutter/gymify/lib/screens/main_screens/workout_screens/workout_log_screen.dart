@@ -1144,6 +1144,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/workout_model.dart';
@@ -1538,8 +1539,9 @@ class _WorkoutSummaryScreenState extends State<WorkoutSummaryScreen> {
             const SizedBox(height: 10),
             _buildActionButton(
               label: provider.isLoading ? 'Saving...' : 'Save Workout',
-              onPressed:
-                  provider.isLoading ? null : () => _saveWorkout(provider),
+              onPressed: provider.isLoading
+                  ? null
+                  : () => _saveWorkout(context, provider),
             ),
           ],
         ),
@@ -1588,12 +1590,17 @@ class _WorkoutSummaryScreenState extends State<WorkoutSummaryScreen> {
     );
   }
 
-  Future<void> _saveWorkout(WorkoutLogProvider provider) async {
+  Future<void> _saveWorkout(
+      BuildContext context, WorkoutLogProvider provider) async {
     // Get current user ID from your auth provider
-    const userId = 1; // Replace with actual user ID
+    var userId = context
+        .read<ProfileProvider>()
+        .user
+        ?.userId
+        .toString(); // Replace with actual user ID
 
     await provider.finalizeWorkout(
-      userId: userId,
+      userId: int.parse(userId.toString()),
       workoutId: widget.workoutId,
     );
 

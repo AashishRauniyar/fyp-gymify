@@ -13,11 +13,11 @@
 // const url = "10.0.2.2";
 
 // const url = "192.168.31.96";
-// const url = "192.168.31.96";
+const url = "192.168.31.96";
 
 // const url = "172.25.0.99";
-const url = "192.168.0.116";
-
+// dokan ko ip
+// const url = "192.168.0.116";
 
 const baseUrl = "http://$url:8000/api";
 const socketUrl = "ws://$url:8000";
