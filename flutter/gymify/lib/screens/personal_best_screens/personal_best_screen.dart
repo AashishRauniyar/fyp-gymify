@@ -633,12 +633,64 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
               ),
             )
           else
+            // ListView.builder(
+            //   shrinkWrap: true,
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   itemCount: personalBestProvider.personalBestHistory.length,
+            //   itemBuilder: (context, index) {
+            //     final record = personalBestProvider.personalBestHistory[index];
+            //     return Card(
+            //       margin: const EdgeInsets.only(bottom: kSpacingSmall),
+            //       child: ListTile(
+            //         leading: CircleAvatar(
+            //           backgroundColor: Theme.of(context)
+            //               .colorScheme
+            //               .primary
+            //               .withOpacity(0.2),
+            //           child: Icon(
+            //             Icons.fitness_center,
+            //             color: Theme.of(context).colorScheme.primary,
+            //           ),
+            //         ),
+            //         title: Text(
+            //           "${record.weight} kg × ${record.reps} reps",
+            //           style: const TextStyle(fontWeight: FontWeight.bold),
+            //         ),
+            //         subtitle: Text(
+            //             DateFormat('MMM d, yyyy').format(record.achievedAt)),
+            //         trailing: IconButton(
+            //           icon: const Icon(Icons.delete_outline),
+            //           onPressed: () => _deleteRecord(record.personalBestId),
+            //         ),
+            //       ),
+            //     );
+            //   },
+            // ),
+            // In _buildHistoryTab, inside the ListView.builder:
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: personalBestProvider.personalBestHistory.length,
               itemBuilder: (context, index) {
                 final record = personalBestProvider.personalBestHistory[index];
+
+                // Calculate weight change compared to the next record, if available.
+                String changeText = '';
+                if (index <
+                    personalBestProvider.personalBestHistory.length - 1) {
+                  final currentWeight = record.weight;
+                  final previousWeight = personalBestProvider
+                      .personalBestHistory[index + 1].weight;
+                  final change = double.parse(currentWeight) -
+                      double.parse(previousWeight);
+                  if (change > 0) {
+                    changeText = '+${change.toStringAsFixed(1)} kg';
+                  } else if (change < 0) {
+                    changeText =
+                        '${change.toStringAsFixed(1)} kg'; // '-' sign is inherent
+                  }
+                }
+
                 return Card(
                   margin: const EdgeInsets.only(bottom: kSpacingSmall),
                   child: ListTile(
@@ -658,14 +710,32 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
                     ),
                     subtitle: Text(
                         DateFormat('MMM d, yyyy').format(record.achievedAt)),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline),
-                      onPressed: () => _deleteRecord(record.personalBestId),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (changeText.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Text(
+                              changeText,
+                              style: TextStyle(
+                                color: changeText.startsWith('+')
+                                    ? Colors.red
+                                    : Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline),
+                          onPressed: () => _deleteRecord(record.personalBestId),
+                        ),
+                      ],
                     ),
                   ),
                 );
               },
-            ),
+            )
         ],
       ),
     );

@@ -145,7 +145,7 @@ class AppTheme {
     return InputDecorationTheme(
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       filled: true,
-      fillColor: AppColors.inputFill,
+      // fillColor: AppColors.inputFill,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: primaryColor, width: 1.5),

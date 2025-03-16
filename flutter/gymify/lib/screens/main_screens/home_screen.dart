@@ -1199,7 +1199,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 10),
-
                       Row(
                         children: [
                           // Card to display the user's profile, inside an Expanded widget to handle overflow
