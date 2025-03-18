@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/colors/custom_colors.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
@@ -22,7 +24,9 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
+      appBar: CustomAppBar(
+        title: 'Workouts',
+        showBackButton: false,
         actions: [
           IconButton(
             icon: Icon(Icons.add, color: theme.colorScheme.primary),
@@ -31,13 +35,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
             },
           ),
         ],
-        backgroundColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-        toolbarHeight: 60,
-        title: Text(
-          'Workouts',
-          style: Theme.of(context).textTheme.headlineMedium,
-        ),
       ),
       body: MultiProvider(
         providers: [

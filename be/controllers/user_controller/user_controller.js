@@ -6,6 +6,8 @@ const prisma = new PrismaClient();
 export const getAllUsers = async (req, res) => {
     const { user_id } = req.user;
 
+    
+
     try {
         const users = await prisma.users.findMany({
             select: {
@@ -25,6 +27,69 @@ export const getAllUsers = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch users' });
     }
 }
+
+
+// get all the users who have membership active
+// export const getActiveMembers = async (req, res) => {
+//     const { user_id } = req.user;
+
+//     try {
+//         const users = await prisma.users.findMany({
+//             where: {
+//                 membership_status: 'Active'
+//             },
+//             select: {
+//                 user_id: true,
+//                 user_name: true,
+//                 role: true,
+//             }
+//         });
+
+//         res.status(200).json({
+//             status: 'success',
+//             message: 'Active members fetched successfully',
+//             data : users
+//         });
+//     } catch (error) {
+//         console.error('Error fetching active members:', error);
+//         res.status(500).json({ error: 'Failed to fetch active members' });
+//     }
+// }
+
+export const getActiveMembers = async (req, res) => {
+    const { user_id } = req.user; // Assuming you have user authentication middleware to get the logged-in user
+
+    try {
+        // Fetching active members by checking the membership status
+        const activeMembers = await prisma.memberships.findMany({
+            where: {
+                status: 'Active',  // We are looking for members with 'Active' status
+            },
+            include: {
+                users: {  // Joining the users table to get user details
+                    select: {
+                        user_id: true,
+                        user_name: true,
+                        role: true,
+                    },
+                },
+            },
+        });
+
+        // Mapping through the active members and extracting user details
+        const users = activeMembers.map((membership) => membership.users);
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Active members fetched successfully',
+            data: users, // Returning the user details of active members
+        });
+    } catch (error) {
+        console.error('Error fetching active members:', error);
+        res.status(500).json({ error: 'Failed to fetch active members' });
+    }
+}
+
 
 // Get all trainers
 export const getAllTrainers = async (req, res) => {

@@ -8,9 +8,11 @@ class TrainerProvider with ChangeNotifier {
   bool _hasError = false;
   List<AllUserModel> _members = [];
   List<AllUserModel> _trainers = [];
+  List<AllUserModel> _allActiveMembers = [];
 
   List<AllUserModel> get trainers => _trainers;
   List<AllUserModel> get members => _members;
+  List<AllUserModel> get allActiveMembers => _allActiveMembers;
   bool get isLoading => _isLoading;
   bool get hasError => _hasError;
 
@@ -25,7 +27,7 @@ class TrainerProvider with ChangeNotifier {
     Future.microtask(() => notifyListeners());
   }
 
-  Future<void> fetchAllUsers() async {
+  Future<void> fetchAllMembers() async {
     _setLoading(true);
     try {
       final response = await httpClient.get('/members');
@@ -44,6 +46,30 @@ class TrainerProvider with ChangeNotifier {
     } catch (e) {
       _setError(true);
       print('Error fetching users: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchAllActiveMembers() async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.get('/activeMembers');
+      final apiResponse = ApiResponse<List<AllUserModel>>.fromJson(
+        response.data,
+        (data) =>
+            (data as List).map((item) => AllUserModel.fromJson(item)).toList(),
+      );
+
+      if (apiResponse.status == 'success') {
+        _allActiveMembers = apiResponse.data;
+        _setError(false);
+      } else {
+        _setError(true);
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error fetching active users: $e');
     } finally {
       _setLoading(false);
     }
@@ -75,7 +101,8 @@ class TrainerProvider with ChangeNotifier {
 
   Future<void> fetchDataByRole(String role) async {
     if (role == 'Trainer') {
-      await fetchAllUsers();
+      await fetchAllMembers();
+      await fetchAllActiveMembers();
     } else {
       await fetchAllTrainers();
     }

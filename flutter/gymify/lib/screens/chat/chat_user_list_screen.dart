@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
-import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
@@ -44,7 +43,9 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
     return Scaffold(
       appBar: CustomAppBar(
           showBackButton: false,
-          title: role == 'Trainer' ? 'Chat with Users' : 'Chat with Trainers'),
+          title: role == 'Trainer'
+              ? 'Chat with Users with Membership'
+              : 'Chat with Trainers'),
       body: _fetchFuture == null
           ? const Center(child: CustomLoadingAnimation())
           : FutureBuilder(
@@ -59,7 +60,7 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
                 }
 
                 final list = role == 'Trainer'
-                    ? trainerProvider.members
+                    ? trainerProvider.allActiveMembers
                     : trainerProvider.trainers;
 
                 if (list.isEmpty) {
@@ -84,17 +85,13 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
                           );
                           print(chatId);
                           print(user.userId);
-
-                          // Navigate to ChatScreen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChatScreen(
-                                chatId: chatId,
-                                userId: currentUserId.toString(),
-                                userName: user.userName,
-                              ),
-                            ),
+                          context.pushNamed(
+                            'chatScreen',
+                            extra: {
+                              'chatId': chatId,
+                              'userId': currentUserId.toString(),
+                              'userName': user.userName,
+                            },
                           );
                         } catch (e) {
                           if (context.mounted) {

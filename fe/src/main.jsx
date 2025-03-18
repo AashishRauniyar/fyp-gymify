@@ -16,12 +16,17 @@ import WorkoutDetails from './pages/workout/WorkoutDetails.jsx'
 import CreateCustomWorkout from './pages/custom_workout/CreateCustomWorkout.jsx'
 import AddExercisesToCustomWorkout from './pages/custom_workout/AddExercisesToCustomWorkout.jsx'
 import ViewCustomWorkouts from './pages/custom_workout/ViewCustomWorkouts.jsx'
+import Dashboard from './pages/admin/Dashboard.jsx'
 
 const router = createBrowserRouter(
   [
     {
     path: '/register',
       element: <Register />
+    },
+    {
+    path: '/dashboard',
+      element: <Dashboard />
     },
     {
       path: '/welcome',
@@ -72,7 +77,6 @@ const router = createBrowserRouter(
       path: '/',
       element: <App />
     }
-    
 
   ]
 )

@@ -103,6 +103,8 @@ export const createMembership = async (req, res) => {
                 user_id: parseInt(user_id),
                 plan_id: parseInt(plan_id),
                 status: 'Pending', // Initial status
+                start_date: new Date(),
+                end_date: new Date(),
                 payments: {
                     create: {
                         user_id: parseInt(user_id),

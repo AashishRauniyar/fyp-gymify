@@ -142,4 +142,5 @@ class ProfileProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
+  // method to get user details from user id
 }

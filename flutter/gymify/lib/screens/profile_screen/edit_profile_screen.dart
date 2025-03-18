@@ -1,355 +1,358 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:go_router/go_router.dart';
-// import 'package:gymify/providers/profile_provider/profile_provider.dart';
-// import 'package:gymify/colors/custom_colors.dart';
-
-// class EditProfileScreen extends StatelessWidget {
-//   EditProfileScreen({super.key});
-
-//   final List<String> _fitnessLevels = [
-//     'Beginner',
-//     'Intermediate',
-//     'Advanced',
-//     'Athlete'
-//   ];
-//   final List<String> _goalTypes = [
-//     'Weight Loss',
-//     'Muscle Gain',
-//     'Endurance',
-//     'Maintenance',
-//     'Flexibility'
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final profileProvider = Provider.of<ProfileProvider>(context);
-//     final user = context.read<ProfileProvider>().user;
-
-//     if (profileProvider.isLoading) {
-//       return Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Edit Profile'),
-//         ),
-//         body: const Center(
-//           child: CustomLoadingAnimation(),
-//         ),
-//       );
-//     }
-
-//     if (user == null) {
-//       return Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Edit Profile'),
-//         ),
-//         body: const Center(
-//           child: Text('Error loading profile. Please try again.'),
-//         ),
-//       );
-//     }
-
-//     // Controllers for text fields
-//     final fullNameController = TextEditingController(text: user.fullName);
-//     final phoneNumberController = TextEditingController(text: user.phoneNumber);
-//     final addressController = TextEditingController(text: user.address);
-//     final heightController =
-//         TextEditingController(text: user.height.toString());
-//     final currentWeightController =
-//         TextEditingController(text: user.currentWeight.toString());
-//     final allergiesController = TextEditingController(text: user.allergies);
-
-//     // Dropdown initial values
-//     String selectedFitnessLevel = user.fitnessLevel;
-//     String selectedGoalType = user.goalType;
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Edit Profile'),
-//         leading: IconButton(
-//           icon: const Icon(Icons.arrow_back),
-//           onPressed: () => context.pop(),
-//         ),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: ListView(
-//           children: [
-//             TextField(
-//               controller: fullNameController,
-//               decoration: const InputDecoration(labelText: 'Full Name'),
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: phoneNumberController,
-//               decoration: const InputDecoration(labelText: 'Phone Number'),
-//               keyboardType: TextInputType.phone,
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: addressController,
-//               decoration: const InputDecoration(labelText: 'Address'),
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: heightController,
-//               decoration: const InputDecoration(labelText: 'Height (cm)'),
-//               keyboardType: TextInputType.number,
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: currentWeightController,
-//               decoration:
-//                   const InputDecoration(labelText: 'Current Weight (kg)'),
-//               keyboardType: TextInputType.number,
-//             ),
-//             const SizedBox(height: 16),
-//             DropdownButtonFormField<String>(
-//               value: selectedFitnessLevel,
-//               items: _fitnessLevels.map((level) {
-//                 return DropdownMenuItem(
-//                   value: level,
-//                   child: Text(level),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 selectedFitnessLevel = value!;
-//               },
-//               decoration: const InputDecoration(labelText: 'Fitness Level'),
-//             ),
-//             const SizedBox(height: 16),
-//             DropdownButtonFormField<String>(
-//               value: selectedGoalType,
-//               items: _goalTypes.map((type) {
-//                 return DropdownMenuItem(
-//                   value: type,
-//                   child: Text(type),
-//                 );
-//               }).toList(),
-//               onChanged: (value) {
-//                 selectedGoalType = value!;
-//               },
-//               decoration: const InputDecoration(labelText: 'Goal Type'),
-//             ),
-//             const SizedBox(height: 16),
-//             TextField(
-//               controller: allergiesController,
-//               decoration: const InputDecoration(labelText: 'Allergies'),
-//             ),
-//             const SizedBox(height: 24),
-//             ElevatedButton(
-//               onPressed: () async {
-//                 profileProvider.resetError(); // Reset error state
-//                 await profileProvider.updateProfile({
-//                   'full_name': fullNameController.text.trim(),
-//                   'phone_number': phoneNumberController.text.trim(),
-//                   'address': addressController.text.trim(),
-//                   'height': double.tryParse(heightController.text.trim()) ??
-//                       user.height,
-//                   'current_weight':
-//                       double.tryParse(currentWeightController.text.trim()) ??
-//                           user.currentWeight,
-//                   'fitness_level': selectedFitnessLevel,
-//                   'goal_type': selectedGoalType,
-//                   'allergies': allergiesController.text.trim(),
-//                 });
-
-//                 if (!profileProvider.hasError) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(
-//                         content: Text('Profile updated successfully!')),
-//                   );
-//                   context.pop();
-//                 } else {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     const SnackBar(
-//                         content: Text(
-//                             'Failed to update profile. Please try again.')),
-//                   );
-//                 }
-//               },
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor: CustomColors.primary,
-//                 foregroundColor: Colors.white,
-//                 padding:
-//                     const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-//                 shape: RoundedRectangleBorder(
-//                   borderRadius: BorderRadius.circular(12),
-//                 ),
-//               ),
-//               child: profileProvider.isLoading
-//                   ? const CustomLoadingAnimation(color: Colors.white)
-//                   : const Text('Save Changes'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/models/user_model.dart';
-import 'package:gymify/colors/custom_colors.dart';
+import 'package:gymify/providers/auth_provider/auth_provider.dart';
+import 'package:gymify/providers/chat_provider/chat_service.dart';
+import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
-class EditProfileScreen extends StatelessWidget {
-  final Users user;
+enum FitnessLevel {
+  Beginner,
+  Intermediate,
+  Advanced,
+  Athlete,
+}
 
-  const EditProfileScreen({super.key, required this.user});
+enum GoalType {
+  Weight_Loss, // @map("Weight Loss")
+  Muscle_Gain, // @map("Muscle Gain")
+  Endurance,
+  Maintenance,
+  Flexibility,
+}
+
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
+
+  @override
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
+}
+
+class _EditProfileScreenState extends State<EditProfileScreen> {
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _fitnessLevelController = TextEditingController();
+  final TextEditingController _allergiesController = TextEditingController();
+  final TextEditingController _goalTypeController = TextEditingController();
+
+  FitnessLevel? _selectedFitnessLevel = FitnessLevel.Athlete;
+  GoalType? _selectedGoalType = GoalType.Weight_Loss;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _logout(BuildContext context) async {
+    try {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final authProvider =
+                        Provider.of<AuthProvider>(context, listen: false);
+
+                    final socketService =
+                        Provider.of<ChatProvider>(context, listen: false);
+                    socketService.handleLogout();
+                    await authProvider.logout();
+                    if (context.mounted) {
+                      context.go('/welcome');
+                    }
+                  },
+                  child: const Text('Logout'),
+                ),
+              ],
+            );
+          });
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Logout failed. Please try again.')),
+        );
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profileProvider =
+          Provider.of<ProfileProvider>(context, listen: false);
+      profileProvider.fetchProfile();
+      final membershipProvider =
+          Provider.of<MembershipProvider>(context, listen: false);
+      membershipProvider.fetchMembershipStatus(context);
+    });
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Phone number is required';
+    } else if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+      return 'Please enter a valid 10-digit phone number';
+    }
+    return null;
+  }
+
+  String? _validateHeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Height is required';
+    } else {
+      final height = double.tryParse(value);
+      if (height == null || height < 50 || height > 300) {
+        return 'Please enter a valid height between 50 and 300 cm';
+      }
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Dropdown options
-    final List<String> fitnessLevels = [
-      'Beginner',
-      'Intermediate',
-      'Advanced',
-      'Athlete'
-    ];
-    final List<String> goalTypes = [
-      'Weight Loss',
-      'Muscle Gain',
-      'Endurance',
-      'Maintenance',
-      'Flexibility'
-    ];
-
+    final theme = Theme.of(context);
     final profileProvider = Provider.of<ProfileProvider>(context);
 
-    // Controllers for text fields
-    final fullNameController = TextEditingController(text: user.fullName);
-    final phoneNumberController = TextEditingController(text: user.phoneNumber);
-    final addressController = TextEditingController(text: user.address);
-    final heightController =
-        TextEditingController(text: user.height.toString());
-    final currentWeightController =
-        TextEditingController(text: user.currentWeight.toString());
-    final allergiesController = TextEditingController(text: user.allergies);
+    if (profileProvider.isLoading) {
+      return const Scaffold(
+        body: Center(child: CustomLoadingAnimation()),
+      );
+    }
 
-    String selectedFitnessLevel = user.fitnessLevel ?? 'Beginner';
-    String selectedGoalType = user.goalType ?? 'Muscle Gain';
+    if (profileProvider.hasError) {
+      return Scaffold(
+        appBar: const CustomAppBar(
+          title: "Edit profile",
+        ),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Error: ${profileProvider.errorMessage}',
+                style: theme.textTheme.bodyLarge
+                    ?.copyWith(color: theme.colorScheme.error),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => profileProvider.fetchProfile(),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final user = profileProvider.user;
+
+    if (user != null) {
+      // Populate controllers if profile data exists
+      _fullNameController.text = user.fullName ?? '';
+
+      _phoneController.text = user.phoneNumber ?? '';
+      _addressController.text = user.address ?? '';
+      _heightController.text = user.height ?? '';
+      _fitnessLevelController.text = user.fitnessLevel ?? '';
+      _allergiesController.text = user.allergies ?? '';
+      _goalTypeController.text = user.goalType ?? '';
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
+      appBar: const CustomAppBar(
+        title: "Edit profile",
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            TextField(
-              controller: fullNameController,
-              decoration: const InputDecoration(labelText: 'Full Name'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: phoneNumberController,
-              decoration: const InputDecoration(labelText: 'Phone Number'),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: addressController,
-              decoration: const InputDecoration(labelText: 'Address'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: heightController,
-              decoration: const InputDecoration(labelText: 'Height (cm)'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: currentWeightController,
-              decoration:
-                  const InputDecoration(labelText: 'Current Weight (kg)'),
-              keyboardType: TextInputType.number,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedFitnessLevel,
-              items: fitnessLevels.map((level) {
-                return DropdownMenuItem(
-                  value: level,
-                  child: Text(level),
-                );
-              }).toList(),
-              onChanged: (value) {
-                selectedFitnessLevel = value!;
-              },
-              decoration: const InputDecoration(labelText: 'Fitness Level'),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: selectedGoalType,
-              items: goalTypes.map((type) {
-                return DropdownMenuItem(
-                  value: type,
-                  child: Text(type),
-                );
-              }).toList(),
-              onChanged: (value) {
-                selectedGoalType = value!;
-              },
-              decoration: const InputDecoration(labelText: 'Goal Type'),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: allergiesController,
-              decoration: const InputDecoration(labelText: 'Allergies'),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () async {
-                await profileProvider.updateProfile({
-                  'full_name': fullNameController.text.trim(),
-                  'phone_number': phoneNumberController.text.trim(),
-                  'address': addressController.text.trim(),
-                  'height': double.tryParse(heightController.text.trim()) ??
-                      user.height,
-                  'current_weight':
-                      double.tryParse(currentWeightController.text.trim()) ??
-                          user.currentWeight,
-                  'fitness_level': selectedFitnessLevel,
-                  'goal_type': selectedGoalType,
-                  'allergies': allergiesController.text.trim(),
-                });
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
 
-                if (!profileProvider.hasError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Profile updated successfully!')),
-                  );
-                  context.pop();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text(
-                            'Failed to update profile. Please try again.')),
-                  );
-                }
-                // Navigate back after saving
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: CustomColors.primary,
-                foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              // Profile Section
+              Center(
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: user?.profileImage != null
+                              ? NetworkImage(user!.profileImage!)
+                              : const NetworkImage(
+                                  'https://via.placeholder.com/150'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      user?.fullName ?? 'No Name',
+                      style: theme.textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      user?.email ?? 'No Email',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: const Text('Save Changes'),
-            ),
-          ],
+
+              const SizedBox(height: 30),
+
+              // Personal Info Section
+              Text('Personal Information',
+                  style: theme.textTheme.headlineSmall),
+              const SizedBox(height: 10),
+              _buildTextField(context, 'Full Name', _fullNameController),
+              const SizedBox(height: 10),
+
+              const SizedBox(height: 10),
+              _buildTextField(context, 'Phone Number', _phoneController,
+                  validator: _validatePhone),
+              const SizedBox(height: 10),
+              _buildTextField(context, 'Address', _addressController),
+              const SizedBox(height: 10),
+              _buildTextField(context, 'Height', _heightController,
+                  validator: _validateHeight),
+              const SizedBox(height: 20),
+
+              // Fitness Goals Section
+              Text('Fitness Goals', style: theme.textTheme.headlineSmall),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                context,
+                'Fitness Level',
+                FitnessLevel.values,
+                _selectedFitnessLevel,
+                (value) => setState(() => _selectedFitnessLevel = value),
+              ),
+              const SizedBox(height: 10),
+              _buildDropdownField(
+                context,
+                'Goal Type',
+                GoalType.values,
+                _selectedGoalType,
+                (value) => setState(() => _selectedGoalType = value),
+              ),
+              const SizedBox(height: 20),
+
+              // Save Profile Button
+              ElevatedButton(
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    final updatedData = {
+                      'full_name': _fullNameController.text,
+                      'phone_number': _phoneController.text,
+                      'address': _addressController.text,
+                      'height': _heightController.text,
+                      'fitness_level':
+                          _selectedFitnessLevel?.toString().split('.').last,
+                      'goal_type':
+                          _selectedGoalType?.toString().split('.').last,
+                    };
+
+                    await profileProvider.updateProfile(updatedData);
+
+                    if (!profileProvider.hasError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Profile updated successfully')),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content:
+                                Text(profileProvider.errorMessage ?? 'Error')),
+                      );
+                    }
+                  }
+                },
+                child: const Text('Save Changes'),
+              ),
+
+              const SizedBox(height: 30),
+
+              // Logout Section
+              ListTile(
+                leading: Icon(Icons.logout, color: theme.colorScheme.error),
+                title: Text('Log Out',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      color: theme.colorScheme.error,
+                      fontWeight: FontWeight.bold,
+                    )),
+                onTap: () {
+                  _logout(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(
+      BuildContext context, String label, TextEditingController controller,
+      {bool enabled = true, String? Function(String?)? validator}) {
+    final theme = Theme.of(context);
+    return TextFormField(
+      enabled: enabled,
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: theme.colorScheme.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      controller: controller,
+      validator: validator,
+    );
+  }
+
+  Widget _buildDropdownField<T>(
+    BuildContext context,
+    String label,
+    List<T> items,
+    T? selectedItem,
+    ValueChanged<T?> onChanged,
+  ) {
+    final theme = Theme.of(context);
+    return DropdownButtonFormField<T>(
+      decoration: InputDecoration(
+        labelText: label,
+        filled: true,
+        fillColor: theme.colorScheme.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      value: selectedItem,
+      items: items.map((item) {
+        return DropdownMenuItem<T>(
+          value: item,
+          child: Text(item.toString().split('.').last,
+              style: theme.textTheme.bodyMedium),
+        );
+      }).toList(),
+      onChanged: onChanged,
     );
   }
 }

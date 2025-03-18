@@ -8,7 +8,7 @@ import 'package:gymify/screens/authentication/account_recovery/forget_password.d
 import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
 import 'package:gymify/screens/authentication/trying/otp_verification.dart';
 import 'package:gymify/screens/authentication/trying/signup.dart';
-import 'package:gymify/screens/chat/trainers_page.dart';
+import 'package:gymify/screens/chat/chat_user_list_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
@@ -18,6 +18,7 @@ import 'package:gymify/screens/diet_screens/diet_search_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/khalti_payment_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
@@ -340,10 +341,10 @@ final GoRouter router = GoRouter(
     //   builder: (context, state) =>  EditProfileScreen(),
     // ),
     GoRoute(
-      path: '/edit-profile',
+      name: 'editProfile',
+      path: '/editProfile',
       builder: (context, state) {
-        final user = state.extra as Users; // Extract the passed user object
-        return EditProfileScreen(user: user);
+        return const EditProfileScreen();
       },
     ),
     GoRoute(
@@ -360,6 +361,24 @@ final GoRouter router = GoRouter(
         name: 'manageDietPlans',
         path: '/manageDietPlans',
         builder: (context, state) => const ManageDietPlans()),
+
+    GoRoute(
+      name: 'chatScreen',
+      path: '/chatScreen',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>;
+        final chatId = extra['chatId'] as int;
+        final userId = extra['userId'] as String;
+        final userName = extra['userName'] as String;
+
+        return ChatScreen(
+          chatId: chatId,
+          userId: userId,
+          userName: userName,
+        );
+      },
+    ),
+
     GoRoute(
         name: 'membershipPlans',
         path: '/membershipPlans',

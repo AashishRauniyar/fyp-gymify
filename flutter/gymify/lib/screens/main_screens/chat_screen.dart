@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Required for Clipboard functionality
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 
@@ -115,32 +116,37 @@ class _ChatScreenState extends State<ChatScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              CircleAvatar(
-                child: Text(widget.userName[0].toUpperCase()),
-              ),
-              const SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.userName,
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                  Text(
-                    context.watch<ChatProvider>().connectionStatus,
-                    style: theme.textTheme.bodyMedium
-                        ?.copyWith(color: theme.colorScheme.onPrimary),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          backgroundColor: theme.colorScheme.primary,
+        appBar: CustomAppBar(
+          showBackButton: true,
+          title: widget.userName,
+          actions: const [],
         ),
+        // appBar: AppBar(
+        //   title: Row(
+        //     children: [
+        //       CircleAvatar(
+        //         child: Text(widget.userName[0].toUpperCase()),
+        //       ),
+        //       const SizedBox(width: 10),
+        //       Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             widget.userName,
+        //             style: theme.textTheme.headlineSmall
+        //                 ?.copyWith(color: theme.colorScheme.onPrimary),
+        //           ),
+        //           Text(
+        //             context.watch<ChatProvider>().connectionStatus,
+        //             style: theme.textTheme.bodyMedium
+        //                 ?.copyWith(color: theme.colorScheme.onPrimary),
+        //           ),
+        //         ],
+        //       ),
+        //     ],
+        //   ),
+        //   backgroundColor: theme.colorScheme.primary,
+        // ),
         body: Stack(
           children: [
             Column(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
+import 'package:gymify/models/membership_models/membership_model.dart';
 import 'package:gymify/network/http.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 class MembershipProvider with ChangeNotifier {
   List<dynamic> _plans = [];
   Map<String, dynamic>? _membershipStatus;
+  Membership? _membership;
   String _error = '';
   bool _isLoading = false;
   String pidx = '';
@@ -16,6 +18,7 @@ class MembershipProvider with ChangeNotifier {
   // Getters
   List<dynamic> get plans => _plans;
   Map<String, dynamic>? get membershipStatus => _membershipStatus;
+  Membership? get membership => _membership;
   String get error => _error;
   bool get isLoading => _isLoading;
 
@@ -68,7 +71,6 @@ class MembershipProvider with ChangeNotifier {
     });
   }
 
-
   Future<void> applyForMembership(
       BuildContext context, int planId, String paymentMethod) async {
     await handleApiCall(() async {
@@ -93,6 +95,7 @@ class MembershipProvider with ChangeNotifier {
 
       if (apiResponse.status == 'success') {
         _membershipStatus = apiResponse.data;
+        fetchMembershipStatus(context);
         notifyListeners();
       } else {
         throw Exception(apiResponse.message.isNotEmpty
@@ -114,16 +117,17 @@ class MembershipProvider with ChangeNotifier {
 
       try {
         final response = await httpClient.get('/memberships/status/$userId');
-        final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        final apiResponse = ApiResponse<Membership>.fromJson(
           response.data,
-          (data) => data as Map<String, dynamic>,
+          (data) => Membership.fromJson(data as Map<String, dynamic>),
         );
 
         if (apiResponse.status == 'success') {
-          _membershipStatus = apiResponse.data; // Store membership details
+          _membership = apiResponse.data; // Store membership details
+          print(_membership?.endDate);
         } else if (apiResponse.status == 'failure' &&
             apiResponse.message.contains("No membership found")) {
-          _membershipStatus = null; // No membership exists, set to null
+          _membership = null; // No membership exists, set to null
         } else {
           throw Exception(apiResponse.message.isNotEmpty
               ? apiResponse.message
@@ -174,7 +178,8 @@ class MembershipProvider with ChangeNotifier {
     });
   }
 
-  Future<void> verifyPayment(BuildContext context, String transactionId, String status) async {
+  Future<void> verifyPayment(
+      BuildContext context, String transactionId, String status) async {
     await handleApiCall(() async {
       final response = await httpClient.post('/verify-payment', data: {
         'transaction_id': transactionId,
@@ -197,5 +202,4 @@ class MembershipProvider with ChangeNotifier {
       }
     });
   }
-
 }

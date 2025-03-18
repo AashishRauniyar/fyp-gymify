@@ -1,8 +1,15 @@
+import { PrismaClient } from '@prisma/client';
+
+import { body, validationResult } from 'express-validator';
+
+const prisma = new PrismaClient();
+
+
 export const markAttendance = async (req, res) => {
     try {
         // Validate card number
         await body('card_number').notEmpty().withMessage('Card number is required').run(req);
-        
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -126,6 +133,7 @@ export const getAttendanceHistory = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
+            message: 'Attendance history fetched successfully',
             data: {
                 attendance: attendanceHistory,
                 total: totalAttendance
@@ -168,6 +176,7 @@ export const getTodayAttendance = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
+            message: 'Today\'s attendance fetched successfully',
             data: attendance
         });
 

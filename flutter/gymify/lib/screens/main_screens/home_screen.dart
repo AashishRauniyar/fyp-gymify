@@ -955,10 +955,10 @@
 //     );
 //   }
 // }
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/colors/custom_colors.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/models/workout_log_models/workout_exercise_log_model.dart';
@@ -1024,14 +1024,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Start fetching data
-
-  //   _initialData = _fetchAllData();
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -1075,13 +1067,11 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(
               size: 18,
-              FontAwesomeIcons.user,
+              FontAwesomeIcons.fire,
               color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
-              // Navigate to Settings Screen
-              //TODO: open bottom model sheet and show attendance and more
-              context.pushNamed('profile');
+              _fetchAllData();
             },
           ),
         ],
@@ -1148,39 +1138,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       _buildOfferBanner(context),
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('test');
-                          },
-                          child: const Text("Test Page")),
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('personalBest');
-                          },
-                          child: const Text("Personal Best Page")),
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('weightLog');
-                          },
-                          child: const Text("Weight History")),
-
-                      const SizedBox(height: 10),
-
-                      _buildRecentWorkoutHistory(context),
-
-                      TextButton(
-                        onPressed: () {
-                          context.pushNamed('workoutHistory',
-                              extra: context
-                                      .read<ProfileProvider>()
-                                      .user
-                                      ?.userId
-                                      .toString() ??
-                                  '0');
-                        },
-                        child: const Text("Workout Log History"),
-                      ),
                       const SizedBox(height: 20),
+
+                      // TextButton(
+                      //     onPressed: () {
+                      //       context.pushNamed('test');
+                      //     },
+                      //     child: const Text("Test Page")),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       context.pushNamed('personalBest');
+                      //     },
+                      //     child: const Text("Personal Best Page")),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       context.pushNamed('weightLog');
+                      //     },
+                      //     child: const Text("Weight History")),
+
+                      // TextButton(
+                      //   onPressed: () {
+                      //     context.pushNamed('workoutHistory',
+                      //         extra: context
+                      //                 .read<ProfileProvider>()
+                      //                 .user
+                      //                 ?.userId
+                      //                 .toString() ??
+                      //             '0');
+                      //   },
+                      //   child: const Text("Workout Log History"),
+                      // ),
+                      // const SizedBox(height: 20),
 
                       // _buildPBItem(context, exercise, data),
                       _buildWeightSection(
@@ -1194,109 +1182,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       _buildPersonalBestsGrid(context),
 
-                      Text(
-                        "Supported Exercises",
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
                       const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          // Card to display the user's profile, inside an Expanded widget to handle overflow
-                          const SizedBox(
-                              width:
-                                  8), // Add spacing between HeatMap and profile card
-                          Expanded(
-                            child: Card(
-                              color: Theme.of(context).cardColor,
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        ClipOval(
-                                          child: CachedNetworkImage(
-                                            imageUrl: user.profileImage ?? '',
-                                            width: 50,
-                                            height: 50,
-                                            fit: BoxFit.cover,
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    Image.asset(
-                                              'assets/images/profile/default_avatar.jpg',
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.cover,
-                                            ),
-                                            placeholder: (context, url) =>
-                                                const CustomLoadingAnimation(),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              user.userName ?? 'User Name',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineMedium,
-                                            ),
-                                            const SizedBox(height: 4),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 16),
-                                    Text(
-                                      'Membership: ${context.watch<MembershipProvider>().membershipStatus?['status'] ?? "Not Applied"} ',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .headlineSmall,
-                                    ),
-                                    TextButton(
-                                        onPressed: () {
-                                          context.pushNamed('membershipPlans');
-                                        },
-                                        child: const Text('Manage')),
 
-                                    const SizedBox(height: 8),
-                                    // Height and Weight data
-                                    Text(
-                                      'Height: ${user.height ?? '0'} cm',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
-                                          ),
-                                    ),
-                                    Text(
-                                      'Weight: ${user.currentWeight ?? '0'} kg',
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface,
-                                          ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      _buildRecentWorkoutHistory(context),
 
                       const SizedBox(height: 16),
                       // Workout Plans Section
@@ -1405,15 +1293,39 @@ Widget _buildHeader(
   );
 }
 
+
 Widget _buildOfferBanner(BuildContext context) {
+  final membershipStatus =
+      context.watch<MembershipProvider>().membership?.status;
+
+  // Check for each membership status
+  final isMembershipActive = membershipStatus == 'Active';
+  final isMembershipPending = membershipStatus == 'Pending';
+  final isMembershipNotApplied = membershipStatus == 'Not Applied';
+
   return Container(
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      gradient: const LinearGradient(
-        colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      gradient: isMembershipActive
+          ? const LinearGradient(
+              colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+          : isMembershipPending
+              ? const LinearGradient(
+                  colors: [
+                    Color(0xFFB02A2A),
+                    Color(0xFF6D1111)
+                  ], // Red Gradient
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : const LinearGradient(
+                  colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
       borderRadius: BorderRadius.circular(16),
     ),
     child: Row(
@@ -1425,32 +1337,68 @@ Widget _buildOfferBanner(BuildContext context) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Premium Membership',
-                      style: TextStyle(color: Colors.white, fontSize: 18)),
+                  Text(
+                    isMembershipActive
+                        ? 'Membership Active'
+                        : isMembershipPending
+                            ? 'Membership Pending'
+                            : 'Premium Membership',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   GestureDetector(
                     onTap: () {
                       _showBottomSheet(context);
                     },
-                    child: const Icon(LineAwesomeIcons.info_circle_solid,
-                        color: Colors.white, size: 24),
+                    child: const Icon(
+                      LineAwesomeIcons.info_circle_solid,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: 8),
-              const Text('Get you gym membership\ntarting at Rs 1500',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: const Color(0xFF4A3298),
+              Text(
+                isMembershipActive
+                    ? 'You are now a premium member.\nEnjoy all benefits!'
+                    : isMembershipPending
+                        ? 'Your membership is pending, waiting for approval.\nAfter approval, collect your membership card from the counter.'
+                        : 'Get your gym membership\nstarting at Rs 1500',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: isMembershipActive ? 22 : 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                onPressed: () => context.pushNamed('membershipPlans'),
-                child: const Text('Apply Now 💪'),
               ),
+              const SizedBox(height: 12),
+              // Show the appropriate button based on the membership status
+              if (isMembershipNotApplied)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF4A3298),
+                  ),
+                  onPressed: () => context.pushNamed('membershipPlans'),
+                  child: const Text('Apply Now 💪'),
+                )
+              else
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: const Color(0xFF4A3298),
+                  ),
+                  onPressed: () {
+                    // Show the membership details or redirect to the profile
+                    context.pushNamed('membershipPlans');
+                  },
+                  child: isMembershipPending
+                      ? const Text('Pending Approval')
+                      : const Text('View Membership Details'),
+                ),
             ],
           ),
         ),

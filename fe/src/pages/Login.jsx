@@ -47,7 +47,7 @@ const Login = () => {
 
 
             // Navigate to the dashboard or home page after successful login
-            navigate('/welcome');
+            navigate('/dashboard');
         } catch (error) {
             setMessage(error.response?.data?.message || 'An error occurred during login');
         }

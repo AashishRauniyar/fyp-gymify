@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/models/weight_history_model.dart';
@@ -19,9 +20,15 @@ class _WeightLogState extends State<WeightLog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    // if (!_isInit) {
+    //   _initData();
+    //   _isInit = true;
+    // }
     if (!_isInit) {
-      _initData();
-      _isInit = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _initData(); // Fetch data after the build phase
+        _isInit = true; // Set to true once the data is initialized
+      });
     }
   }
 
@@ -123,11 +130,20 @@ class _WeightLogState extends State<WeightLog> {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Gymify'),
+      // appBar: AppBar(
+      //   title: const Text('Gymify'),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.refresh),
+      //       onPressed: _initData,
+      //     ),
+      //   ],
+      // ),
+      appBar: CustomAppBar(
+        title: 'Weight Log',
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: theme.colorScheme.primary),
             onPressed: _initData,
           ),
         ],
@@ -537,7 +553,7 @@ class _WeightLogState extends State<WeightLog> {
               reservedSize: 40,
               getTitlesWidget: (value, meta) {
                 return Text(
-                  value.toInt().toString(),
+                  "${value.toInt().toString()} kg",
                   style: const TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,

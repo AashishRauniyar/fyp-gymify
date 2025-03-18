@@ -44,7 +44,10 @@ dotenv.config();
 const app = express();
 
 // for cross-origin requests
-app.use(cors());
+// app.use(cors());
+
+// allow cors to all origins
+app.use(cors({ origin: '*' }));
 
 // Middlewares
 app.use(express.json());

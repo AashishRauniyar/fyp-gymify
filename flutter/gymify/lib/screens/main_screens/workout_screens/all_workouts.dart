@@ -65,6 +65,7 @@ class _AllWorkoutsState extends State<AllWorkouts>
             insets: const EdgeInsets.symmetric(horizontal: -25),
           ),
           indicatorColor: theme.colorScheme.primary,
+          dividerColor: Colors.transparent,
           tabs: const [
             Tab(text: "Easy"),
             Tab(text: "Intermediate"),

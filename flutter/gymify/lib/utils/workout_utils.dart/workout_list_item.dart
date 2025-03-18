@@ -87,9 +87,9 @@ class WorkoutListItem extends StatelessWidget {
             ),
 
             // Blue Icon for Visual Accent
-            const Icon(
-              FontAwesomeIcons.clone, // Mimics the icon in the image
-              color: Colors.blue,
+            Icon(
+              Icons.arrow_forward_ios, // Mimics the icon in the image
+              color: theme.primaryColor,
               size: 22,
             ),
             const SizedBox(width: 12),
