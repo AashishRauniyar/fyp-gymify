@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 export const getAllUsers = async (req, res) => {
     const { user_id } = req.user;
 
-    
+
 
     try {
         const users = await prisma.users.findMany({
@@ -20,7 +20,7 @@ export const getAllUsers = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'Users fetched successfully',
-            data : users
+            data: users
         });
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -29,26 +29,34 @@ export const getAllUsers = async (req, res) => {
 }
 
 
-// get all the users who have membership active
+
 // export const getActiveMembers = async (req, res) => {
-//     const { user_id } = req.user;
+//     const { user_id } = req.user; // Assuming you have user authentication middleware to get the logged-in user
 
 //     try {
-//         const users = await prisma.users.findMany({
+//         // Fetching active members by checking the membership status
+//         const activeMembers = await prisma.memberships.findMany({
 //             where: {
-//                 membership_status: 'Active'
+//                 status: 'Active',  // We are looking for members with 'Active' status
 //             },
-//             select: {
-//                 user_id: true,
-//                 user_name: true,
-//                 role: true,
-//             }
+//             include: {
+//                 users: {  // Joining the users table to get user details
+//                     select: {
+//                         user_id: true,
+//                         user_name: true,
+//                         role: true,
+//                     },
+//                 },
+//             },
 //         });
+
+//         // Mapping through the active members and extracting user details
+//         const users = activeMembers.map((membership) => membership.users);
 
 //         res.status(200).json({
 //             status: 'success',
 //             message: 'Active members fetched successfully',
-//             data : users
+//             data: users, // Returning the user details of active members
 //         });
 //     } catch (error) {
 //         console.error('Error fetching active members:', error);
@@ -60,13 +68,16 @@ export const getActiveMembers = async (req, res) => {
     const { user_id } = req.user; // Assuming you have user authentication middleware to get the logged-in user
 
     try {
-        // Fetching active members by checking the membership status
+        // Fetching active members by checking the membership status and role 'Member'
         const activeMembers = await prisma.memberships.findMany({
             where: {
-                status: 'Active',  // We are looking for members with 'Active' status
+                status: 'Active',  // Membership status is Active
             },
             include: {
                 users: {  // Joining the users table to get user details
+                    where: {
+                        role: 'Member'  // Filter only users with 'Member' role
+                    },
                     select: {
                         user_id: true,
                         user_name: true,
@@ -76,8 +87,10 @@ export const getActiveMembers = async (req, res) => {
             },
         });
 
-        // Mapping through the active members and extracting user details
-        const users = activeMembers.map((membership) => membership.users);
+        // Filter out null values that could arise from missing users or other issues
+        const users = activeMembers
+            .map((membership) => membership.users)  // Extract users
+            .filter((user) => user !== null);  // Filter out null entries
 
         res.status(200).json({
             status: 'success',
@@ -110,7 +123,7 @@ export const getAllTrainers = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'Trainers fetched successfully',
-            data : trainers
+            data: trainers
         });
     } catch (error) {
         console.error('Error fetching trainers:', error);
@@ -137,7 +150,7 @@ export const getAllMembers = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'Members fetched successfully',
-            data : members
+            data: members
         });
     } catch (error) {
         console.error('Error fetching members:', error);
@@ -148,8 +161,7 @@ export const getAllMembers = async (req, res) => {
 
 export const getUserById = async (req, res) => {
 
-    try 
-    {
+    try {
         const userId = parseInt(req.params.id);
 
         const user = await prisma.users.findUnique({
@@ -167,13 +179,13 @@ export const getUserById = async (req, res) => {
             {
                 status: 'success',
                 message: 'User fetched successfully',
-                data : user
+                data: user
             }
         );
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).json({ error: 'Failed to fetch users' });
-        
+
     }
 
 }

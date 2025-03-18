@@ -63,7 +63,7 @@ export const dietPlanRouter = express.Router();
 
 // ----- Diet Plan Routes -----
 dietPlanRouter.post('/diet-plans', upload.single('diet_image') , authenticate, createDietPlan);
-dietPlanRouter.get('/diet-plans', authenticate, getAllDietPlans);
+dietPlanRouter.get('/diet-plans',  getAllDietPlans);
 dietPlanRouter.get('/diet-plans/:id', authenticate, getDietPlanById);
 dietPlanRouter.put('/diet-plans/:id', authenticate, updateDietPlan);
 dietPlanRouter.delete('/diet-plans/:id', authenticate, deleteDietPlan);

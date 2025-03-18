@@ -29,6 +29,7 @@ import 'package:gymify/screens/personal_best_screens/personal_best_screen.dart';
 import 'package:gymify/screens/personal_best_screens/weight_update_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/registration_main_screen.dart';
+import 'package:gymify/screens/step_count_screen.dart';
 import 'package:gymify/screens/test/test_screen.dart';
 import 'package:gymify/screens/trainer_screens/manage_diet_plans.dart';
 import 'package:gymify/screens/weight_selecter.dart';
@@ -395,6 +396,10 @@ final GoRouter router = GoRouter(
         name: 'test',
         path: '/test',
         builder: (context, state) => const TestScreen()),
+    GoRoute(
+        name: 'stepCount',
+        path: '/stepCount',
+        builder: (context, state) => const StepCountScreen()),
     GoRoute(
         name: 'khalti',
         path: '/khalti',

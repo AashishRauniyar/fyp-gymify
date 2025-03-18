@@ -1140,11 +1140,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildOfferBanner(context),
                       const SizedBox(height: 20),
 
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('test');
-                      //     },
-                      //     child: const Text("Test Page")),
+                      TextButton(
+                          onPressed: () {
+                            context.pushNamed('stepCount');
+                          },
+                          child: const Text("Step Count")),
                       // TextButton(
                       //     onPressed: () {
                       //       context.pushNamed('personalBest');
@@ -1292,7 +1292,6 @@ Widget _buildHeader(
     ],
   );
 }
-
 
 Widget _buildOfferBanner(BuildContext context) {
   final membershipStatus =

@@ -80,6 +80,7 @@ dependencies:
   shimmer: ^3.0.0
   percent_indicator: ^4.2.4
   pie_chart: ^5.4.0
+  permission_handler: ^11.4.0
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:
