@@ -837,6 +837,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     final exerciseProvider = Provider.of<ExerciseProvider>(context);
+    final theme = Theme.of(context);
     final workoutProvider = Provider.of<WorkoutProvider>(context);
 
     return Scaffold(
@@ -888,7 +889,12 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: Text(
+                              value,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  // fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           );
                         }).toList(),
                         validator: (value) {
@@ -915,7 +921,12 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                                 (DifficultyLevel value) {
                           return DropdownMenuItem<DifficultyLevel>(
                             value: value,
-                            child: Text(value.toString().split('.').last),
+                            child: Text(
+                              value.toString().split('.').last,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  // fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           );
                         }).toList(),
                       ),
@@ -935,11 +946,16 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                             .map<DropdownMenuItem<GoalType>>((GoalType value) {
                           return DropdownMenuItem<GoalType>(
                             value: value,
-                            child: Text(value
-                                .toString()
-                                .split('.')
-                                .last
-                                .replaceAll('_', ' ')),
+                            child: Text(
+                              value
+                                  .toString()
+                                  .split('.')
+                                  .last
+                                  .replaceAll('_', ' '),
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  // fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           );
                         }).toList(),
                       ),
@@ -960,7 +976,12 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                                 (FitnessLevel value) {
                           return DropdownMenuItem<FitnessLevel>(
                             value: value,
-                            child: Text(value.toString().split('.').last),
+                            child: Text(
+                              value.toString().split('.').last,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                  // fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           );
                         }).toList(),
                       ),
@@ -1000,6 +1021,32 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 4.0),
                               child: ChoiceChip(
+                                // checkmarkColor: ,
+
+                                selectedColor: Theme.of(context)
+                                    .colorScheme
+                                    .primary, // Primary color when selected
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .surface, // Surface color when not selected
+                                labelStyle: TextStyle(
+                                  color: selectedCategory == group
+                                      ? Colors.white
+                                      : theme.colorScheme.onSurface.withOpacity(
+                                          0.6), // Text color based on selection
+                                ),
+
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      12.0), // Optional: Customize the shape with rounded corners
+                                ),
+                                side: BorderSide(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest, // Border color, using surface variant for border
+                                  width: 1.5, // Border width
+                                ),
+
                                 label: Text(group),
                                 selected: selectedCategory == group,
                                 onSelected: (_) {
@@ -1170,7 +1217,6 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       ),
                       const SizedBox(height: 20),
 
-                      
                       workoutProvider.isLoading
                           ? const Center(child: CustomLoadingAnimation())
                           : ElevatedButton.icon(

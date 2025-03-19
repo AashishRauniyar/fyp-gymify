@@ -62,7 +62,11 @@ class _DietScreenState extends State<DietScreen>
             // Negative insets will extend the line beyond the default bounds.
             insets: const EdgeInsets.symmetric(horizontal: -20),
           ),
-          labelColor: theme.colorScheme.primary,
+          // labelColor: theme.colorScheme.primary,
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+
           unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
           indicatorColor: theme.colorScheme.primary,
           tabs: const [

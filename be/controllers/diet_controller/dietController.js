@@ -358,6 +358,37 @@ export const deleteMeal = async (req, res) => {
 // Log a Meal (Create a Meal Log)
 // Note: Here we assume a meal log only needs the meal_id and quantity (e.g., number of servings)
 // Optionally, a log_time can be provided.
+// export const logMeal = [
+//     body('meal_id')
+//         .notEmpty().withMessage('Meal ID is required')
+//         .isInt().withMessage('Meal ID must be an integer'),
+//     body('quantity')
+//         .notEmpty().withMessage('Quantity is required')
+//         .isDecimal().withMessage('Quantity must be a decimal'),
+//     async (req, res) => {
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({ status: 'failure', errors: errors.array() });
+//         }
+//         try {
+//             const { user_id } = req.user;
+//             const { meal_id, quantity, log_time } = req.body;
+//             const mealLog = await prisma.meallogs.create({
+//                 data: {
+//                     user_id,
+//                     meal_id,
+//                     quantity,
+//                     log_time: log_time ? new Date(log_time) : new Date()
+//                 }
+//             });
+//             res.status(201).json({ status: 'success', message: 'Meal logged successfully', data: mealLog });
+//         } catch (error) {
+//             console.error('Error logging meal:', error);
+//             res.status(500).json({ status: 'failure', message: 'Server error' });
+//         }
+//     }
+// ];
+// Log a Meal (Create a Meal Log)
 export const logMeal = [
     body('meal_id')
         .notEmpty().withMessage('Meal ID is required')
@@ -381,13 +412,28 @@ export const logMeal = [
                     log_time: log_time ? new Date(log_time) : new Date()
                 }
             });
-            res.status(201).json({ status: 'success', message: 'Meal logged successfully', data: mealLog });
+
+            // Fetch the meal details and add it to the response
+            const mealDetails = await prisma.meals.findUnique({
+                where: { meal_id: mealLog.meal_id },
+            });
+
+            res.status(201).json({
+                status: 'success',
+                message: 'Meal logged successfully',
+                data: {
+                    ...mealLog,
+                    meal: mealDetails,  // Include full meal details
+                }
+            });
         } catch (error) {
             console.error('Error logging meal:', error);
             res.status(500).json({ status: 'failure', message: 'Server error' });
         }
     }
 ];
+
+
 
 // Get all Meal Logs for the authenticated user
 export const getMealLogsOfUser = async (req, res) => {

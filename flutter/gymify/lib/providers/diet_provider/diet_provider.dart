@@ -7,12 +7,15 @@ import 'package:gymify/models/api_response.dart';
 
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
+import 'package:gymify/models/diet_log_models/meal_logs_model.dart';
 import 'package:gymify/network/http.dart';
 
 class DietProvider with ChangeNotifier {
   List<DietPlan> _diets = [];
-
   List<DietPlan> get diets => _diets;
+
+  List<MealLog> _mealLogs = [];
+  List<MealLog> get mealLogs => _mealLogs;
 
   bool _hasError = false;
   bool get hasError => _hasError;
@@ -62,48 +65,6 @@ class DietProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
-
-  // Future<void> createDietPlan({
-  //   required String name,
-  //   required double calorieGoal,
-  //   required String goalType,
-  //   required String description,
-  // }) async {
-  //   _setLoading(true);
-  //   try {
-  //     final response = await httpClient.post(
-  //       '/diet-plans',
-  //       data: {
-  //         'name': name,
-  //         'calorie_goal': calorieGoal,
-  //         'goal_type': goalType,
-  //         'description': description,
-  //       },
-  //     );
-
-  //     final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-  //       response.data,
-  //       (data) => data as Map<String, dynamic>,
-  //     );
-
-  //     if (apiResponse.status == 'success') {
-  //       // Add the newly created diet plan
-  //       _setError(false);
-  //       notifyListeners();
-  //     } else {
-  //       print('Error: ${apiResponse.message}');
-  //       throw Exception(apiResponse.message.isNotEmpty
-  //           ? apiResponse.message
-  //           : 'Unknown error');
-  //     }
-  //   } catch (e) {
-  //     _setError(true);
-  //     print('Error creating diet plan: $e');
-  //     throw Exception('Error creating diet plan: $e');
-  //   } finally {
-  //     _setLoading(false);
-  //   }
-  // }
 
   Future<void> createDietPlan({
     required String name,
@@ -261,6 +222,80 @@ class DietProvider with ChangeNotifier {
       _setError(true);
       print('Error creating meal: $e');
       throw Exception('Error creating meal: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Method to log a meal
+  Future<void> logMeal({
+    required int mealId,
+    required double quantity,
+    DateTime? logTime,
+  }) async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.post(
+        '/meal-logs', // Backend endpoint for meal logging
+        data: {
+          'meal_id': mealId,
+          'quantity': quantity,
+          'log_time':
+              logTime?.toIso8601String() ?? DateTime.now().toIso8601String(),
+        },
+      );
+      final apiResponse = ApiResponse<List<MealLog>>.fromJson(
+        response.data,
+        (data) => (data as List).map((item) => MealLog.fromJson(item)).toList(),
+      );
+
+      if (apiResponse.status == 'success') {
+        // Update the meal logs list with the newly logged meal
+        fetchMealLogs();
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error logging meal: $e');
+      throw Exception('Error logging meal: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Fetch all meal logs for the user
+  Future<void> fetchMealLogs() async {
+    _setLoading(true);
+    try {
+      final response =
+          await httpClient.get('/meal-logs'); // Fetch meal logs endpoint
+
+      final apiResponse = ApiResponse<List<MealLog>>.fromJson(
+        response.data,
+        (data) => (data as List).map((item) => MealLog.fromJson(item)).toList(),
+      );
+
+      if (apiResponse.status == 'success') {
+        _mealLogs = apiResponse
+            .data; // Assuming _mealLogs is a list that holds meal logs
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error fetching meal logs: $e');
+      throw Exception('Error fetching meal logs: $e');
     } finally {
       _setLoading(false);
     }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
+import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/user_model.dart';
@@ -16,11 +17,14 @@ import 'package:gymify/screens/diet_screens/create_diet_plan_screen.dart';
 import 'package:gymify/screens/diet_screens/create_meal_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_search_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
+import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
+import 'package:gymify/screens/diet_screens/meal_log_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/khalti_payment_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
+import 'package:gymify/screens/main_screens/trainer_screen.dart';
 import 'package:gymify/screens/main_screens/workout_history_screens/workout_history_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/all_workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
@@ -292,15 +296,14 @@ final GoRouter router = GoRouter(
           path: '/diet',
           builder: (context, state) => const DietScreen(),
         ),
-        // GoRoute(
-        //   path: '/chat',
-        //   builder: (context, state) => const ChatScreen(),
-        // ),
+        GoRoute(
+          path: '/trainerScreen',
+          builder: (context, state) => const TrainerScreen(),
+        ),
         GoRoute(
           path: '/chat',
           builder: (context, state) => const UserTrainerPage(),
         ),
-
         GoRoute(
           name: 'profile',
           path: '/profile',
@@ -388,6 +391,16 @@ final GoRouter router = GoRouter(
         name: 'dietSearch',
         path: '/dietSearch',
         builder: (context, state) => const DietSearchScreen()),
+    GoRoute(
+        name: 'mealDetails',
+        path: '/mealDetails',
+        builder: (context, state) => MealDetailScreen(
+              meal: state.extra as Meal,
+            )),
+    GoRoute(
+        name: 'mealLog',
+        path: '/mealLog',
+        builder: (context, state) => const MealLogsScreen()),
     GoRoute(
         name: 'workoutSearch',
         path: '/workoutSearch',

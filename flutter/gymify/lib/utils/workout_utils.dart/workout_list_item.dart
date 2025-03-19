@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gymify/models/workout_model.dart';
@@ -42,8 +43,9 @@ class WorkoutListItem extends StatelessWidget {
             // Workout Image
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.network(
-                workout.workoutImage.isNotEmpty
+              
+              child: CachedNetworkImage(
+                imageUrl: workout.workoutImage.isNotEmpty
                     ? workout.workoutImage
                     : 'https://via.placeholder.com/150', // Placeholder for missing image
                 width: 90,

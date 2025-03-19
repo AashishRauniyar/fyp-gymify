@@ -262,7 +262,12 @@ class _CreateDietPlanScreenState extends State<CreateDietPlanScreen> {
                 items: GoalType.values.map((goal) {
                   return DropdownMenuItem(
                     value: goal,
-                    child: Text(goalTypeToString(goal)),
+                    child: Text(
+                      goalTypeToString(goal),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                          // fontWeight: FontWeight.bold,
+                          ),
+                    ),
                   );
                 }).toList(),
                 onChanged: (GoalType? newValue) {

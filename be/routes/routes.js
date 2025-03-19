@@ -15,6 +15,8 @@ import khaltiRouter from './khaltiRoutes.js';
 import esewaRouter from './esewaRoutes.js';
 import weightRouter from './weightRoutes.js';
 import testRouter from './testRoute.js';
+import adminUserRouter from './adminRoutes/adminUserRoutes.js';
+import adminMembershipRouter from './adminRoutes/adminMembershipRouter.js';
 
 
 const mainRouter = express.Router();
@@ -36,5 +38,9 @@ mainRouter.use('/api', khaltiRouter);
 mainRouter.use('/api', esewaRouter);
 mainRouter.use('/api', weightRouter);
 mainRouter.use('/api', testRouter);
+
+
+mainRouter.use('/api/admin', adminUserRouter);
+mainRouter.use('/api/admin', adminMembershipRouter);
 
 export default mainRouter;

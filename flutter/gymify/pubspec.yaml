@@ -81,6 +81,7 @@ dependencies:
   percent_indicator: ^4.2.4
   pie_chart: ^5.4.0
   permission_handler: ^11.4.0
+  date_picker_timeline: ^1.2.5
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:

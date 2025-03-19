@@ -347,6 +347,8 @@
 //     );
 //   }
 // }
+
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -395,7 +397,12 @@ class _LoginScreenState extends State<LoginScreen> {
       showCoolSnackBar(context, "Login successful! Welcome back.", true);
       if (authProvider.isLoggedIn) {
         await Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) context.go('/home');
+          // if (mounted) context.go('/home');
+          if(authProvider.role == "Trainer"){
+            if (mounted) context.go('/trainerScreen');
+          }else{
+            if (mounted) context.go('/home');
+          }
         });
       }
     } else {

@@ -205,6 +205,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pie_chart/pie_chart.dart'; // For the macronutrient chart
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
@@ -265,6 +266,7 @@ class DietDetailScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: TabBar(
+                        tabAlignment: TabAlignment.start,
                         indicatorSize: TabBarIndicatorSize.tab,
                         dividerColor: Colors.transparent,
                         indicator: BoxDecoration(
@@ -345,146 +347,6 @@ class MealsList extends StatelessWidget {
   }
 }
 
-// import 'dart:convert';
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:pie_chart/pie_chart.dart'; // For the macronutrient chart
-// import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
-// import 'package:gymify/models/deit_plan_models/meal_model.dart';
-// import 'package:gymify/utils/custom_appbar.dart';
-
-// class DietDetailScreen extends StatelessWidget {
-//   final DietPlan dietPlan;
-
-//   const DietDetailScreen({super.key, required this.dietPlan});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-
-//     // Pre-filter meals by meal time
-//     final allMeals = dietPlan.meals;
-//     final breakfastMeals =
-//         allMeals.where((m) => m.mealTime.toLowerCase() == 'breakfast').toList();
-//     final lunchMeals =
-//         allMeals.where((m) => m.mealTime.toLowerCase() == 'lunch').toList();
-//     final dinnerMeals =
-//         allMeals.where((m) => m.mealTime.toLowerCase() == 'dinner').toList();
-//     final snackMeals =
-//         allMeals.where((m) => m.mealTime.toLowerCase() == 'snack').toList();
-
-//     return DefaultTabController(
-//       length: 5, // 5 tabs: All Meals, Breakfast, Lunch, Dinner, Snack
-//       child: Scaffold(
-//         appBar: CustomAppBar(
-//           title: dietPlan.name,
-//           showBackButton: true,
-//         ),
-//         body: SingleChildScrollView(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // PLAN DETAILS CARD
-//               PlanDetailsCard(
-//                 badgeText: 'Nutritionally Balanced',
-//                 planTitle: dietPlan.name,
-//                 description: dietPlan.description,
-//                 totalMeals: dietPlan.meals.length,
-//                 calorieGoal: dietPlan.calorieGoal,
-//                 goalType: dietPlan.goalType,
-//                 createdBy: 'Professional Nutritionist',
-//                 circleImageUrl: dietPlan.image, // or a valid network URL
-//               ),
-//               const SizedBox(height: 24),
-//               // TAB BAR
-//               Container(
-//                 decoration: BoxDecoration(
-//                   color: theme.colorScheme.surface,
-//                   borderRadius: BorderRadius.circular(24),
-//                 ),
-//                 child: TabBar(
-//                   indicatorSize: TabBarIndicatorSize.tab,
-//                   dividerColor: Colors.transparent,
-//                   indicator: BoxDecoration(
-//                     color: Colors.green,
-//                     borderRadius: BorderRadius.circular(10),
-//                   ),
-//                   labelColor: Colors.white,
-//                   unselectedLabelColor: theme.colorScheme.onSurface,
-//                   isScrollable: true,
-//                   indicatorAnimation: TabIndicatorAnimation.elastic,
-//                   tabs: [
-//                     Tab(text: 'All Meals (${allMeals.length})'),
-//                     Tab(text: 'Breakfast (${breakfastMeals.length})'),
-//                     Tab(text: 'Lunch (${lunchMeals.length})'),
-//                     Tab(text: 'Dinner (${dinnerMeals.length})'),
-//                     Tab(text: 'Snack (${snackMeals.length})'),
-//                   ],
-//                 ),
-//               ),
-
-//               // TAB BAR VIEW
-//               Padding(
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-//                 child: SizedBox(
-//                   // Provide a fixed height so the TabBarView doesn't expand infinitely
-//                   height: 800,
-//                   child: TabBarView(
-//                     children: [
-//                       MealsList(meals: allMeals),
-//                       MealsList(meals: breakfastMeals),
-//                       MealsList(meals: lunchMeals),
-//                       MealsList(meals: dinnerMeals),
-//                       MealsList(meals: snackMeals),
-//                     ],
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // LIST OF MEALS FOR A GIVEN TAB
-// class MealsList extends StatelessWidget {
-//   final List<Meal> meals;
-
-//   const MealsList({super.key, required this.meals});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-
-//     // If no meals for this tab, show a friendly message
-//     if (meals.isEmpty) {
-//       return Center(
-//         child: Padding(
-//           padding: const EdgeInsets.only(top: 32.0),
-//           child: Text(
-//             'No meals available for this category',
-//             style: theme.textTheme.bodyMedium?.copyWith(
-//               color: theme.colorScheme.onSurface.withOpacity(0.7),
-//             ),
-//           ),
-//         ),
-//       );
-//     }
-
-//     // Otherwise, list the meals
-//     return ListView.builder(
-//       // physics: const NeverScrollableScrollPhysics(),
-//       itemCount: meals.length,
-//       itemBuilder: (context, index) {
-//         return MealCard(meal: meals[index]);
-//       },
-//     );
-//   }
-// }
-
 // A single MEAL CARD with ring chart for macros
 class MealCard extends StatelessWidget {
   final Meal meal;
@@ -517,192 +379,202 @@ class MealCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        elevation: 1,
-        margin: const EdgeInsets.only(bottom: 16),
-        child: Container(
-          decoration: BoxDecoration(
+      child: GestureDetector(
+        onTap: () {
+          // Open meal details screen
+          context.pushNamed('mealDetails', extra: meal);
+        },
+        child: Card(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-                width: 1, color: theme.colorScheme.onSurface.withOpacity(0.1)),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // IMAGE with top-left and top-right badges
-              Stack(
-                children: [
-                  if (meal.image.isNotEmpty)
-                    ClipRRect(
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
+          elevation: 1,
+          margin: const EdgeInsets.only(bottom: 16),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                  width: 1,
+                  color: theme.colorScheme.onSurface.withOpacity(0.1)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // IMAGE with top-left and top-right badges
+                Stack(
+                  children: [
+                    if (meal.image.isNotEmpty)
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                        child: CachedNetworkImage(
+                          imageUrl: meal.image,
+                          width: double.infinity,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              const Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.error),
+                        ),
                       ),
-                      child: CachedNetworkImage(
-                        imageUrl: meal.image,
-                        width: double.infinity,
-                        height: 200,
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            const Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      ),
-                    ),
-                  // Meal Time Badge (top-left)
-                  Positioned(
-                    top: 8,
-                    left: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        meal.mealTime,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    // Meal Time Badge (top-left)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.primary,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          meal.mealTime,
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // Calories Badge (top-right)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.local_fire_department,
-                            color: Colors.white,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${meal.calories} kcal',
-                            style: theme.textTheme.bodySmall?.copyWith(
+                    // Calories Badge (top-right)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.local_fire_department,
                               color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${meal.calories} kcal',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                // CONTENT
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Meal name
+                      Text(
+                        meal.mealName,
+                        // style: theme.textTheme.titleMedium?.copyWith(
+                        //   fontWeight: FontWeight.bold,
+                        // ),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Short description or subheading (optional)
+                      Text(
+                        _shortDescription(meal.description),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Macronutrient Chart
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: PieChart(
+                              dataMap: dataMap,
+                              animationDuration:
+                                  const Duration(milliseconds: 800),
+                              chartRadius: 80,
+                              chartType: ChartType.ring,
+                              ringStrokeWidth: 16,
+                              colorList: colorList,
+                              legendOptions: const LegendOptions(
+                                showLegendsInRow: false,
+                                legendPosition: LegendPosition.bottom,
+                                showLegends: false,
+                                legendShape: BoxShape.circle,
+                                legendTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              chartValuesOptions: const ChartValuesOptions(
+                                showChartValues:
+                                    false, // Hide numeric values on chart
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _MacroIndicator(
+                                  color: Colors.blue,
+                                  label: 'Protein',
+                                  amount: protein,
+                                ),
+                                _MacroIndicator(
+                                  color: Colors.orange,
+                                  label: 'Carbs',
+                                  amount: carbs,
+                                ),
+                                _MacroIndicator(
+                                  color: Colors.green,
+                                  label: 'Fat',
+                                  amount: fat,
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 16),
+
+                      // Full meal description
+                      // Text(
+                      //   meal.description,
+                      //   style: theme.textTheme.bodySmall?.copyWith(
+                      //     color: theme.colorScheme.onSurface.withOpacity(0.7),
+                      //   ),
+                      // ),
+                      const SizedBox(height: 8),
+                    ],
                   ),
-                ],
-              ),
-
-              // CONTENT
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Meal name
-                    Text(
-                      meal.mealName,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-
-                    // Short description or subheading (optional)
-                    Text(
-                      _shortDescription(meal.description),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Macronutrient Chart
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: PieChart(
-                            dataMap: dataMap,
-                            animationDuration:
-                                const Duration(milliseconds: 800),
-                            chartRadius: 80,
-                            chartType: ChartType.ring,
-                            ringStrokeWidth: 16,
-                            colorList: colorList,
-                            legendOptions: const LegendOptions(
-                              showLegendsInRow: false,
-                              legendPosition: LegendPosition.bottom,
-                              showLegends: false,
-                              legendShape: BoxShape.circle,
-                              legendTextStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            chartValuesOptions: const ChartValuesOptions(
-                              showChartValues:
-                                  false, // Hide numeric values on chart
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          flex: 3,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _MacroIndicator(
-                                color: Colors.blue,
-                                label: 'Protein',
-                                amount: protein,
-                              ),
-                              _MacroIndicator(
-                                color: Colors.orange,
-                                label: 'Carbs',
-                                amount: carbs,
-                              ),
-                              _MacroIndicator(
-                                color: Colors.green,
-                                label: 'Fat',
-                                amount: fat,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Full meal description
-                    // Text(
-                    //   meal.description,
-                    //   style: theme.textTheme.bodySmall?.copyWith(
-                    //     color: theme.colorScheme.onSurface.withOpacity(0.7),
-                    //   ),
-                    // ),
-                    const SizedBox(height: 8),
-                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -875,19 +747,19 @@ class PlanDetailsCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    'Created by $createdBy',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      fontWeight: FontWeight.w600,
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      'Created by $createdBy',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-
-            // Main Title
-
             // Description
             Text(
               description,
@@ -952,7 +824,7 @@ class _InfoColumn extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           value,
-          style: theme.textTheme.titleMedium?.copyWith(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),

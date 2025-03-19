@@ -4,7 +4,6 @@ import 'package:gymify/screens/chat/chat_user_list_screen.dart';
 import 'package:gymify/screens/main_screens/home_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
-import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/profile_screen.dart';
 import 'package:gymify/utils/custom_navbar.dart';
 
@@ -23,8 +22,6 @@ class _MainScreenState extends State<MainScreen> {
     const HomeScreen(),
     const WorkoutListScreen(),
     const DietScreen(),
-    // const ChatScreen(
-    // ),
     const UserTrainerPage(),
     const ProfileScreen(),
   ];

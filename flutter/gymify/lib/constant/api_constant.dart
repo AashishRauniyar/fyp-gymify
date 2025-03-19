@@ -15,9 +15,9 @@
 // const url = "192.168.31.96";
 // const url = "192.168.31.96";
 
-// const url = "172.25.4.103";
+const url = "192.168.1.116";
 // dokan ko ip
-const url = "172.25.1.183";
+// const url = "172.25.1.183";
 
 const baseUrl = "http://$url:8000/api";
 const socketUrl = "ws://$url:8000";

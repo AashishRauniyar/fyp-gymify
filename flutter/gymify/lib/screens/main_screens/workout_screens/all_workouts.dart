@@ -54,7 +54,7 @@ class _AllWorkoutsState extends State<AllWorkouts>
         ],
         bottom: TabBar(
           controller: _tabController,
-          labelColor: theme.colorScheme.primary,
+          // labelColor: theme.colorScheme.primary,
           unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
           indicator: UnderlineTabIndicator(
             borderSide: BorderSide(
@@ -64,7 +64,10 @@ class _AllWorkoutsState extends State<AllWorkouts>
             // Negative insets will extend the line beyond the default bounds.
             insets: const EdgeInsets.symmetric(horizontal: -25),
           ),
-          indicatorColor: theme.colorScheme.primary,
+          // indicatorColor: theme.colorScheme.primary,
+          labelStyle: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
           dividerColor: Colors.transparent,
           tabs: const [
             Tab(text: "Easy"),

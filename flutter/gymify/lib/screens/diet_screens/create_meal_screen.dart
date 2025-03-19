@@ -330,7 +330,10 @@ class _CreateMealScreenState extends State<CreateMealScreen> {
                 items: MealTime.values.map((time) {
                   return DropdownMenuItem(
                     value: time,
-                    child: Text(mealTimeToString(time)),
+                    child: Text(
+                      mealTimeToString(time),
+                      style: theme.textTheme.bodyMedium?.copyWith(),
+                    ),
                   );
                 }).toList(),
                 onChanged: (MealTime? newValue) {
