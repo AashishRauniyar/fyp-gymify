@@ -300,4 +300,35 @@ class DietProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  // method to delete a certain meal log
+  Future<void> deleteMealLog(int mealLogId) async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.delete('/meal-logs/$mealLogId');
+
+      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+        response.data,
+        (data) => data as Map<String, dynamic>,
+      );
+
+      if (apiResponse.status == 'success') {
+        // Remove the meal log from the list
+        _mealLogs.removeWhere((mealLog) => mealLog.mealLogId == mealLogId);
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error deleting meal log: $e');
+      throw Exception('Error deleting meal log: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
 }

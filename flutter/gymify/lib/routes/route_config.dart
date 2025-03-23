@@ -21,6 +21,7 @@ import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_log_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/main_screens/attendance_screen/attendance_screen.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/khalti_payment_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
@@ -425,6 +426,11 @@ final GoRouter router = GoRouter(
         name: 'personalBest',
         path: '/personalBest',
         builder: (context, state) => const PersonalBestScreen()),
+    GoRoute(
+        name: 'attendance',
+        path: '/attendance',
+        builder: (context, state) => const AttendanceCalendarScreen()),
+
     GoRoute(
         name: 'weightLog',
         path: '/weightLog',

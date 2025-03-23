@@ -194,7 +194,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         height: 100,
                         DateTime.now(),
                         initialSelectedDate: DateTime.now(),
-                        selectionColor: Colors.black,
+                        selectionColor: Theme.of(context).colorScheme.primary,
                         selectedTextColor: Colors.white,
                         activeDates: [
                           DateTime.now(),
@@ -204,11 +204,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         controller: DatePickerController(),
                       ),
 
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('personalBest');
-                      //     },
-                      //     child: const Text("Personal Best Page")),
+                      TextButton(
+                          onPressed: () {
+                            context.pushNamed('attendance');
+                          },
+                          child: const Text("Test attendance screen")),
                       // TextButton(
                       //     onPressed: () {
                       //       context.pushNamed('weightLog');
@@ -372,7 +372,7 @@ Widget _buildOfferBanner(BuildContext context) {
     decoration: BoxDecoration(
       gradient: isMembershipActive
           ? const LinearGradient(
-              colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
+              colors: [Color.fromARGB(255, 152, 115, 50), Color(0xFF2A1B4D)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             )
@@ -386,7 +386,10 @@ Widget _buildOfferBanner(BuildContext context) {
                   end: Alignment.bottomRight,
                 )
               : const LinearGradient(
-                  colors: [Color(0xFF4A3298), Color(0xFF2A1B4D)],
+                  colors: [
+                    Color.fromARGB(255, 152, 115, 50),
+                    Color.fromARGB(255, 77, 65, 1)
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -444,7 +447,7 @@ Widget _buildOfferBanner(BuildContext context) {
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF4A3298),
+                    foregroundColor: const Color.fromARGB(255, 152, 115, 50),
                   ),
                   onPressed: () => context.pushNamed('membershipPlans'),
                   child: const Text('Apply Now 💪'),

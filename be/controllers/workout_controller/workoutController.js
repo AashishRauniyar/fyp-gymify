@@ -346,3 +346,149 @@ export const deleteWorkout = async (req, res) => {
 
 // //TODO: TO Implement workout logs
 
+// 1. First, let's add a new route to your workoutRouter.js
+
+
+
+// 2. Now, let's create the bulkCreateWorkouts controller function in workoutController.js
+
+export const bulkCreateWorkouts = async (req, res) => {
+    try {
+        const { user_id, role } = req.user;
+
+        // Ensure the user is a trainer
+        if (role !== 'Trainer') {
+            return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
+        }
+
+        // Get the workouts data from the request body
+        const { workouts } = req.body;
+
+        // Validate workouts data
+        if (!Array.isArray(workouts) || workouts.length === 0) {
+            return res.status(400).json({ status: 'failure', message: 'No workouts provided or invalid format' });
+        }
+
+        // Get uploaded files
+        const uploadedFiles = req.files || [];
+        
+        // Create a mapping between workout index and file
+        const fileMap = {};
+        uploadedFiles.forEach(file => {
+            // Expecting filenames like "workout_0.jpg", "workout_1.png" where the number is the workout index
+            const match = file.originalname.match(/workout_(\d+)/);
+            if (match && match[1]) {
+                const workoutIndex = parseInt(match[1]);
+                fileMap[workoutIndex] = file;
+            }
+        });
+
+        // Create workouts and their exercises
+        const createdWorkouts = [];
+        
+        for (let i = 0; i < workouts.length; i++) {
+            const workout = workouts[i];
+            const { 
+                workout_name, 
+                description, 
+                target_muscle_group, 
+                difficulty, 
+                goal_type, 
+                fitness_level,
+                exercises 
+            } = workout;
+
+            // Validate required workout fields
+            if (!workout_name || !description || !target_muscle_group || !difficulty || !goal_type || !fitness_level) {
+                continue; // Skip invalid workouts
+            }
+
+            // Validate difficulty level
+            const validDifficulties = ['Easy', 'Intermediate', 'Hard'];
+            if (!validDifficulties.includes(difficulty)) {
+                continue;
+            }
+
+            // Validate goal_type and fitness_level values
+            const validGoalTypes = ['Weight_Loss', 'Muscle_Gain', 'Endurance', 'Maintenance', 'Flexibility'];
+            if (!validGoalTypes.includes(goal_type)) {
+                continue;
+            }
+
+            const validFitnessLevels = ['Beginner', 'Intermediate', 'Advanced', 'Athlete'];
+            if (!validFitnessLevels.includes(fitness_level)) {
+                continue;
+            }
+
+            // Upload image if available for this workout
+            let workoutImageUrl = null;
+            if (fileMap[i]) {
+                try {
+                    workoutImageUrl = await uploadWorkoutImageToCloudinary(fileMap[i].buffer);
+                } catch (error) {
+                    console.error(`Error uploading image for workout ${i}:`, error);
+                    // Continue without image if upload fails
+                }
+            }
+
+            // Create the workout
+            const createdWorkout = await prisma.workouts.create({
+                data: {
+                    workout_name,
+                    description,
+                    target_muscle_group,
+                    difficulty,
+                    goal_type,
+                    fitness_level,
+                    workout_image: workoutImageUrl,
+                    trainer_id: user_id,
+                    created_at: new Date()
+                }
+            });
+
+            // Process exercises if any
+            if (Array.isArray(exercises) && exercises.length > 0) {
+                const addedExercises = [];
+                
+                for (const exercise of exercises) {
+                    const { exercise_id, sets, reps, duration } = exercise;
+
+                    // Validate required fields
+                    if (!exercise_id || !sets || !reps || duration === undefined) {
+                        continue;
+                    }
+
+                    // Check if the exercise exists
+                    const existingExercise = await prisma.exercises.findUnique({ where: { exercise_id } });
+                    if (!existingExercise) continue;
+
+                    // Add the exercise to the workout
+                    const workoutExercise = await prisma.workoutexercises.create({
+                        data: {
+                            workout_id: createdWorkout.workout_id,
+                            exercise_id,
+                            sets,
+                            reps,
+                            duration,
+                        },
+                    });
+                    addedExercises.push(workoutExercise);
+                }
+                
+                // Add the exercises to the created workout object for response
+                createdWorkout.exercises = addedExercises;
+            }
+
+            createdWorkouts.push(createdWorkout);
+        }
+
+        res.status(201).json({
+            status: 'success',
+            message: `Successfully created ${createdWorkouts.length} workouts`,
+            data: createdWorkouts
+        });
+    } catch (error) {
+        console.error('Error bulk creating workouts:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};

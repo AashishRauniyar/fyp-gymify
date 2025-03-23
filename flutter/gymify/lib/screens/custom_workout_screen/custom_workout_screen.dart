@@ -24,38 +24,7 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
   Widget build(BuildContext context) {
     theme = Theme.of(context);
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   title: const Text(
-      //     "Custom Workout Plan",
-      //     style: TextStyle(
-      //       color: CustomColors.secondary,
-      //       fontSize: 22,
-      //       fontWeight: FontWeight.bold,
-      //     ),
-      //   ),
-      //   leading: IconButton(
-      //     icon: const Icon(Icons.arrow_back_ios_new_sharp,
-      //         color: Color(0xFFFF5E3A)),
-      //     onPressed: () {
-      //       if (Navigator.of(context).canPop()) {
-      //         Navigator.of(context).pop(); // Navigate back to the previous page
-      //       } else {
-      //         context
-      //             .pop(); // Navigate to the welcome page if there's nothing to pop
-      //       }
-      //     },
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       icon: Icon(Icons.add, color: theme.colorScheme.primary),
-      //       onPressed: () {
-      //         context.pushNamed('createCustomWorkout');
-      //       },
-      //     ),
-      //   ],
-      // ),
+      
       appBar: CustomAppBar(
         title: 'Custom Workout Plan',
         showBackButton: true,
@@ -104,8 +73,7 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
                     decoration: InputDecoration(
                       hintText: 'Search Custom Workouts...',
                       prefixIcon: const Icon(Icons.search),
-                      filled: true,
-                      fillColor: Colors.grey[200],
+                      // fillColor: Colors.grey[200],
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,

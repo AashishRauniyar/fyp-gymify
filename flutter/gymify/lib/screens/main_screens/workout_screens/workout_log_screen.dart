@@ -219,7 +219,7 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
               : 'Exercise ${_currentExerciseIndex + 1}/${widget.exercises.length}',
           style: const TextStyle(color: Colors.white),
         ),
-        backgroundColor: CustomColors.primary,
+        backgroundColor: Theme.of(context).primaryColor,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
@@ -228,8 +228,8 @@ class _ExerciseLogScreenState extends State<ExerciseLogScreen> {
           LinearProgressIndicator(
             value: (_currentExerciseIndex + 1) / widget.exercises.length,
             backgroundColor: Colors.grey[300],
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(CustomColors.primary),
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Theme.of(context).colorScheme.onSurface),
           ),
           Expanded(
             child: SingleChildScrollView(

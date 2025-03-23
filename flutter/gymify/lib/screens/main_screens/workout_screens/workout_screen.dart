@@ -564,7 +564,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
           // Navigate to custom workout detail
           context.pushNamed(
             'customWorkoutDetail',
-            queryParameters: {
+            extra: {
               'customWorkoutId': workout.customWorkoutId.toString(),
             },
           );
@@ -961,7 +961,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                       // Workout name
                       Text(
                         workout.workoutName,
-                        style: theme.textTheme.titleMedium?.copyWith(
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
                         ),

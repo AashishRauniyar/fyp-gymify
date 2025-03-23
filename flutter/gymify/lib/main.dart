@@ -103,6 +103,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:gymify/providers/attendance_provider/attendance_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
@@ -142,6 +143,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => SignupProvider()),
         ChangeNotifierProvider(create: (context) => MembershipProvider()),
         ChangeNotifierProvider(create: (context) => PedometerProvider()),
+        ChangeNotifierProvider(create: (context) => AttendanceProvider()),
       ],
       child: const MyApp(),
     ),

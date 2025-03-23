@@ -177,6 +177,8 @@ class _MealLogsScreenState extends State<MealLogsScreen>
     });
   }
 
+  // init state
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -1259,7 +1261,9 @@ void _showDeleteConfirmation(BuildContext context, MealLog mealLog) {
         TextButton(
           onPressed: () {
             // Here you would call the delete function
-            // provider.deleteMealLog(mealLog.mealLogId);
+            final provider = context.read<DietProvider>();
+            provider.deleteMealLog(mealLog.mealLogId);
+
             Navigator.of(context).pop();
           },
           style: TextButton.styleFrom(

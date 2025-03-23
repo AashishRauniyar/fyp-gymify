@@ -207,3 +207,107 @@ export const deleteExercise = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
+
+
+export const bulkCreateExercises = async (req, res) => {
+    try {
+        const { user_id, role } = req.user;
+        // Ensure the user is a trainer
+        if (role !== 'Trainer') {
+            return res.status(403).json({ status: 'failure', message: 'Access denied. Trainers only' });
+        }
+        // Get the exercises data from the request body
+        const { exercises } = req.body;
+        // Parse JSON if it's a string
+        const exercisesData = typeof exercises === 'string' ? JSON.parse(exercises) : exercises;
+        // Validate exercises data
+        if (!Array.isArray(exercisesData) || exercisesData.length === 0) {
+            return res.status(400).json({ status: 'failure', message: 'No exercises provided or invalid format' });
+        }
+        // Get uploaded files
+        const uploadedImages = req.files?.images || [];
+        const uploadedVideos = req.files?.videos || [];
+        
+        // Create mappings between exercise index and files
+        const imageMap = {};
+        uploadedImages.forEach(file => {
+            // Expecting filenames like "exercise_0_image.jpg", "exercise_1_image.png" 
+            const match = file.originalname.match(/exercise_(\d+)_image/);
+            if (match && match[1]) {
+                const exerciseIndex = parseInt(match[1]);
+                imageMap[exerciseIndex] = file;
+            }
+        });
+        const videoMap = {};
+        uploadedVideos.forEach(file => {
+            // Expecting filenames like "exercise_0_video.mp4", "exercise_1_video.mov"
+            const match = file.originalname.match(/exercise_(\d+)_video/);
+            if (match && match[1]) {
+                const exerciseIndex = parseInt(match[1]);
+                videoMap[exerciseIndex] = file;
+            }
+        });
+        // Create exercises with their media files
+        const createdExercises = [];
+        
+        for (let i = 0; i < exercisesData.length; i++) {
+            const exercise = exercisesData[i];
+            const { 
+                exercise_name, 
+                description, 
+                target_muscle_group, 
+                calories_burned_per_minute
+            } = exercise;
+            // Validate required exercise fields
+            if (!exercise_name || !description || !target_muscle_group || calories_burned_per_minute === undefined) {
+                continue; // Skip invalid exercises
+            }
+
+            // Upload image if available for this exercise
+            let exerciseImageUrl = null;
+            if (imageMap[i]) {
+                try {
+                    exerciseImageUrl = await uploadExerciseImageToCloudinary(imageMap[i].buffer);
+                } catch (error) {
+                    console.error(`Error uploading image for exercise ${i}:`, error);
+                    // Continue without image if upload fails
+                }
+            }
+
+            // Upload video if available for this exercise
+            let exerciseVideoUrl = null;
+            if (videoMap[i]) {
+                try {
+                    exerciseVideoUrl = await uploadExerciseVideoToCloudinary(videoMap[i].buffer);
+                } catch (error) {
+                    console.error(`Error uploading video for exercise ${i}:`, error);
+                    // Continue without video if upload fails
+                }
+            }
+
+            // Create the exercise
+            const createdExercise = await prisma.exercises.create({
+                data: {
+                    exercise_name,
+                    description,
+                    target_muscle_group,
+                    calories_burned_per_minute,
+                    image_url: exerciseImageUrl,
+                    video_url: exerciseVideoUrl,
+                    created_at: new Date()
+                }
+            });
+
+            createdExercises.push(createdExercise);
+        }
+
+        res.status(201).json({
+            status: 'success',
+            message: `Successfully created ${createdExercises.length} exercises`,
+            data: createdExercises
+        });
+    } catch (error) {
+        console.error('Error bulk creating exercises:', error);
+        res.status(500).json({ status: 'failure', message: 'Server error' });
+    }
+};
