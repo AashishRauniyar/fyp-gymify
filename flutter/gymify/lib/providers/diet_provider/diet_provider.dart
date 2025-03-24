@@ -307,26 +307,55 @@ class DietProvider with ChangeNotifier {
     try {
       final response = await httpClient.delete('/meal-logs/$mealLogId');
 
-      final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
-        response.data,
-        (data) => data as Map<String, dynamic>,
-      );
-
-      if (apiResponse.status == 'success') {
+      if (response.data['status'] == 'success') {
         // Remove the meal log from the list
         _mealLogs.removeWhere((mealLog) => mealLog.mealLogId == mealLogId);
         _setError(false);
         notifyListeners();
       } else {
-        print('Error: ${apiResponse.message}');
-        throw Exception(apiResponse.message.isNotEmpty
-            ? apiResponse.message
+        print('Error: ${response.data['message']}');
+        throw Exception(response.data['message'].isNotEmpty
+            ? response.data['message']
             : 'Unknown error');
       }
     } catch (e) {
       _setError(true);
       print('Error deleting meal log: $e');
       throw Exception('Error deleting meal log: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+// method to delete a certain diet plan
+  Future<void> deleteDietPlan(int dietId) async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.delete('/diet-plans/$dietId');
+
+      // Check if response data is not null
+      if (response.data == null) {
+        throw Exception('No response data received from the server');
+      }
+
+      
+      if (response.data['status'] == 'success') {
+        // Remove the diet plan from the list
+        _diets.removeWhere((diet) => diet.dietPlanId == dietId);
+
+        // Optionally, notify the user or refresh data
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${response.data['message']}');
+        throw Exception(response.data['message'].isNotEmpty
+            ? response.data['message']
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error deleting diet plan: $e');
+      throw Exception('Error deleting diet plan: $e');
     } finally {
       _setLoading(false);
     }

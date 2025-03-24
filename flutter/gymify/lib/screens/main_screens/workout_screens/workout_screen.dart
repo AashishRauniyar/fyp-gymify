@@ -411,12 +411,12 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                       const SizedBox(height: 16),
                       _buildSearchBar(theme),
                       const SizedBox(height: 24),
-                      if (filteredCustomWorkouts.isNotEmpty)
-                        _buildCustomWorkoutsSection(
-                            filteredCustomWorkouts, theme),
                       if (filteredDefaultWorkouts.isNotEmpty)
                         _buildDefaultWorkoutsSection(
                             filteredDefaultWorkouts, theme),
+                      if (filteredCustomWorkouts.isNotEmpty)
+                        _buildCustomWorkoutsSection(
+                            filteredCustomWorkouts, theme),
                       const SizedBox(height: 24),
                       _buildExploreExercisesSection(theme),
                       const SizedBox(height: 24),
@@ -561,11 +561,10 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
       margin: const EdgeInsets.only(right: 16),
       child: GestureDetector(
         onTap: () {
-          // Navigate to custom workout detail
           context.pushNamed(
             'customWorkoutDetail',
-            extra: {
-              'customWorkoutId': workout.customWorkoutId.toString(),
+            queryParameters: {
+              'id': workout.customWorkoutId.toString(),
             },
           );
         },

@@ -98,6 +98,7 @@ export const markAttendance = async (req, res) => {
     }
 };
 
+
 // Get attendance history
 export const getAttendanceHistory = async (req, res) => {
     try {

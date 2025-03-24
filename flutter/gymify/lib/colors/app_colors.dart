@@ -35,9 +35,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   // Light Theme Colors
   // static const Color lightPrimary = Color(0xFF1C8EF7); // Electric Blue
-  static const Color lightPrimary =
-      Color.fromARGB(255, 152, 115, 50); // Electric purple
-  // static const Color lightPrimary = Color(0xFF4A3298); // Electric purple
+  // static const Color lightPrimary =Color.fromARGB(255, 152, 115, 50); // Electric purple
+  static const Color lightPrimary = Color(0xFF4A3298); // Electric purple
   static const Color lightSecondary = Color(0xFF757575); // Grey Accent
   static const Color lightSurface = Color(0xFFF8FAFC); // Soft White Surface
   static const Color lightBackground = Color(0xFFFFFFFF); // Pure White
@@ -49,9 +48,8 @@ class AppColors {
 
   // Dark Theme Colors
   // static const Color darkPrimary = Color(0xFF1C8EF7); // Electric Blue
-  // static const Color darkPrimary = Color(0xFF4A3298); // Electric Purple
-  static const Color darkPrimary =
-      Color.fromARGB(255, 152, 115, 50); // Electric Purple
+  static const Color darkPrimary = Color(0xFF4A3298); // Electric Purple
+  // static const Color darkPrimary =Color.fromARGB(255, 152, 115, 50); // Electric Purple
   static const Color darkSecondary = Color(0xFF1A1A1A); // Dark Grey
   static const Color darkSurface = Color(0xFF080808); // Deep Black Surface
   static const Color darkBackground = Color(0xFF080808); // Dark Background

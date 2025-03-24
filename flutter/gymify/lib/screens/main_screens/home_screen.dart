@@ -8,6 +8,7 @@ import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/models/workout_log_models/workout_exercise_log_model.dart';
 import 'package:gymify/models/workout_log_models/workout_log_model.dart';
 import 'package:gymify/models/workout_model.dart';
+import 'package:gymify/providers/attendance_provider/attendance_provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
@@ -17,6 +18,7 @@ import 'package:gymify/providers/personal_best_provider/personal_best_provider.d
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
+import 'package:gymify/widget/attendance_stats_widget.dart';
 import 'package:gymify/widget/nutrition_stats_widget.dart';
 import 'package:gymify/widget/workout_stats_widget.dart';
 import 'package:intl/intl.dart';
@@ -64,6 +66,10 @@ class _HomeScreenState extends State<HomeScreen> {
         context
             .read<WorkoutLogProvider>()
             .fetchUserLogs(profile.userId.toString());
+
+        context
+            .read<AttendanceProvider>()
+            .fetchAttendanceHistory(int.parse(profile.userId.toString()));
       });
     }
   }
@@ -227,6 +233,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   },
                       //   child: const Text("Workout Log History"),
                       // ),
+
+                      _buildAttendanceSection(context),
                       const SizedBox(height: 10),
 
                       _buildWeightSection(
@@ -911,6 +919,32 @@ Widget _buildNutritionSection(BuildContext context) {
       ),
       const SizedBox(height: 10),
       const NutritionStatsWidget(),
+    ],
+  );
+}
+
+// Add this function below _buildNutritionSection in the HomeScreen file
+Widget _buildAttendanceSection(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Attendance Tracker",
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          TextButton(
+            onPressed: () {
+              context.push('/attendance');
+            },
+            child: const Text("View All"),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      const AttendanceStatsWidget(),
     ],
   );
 }

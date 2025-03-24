@@ -145,6 +145,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/models/diet_log_models/meal_logs_model.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
@@ -240,6 +241,56 @@ class _MealLogsScreenState extends State<MealLogsScreen>
     double targetFat = 65.0;
 
     return Scaffold(
+      // appBar: CustomAppBar(
+      //   title: "Meal Tracker",
+      //   actions: [
+      //     IconButton(
+      //       icon: Icon(Icons.calendar_today, color: theme.colorScheme.primary),
+      //       onPressed: () => _showDatePicker(context),
+      //     ),
+      //     IconButton(
+      //       icon: Icon(Icons.refresh, color: theme.colorScheme.primary),
+      //       onPressed: () {
+      //         Provider.of<DietProvider>(context, listen: false).fetchMealLogs();
+      //       },
+      //     ),
+      //   ],
+      //   bottom: TabBar(
+      //     controller: _tabController,
+      //     labelColor: theme.colorScheme.primary,
+      //     unselectedLabelColor: theme.colorScheme.onSurface.withOpacity(0.6),
+      //     indicatorColor: theme.colorScheme.primary,
+      //     tabs: const [
+      //       Tab(text: 'TODAY'),
+      //       Tab(text: 'TRENDS'),
+      //       Tab(text: 'INSIGHTS'),
+      //     ],
+      //   ),
+      // ),
+      // body: TabBarView(
+      //   controller: _tabController,
+      //   children: [
+      //     //         // TODAY TAB
+      //     _buildTodayTab(
+      //         context,
+      //         filteredMealLogs,
+      //         totalCalories,
+      //         totalProtein,
+      //         totalCarbs,
+      //         totalFat,
+      //         targetCalories,
+      //         targetProtein,
+      //         targetCarbs,
+      //         targetFat),
+
+      //     // TRENDS TAB
+      //     _buildTrendsTab(context, weeklyCalories, provider.mealLogs),
+
+      //     // INSIGHTS TAB
+      //     _buildInsightsTab(context, mealDistribution, provider.mealLogs),
+      //   ],
+      // ),
+
       body: SafeArea(
         child: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -342,6 +393,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
           ),
         ),
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigation to add meal log screen
