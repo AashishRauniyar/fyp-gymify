@@ -94,16 +94,37 @@ class WorkoutStatsWidget extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.all(16.0),
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(16),
+      //   gradient: LinearGradient(
+      //     colors: [
+      //       theme.colorScheme.onSurface.withOpacity(0.1),
+      //       theme.colorScheme.onSurface.withOpacity(0.05),
+      //     ],
+      //     begin: Alignment.topLeft,
+      //     end: Alignment.bottomRight,
+      //   ),
+      //   border: Border.all(
+      //     color: theme.colorScheme.onSurface.withOpacity(0.1),
+      //     width: 1.5,
+      //   ),
+      // ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.onSurface.withOpacity(0.1),
-            theme.colorScheme.onSurface.withOpacity(0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+
+        gradient: Theme.of(context).brightness == Brightness.dark
+            ? LinearGradient(
+                colors: [
+                  theme.colorScheme.onSurface.withOpacity(0.1),
+                  theme.colorScheme.onSurface.withOpacity(0.05),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null, // For light mode, no gradient, just a white background
+        color: Theme.of(context).brightness == Brightness.light
+            ? Colors.white // White background for light mode
+            : null, // Dark mode will apply the gradient above
         border: Border.all(
           color: theme.colorScheme.onSurface.withOpacity(0.1),
           width: 1.5,
@@ -122,7 +143,7 @@ class WorkoutStatsWidget extends StatelessWidget {
                       workoutTodayCompleted
                           ? 'Workout completed today! 🎉'
                           : 'No workout today',
-                      style: theme.textTheme.titleMedium?.copyWith(
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: workoutTodayCompleted
                             ? theme.colorScheme.primary

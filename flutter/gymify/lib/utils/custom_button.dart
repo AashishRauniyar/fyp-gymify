@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:gymify/colors/app_colors.dart';
 import 'package:gymify/colors/custom_colors.dart'; // Assuming this is where your TextWidget is
 
 class CustomButton extends StatelessWidget {
@@ -14,7 +16,7 @@ class CustomButton extends StatelessWidget {
     super.key,
     required this.text,
     required this.onPressed,
-    this.color = CustomColors.primary, // Default color if not provided
+    this.color = AppColors.darkPrimary, // Default color if not provided
     this.height = 56.0, // Default height if not provided
     this.fontSize = 16.0,
     this.textColor =

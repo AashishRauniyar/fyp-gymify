@@ -1,32 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:pedometer/pedometer.dart';
-// import 'package:gymify/services/pedometer_service.dart';
-
-// class PedometerProvider with ChangeNotifier {
-//   int _steps = 0;
-//   final PedometerService _pedometerService = PedometerService();
-
-//   int get steps => _steps;
-
-//   PedometerProvider() {
-//     startTrackingSteps();
-//   }
-
-//   void startTrackingSteps() {
-//     _pedometerService.startStepCounting();
-//     _pedometerService.stepCountStream.listen((stepCount) {
-//       _steps = stepCount.steps;
-//       notifyListeners(); // Update the UI with the new step count
-//     });
-//   }
-
-//   void stopTrackingSteps() {
-//     _pedometerService.stopStepCounting();
-//   }
-// }
-
-
-
 import 'package:flutter/material.dart';
 import 'package:pedometer/pedometer.dart';
 import 'package:permission_handler/permission_handler.dart';

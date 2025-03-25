@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +16,7 @@ import 'package:gymify/providers/personal_best_provider/personal_best_provider.d
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
+import 'package:gymify/widget/attendance_date_picker_widget.dart';
 import 'package:gymify/widget/attendance_stats_widget.dart';
 import 'package:gymify/widget/nutrition_stats_widget.dart';
 import 'package:gymify/widget/workout_stats_widget.dart';
@@ -26,7 +25,6 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,6 +36,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<void> _initialData;
+  DateTime _selectedDate = DateTime.now(); // Define the selected date variable
 
   Future<void> _fetchAllData() async {
     // Fetch all providers data concurrently
@@ -111,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(
           // 'Gymify',
           currentDate,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
         actions: [
           IconButton(
@@ -162,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }).toList();
 
                 return Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -172,49 +171,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           user?.profileImage.toString() ??
                               "assets/images/profile/default_avatar.jpg"),
 
-                      // Display Current Date
-                      const SizedBox(
-                        height: 16,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 24.0),
-                        child: Text(
-                          'Today is $currentDate',
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.grey,
-                                  ),
-                        ),
-                      ),
+                      const SizedBox(height: 10),
 
                       _buildOfferBanner(context),
-                      const SizedBox(height: 20),
 
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('stepCount');
-                          },
-                          child: const Text("Step Count")),
+                      _buildAttendanceCalender(context, _selectedDate, (date) {
+                        setState(() {
+                          _selectedDate = date;
+                        });
+                      }),
 
-                      DatePicker(
-                        height: 100,
-                        DateTime.now(),
-                        initialSelectedDate: DateTime.now(),
-                        selectionColor: Theme.of(context).colorScheme.primary,
-                        selectedTextColor: Colors.white,
-                        activeDates: [
-                          DateTime.now(),
-                          DateTime.now().add(const Duration(days: 1)),
-                          DateTime.now().add(const Duration(days: 2)),
-                        ],
-                        controller: DatePickerController(),
-                      ),
-
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('attendance');
-                          },
-                          child: const Text("Test attendance screen")),
                       // TextButton(
                       //     onPressed: () {
                       //       context.pushNamed('weightLog');
@@ -234,8 +200,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       //   child: const Text("Workout Log History"),
                       // ),
 
+                      const SizedBox(height: 10),
                       _buildAttendanceSection(context),
                       const SizedBox(height: 10),
+
+                      TextButton(
+                          onPressed: () {
+                            context.pushNamed('stepCount');
+                          },
+                          child: const Text("Step Count")),
 
                       _buildWeightSection(
                           context, user!.currentWeight.toString()),
@@ -321,21 +294,24 @@ Widget _buildHeader(
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Welcome Back',
-              style: TextStyle(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withOpacity(0.6))),
-          const SizedBox(height: 4),
-          // make first letter capitalize
-          Text(username[0].toUpperCase() + username.substring(1),
-              style:
-                  const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-        ],
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Welcome Back',
+                style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6))),
+            const SizedBox(height: 4),
+            // make first letter capitalize
+            Text(username[0].toUpperCase() + username.substring(1),
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
       Container(
         decoration: BoxDecoration(
@@ -366,6 +342,122 @@ Widget _buildHeader(
   );
 }
 
+// Widget _buildOfferBanner(BuildContext context) {
+//   final membershipStatus =
+//       context.watch<MembershipProvider>().membership?.status;
+
+//   // Check for each membership status
+//   final isMembershipActive = membershipStatus == 'Active';
+//   final isMembershipPending = membershipStatus == 'Pending';
+//   final isMembershipNotApplied = membershipStatus == 'Not Applied';
+
+//   return Container(
+//     padding: const EdgeInsets.all(20),
+//     decoration: BoxDecoration(
+//       gradient: isMembershipActive
+//           ? const LinearGradient(
+//               colors: [Color.fromARGB(255, 152, 115, 50), Color(0xFF2A1B4D)],
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//             )
+//           : isMembershipPending
+//               ? const LinearGradient(
+//                   colors: [
+//                     Color(0xFFB02A2A),
+//                     Color(0xFF6D1111)
+//                   ], // Red Gradient
+//                   begin: Alignment.topLeft,
+//                   end: Alignment.bottomRight,
+//                 )
+//               : const LinearGradient(
+//                   colors: [
+//                     Color.fromARGB(255, 152, 115, 50),
+//                     Color.fromARGB(255, 77, 65, 1)
+//                   ],
+//                   begin: Alignment.topLeft,
+//                   end: Alignment.bottomRight,
+//                 ),
+//       borderRadius: BorderRadius.circular(16),
+//     ),
+//     child: Row(
+//       children: [
+//         Expanded(
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   Text(
+//                     isMembershipActive
+//                         ? 'Membership Active'
+//                         : isMembershipPending
+//                             ? 'Membership Pending'
+//                             : 'Premium Membership',
+//                     style: const TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                   GestureDetector(
+//                     onTap: () {
+//                       _showBottomSheet(context);
+//                     },
+//                     child: const Icon(
+//                       LineAwesomeIcons.info_circle_solid,
+//                       color: Colors.white,
+//                       size: 24,
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               const SizedBox(height: 8),
+//               Text(
+//                 isMembershipActive
+//                     ? 'You are now a premium member.\nEnjoy all benefits!'
+//                     : isMembershipPending
+//                         ? 'Your membership is pending, waiting for approval.\nAfter approval, collect your membership card from the counter.'
+//                         : 'Get your gym membership\nstarting at Rs 1500',
+//                 style: TextStyle(
+//                   color: Colors.white,
+//                   fontSize: isMembershipActive ? 22 : 14,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//               const SizedBox(height: 12),
+//               // Show the appropriate button based on the membership status
+//               if (isMembershipNotApplied)
+//                 ElevatedButton(
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.white,
+//                     foregroundColor: const Color.fromARGB(255, 152, 115, 50),
+//                   ),
+//                   onPressed: () => context.pushNamed('membershipPlans'),
+//                   child: const Text('Apply Now 💪'),
+//                 )
+//               else
+//                 ElevatedButton(
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.white,
+//                     foregroundColor: const Color(0xFF4A3298),
+//                   ),
+//                   onPressed: () {
+//                     // Show the membership details or redirect to the profile
+//                     context.pushNamed('membershipPlans');
+//                   },
+//                   child: isMembershipPending
+//                       ? const Text('Pending Approval')
+//                       : const Text('View Membership Details'),
+//                 ),
+//             ],
+//           ),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
 Widget _buildOfferBanner(BuildContext context) {
   final membershipStatus =
       context.watch<MembershipProvider>().membership?.status;
@@ -374,6 +466,12 @@ Widget _buildOfferBanner(BuildContext context) {
   final isMembershipActive = membershipStatus == 'Active';
   final isMembershipPending = membershipStatus == 'Pending';
   final isMembershipNotApplied = membershipStatus == 'Not Applied';
+
+  // If the membership is active, return an empty widget
+  if (isMembershipActive) {
+    return const SizedBox
+        .shrink(); // or return Container() if you prefer an empty container
+  }
 
   return Container(
     padding: const EdgeInsets.all(20),
@@ -509,6 +607,7 @@ Widget _buildWorkoutStatsSection(BuildContext context, String userId) {
 
 void _showBottomSheet(BuildContext context) {
   final colorScheme = Theme.of(context).colorScheme;
+  final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
   showModalBottomSheet(
     builder: (context) {
@@ -568,18 +667,40 @@ void _showBottomSheet(BuildContext context) {
 
                       return Container(
                         padding: const EdgeInsets.all(16),
+                        // decoration: BoxDecoration(
+                        //   borderRadius: BorderRadius.circular(16),
+                        //   gradient: LinearGradient(
+                        //     colors: [
+                        //       colorScheme.primary.withOpacity(0.1),
+                        //       colorScheme.surface,
+                        //     ],
+                        //     begin: Alignment.topLeft,
+                        //     end: Alignment.bottomRight,
+                        //   ),
+                        //   border: Border.all(
+                        //     color: colorScheme.outline.withOpacity(0.1),
+                        //   ),
+                        // ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary.withOpacity(0.1),
-                              colorScheme.surface,
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
+
+                          gradient: isDarkMode
+                              ? LinearGradient(
+                                  colors: [
+                                    colorScheme.onSurface.withOpacity(0.1),
+                                    colorScheme.onSurface.withOpacity(0.05),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                )
+                              : null, // For light mode, no gradient, just a white background
+                          color: Theme.of(context).brightness ==
+                                  Brightness.light
+                              ? Colors.white // White background for light mode
+                              : null, // Dark mode will apply the gradient above
                           border: Border.all(
-                            color: colorScheme.outline.withOpacity(0.1),
+                            color: colorScheme.onSurface.withOpacity(0.1),
+                            width: 1.5,
                           ),
                         ),
                         child: Column(
@@ -813,20 +934,41 @@ Widget _buildWeightSection(BuildContext context, String weight) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 6),
     padding: const EdgeInsets.all(16.0),
+    // decoration: BoxDecoration(
+    //   borderRadius: BorderRadius.circular(16),
+    //   gradient: LinearGradient(
+    //     colors: [
+    //       Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+    //       Theme.of(context).colorScheme.secondary.withOpacity(0.05),
+    //     ],
+    //     begin: Alignment.topLeft,
+    //     end: Alignment.bottomRight,
+    //   ),
+    //   border: Border.all(
+    //     color: isDarkMode
+    //         ? theme.colorScheme.onSurface.withOpacity(0.1)
+    //         : theme.colorScheme.onSurface.withOpacity(0.1),
+    //     width: 1.5,
+    //   ),
+    // ),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16),
-      gradient: LinearGradient(
-        colors: [
-          Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-          Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+
+      gradient: isDarkMode
+          ? LinearGradient(
+              colors: [
+                theme.colorScheme.onSurface.withOpacity(0.1),
+                theme.colorScheme.onSurface.withOpacity(0.05),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            )
+          : null, // For light mode, no gradient, just a white background
+      color: Theme.of(context).brightness == Brightness.light
+          ? Colors.white // White background for light mode
+          : null, // Dark mode will apply the gradient above
       border: Border.all(
-        color: isDarkMode
-            ? theme.colorScheme.onSurface.withOpacity(0.1)
-            : theme.colorScheme.onSurface.withOpacity(0.1),
+        color: theme.colorScheme.onSurface.withOpacity(0.1),
         width: 1.5,
       ),
     ),
@@ -862,7 +1004,6 @@ Widget _buildWeightSection(BuildContext context, String weight) {
           ],
         ),
         ElevatedButton.icon(
-          icon: const Icon(LineAwesomeIcons.play_circle),
           label: const Text('Log Weight'),
           onPressed: () => context.pushNamed('weightLog'),
         ),
@@ -920,6 +1061,30 @@ Widget _buildNutritionSection(BuildContext context) {
       const SizedBox(height: 10),
       const NutritionStatsWidget(),
     ],
+  );
+}
+
+Widget _buildAttendanceCalender(BuildContext context, DateTime selectedDate,
+    Function(DateTime) onDateSelected) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Calendar',
+          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        // Custom Attendance Date Picker
+        AttendanceDatePicker(
+          initialDate: selectedDate,
+          height: 110,
+          onDateSelected: onDateSelected,
+        ),
+      ],
+    ),
   );
 }
 
