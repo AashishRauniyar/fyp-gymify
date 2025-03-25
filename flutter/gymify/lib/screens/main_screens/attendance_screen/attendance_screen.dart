@@ -214,7 +214,7 @@
 //                           const SizedBox(width: 8),
 //                           Text(
 //                             DateFormat('MMMM yyyy').format(_currentMonth),
-//                             style: Theme.of(context).textTheme.titleLarge,
+//                             style: Theme.of(context).textTheme.bodyLarge,
 //                           ),
 //                         ],
 //                       ),
@@ -549,7 +549,7 @@
 //                           const SizedBox(width: 8),
 //                           Text(
 //                             'Attendance Overview',
-//                             style: Theme.of(context).textTheme.titleLarge,
+//                             style: Theme.of(context).textTheme.bodyLarge,
 //                           ),
 //                         ],
 //                       ),
@@ -1916,7 +1916,7 @@
 //                   children: [
 //                     Text(
 //                       'Attendance History',
-//                       style: Theme.of(context).textTheme.titleLarge,
+//                       style: Theme.of(context).textTheme.bodyLarge,
 //                     ),
 //                     const SizedBox(height: 4),
 //                     Text(
@@ -2274,57 +2274,85 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
             children: [
               const SizedBox(height: 16),
               // Monthly progress card
-              Card(
-                elevation: 4,
-                shadowColor:
-                    Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.calendar_month,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 28,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            DateFormat('MMMM yyyy').format(_currentMonth),
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
 
-                      // Progress circles
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildProgressCircle(
-                            title: 'Days Present',
-                            value: presentDays,
-                            maxValue: daysInMonth,
-                            color: Theme.of(context).colorScheme.primary,
-                            icon: Icons.check_circle,
-                            size: size,
-                          ),
-                          _buildProgressCircle(
-                            title: 'Month Progress',
-                            value: DateTime.now().day <= daysInMonth
-                                ? DateTime.now().day
-                                : daysInMonth,
-                            maxValue: daysInMonth,
-                            color: Colors.amber,
-                            icon: Icons.calendar_today,
-                            size: size,
-                          ),
-                        ],
-                      ),
-                    ],
+                  gradient: Theme.of(context).brightness == Brightness.dark
+                      ? LinearGradient(
+                          colors: [
+                            Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.1),
+                            Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.05),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null, // For light mode, no gradient, just a white background
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white // White background for light mode
+                      : null, // Dark mode will apply the gradient above
+                  border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.1),
+                    width: 1.5,
+                  ),
+                ),
+                child: Card(
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_month,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 22,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              DateFormat('MMMM yyyy').format(_currentMonth),
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Progress circles
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _buildProgressCircle(
+                              title: 'Days Present',
+                              value: presentDays,
+                              maxValue: daysInMonth,
+                              color: Theme.of(context).colorScheme.primary,
+                              icon: Icons.check_circle,
+                              size: size,
+                            ),
+                            _buildProgressCircle(
+                              title: 'Month Progress',
+                              value: DateTime.now().day <= daysInMonth
+                                  ? DateTime.now().day
+                                  : daysInMonth,
+                              maxValue: daysInMonth,
+                              color: Colors.amber,
+                              icon: Icons.calendar_today,
+                              size: size,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -2332,323 +2360,349 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
               const SizedBox(height: 20),
 
               // Calendar widget
-              Card(
-                elevation: 4,
-                shadowColor:
-                    Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCalendar(
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.now(),
-                    focusedDay: _focusedDay,
-                    calendarFormat: _calendarFormat,
-                    selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
-                    },
-                    availableCalendarFormats: const {
-                      CalendarFormat.month: 'Month',
-                      CalendarFormat.twoWeeks: '2 Weeks',
-                      CalendarFormat.week: 'Week',
-                    },
-                    // Use calendarBuilders for custom day containers
-                    calendarBuilders: CalendarBuilders(
-                      // Custom day cell builder to show attendance with background color
-                      defaultBuilder: (context, day, focusedDay) {
-                        // Check if there's attendance on this day
-                        bool hasAttendance =
-                            attendanceProvider.attendanceDays.containsKey(
-                          DateTime(day.year, day.month, day.day),
-                        );
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
 
-                        // Create a customized day cell with colored background for attendance days
-                        return Container(
-                          margin: const EdgeInsets.all(4.0),
-                          alignment: Alignment.center,
-                          decoration: hasAttendance
-                              ? const BoxDecoration(
-                                  // color: Theme.of(context)
-                                  //     .colorScheme
-                                  //     .primary
-                                  //     .withOpacity(0.3),
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                )
-                              : null,
-                          child: Text(
-                            '${day.day}',
-                            style: TextStyle(
-                              color: hasAttendance
-                                  ? (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                  : null,
-                            ),
-                          ),
-                        );
-                      },
-                      // Custom builder for selected day to ensure it looks different from attendance days
-                      selectedBuilder: (context, day, focusedDay) {
-                        bool hasAttendance =
-                            attendanceProvider.attendanceDays.containsKey(
-                          DateTime(day.year, day.month, day.day),
-                        );
-
-                        return Container(
-                          margin: const EdgeInsets.all(4.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Text(
-                            '${day.day}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      },
-                      // Custom builder for today to differentiate it from normal days
-                      todayBuilder: (context, day, focusedDay) {
-                        bool hasAttendance =
-                            attendanceProvider.attendanceDays.containsKey(
-                          DateTime(day.year, day.month, day.day),
-                        );
-
-                        return Container(
-                          margin: const EdgeInsets.all(4.0),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: hasAttendance
-                                ? Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(
-                                        0.5) // Darker if has attendance
-                                : Theme.of(context).primaryColor.withOpacity(
-                                    0.2), // Light highlight if today
-
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            '${day.day}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: hasAttendance
-                                  ? (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black)
-                                  : null,
-                            ),
-                          ),
-                        );
-                      },
-                      // Custom builder for weekend days to maintain weekend styling
-                      outsideBuilder: (context, day, focusedDay) {
-                        return Container(
-                          margin: const EdgeInsets.all(4.0),
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${day.day}',
-                            style: TextStyle(
-                              color: Colors.grey[400],
-                            ),
-                          ),
-                        );
-                      },
-                      // Builders for weekend days that fall in the current month
-                      dowBuilder: (context, day) {
-                        final weekday = DateFormat.E().format(day);
-                        final isWeekend = weekday == 'Sun' || weekday == 'Sat';
-
-                        return Center(
-                          child: Text(
-                            weekday,
-                            style: TextStyle(
-                              color: isWeekend
-                                  ? (Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.red[200]
-                                      : Colors.red)
-                                  : null,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    // You can remove the eventLoader since we're using the custom builders
-                    onDaySelected: (selectedDay, focusedDay) {
-                      HapticFeedback.lightImpact();
-                      setState(() {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                      });
-                    },
-                    onFormatChanged: (format) {
-                      setState(() {
-                        _calendarFormat = format;
-                      });
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                      setState(() {
-                        _currentMonth = focusedDay;
-                      });
-                    },
-                    headerStyle: HeaderStyle(
-                      titleCentered: true,
-                      formatButtonDecoration: BoxDecoration(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .secondary
-                            .withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      formatButtonTextStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                      leftChevronIcon: Icon(
-                        Icons.chevron_left,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      rightChevronIcon: Icon(
-                        Icons.chevron_right,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                    // These styles will be overridden by the custom builders
-                    calendarStyle: const CalendarStyle(
-                      outsideDaysVisible: false,
-                    ),
+                  gradient: Theme.of(context).brightness == Brightness.dark
+                      ? LinearGradient(
+                          colors: [
+                            Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.1),
+                            Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.05),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null, // For light mode, no gradient, just a white background
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white // White background for light mode
+                      : null, // Dark mode will apply the gradient above
+                  border: Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.1),
+                    width: 1.5,
                   ),
-                  // child: TableCalendar(
-                  //   firstDay: DateTime.utc(2020, 1, 1),
-                  //   lastDay: DateTime.now(),
-                  //   focusedDay: _focusedDay,
-                  //   calendarFormat: _calendarFormat,
-                  //   selectedDayPredicate: (day) {
-                  //     return isSameDay(_selectedDay, day);
-                  //   },
-                  //   availableCalendarFormats: const {
-                  //     CalendarFormat.month: 'Month',
-                  //     CalendarFormat.twoWeeks: '2 Weeks',
-                  //     CalendarFormat.week: 'Week',
-                  //   },
-                  //   calendarBuilders: CalendarBuilders(
-                  //     markerBuilder: (context, date, events) {
-                  //       if (events.isNotEmpty) {
-                  //         // Create filled circle instead of dot
-                  //         return Positioned(
-                  //           bottom: 1,
-                  //           right: 1,
-                  //           left: 1,
-                  //           child: Container(
-                  //             height: 6,
-                  //             width: 6,
-                  //             decoration: BoxDecoration(
-                  //               shape: BoxShape.circle,
-                  //               color: Theme.of(context).colorScheme.secondary,
-                  //             ),
-                  //           ),
-                  //         );
-                  //       }
-                  //       return null;
-                  //     },
-                  //   ),
-                  //   eventLoader: (day) {
-                  //     // Mark days with attendance records
-                  //     if (attendanceProvider.attendanceDays.containsKey(
-                  //       DateTime(day.year, day.month, day.day),
-                  //     )) {
-                  //       return ['present'];
-                  //     }
-                  //     return [];
-                  //   },
-                  //   onDaySelected: (selectedDay, focusedDay) {
-                  //     HapticFeedback.lightImpact();
-                  //     setState(() {
-                  //       _selectedDay = selectedDay;
-                  //       _focusedDay = focusedDay;
-                  //     });
-                  //   },
-                  //   onFormatChanged: (format) {
-                  //     setState(() {
-                  //       _calendarFormat = format;
-                  //     });
-                  //   },
-                  //   onPageChanged: (focusedDay) {
-                  //     // Update the month when navigating
-                  //     _focusedDay = focusedDay;
-                  //     setState(() {
-                  //       _currentMonth = focusedDay;
-                  //     });
-                  //   },
-                  //   calendarStyle: CalendarStyle(
-                  //     // Improved styling
-                  //     markersMaxCount: 1,
-                  //     markerDecoration: BoxDecoration(
-                  //       color: Theme.of(context).colorScheme.secondary,
-                  //       shape: BoxShape.circle,
-                  //     ),
-                  //     markerSize: 8,
-                  //     todayDecoration: BoxDecoration(
-                  //       color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  //       shape: BoxShape.circle,
-                  //     ),
-                  //     selectedDecoration: BoxDecoration(
-                  //       color: Theme.of(context).primaryColor,
-                  //       shape: BoxShape.circle,
-                  //     ),
-                  //     // Marker for attendance has a cell with colored background
-                  //     markersAnchor: 0.7,
-                  //     cellMargin: const EdgeInsets.all(2),
-                  //     outsideDaysVisible: false,
-                  //     weekendTextStyle: TextStyle(
-                  //       color: isDarkMode ? Colors.red[200] : Colors.red,
-                  //     ),
-                  //   ),
-                  //   headerStyle: HeaderStyle(
-                  //     titleCentered: true,
-                  //     formatButtonDecoration: BoxDecoration(
-                  //       color: Theme.of(context)
-                  //           .colorScheme
-                  //           .secondary
-                  //           .withOpacity(0.1),
-                  //       borderRadius: BorderRadius.circular(20),
-                  //     ),
-                  //     formatButtonTextStyle: TextStyle(
-                  //       color: Theme.of(context).colorScheme.secondary,
-                  //     ),
-                  //     leftChevronIcon: Icon(
-                  //       Icons.chevron_left,
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //     ),
-                  //     rightChevronIcon: Icon(
-                  //       Icons.chevron_right,
-                  //       color: Theme.of(context).colorScheme.primary,
-                  //     ),
-                  //   ),
-                  //   daysOfWeekStyle: DaysOfWeekStyle(
-                  //     weekdayStyle: Theme.of(context).textTheme.bodySmall ??
-                  //         const TextStyle(),
-                  //     weekendStyle: (Theme.of(context).textTheme.bodySmall ??
-                  //             const TextStyle())
-                  //         .copyWith(
-                  //       color: isDarkMode ? Colors.red[200] : Colors.red,
-                  //     ),
-                  //   ),
-                  // ),
+                ),
+                child: Card(
+                  elevation: 0,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TableCalendar(
+                      firstDay: DateTime.utc(2020, 1, 1),
+                      lastDay: DateTime.now(),
+                      focusedDay: _focusedDay,
+                      calendarFormat: _calendarFormat,
+                      selectedDayPredicate: (day) {
+                        return isSameDay(_selectedDay, day);
+                      },
+                      availableCalendarFormats: const {
+                        CalendarFormat.month: 'Month',
+                        CalendarFormat.twoWeeks: '2 Weeks',
+                        CalendarFormat.week: 'Week',
+                      },
+                      // Use calendarBuilders for custom day containers
+                      calendarBuilders: CalendarBuilders(
+                        // Custom day cell builder to show attendance with background color
+                        defaultBuilder: (context, day, focusedDay) {
+                          // Check if there's attendance on this day
+                          bool hasAttendance =
+                              attendanceProvider.attendanceDays.containsKey(
+                            DateTime(day.year, day.month, day.day),
+                          );
+
+                          // Create a customized day cell with colored background for attendance days
+                          return Container(
+                            margin: const EdgeInsets.all(4.0),
+                            alignment: Alignment.center,
+                            decoration: hasAttendance
+                                ? const BoxDecoration(
+                                    color: Colors.green,
+                                    shape: BoxShape.circle,
+                                  )
+                                : null,
+                            child: Text(
+                              '${day.day}',
+                              style: TextStyle(
+                                color: hasAttendance
+                                    ? (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black)
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        // Custom builder for selected day to ensure it looks different from attendance days
+                        selectedBuilder: (context, day, focusedDay) {
+                          bool hasAttendance =
+                              attendanceProvider.attendanceDays.containsKey(
+                            DateTime(day.year, day.month, day.day),
+                          );
+
+                          return Container(
+                            margin: const EdgeInsets.all(4.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                              '${day.day}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                        // Custom builder for today to differentiate it from normal days
+                        todayBuilder: (context, day, focusedDay) {
+                          bool hasAttendance =
+                              attendanceProvider.attendanceDays.containsKey(
+                            DateTime(day.year, day.month, day.day),
+                          );
+
+                          return Container(
+                            margin: const EdgeInsets.all(4.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: hasAttendance
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .primary
+                                      .withOpacity(
+                                          0.5) // Darker if has attendance
+                                  : Theme.of(context).primaryColor.withOpacity(
+                                      0.2), // Light highlight if today
+
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Text(
+                              '${day.day}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: hasAttendance
+                                    ? (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black)
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                        // Custom builder for weekend days to maintain weekend styling
+                        outsideBuilder: (context, day, focusedDay) {
+                          return Container(
+                            margin: const EdgeInsets.all(4.0),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${day.day}',
+                              style: TextStyle(
+                                color: Colors.grey[400],
+                              ),
+                            ),
+                          );
+                        },
+                        // Builders for weekend days that fall in the current month
+                        dowBuilder: (context, day) {
+                          final weekday = DateFormat.E().format(day);
+                          final isWeekend =
+                              weekday == 'Sun' || weekday == 'Sat';
+
+                          return Center(
+                            child: Text(
+                              weekday,
+                              style: TextStyle(
+                                color: isWeekend
+                                    ? (Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.red[200]
+                                        : Colors.red)
+                                    : null,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      // You can remove the eventLoader since we're using the custom builders
+                      onDaySelected: (selectedDay, focusedDay) {
+                        HapticFeedback.lightImpact();
+                        setState(() {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                        });
+                      },
+                      onFormatChanged: (format) {
+                        setState(() {
+                          _calendarFormat = format;
+                        });
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                        setState(() {
+                          _currentMonth = focusedDay;
+                        });
+                      },
+                      headerStyle: HeaderStyle(
+                        titleCentered: true,
+                        formatButtonDecoration: BoxDecoration(
+                          // color: Theme.of(context).colorScheme.onSurface,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        formatButtonTextStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        leftChevronIcon: Icon(
+                          Icons.chevron_left,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.chevron_right,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      // These styles will be overridden by the custom builders
+                      calendarStyle: const CalendarStyle(
+                        outsideDaysVisible: false,
+                      ),
+                    ),
+                    // child: TableCalendar(
+                    //   firstDay: DateTime.utc(2020, 1, 1),
+                    //   lastDay: DateTime.now(),
+                    //   focusedDay: _focusedDay,
+                    //   calendarFormat: _calendarFormat,
+                    //   selectedDayPredicate: (day) {
+                    //     return isSameDay(_selectedDay, day);
+                    //   },
+                    //   availableCalendarFormats: const {
+                    //     CalendarFormat.month: 'Month',
+                    //     CalendarFormat.twoWeeks: '2 Weeks',
+                    //     CalendarFormat.week: 'Week',
+                    //   },
+                    //   calendarBuilders: CalendarBuilders(
+                    //     markerBuilder: (context, date, events) {
+                    //       if (events.isNotEmpty) {
+                    //         // Create filled circle instead of dot
+                    //         return Positioned(
+                    //           bottom: 1,
+                    //           right: 1,
+                    //           left: 1,
+                    //           child: Container(
+                    //             height: 6,
+                    //             width: 6,
+                    //             decoration: BoxDecoration(
+                    //               shape: BoxShape.circle,
+                    //               color: Theme.of(context).colorScheme.secondary,
+                    //             ),
+                    //           ),
+                    //         );
+                    //       }
+                    //       return null;
+                    //     },
+                    //   ),
+                    //   eventLoader: (day) {
+                    //     // Mark days with attendance records
+                    //     if (attendanceProvider.attendanceDays.containsKey(
+                    //       DateTime(day.year, day.month, day.day),
+                    //     )) {
+                    //       return ['present'];
+                    //     }
+                    //     return [];
+                    //   },
+                    //   onDaySelected: (selectedDay, focusedDay) {
+                    //     HapticFeedback.lightImpact();
+                    //     setState(() {
+                    //       _selectedDay = selectedDay;
+                    //       _focusedDay = focusedDay;
+                    //     });
+                    //   },
+                    //   onFormatChanged: (format) {
+                    //     setState(() {
+                    //       _calendarFormat = format;
+                    //     });
+                    //   },
+                    //   onPageChanged: (focusedDay) {
+                    //     // Update the month when navigating
+                    //     _focusedDay = focusedDay;
+                    //     setState(() {
+                    //       _currentMonth = focusedDay;
+                    //     });
+                    //   },
+                    //   calendarStyle: CalendarStyle(
+                    //     // Improved styling
+                    //     markersMaxCount: 1,
+                    //     markerDecoration: BoxDecoration(
+                    //       color: Theme.of(context).colorScheme.secondary,
+                    //       shape: BoxShape.circle,
+                    //     ),
+                    //     markerSize: 8,
+                    //     todayDecoration: BoxDecoration(
+                    //       color: Theme.of(context).primaryColor.withOpacity(0.3),
+                    //       shape: BoxShape.circle,
+                    //     ),
+                    //     selectedDecoration: BoxDecoration(
+                    //       color: Theme.of(context).primaryColor,
+                    //       shape: BoxShape.circle,
+                    //     ),
+                    //     // Marker for attendance has a cell with colored background
+                    //     markersAnchor: 0.7,
+                    //     cellMargin: const EdgeInsets.all(2),
+                    //     outsideDaysVisible: false,
+                    //     weekendTextStyle: TextStyle(
+                    //       color: isDarkMode ? Colors.red[200] : Colors.red,
+                    //     ),
+                    //   ),
+                    //   headerStyle: HeaderStyle(
+                    //     titleCentered: true,
+                    //     formatButtonDecoration: BoxDecoration(
+                    //       color: Theme.of(context)
+                    //           .colorScheme
+                    //           .secondary
+                    //           .withOpacity(0.1),
+                    //       borderRadius: BorderRadius.circular(20),
+                    //     ),
+                    //     formatButtonTextStyle: TextStyle(
+                    //       color: Theme.of(context).colorScheme.secondary,
+                    //     ),
+                    //     leftChevronIcon: Icon(
+                    //       Icons.chevron_left,
+                    //       color: Theme.of(context).colorScheme.primary,
+                    //     ),
+                    //     rightChevronIcon: Icon(
+                    //       Icons.chevron_right,
+                    //       color: Theme.of(context).colorScheme.primary,
+                    //     ),
+                    //   ),
+                    //   daysOfWeekStyle: DaysOfWeekStyle(
+                    //     weekdayStyle: Theme.of(context).textTheme.bodySmall ??
+                    //         const TextStyle(),
+                    //     weekendStyle: (Theme.of(context).textTheme.bodySmall ??
+                    //             const TextStyle())
+                    //         .copyWith(
+                    //       color: isDarkMode ? Colors.red[200] : Colors.red,
+                    //     ),
+                    //   ),
+                    // ),
+                  ),
                 ),
               ),
 
@@ -2670,7 +2724,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                         Text(
                           DateFormat('EEEE, MMMM d, yyyy')
                               .format(_selectedDay!),
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -2718,7 +2772,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                                         : 'No Attendance',
                                     style: Theme.of(context)
                                         .textTheme
-                                        .titleMedium
+                                        .bodyLarge
                                         ?.copyWith(
                                           color: attendanceProvider
                                                   .attendanceDays
@@ -2868,7 +2922,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                           const SizedBox(width: 8),
                           Text(
                             'Attendance Overview',
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
                           ),
                         ],
                       ),
@@ -2903,7 +2961,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                         children: [
                           Text(
                             '30-Day Attendance Rate',
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                           const SizedBox(height: 8),
                           Row(
@@ -2958,11 +3016,11 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                       // Total check-ins visualization
                       Row(
                         children: [
-                          Icon(Icons.check_circle, color: secondaryColor),
+                          Icon(Icons.check_circle, color: primaryColor),
                           const SizedBox(width: 8),
                           Text(
                             'Total Check-ins:',
-                            style: Theme.of(context).textTheme.titleSmall,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           const Spacer(),
                           Container(
@@ -2976,7 +3034,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                               '${attendanceProvider.totalAttendance}',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                color: secondaryColor,
+                                color: primaryColor,
                                 fontSize: 16,
                               ),
                             ),
@@ -3141,7 +3199,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                 const SizedBox(width: 8),
                 Text(
                   'This Week\'s Attendance',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -3350,7 +3408,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                 const SizedBox(width: 8),
                 Text(
                   'Workout Pattern',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -3611,7 +3669,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                 const SizedBox(width: 8),
                 Text(
                   'Monthly Attendance Rate',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -3865,7 +3923,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                 const SizedBox(width: 8),
                 Text(
                   'Custom Date Range',
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),
@@ -4087,7 +4145,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
             const SizedBox(height: 16),
             Text(
               'No attendance records found',
-              style: Theme.of(context).textTheme.titleMedium,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 8),
             Text(
@@ -4242,7 +4300,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                   children: [
                     Text(
                       'Attendance History',
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -4384,7 +4442,6 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
             child: Text(
               formattedTime,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                   ),
             ),

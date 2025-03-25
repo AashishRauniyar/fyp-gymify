@@ -435,7 +435,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
                 Expanded(
                   child: Text(
                     selectedDateFormatted,
-                    style: theme.textTheme.titleLarge?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                     overflow: TextOverflow.ellipsis,
@@ -459,9 +459,8 @@ class _MealLogsScreenState extends State<MealLogsScreen>
           // Macronutrients progress
           Text(
             'Macronutrients',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: theme.textTheme.bodyLarge
+                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 22),
           ),
 
           const SizedBox(height: 16),
@@ -478,8 +477,9 @@ class _MealLogsScreenState extends State<MealLogsScreen>
             children: [
               Text(
                 'Meal Logs',
-                style: theme.textTheme.titleLarge?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
+                  fontSize: 24,
                 ),
               ),
               TextButton.icon(

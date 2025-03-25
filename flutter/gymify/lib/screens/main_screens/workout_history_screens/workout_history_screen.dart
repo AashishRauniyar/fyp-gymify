@@ -769,7 +769,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen>
                   // Date Range Filter
                   Text(
                     'Date Range',
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -843,7 +843,7 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen>
                   // Muscle Group Filter
                   Text(
                     'Target Muscle Group',
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),

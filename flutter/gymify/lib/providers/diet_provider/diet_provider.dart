@@ -338,7 +338,6 @@ class DietProvider with ChangeNotifier {
         throw Exception('No response data received from the server');
       }
 
-      
       if (response.data['status'] == 'success') {
         // Remove the diet plan from the list
         _diets.removeWhere((diet) => diet.dietPlanId == dietId);
