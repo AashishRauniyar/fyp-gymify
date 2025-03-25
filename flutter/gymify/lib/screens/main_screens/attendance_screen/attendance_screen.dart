@@ -4242,7 +4242,7 @@ class _AttendanceCalendarScreenState extends State<AttendanceCalendarScreen>
                   children: [
                     Text(
                       'Attendance History',
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: 4),
                     Text(

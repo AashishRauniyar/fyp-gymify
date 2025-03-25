@@ -265,6 +265,7 @@
 // }
 
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
@@ -454,8 +455,10 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundImage:
-                                    NetworkImage(exercise.imageUrl),
+                                // backgroundImage:
+                                //     NetworkImage(exercise.imageUrl),
+                                backgroundImage: CachedNetworkImageProvider(
+                                    exercise.imageUrl),
                               ),
                               title: Text(exercise.exerciseName),
                               subtitle: Text(exercise.targetMuscleGroup),

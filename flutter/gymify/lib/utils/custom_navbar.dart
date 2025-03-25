@@ -118,6 +118,13 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     _NavigationItem(icon: FontAwesomeIcons.rocketchat, label: 'Community'),
     _NavigationItem(icon: FontAwesomeIcons.user, label: 'Profile'),
   ];
+  // final List<_NavigationItem> _navItems = [
+  //   _NavigationItem(icon: Icons.home, label: 'Home'),
+  //   _NavigationItem(icon: Icons.work, label: 'Workouts'),
+  //   _NavigationItem(icon: FontAwesomeIcons.utensils, label: 'Nutrition'),
+  //   _NavigationItem(icon: FontAwesomeIcons.rocketchat, label: 'Community'),
+  //   _NavigationItem(icon: FontAwesomeIcons.user, label: 'Profile'),
+  // ];
 
   int _selectedTab = 0;
 
