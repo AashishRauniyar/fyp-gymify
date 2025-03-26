@@ -181,11 +181,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       }),
 
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('weightLog');
-                      //     },
-                      //     child: const Text("Weight History")),
+                      TextButton(
+                          onPressed: () {
+                            context.pushNamed('aiChatScreen');
+                          },
+                          child: const Text("AI chat")),
 
                       // TextButton(
                       //   onPressed: () {

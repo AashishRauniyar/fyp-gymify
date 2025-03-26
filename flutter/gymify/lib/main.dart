@@ -103,6 +103,8 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gymify/providers/ai_chatbot_provider/ai_chatbot_provider.dart';
 import 'package:gymify/providers/attendance_provider/attendance_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/chat_provider/trainer_provider.dart';
@@ -122,7 +124,8 @@ import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: "lib/.env");
   runApp(
     MultiProvider(
       providers: [
@@ -144,6 +147,8 @@ void main() {
         ChangeNotifierProvider(create: (context) => MembershipProvider()),
         ChangeNotifierProvider(create: (context) => PedometerProvider()),
         ChangeNotifierProvider(create: (context) => AttendanceProvider()),
+        ChangeNotifierProvider(create: (context) => AIChatbotProvider(  // Add AIChatbotProvider
+            apiKey: dotenv.env['GEMINI_API_KEY']!)),
       ],
       child: const MyApp(),
     ),

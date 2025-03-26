@@ -84,6 +84,10 @@ dependencies:
   date_picker_timeline: ^1.2.5
   lottie: ^3.3.1
   flutter_slidable: ^4.0.0
+  google_generative_ai: ^0.4.6
+  flutter_dotenv: ^5.2.1
+  path_provider: ^2.1.5
+  flutter_markdown: ^0.7.6+2
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:
@@ -121,6 +125,7 @@ flutter:
     - assets/images/loading_screen/4.jpg
     - assets/images/loading_screen/5.jpg
     - assets/images/loading_screen/6.jpg
+    - lib/.env # path to your .env
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

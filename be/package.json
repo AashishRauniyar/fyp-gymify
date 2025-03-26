@@ -32,6 +32,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "nodemon": "^3.1.9",
+    "openai": "^4.89.1",
     "pg": "^8.13.1",
     "ratelimiter": "^3.4.1",
     "socket.io": "^4.8.1",

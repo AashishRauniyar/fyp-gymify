@@ -29,7 +29,7 @@ export const markAttendance = async (req, res) => {
                     where: {
                         status: 'Active',
                         end_date: {
-                            gte: new Date()
+                            gte: new Date().toISOString()
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/user_model.dart';
+import 'package:gymify/screens/ai_screen/ai_chatbot_screen.dart';
 import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
 import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
 import 'package:gymify/screens/authentication/trying/otp_verification.dart';
@@ -366,6 +367,10 @@ final GoRouter router = GoRouter(
         name: 'manageDietPlans',
         path: '/manageDietPlans',
         builder: (context, state) => const ManageDietPlans()),
+    GoRoute(
+        name: 'aiChatScreen',
+        path: '/aiChatScreen',
+        builder: (context, state) => const AIChatbotScreen()),
 
     GoRoute(
       name: 'chatScreen',
