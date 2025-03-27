@@ -117,7 +117,7 @@
 //           IconButton(
 //             icon: const Icon(
 //               Icons.refresh,
-//               color: AppColors.darkPrimary,
+//               color: Theme.of(context).colorScheme.primary,
 //             ),
 //             onPressed: () {
 //               final chatProvider =
@@ -448,7 +448,7 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('GymBuddy AI Help'),
+          title: const Text('Gymify AI Help'),
           content: const SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -499,20 +499,20 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: 'GymBuddy AI Coach',
+        title: 'Gymify AI Coach',
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.help_outline,
-              color: AppColors.darkPrimary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: _showHelpPopup,
             tooltip: 'Help',
           ),
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.refresh,
-              color: AppColors.darkPrimary,
+              color: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () {
               final chatProvider =
@@ -529,21 +529,21 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
           // Fitness-themed banner
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            color: AppColors.darkPrimary.withOpacity(0.1),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
             child: Consumer<AIChatbotProvider>(
               builder: (context, chatProvider, child) {
                 final name = chatProvider.userName?.split(' ')[0] ?? 'Athlete';
                 return Row(
                   children: [
-                    const Icon(Icons.fitness_center,
-                        color: AppColors.darkPrimary),
+                    Icon(Icons.fitness_center,
+                        color: Theme.of(context).colorScheme.primary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
                         'Ready to crush your workout today, $name?',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.darkPrimary,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
                     ),
@@ -595,16 +595,25 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
-                              color: AppColors.darkPrimary.withOpacity(0.15),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primary
+                                  .withOpacity(0.15),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.darkPrimary.withOpacity(0.3),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.3),
                               ),
                             ),
                             child: Text(
                               message.content,
                               style: TextStyle(
-                                color: AppColors.darkPrimary.withOpacity(0.8),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primary
+                                    .withOpacity(0.8),
                               ),
                             ),
                           ),
@@ -653,7 +662,8 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
               ? Container(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: Colors.grey.shade200,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
                   child: Row(
                     children: [
                       Expanded(
@@ -713,14 +723,14 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                     icon: const Icon(Icons.camera_alt),
                     onPressed: _takePicture,
                     tooltip: 'Analyze food with camera',
-                    color: AppColors.darkPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   // Gallery button
                   IconButton(
                     icon: const Icon(Icons.photo_library),
                     onPressed: _pickImage,
                     tooltip: 'Analyze food from gallery',
-                    color: AppColors.darkPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   // Help button
                   IconButton(
@@ -731,7 +741,7 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                       });
                     },
                     tooltip: 'Quick prompts',
-                    color: AppColors.darkPrimary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   // Text input
                   Expanded(
@@ -762,9 +772,9 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                   const SizedBox(width: 8),
                   // Send button
                   Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: AppColors.darkPrimary,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.send, color: Colors.white),
@@ -797,7 +807,7 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
           label: Text(text),
           labelStyle: const TextStyle(
             fontSize: 12,
-            color: AppColors.darkPrimary,
+            color: Colors.white,
           ),
           padding: EdgeInsets.zero,
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -818,7 +828,7 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: isUser
-              ? AppColors.darkPrimary
+              ? Theme.of(context).colorScheme.primary
               : Theme.of(context).colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
           // Add drop shadow for better visibility
@@ -921,7 +931,9 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                   ),
                   strong: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   em: TextStyle(
                     fontStyle: FontStyle.italic,
@@ -935,23 +947,33 @@ class _AIChatbotScreenState extends State<AIChatbotScreen> {
                   h1: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   h2: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   h3: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   listBullet: TextStyle(
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                   checkbox: TextStyle(
-                    color: isUser ? Colors.white : AppColors.darkPrimary,
+                    color: isUser
+                        ? Colors.white
+                        : Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 onTapLink: (text, href, title) {

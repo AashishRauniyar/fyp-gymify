@@ -348,7 +348,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -398,9 +397,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (authProvider.isLoggedIn) {
         await Future.delayed(const Duration(milliseconds: 500), () {
           // if (mounted) context.go('/home');
-          if(authProvider.role == "Trainer"){
+          if (authProvider.role == "Trainer") {
             if (mounted) context.go('/trainerScreen');
-          }else{
+          } else {
             if (mounted) context.go('/home');
           }
         });
@@ -490,7 +489,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
                       },
                     ),
-                    Text('Remember Me', style: theme.textTheme.bodyMedium),
+                    // Text('Remember Me', style: theme.textTheme.bodyMedium),
                     const Spacer(),
                     TextButton(
                       onPressed: () {

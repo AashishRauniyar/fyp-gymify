@@ -969,7 +969,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   // Check if the user's role is "Trainer"
                   if (profileProvider.user?.role == "Trainer") ...[
                     Text(
-                      'Fitness Tools',
+                      'Trainer Tools',
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -1134,10 +1134,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _buildActionTile(
                             context,
                             CupertinoIcons.lock_fill,
-                            'Change Password',
+                            'Reset Password',
                             'Update your account password',
                             () {
                               // Handle change password action
+
+                              context.pushNamed('forgotPassword');
                             },
                           ),
                           _buildActionTile(
@@ -1232,7 +1234,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     child: Card(
-                    elevation: 0,
+                      elevation: 0,
                       margin: const EdgeInsets.only(bottom: 32, top: 12),
                       child: Column(
                         children: [

@@ -334,7 +334,7 @@ class AIChatbotProvider with ChangeNotifier {
     final firstName = _userName!.split(' ')[0];
 
     final welcomeMessage = '''
-Hi $firstName! 👋 Welcome to GymBuddy AI - your personal fitness assistant!
+Hi $firstName! 👋 Welcome to Gymify AI - your personal fitness assistant!
 
 I'm here to help you reach your fitness goals. You can ask me about:
 - Workout routines

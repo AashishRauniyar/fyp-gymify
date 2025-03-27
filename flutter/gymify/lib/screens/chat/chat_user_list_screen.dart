@@ -46,6 +46,8 @@ class _UserTrainerPageState extends State<UserTrainerPage> {
           title: role == 'Trainer'
               ? 'Chat with Users with Membership'
               : 'Chat with Trainers'),
+      // FAB to show chat with AI
+      
       body: _fetchFuture == null
           ? const Center(child: CustomLoadingAnimation())
           : FutureBuilder(

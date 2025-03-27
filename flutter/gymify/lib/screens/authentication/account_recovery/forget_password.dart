@@ -73,7 +73,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               // Illustration for forgot password
               Image.asset(
-                'assets/images/forgot_password.png',
+                'assets/images/forgot_password.jpg',
                 width: 150,
                 height: 150,
               ),
