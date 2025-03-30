@@ -88,7 +88,7 @@ class NutritionStatsWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        
+
         gradient: isDarkMode
             ? LinearGradient(
                 colors: [
@@ -173,7 +173,6 @@ class NutritionStatsWidget extends StatelessWidget {
             onPressed: () {
               context.pushNamed('mealLog');
             },
-            icon: const Icon(Icons.restaurant_menu),
             label: const Text('View Meal Logs'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,

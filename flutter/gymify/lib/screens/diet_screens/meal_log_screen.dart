@@ -145,6 +145,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/models/diet_log_models/meal_logs_model.dart';
@@ -393,14 +394,16 @@ class _MealLogsScreenState extends State<MealLogsScreen>
       //     ),
       //   ),
       // ),
-
+      //TODO: Implement the floating action button to open meal
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigation to add meal log screen
-          _showAddMealDialog(context);
+          // _showAddMealDialog(context);
+          // go to meal screen
+          context.pushNamed('dietSearch');
         },
         backgroundColor: theme.colorScheme.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.search, color: Colors.white),
       ),
     );
   }

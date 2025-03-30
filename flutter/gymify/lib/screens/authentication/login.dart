@@ -368,7 +368,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _rememberMe = false;
+  final bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -481,14 +481,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Remember Me & Forgot Password
                 Row(
                   children: [
-                    Checkbox(
-                      value: _rememberMe,
-                      onChanged: (value) {
-                        setState(() {
-                          _rememberMe = value ?? false;
-                        });
-                      },
-                    ),
                     // Text('Remember Me', style: theme.textTheme.bodyMedium),
                     const Spacer(),
                     TextButton(

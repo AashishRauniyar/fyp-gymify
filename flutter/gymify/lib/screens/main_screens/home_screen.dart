@@ -18,6 +18,7 @@ import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:gymify/widget/attendance_date_picker_widget.dart';
 import 'package:gymify/widget/attendance_stats_widget.dart';
+import 'package:gymify/widget/fitnes_stats_widget.dart';
 import 'package:gymify/widget/nutrition_stats_widget.dart';
 import 'package:gymify/widget/workout_stats_widget.dart';
 import 'package:intl/intl.dart';
@@ -203,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       _buildAttendanceSection(context),
                       const SizedBox(height: 10),
+                      _buildStepCountSection(context),
 
                       TextButton(
                           onPressed: () {
@@ -1523,4 +1525,34 @@ class WorkoutCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildStepCountSection(BuildContext context) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Step Counter",
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          TextButton(
+            onPressed: () {
+              context.pushNamed('stepCount');
+            },
+            child: const Text("Details"),
+          ),
+        ],
+      ),
+      const SizedBox(height: 10),
+      // Add the FitnessStatsCard here
+      FitnessStatsCard(
+        onTap: () {
+          context.pushNamed('stepCount');
+        },
+      ),
+    ],
+  );
 }

@@ -13,6 +13,7 @@ export const getAllUsers = async (req, res) => {
             select: {
                 user_id: true,
                 user_name: true,
+                profile_image: true,
                 role: true,
             }
         });
@@ -81,6 +82,7 @@ export const getActiveMembers = async (req, res) => {
                     select: {
                         user_id: true,
                         user_name: true,
+                        profile_image: true,
                         role: true,
                     },
                 },
@@ -116,6 +118,7 @@ export const getAllTrainers = async (req, res) => {
             select: {
                 user_id: true,
                 user_name: true,
+                profile_image: true,
                 role: true,
             }
         });
@@ -143,6 +146,7 @@ export const getAllMembers = async (req, res) => {
             select: {
                 user_id: true,
                 user_name: true,
+                profile_image: true,
                 role: true,
             }
         });
@@ -170,6 +174,7 @@ export const getUserById = async (req, res) => {
                 user_id: true,
                 user_name: true,
                 role: true,
+                profile_image: true,
                 created_at: true,
                 updated_at: true
             }

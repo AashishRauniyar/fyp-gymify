@@ -97,6 +97,7 @@
 //   }
 // }
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -118,9 +119,10 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
     _NavigationItem(icon: FontAwesomeIcons.rocketchat, label: 'Community'),
     _NavigationItem(icon: FontAwesomeIcons.user, label: 'Profile'),
   ];
+
   // final List<_NavigationItem> _navItems = [
-  //   _NavigationItem(icon: Icons.home, label: 'Home'),
-  //   _NavigationItem(icon: Icons.work, label: 'Workouts'),
+  //   _NavigationItem(icon: CupertinoIcons.home, label: 'Home'),
+  //   _NavigationItem(icon: CupertinoIcons.bolt_badge_a_fill, label: 'Workouts'),
   //   _NavigationItem(icon: FontAwesomeIcons.utensils, label: 'Nutrition'),
   //   _NavigationItem(icon: FontAwesomeIcons.rocketchat, label: 'Community'),
   //   _NavigationItem(icon: FontAwesomeIcons.user, label: 'Profile'),

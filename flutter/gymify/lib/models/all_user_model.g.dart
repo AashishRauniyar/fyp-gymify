@@ -9,6 +9,7 @@ part of 'all_user_model.dart';
 AllUserModel _$AllUserModelFromJson(Map<String, dynamic> json) => AllUserModel(
       userId: (json['user_id'] as num).toInt(),
       userName: json['user_name'] as String,
+      profileImage: json['profile_image'] as String,
       role: json['role'] as String,
     );
 
@@ -16,5 +17,6 @@ Map<String, dynamic> _$AllUserModelToJson(AllUserModel instance) =>
     <String, dynamic>{
       'user_id': instance.userId,
       'user_name': instance.userName,
+      'profile_image': instance.profileImage,
       'role': instance.role,
     };

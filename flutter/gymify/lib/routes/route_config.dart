@@ -380,11 +380,13 @@ final GoRouter router = GoRouter(
         final chatId = extra['chatId'] as int;
         final userId = extra['userId'] as String;
         final userName = extra['userName'] as String;
+        final userImage = extra['userImage'] as String;
 
         return ChatScreen(
           chatId: chatId,
           userId: userId,
           userName: userName,
+          userImage: userImage,
         );
       },
     ),

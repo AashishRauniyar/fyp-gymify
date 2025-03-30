@@ -310,6 +310,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
 
               // Description
               TextFormField(
+                maxLines: 3,
                 decoration: const InputDecoration(labelText: 'Description'),
                 onSaved: (value) => description = value ?? '',
                 validator: (value) {

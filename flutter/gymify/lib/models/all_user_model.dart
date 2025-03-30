@@ -8,12 +8,15 @@ class AllUserModel {
     final int userId;
     @JsonKey(name: "user_name")
     final String userName;
+    @JsonKey(name: "profile_image")
+    final String profileImage;
     @JsonKey(name: "role")
     final String role;
 
     AllUserModel({
         required this.userId,
         required this.userName,
+        required this.profileImage,
         required this.role,
     });
 

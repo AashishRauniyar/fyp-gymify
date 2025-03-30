@@ -185,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
+  chewie:
+    dependency: "direct main"
+    description:
+      name: chewie
+      sha256: "0bf6f7692cb65f7b8f59a2a17025b9cbe8f75ab4251e66161a4fc86162475fb6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.0"
   circular_countdown_timer:
     dependency: "direct main"
     description:
@@ -1821,6 +1829,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.3.1"
+  wakelock_plus:
+    dependency: transitive
+    description:
+      name: wakelock_plus
+      sha256: b90fbcc8d7bdf3b883ea9706d9d76b9978cb1dfa4351fcc8014d6ec31a493354
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.11"
+  wakelock_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: wakelock_plus_platform_interface
+      sha256: "70e780bc99796e1db82fe764b1e7dcb89a86f1e5b3afb1db354de50f2e41eb7a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.2"
   watcher:
     dependency: transitive
     description:

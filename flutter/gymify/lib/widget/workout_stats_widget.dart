@@ -256,7 +256,7 @@ class WorkoutStatsWidget extends StatelessWidget {
             onPressed: () {
               context.pushNamed('workoutHistory', extra: userId);
             },
-            icon: const Icon(Icons.history),
+            // icon: const Icon(Icons.history),
             label: const Text('View Workout History'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,

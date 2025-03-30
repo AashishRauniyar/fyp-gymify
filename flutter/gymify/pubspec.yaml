@@ -88,6 +88,7 @@ dependencies:
   flutter_dotenv: ^5.2.1
   path_provider: ^2.1.5
   flutter_markdown: ^0.7.6+2
+  chewie: ^1.11.0
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:

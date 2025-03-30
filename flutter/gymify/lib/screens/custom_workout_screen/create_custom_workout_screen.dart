@@ -334,6 +334,7 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
       appBar: const CustomAppBar(title: 'Create Custom Workout'),
       body: exerciseProvider.isLoading
           ? const CustomLoadingAnimation()
