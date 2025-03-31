@@ -17,6 +17,9 @@ import weightRouter from './weightRoutes.js';
 import testRouter from './testRoute.js';
 import adminUserRouter from './adminRoutes/adminUserRoutes.js';
 import adminMembershipRouter from './adminRoutes/adminMembershipRouter.js';
+import adminAttendanceRouter from './adminRoutes/adminAttendanceRoutes.js';
+import adminNewMembershipRouter from './adminRoutes/adminNewMembershipRoutes.js';
+import adminDashboardRouter from './adminRoutes/adminDashboardRouter.js';
 
 
 const mainRouter = express.Router();
@@ -42,5 +45,9 @@ mainRouter.use('/api', testRouter);
 
 mainRouter.use('/api/admin', adminUserRouter);
 mainRouter.use('/api/admin', adminMembershipRouter);
+mainRouter.use('/api/admin', adminAttendanceRouter);
+
+mainRouter.use('/api/admin', adminNewMembershipRouter);
+mainRouter.use('/api/admin', adminDashboardRouter);
 
 export default mainRouter;
