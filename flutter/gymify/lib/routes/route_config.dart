@@ -5,12 +5,16 @@ import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/user_model.dart';
+import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/screens/ai_screen/ai_chatbot_screen.dart';
 import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
 import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
 import 'package:gymify/screens/authentication/trying/otp_verification.dart';
 import 'package:gymify/screens/authentication/trying/signup.dart';
 import 'package:gymify/screens/chat/chat_user_list_screen.dart';
+import 'package:gymify/screens/create_workout_screen/edit_workout_screen.dart';
+import 'package:gymify/screens/create_workout_screen/manage_workout_exercises_screen.dart';
+import 'package:gymify/screens/create_workout_screen/manage_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_screen.dart';
@@ -244,6 +248,28 @@ final GoRouter router = GoRouter(
         name: "createWorkout",
         path: '/createWorkout',
         builder: (context, state) => const CreateWorkoutScreen()),
+    GoRoute(
+        name: "manageWorkouts",
+        path: '/manageWorkouts',
+        builder: (context, state) => const ManageWorkoutScreen()),
+    GoRoute(
+  name: "editWorkout",
+  path: '/editWorkout',
+  builder: (context, state) {
+    final workout = state.extra as Workout;
+    return EditWorkoutScreen(workout: workout);
+  }
+),
+
+// New route for managing exercises in a workout
+GoRoute(
+  name: "manageWorkoutExercises",
+  path: '/manageWorkoutExercises',
+  builder: (context, state) {
+    final workout = state.extra as Workout;
+    return ManageWorkoutExercisesScreen(workout: workout);
+  }
+),
     GoRoute(
       name: 'exercises',
       path: '/exercises',

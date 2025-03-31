@@ -204,6 +204,45 @@ export const getWorkoutById = async (req, res) => {
 
 
 // Update workout by ID (Trainer only)
+// export const updateWorkout = async (req, res) => {
+//     try {
+//         const { user_id, role } = req.user;
+//         const workoutId = parseInt(req.params.id);
+
+//         if (role !== 'Trainer') {
+//             return res.status(403).json({ status: 'failure', message: 'Access denied' });
+//         }
+
+//         const { workout_name, description, target_muscle_group, difficulty } = req.body;
+
+//         // Check if workout exists
+//         const workoutExists = await prisma.workouts.findUnique({ where: { workout_id: workoutId } });
+//         if (!workoutExists) {
+//             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
+//         }
+
+//         // Update the workout
+//         const updatedWorkout = await prisma.workouts.update({
+//             where: { workout_id: workoutId },
+//             data: {
+//                 workout_name,
+//                 description,
+//                 target_muscle_group,
+//                 difficulty,
+//                 goal_type,
+//                 fitness_level,
+//                 updated_at: new Date()
+//             }
+//         });
+
+//         res.status(200).json({ status: 'success', message: 'Workout updated successfully', data: updatedWorkout });
+//     } catch (error) {
+//         console.error('Error updating workout:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
+
+// Update workout by ID (Trainer only)
 export const updateWorkout = async (req, res) => {
     try {
         const { user_id, role } = req.user;
@@ -213,7 +252,15 @@ export const updateWorkout = async (req, res) => {
             return res.status(403).json({ status: 'failure', message: 'Access denied' });
         }
 
-        const { workout_name, description, target_muscle_group, difficulty } = req.body;
+        // Extract ALL required fields from the request body
+        const {
+            workout_name,
+            description,
+            target_muscle_group,
+            difficulty,
+            goal_type,       // Add this line - you were missing it
+            fitness_level    // Add this line - you were missing it
+        } = req.body;
 
         // Check if workout exists
         const workoutExists = await prisma.workouts.findUnique({ where: { workout_id: workoutId } });
@@ -241,7 +288,6 @@ export const updateWorkout = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
 
 // Delete workout by ID (Trainer only)
 export const deleteWorkout = async (req, res) => {
@@ -371,7 +417,7 @@ export const bulkCreateWorkouts = async (req, res) => {
 
         // Get uploaded files
         const uploadedFiles = req.files || [];
-        
+
         // Create a mapping between workout index and file
         const fileMap = {};
         uploadedFiles.forEach(file => {
@@ -385,17 +431,17 @@ export const bulkCreateWorkouts = async (req, res) => {
 
         // Create workouts and their exercises
         const createdWorkouts = [];
-        
+
         for (let i = 0; i < workouts.length; i++) {
             const workout = workouts[i];
-            const { 
-                workout_name, 
-                description, 
-                target_muscle_group, 
-                difficulty, 
-                goal_type, 
+            const {
+                workout_name,
+                description,
+                target_muscle_group,
+                difficulty,
+                goal_type,
                 fitness_level,
-                exercises 
+                exercises
             } = workout;
 
             // Validate required workout fields
@@ -449,7 +495,7 @@ export const bulkCreateWorkouts = async (req, res) => {
             // Process exercises if any
             if (Array.isArray(exercises) && exercises.length > 0) {
                 const addedExercises = [];
-                
+
                 for (const exercise of exercises) {
                     const { exercise_id, sets, reps, duration } = exercise;
 
@@ -474,7 +520,7 @@ export const bulkCreateWorkouts = async (req, res) => {
                     });
                     addedExercises.push(workoutExercise);
                 }
-                
+
                 // Add the exercises to the created workout object for response
                 createdWorkout.exercises = addedExercises;
             }

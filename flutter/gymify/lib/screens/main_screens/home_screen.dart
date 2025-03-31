@@ -187,6 +187,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             context.pushNamed('aiChatScreen');
                           },
                           child: const Text("AI chat")),
+                      TextButton(
+                          onPressed: () {
+                            context.pushNamed('manageWorkouts');
+                          },
+                          child: const Text("Manage Workout")),
 
                       // TextButton(
                       //   onPressed: () {
