@@ -2,7 +2,10 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-// Get all users for the admin panel
+/**
+ * Get all users for the admin panel
+ * Retrieves a list of all users with basic information
+ */
 export const getAllUsersForAdmin = async (req, res) => {
     try {
         const users = await prisma.users.findMany({
@@ -31,7 +34,10 @@ export const getAllUsersForAdmin = async (req, res) => {
     }
 };
 
-// Get a single user by ID
+/**
+ * Get a single user by ID
+ * Retrieves detailed information about a specific user
+ */
 export const getUserByIdForAdmin = async (req, res) => {
     const { id } = req.params;
     try {
@@ -45,10 +51,17 @@ export const getUserByIdForAdmin = async (req, res) => {
                 address: true,
                 email: true,
                 phone_number: true,
-                membership_status: true,
-                gym: true,
-                dietPlans: true,
-                workoutlogs: true
+                fitness_level: true,
+                goal_type: true,
+                allergies: true,
+                calorie_goals: true,
+                current_weight: true,
+                height: true,
+                birthdate: true,
+                gender: true,
+                created_at: true,
+                profile_image: true,
+                verified: true
             }
         });
 
@@ -67,15 +80,39 @@ export const getUserByIdForAdmin = async (req, res) => {
     }
 };
 
-// Update user details
+/**
+ * Update user details
+ * Allows admin to update user information
+ */
 export const updateUserForAdmin = async (req, res) => {
     const { id } = req.params;
-    const { full_name, email, phone_number, role } = req.body;
+    const { 
+        full_name, 
+        email, 
+        phone_number, 
+        role, 
+        address, 
+        fitness_level,
+        goal_type,
+        allergies,
+        verified
+    } = req.body;
 
     try {
         const updatedUser = await prisma.users.update({
             where: { user_id: parseInt(id) },
-            data: { full_name, email, phone_number, role }
+            data: { 
+                full_name, 
+                email, 
+                phone_number, 
+                role, 
+                address, 
+                fitness_level,
+                goal_type,
+                allergies,
+                verified,
+                updated_at: new Date()
+            }
         });
 
         res.status(200).json({
@@ -89,7 +126,10 @@ export const updateUserForAdmin = async (req, res) => {
     }
 };
 
-// Delete user
+/**
+ * Delete user
+ * Permanently removes a user from the system
+ */
 export const deleteUserForAdmin = async (req, res) => {
     const { id } = req.params;
 
@@ -105,5 +145,87 @@ export const deleteUserForAdmin = async (req, res) => {
     } catch (error) {
         console.error('Error deleting user:', error);
         res.status(500).json({ error: 'Failed to delete user' });
+    }
+};
+
+/**
+ * Get user membership details
+ * Retrieves all membership information for a specific user
+ */
+export const getUserMembershipDetails = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const membershipDetails = await prisma.memberships.findMany({
+            where: { user_id: parseInt(id) },
+            include: {
+                membership_plan: true,
+                payments: true
+            },
+            orderBy: { created_at: 'desc' }
+        });
+        
+        res.status(200).json({
+            status: 'success',
+            message: 'User membership details fetched successfully',
+            data: membershipDetails
+        });
+    } catch (error) {
+        console.error('Error fetching membership details:', error);
+        res.status(500).json({ error: 'Failed to fetch membership details' });
+    }
+};
+
+/**
+ * Get user attendance history
+ * Retrieves attendance records for a specific user with date filtering
+ */
+export const getUserAttendanceHistory = async (req, res) => {
+    const { id } = req.params;
+    const { startDate, endDate } = req.query;
+    
+    const dateFilter = {};
+    if (startDate) dateFilter.gte = new Date(startDate);
+    if (endDate) dateFilter.lte = new Date(endDate);
+    
+    try {
+        const attendance = await prisma.attendance.findMany({
+            where: { 
+                user_id: parseInt(id),
+                ...(startDate || endDate ? { attendance_date: dateFilter } : {})
+            },
+            orderBy: { attendance_date: 'desc' }
+        });
+        
+        res.status(200).json({
+            status: 'success',
+            message: 'User attendance fetched successfully',
+            data: attendance
+        });
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        res.status(500).json({ error: 'Failed to fetch attendance records' });
+    }
+};
+
+/**
+ * Get user weight progress
+ * Retrieves weight logs for a specific user
+ */
+export const getUserWeightProgress = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const weightLogs = await prisma.weight_logs.findMany({
+            where: { user_id: parseInt(id) },
+            orderBy: { logged_at: 'asc' }
+        });
+        
+        res.status(200).json({
+            status: 'success',
+            message: 'Weight progress fetched successfully',
+            data: weightLogs
+        });
+    } catch (error) {
+        console.error('Error fetching weight logs:', error);
+        res.status(500).json({ error: 'Failed to fetch weight logs' });
     }
 };

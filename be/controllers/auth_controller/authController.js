@@ -9,16 +9,9 @@ import nodemailer from 'nodemailer';
 
 
 import { body, validationResult } from 'express-validator';
+import { sendOTPEmail } from '../../utils/sendMail.js';
 
 
-// Email configuration
-const transporter = nodemailer.createTransport({
-    service: 'Gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS, // Use app-specific password
-    },
-});
 
 // Input validation middleware
 const registerValidation = [
@@ -40,25 +33,25 @@ const generateOTP = () => {
 };
 
 // Helper function to send OTP email
-const sendOTPEmail = async (email, otp, isResend = false) => {
-    try {
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: `${isResend ? 'Resend: ' : ''}Email Verification Code`,
-            html: `
-                <h2>Welcome to Our Platform</h2>
-                <p>Your verification code is: <strong>${otp}</strong></p>
-                <p>This code will expire in 10 minutes.</p>
-                <p>If you didn't request this code, please ignore this email.</p>
-            `
-        });
-        return true;
-    } catch (error) {
-        console.error('Error sending email:', error);
-        return false;
-    }
-};
+// const sendOTPEmail = async (email, otp, isResend = false) => {
+//     try {
+//         await transporter.sendMail({
+//             from: process.env.EMAIL_USER,
+//             to: email,
+//             subject: `${isResend ? 'Resend: ' : ''}Email Verification Code`,
+//             html: `
+//                 <h2>Welcome to Our Platform</h2>
+//                 <p>Your verification code is: <strong>${otp}</strong></p>
+//                 <p>This code will expire in 10 minutes.</p>
+//                 <p>If you didn't request this code, please ignore this email.</p>
+//             `
+//         });
+//         return true;
+//     } catch (error) {
+//         console.error('Error sending email:', error);
+//         return false;
+//     }
+// };
 
 // Check if email exists
 export const checkEmailExists = async (req, res) => {

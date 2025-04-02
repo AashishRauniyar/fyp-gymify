@@ -6,7 +6,7 @@ const adminMembershipRouter = express.Router();
 
 // Get all memberships
 adminMembershipRouter.get('/memberships', authenticate, getAllMemberships );
-adminMembershipRouter.get('/memberships/:id', authenticate, getMembershipById);
+// adminMembershipRouter.get('/memberships/:id', authenticate, getMembershipById);
 // Update membership plans
 adminMembershipRouter.put('/memberships/:id', authenticate, updateMembershipPlan);
 
@@ -20,6 +20,8 @@ adminMembershipRouter.put('/memberships/:membershipId/renew', authenticate, rene
 
 // Get membership changes history for a membership
 adminMembershipRouter.get('/memberships/:membershipId/changes', authenticate, getMembershipChangesHistory);
+
+
 
 
 export default adminMembershipRouter;
