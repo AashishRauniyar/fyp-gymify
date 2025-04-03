@@ -559,14 +559,14 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
           ],
         ),
         body: Container(
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            image: const DecorationImage(
-              image: AssetImage('assets/images/chat_background.png'),
-              opacity: 0.05,
-              fit: BoxFit.cover,
-            ),
-          ),
+          // decoration: BoxDecoration(
+          //   color: backgroundColor,
+          //   image: const DecorationImage(
+          //     image: AssetImage('assets/images/chat_background.png'),
+          //     opacity: 0.05,
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
           child: Stack(
             children: [
               Column(

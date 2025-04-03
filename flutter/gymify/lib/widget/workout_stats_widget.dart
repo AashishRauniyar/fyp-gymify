@@ -389,7 +389,7 @@ class WorkoutStatsWidget extends StatelessWidget {
             color: theme.colorScheme.onSurface.withOpacity(0.5),
             size: 48,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 16), 
           Text(
             'No workout data available',
             style: theme.textTheme.titleMedium,
@@ -405,13 +405,13 @@ class WorkoutStatsWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              context.go('/'); // Navigate to workouts page
+              context.pushNamed('workoutSearch'); // Navigate to workouts page
             },
-            icon: const Icon(Icons.play_arrow),
-            label: const Text('Start Workout'),
+            // icon: const Icon(Icons.play_arrow),
+            label: const Text('Discover Workout'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: theme.colorScheme.onSurface,
+              backgroundColor: theme.colorScheme.primary,
               minimumSize: const Size(double.infinity, 44),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

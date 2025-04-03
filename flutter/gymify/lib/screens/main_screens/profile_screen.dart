@@ -523,7 +523,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context.go('/welcome');
                     }
                   },
-                  isDestructiveAction: true,
+                isDestructiveAction: true,
                   child: const Text('Logout'),
                 ),
               ],

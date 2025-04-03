@@ -205,6 +205,9 @@ const initSocket = (server) => {
         });
 
 
+        // for attendance
+
+
         // **Handle Disconnection**
         socket.on("disconnect", () => {
             const userId = Object.keys(connectedUsers).find(

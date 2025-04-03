@@ -15,12 +15,18 @@ class MembershipProvider with ChangeNotifier {
   String transactionId = '';
   String paymentUrl = '';
 
+  String _status = '';
+
+  bool _isActive = false;
+  bool get isActive => _isActive;
+
   // Getters
   List<dynamic> get plans => _plans;
   Map<String, dynamic>? get membershipStatus => _membershipStatus;
   Membership? get membership => _membership;
   String get error => _error;
   bool get isLoading => _isLoading;
+  String get status => _status;
 
   // Setters
   void setError(String error) {
@@ -123,7 +129,15 @@ class MembershipProvider with ChangeNotifier {
         );
 
         if (apiResponse.status == 'success') {
-          _membership = apiResponse.data; // Store membership details
+          _membership = apiResponse.data;
+          _status = _membership?.status ?? ''; // Store membership status
+          if(_membership?.status == 'Active') {
+            _isActive = true; // Set isActive to true if membership is active
+          } else {
+            _isActive = false; // Set isActive to false if membership is not active
+          }
+          print(" status is ${_status}");
+          // Store membership details
           print(_membership?.endDate);
         } else if (apiResponse.status == 'failure' &&
             apiResponse.message.contains("No membership found")) {

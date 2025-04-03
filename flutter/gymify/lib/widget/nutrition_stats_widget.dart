@@ -330,10 +330,10 @@ class NutritionStatsWidget extends StatelessWidget {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              context.push('/mealLogs');
+              context.push('/dietSearch');
             },
-            icon: const Icon(Icons.add),
-            label: const Text('Log a Meal'),
+            // icon: const Icon(Icons.add),
+            label: const Text('Explore Diet Plans'),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
               backgroundColor: theme.colorScheme.primary,
