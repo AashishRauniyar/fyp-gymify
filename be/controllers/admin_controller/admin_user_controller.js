@@ -1,5 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
+import bcrypt from 'bcryptjs';
+
 const prisma = new PrismaClient();
 
 /**
@@ -227,5 +229,128 @@ export const getUserWeightProgress = async (req, res) => {
     } catch (error) {
         console.error('Error fetching weight logs:', error);
         res.status(500).json({ error: 'Failed to fetch weight logs' });
+    }
+};
+
+
+// register a user by admin
+
+
+// **
+//  * Register a new user by admin
+//  * Allows an admin to register new users directly into the system
+//  */
+export const registerUserByAdmin = async (req, res) => {
+    try {
+        const { 
+            email, 
+            password, 
+            user_name, 
+            full_name, 
+            phone_number, 
+            role, 
+            address, 
+            gender,
+            birthdate,
+            height,
+            current_weight,
+            fitness_level, 
+            goal_type, 
+            allergies,
+            calorie_goals,
+            card_number
+        } = req.body;
+
+        // Check required fields
+        if (!email || !password || !user_name) {
+            return res.status(400).json({
+                status: 'failure',
+                message: 'Email, password, and username are required'
+            });
+        }
+
+        // Check if email already exists
+        const existingEmail = await prisma.users.findUnique({
+            where: { email: email.toLowerCase() }
+        });
+
+        if (existingEmail) {
+            return res.status(409).json({
+                status: 'failure',
+                message: 'Email already registered'
+            });
+        }
+
+        // Check if username already exists
+        const existingUsername = await prisma.users.findUnique({
+            where: { user_name }
+        });
+
+        if (existingUsername) {
+            return res.status(409).json({
+                status: 'failure',
+                message: 'Username already taken'
+            });
+        }
+
+        // Check if phone number already exists (if provided)
+        if (phone_number) {
+            const existingPhone = await prisma.users.findUnique({
+                where: { phone_number }
+            });
+
+            if (existingPhone) {
+                return res.status(409).json({
+                    status: 'failure',
+                    message: 'Phone number already registered'
+                });
+            }
+        }
+
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        // Create new user
+        const newUser = await prisma.users.create({
+            data: {
+                email: email.toLowerCase(),
+                password: hashedPassword,
+                user_name,
+                full_name,
+                phone_number,
+                role: role || 'Member', // Default to Member if not specified
+                address,
+                gender,
+                birthdate: birthdate ? new Date(birthdate) : null,
+                height: height ? parseFloat(height) : null,
+                current_weight: current_weight ? parseFloat(current_weight) : null,
+                fitness_level,
+                goal_type,
+                allergies,
+                calorie_goals: calorie_goals ? parseFloat(calorie_goals) : null,
+                card_number,
+                verified: true // Users created by admin are automatically verified
+            }
+        });
+
+        // Return success response with created user data
+        res.status(201).json({
+            status: 'success',
+            message: 'User registered successfully',
+            data: {
+                user_id: newUser.user_id,
+                email: newUser.email,
+                user_name: newUser.user_name,
+                role: newUser.role
+            }
+        });
+
+    } catch (error) {
+        console.error('Error registering user by admin:', error);
+        res.status(500).json({
+            status: 'failure',
+            message: 'Server error',
+            error: error.message
+        });
     }
 };

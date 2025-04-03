@@ -914,6 +914,82 @@ export const updateMembershipStatus = async (req, res) => {
  * Create a new membership
  * Allows admin to manually create a membership for a user
  */
+// export const createMembership = async (req, res) => {
+//     try {
+//         // Validate request
+//         await body('user_id').isInt().withMessage('Valid user ID is required').run(req);
+//         await body('plan_id').isInt().withMessage('Valid plan ID is required').run(req);
+//         await body('start_date').isDate().withMessage('Valid start date is required').run(req);
+//         await body('end_date').isDate().withMessage('Valid end date is required').run(req);
+//         await body('status').isIn(['Active', 'Pending'])
+//             .withMessage('Status must be either Active or Pending').run(req);
+
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({
+//                 status: 'error',
+//                 message: 'Validation failed',
+//                 errors: errors.array()
+//             });
+//         }
+
+//         const { user_id, plan_id, start_date, end_date, status } = req.body;
+
+//         // Check if user exists
+//         const user = await prisma.users.findUnique({
+//             where: { user_id: parseInt(user_id) }
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({
+//                 status: 'error',
+//                 message: 'User not found'
+//             });
+//         }
+
+//         // Check if plan exists
+//         const plan = await prisma.membership_plan.findUnique({
+//             where: { plan_id: parseInt(plan_id) }
+//         });
+
+//         if (!plan) {
+//             return res.status(404).json({
+//                 status: 'error',
+//                 message: 'Membership plan not found'
+//             });
+//         }
+
+//         // Create the membership
+//         const newMembership = await prisma.memberships.create({
+//             data: {
+//                 user_id: parseInt(user_id),
+//                 plan_id: parseInt(plan_id),
+//                 start_date: new Date(start_date),
+//                 end_date: new Date(end_date),
+//                 status,
+//                 created_at: new Date(),
+//                 updated_at: new Date()
+//             }
+//         });
+
+//         res.status(201).json({
+//             status: 'success',
+//             message: 'Membership created successfully',
+//             data: newMembership
+//         });
+//     } catch (error) {
+//         console.error('Error creating membership:', error);
+//         res.status(500).json({
+//             status: 'error',
+//             message: 'Failed to create membership'
+//         });
+//     }
+// };
+
+/**
+ * Create a new membership
+ * Allows admin to manually create a membership for a user
+ */
 export const createMembership = async (req, res) => {
     try {
         // Validate request
@@ -923,6 +999,8 @@ export const createMembership = async (req, res) => {
         await body('end_date').isDate().withMessage('Valid end date is required').run(req);
         await body('status').isIn(['Active', 'Pending'])
             .withMessage('Status must be either Active or Pending').run(req);
+        await body('payment_method').isIn(['Cash', 'Khalti', 'Online'])
+            .withMessage('Payment method must be Cash, Khalti, or Online').run(req);
 
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -933,7 +1011,7 @@ export const createMembership = async (req, res) => {
             });
         }
 
-        const { user_id, plan_id, start_date, end_date, status } = req.body;
+        const { user_id, plan_id, start_date, end_date, status, payment_method } = req.body;
 
         // Check if user exists
         const user = await prisma.users.findUnique({
@@ -971,6 +1049,23 @@ export const createMembership = async (req, res) => {
                 updated_at: new Date()
             }
         });
+
+        // Create payment record if payment method is provided
+        if (payment_method) {
+            const transaction_id = `MANUAL-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+            
+            await prisma.payments.create({
+                data: {
+                    membership_id: newMembership.membership_id,
+                    user_id: parseInt(user_id),
+                    price: plan.price,
+                    payment_method,
+                    transaction_id,
+                    payment_date: new Date(),
+                    payment_status: status === 'Active' ? 'Paid' : 'Pending'
+                }
+            });
+        }
 
         res.status(201).json({
             status: 'success',

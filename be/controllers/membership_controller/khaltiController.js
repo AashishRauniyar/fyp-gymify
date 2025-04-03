@@ -106,7 +106,8 @@ export const initiatePayment = async (req, res) => {
             data: {
                 pidx: khaltiResponse.data.pidx,
                 transaction_id: transactionId,
-                payment_url: khaltiResponse.data.payment_url
+                payment_url: khaltiResponse.data.payment_url,
+                amount: amount
             },
             message: 'Payment initiated successfully',
         });

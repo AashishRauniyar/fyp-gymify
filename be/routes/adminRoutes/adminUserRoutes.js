@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllUsersForAdmin, getUserByIdForAdmin, updateUserForAdmin, deleteUserForAdmin, getUserMembershipDetails, getUserAttendanceHistory, getUserWeightProgress } from '../../controllers/admin_controller/admin_user_controller.js';
+import { getAllUsersForAdmin, getUserByIdForAdmin, updateUserForAdmin, deleteUserForAdmin, getUserMembershipDetails, getUserAttendanceHistory, getUserWeightProgress, registerUserByAdmin } from '../../controllers/admin_controller/admin_user_controller.js';
 import { isAdmin } from '../../middleware/isAdminMiddleware.js';
 
 
@@ -13,5 +13,9 @@ adminUserRouter.delete('/users/:id',isAdmin, deleteUserForAdmin);
 adminUserRouter.get('/users/:id/membership',isAdmin, getUserMembershipDetails);
 adminUserRouter.get('/users/:id/attendance',isAdmin, getUserAttendanceHistory);
 adminUserRouter.get('/users/:id/weight-progress',isAdmin, getUserWeightProgress);
+
+// New route for user registration by admin
+adminUserRouter.post('/users/register', isAdmin, registerUserByAdmin);
+
 
 export default adminUserRouter;

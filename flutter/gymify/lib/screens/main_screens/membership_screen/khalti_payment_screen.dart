@@ -16,6 +16,7 @@ class KhaltiSDKDemo extends StatefulWidget {
 class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
   String pidx = ''; // We'll store the pidx value here
   String transactionId = '';
+  String payableAmount = '';
   PaymentResult? paymentResult;
   late Future<Khalti?>
       khaltiFuture; // Future to initialize Khalti SDK asynchronously
@@ -27,6 +28,7 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var membershipProvider = context.read<MembershipProvider>();
       pidx = membershipProvider.pidx;
+      payableAmount = membershipProvider.payableAmount;
       transactionId = membershipProvider.transactionId;
       setState(() {
         khaltiFuture =
@@ -111,9 +113,10 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
                     width: 200,
                   ),
                   const SizedBox(height: 120),
-                  const Text(
-                    'Rs. 22',
-                    style: TextStyle(fontSize: 25),
+                  Text(
+                    // replace with actual price
+                    payableAmount,
+                    style: const TextStyle(fontSize: 25),
                   ),
                   const Text('1 day fee'),
                   OutlinedButton(
@@ -142,9 +145,9 @@ class _KhaltiSDKDemoState extends State<KhaltiSDKDemo> {
                   const SizedBox(height: 120),
                   OutlinedButton(
                       onPressed: () {
-                        context.pushNamed('home');
+                        context.pushNamed('membershipPlans');
                       },
-                      child: const Text('Go to Home')),
+                      child: const Text('Go to Membership Sceen')),
                   const Text(
                     'Demo Payment Using Khalti.',
                     style: TextStyle(fontSize: 12),

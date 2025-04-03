@@ -17,6 +17,8 @@ class MembershipProvider with ChangeNotifier {
 
   String _status = '';
 
+  String payableAmount = '';
+
   bool _isActive = false;
   bool get isActive => _isActive;
 
@@ -131,10 +133,11 @@ class MembershipProvider with ChangeNotifier {
         if (apiResponse.status == 'success') {
           _membership = apiResponse.data;
           _status = _membership?.status ?? ''; // Store membership status
-          if(_membership?.status == 'Active') {
+          if (_membership?.status == 'Active') {
             _isActive = true; // Set isActive to true if membership is active
           } else {
-            _isActive = false; // Set isActive to false if membership is not active
+            _isActive =
+                false; // Set isActive to false if membership is not active
           }
           print(" status is ${_status}");
           // Store membership details
@@ -181,6 +184,7 @@ class MembershipProvider with ChangeNotifier {
 
       if (apiResponse.status == 'success') {
         pidx = apiResponse.data['pidx'];
+        payableAmount = apiResponse.data['amount'].toString();
         transactionId = apiResponse.data['transaction_id'];
         paymentUrl = apiResponse.data['payment_url'];
         notifyListeners();
