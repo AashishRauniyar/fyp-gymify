@@ -1,6 +1,7 @@
 import express from 'express';
 import { getAllUsersForAdmin, getUserByIdForAdmin, updateUserForAdmin, deleteUserForAdmin, getUserMembershipDetails, getUserAttendanceHistory, getUserWeightProgress, registerUserByAdmin } from '../../controllers/admin_controller/admin_user_controller.js';
 import { isAdmin } from '../../middleware/isAdminMiddleware.js';
+import upload from '../../middleware/multerMiddleware.js';
 
 
 
@@ -15,7 +16,7 @@ adminUserRouter.get('/users/:id/attendance',isAdmin, getUserAttendanceHistory);
 adminUserRouter.get('/users/:id/weight-progress',isAdmin, getUserWeightProgress);
 
 // New route for user registration by admin
-adminUserRouter.post('/users/register', isAdmin, registerUserByAdmin);
+adminUserRouter.post('/users/register', isAdmin, upload.single('profile_image') ,registerUserByAdmin);
 
 
 export default adminUserRouter;

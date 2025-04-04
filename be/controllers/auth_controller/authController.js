@@ -405,7 +405,7 @@ export const completeRegistration = async (req, res) => {
                 allergies,
                 calorie_goals,
                 card_number,
-                profile_image: profileImageUrl,
+                c
             },
         });
 

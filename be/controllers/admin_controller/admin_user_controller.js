@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 import bcrypt from 'bcryptjs';
+import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -258,7 +259,8 @@ export const registerUserByAdmin = async (req, res) => {
             goal_type, 
             allergies,
             calorie_goals,
-            card_number
+            card_number,
+            profile_image
         } = req.body;
 
         // Check required fields
@@ -310,6 +312,19 @@ export const registerUserByAdmin = async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 12);
 
+
+        
+                let profileImageUrl = null;
+                if (req.file) {
+                    try {
+                        profileImageUrl = await uploadToCloudinary(req.file.buffer); // Pass the file buffer directly
+                    } catch (error) {
+                        console.error('Error uploading image:', error);
+                        return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+                    }
+                }
+        
+
         // Create new user
         const newUser = await prisma.users.create({
             data: {
@@ -329,6 +344,7 @@ export const registerUserByAdmin = async (req, res) => {
                 allergies,
                 calorie_goals: calorie_goals ? parseFloat(calorie_goals) : null,
                 card_number,
+                profile_image: profileImageUrl,
                 verified: true // Users created by admin are automatically verified
             }
         });

@@ -284,7 +284,7 @@ class AttendanceStatsWidget extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Could not load attendance data',
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 16),
           ElevatedButton(
@@ -328,7 +328,7 @@ class AttendanceStatsWidget extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'No attendance data available',
-            style: theme.textTheme.titleMedium,
+            style: theme.textTheme.bodyLarge,
           ),
           const SizedBox(height: 8),
           Text(
