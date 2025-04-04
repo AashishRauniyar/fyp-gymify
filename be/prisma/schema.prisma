@@ -200,7 +200,7 @@ model users {
   calorie_goals                                         Decimal?            @db.Decimal(6, 2)
   card_number                                           String?             @db.VarChar(50)
   profile_image                                         String?             @db.VarChar(255)
-  
+  fcm_token                                             String?             @db.VarChar(500) // Add this field for Firebase Cloud Messaging token
   reset_token                                           String? // Nullable field for reset token
   reset_token_expiry                                    DateTime? // Nullable field for token expiry
   created_at                                            DateTime?           @default(now()) @db.Timestamp(6)
