@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -53,9 +54,15 @@ class NutritionStatsWidget extends StatelessWidget {
         }
 
         // Target values (could be fetched from user settings in the future)
-        double targetCalories = 2000.0;
-        double percentage = (totalCalories / targetCalories).clamp(0.0, 1.0);
 
+        final String? calorieGoals =
+            context.read<ProfileProvider>().user?.calorieGoals;
+
+        double targetCalories =
+            double.tryParse(calorieGoals ?? '2000') ?? 2000.0;
+        // double targetCalories = 2000.0;
+        double percentage = (totalCalories / targetCalories).clamp(0.0, 1.0);
+  
         return _buildNutritionCard(
           context,
           totalCalories,

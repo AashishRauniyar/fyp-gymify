@@ -433,6 +433,9 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+        ),
         onPressed: () {
           context.pushNamed('createCustomWorkout');
         },
@@ -530,7 +533,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
               onPressed: () {
                 context.pushNamed('customWorkout');
               },
-              icon: const Icon(Icons.visibility),
+              // icon: const Icon(Icons.visibility),
               label: const Text('See All'),
               style: TextButton.styleFrom(
                 foregroundColor: theme.colorScheme.primary,
@@ -674,7 +677,6 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
     return totalDuration.toStringAsFixed(0);
   }
 
-
   Widget _buildDefaultWorkoutsSection(
       List<dynamic> defaultWorkouts, ThemeData theme) {
     return Column(
@@ -696,7 +698,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                 onPressed: () {
                   context.pushNamed('allWorkouts');
                 },
-                icon: const Icon(Icons.visibility, size: 16),
+                // icon: const Icon(Icons.visibility, size: 16),
                 label: const Text('See All', style: TextStyle(fontSize: 13)),
                 style: TextButton.styleFrom(
                   foregroundColor: theme.colorScheme.primary,

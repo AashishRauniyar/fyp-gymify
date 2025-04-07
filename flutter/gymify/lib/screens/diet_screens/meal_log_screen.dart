@@ -1,151 +1,8 @@
-// import 'package:cached_network_image/cached_network_image.dart';
-// import 'package:flutter/material.dart';
-// import 'package:gymify/providers/diet_provider/diet_provider.dart';
-// import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
-// import 'package:provider/provider.dart';
-// import 'package:gymify/models/diet_log_models/meal_logs_model.dart';
-
-// class MealLogsScreen extends StatelessWidget {
-//   const MealLogsScreen({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<DietProvider>(context);
-//     final theme = Theme.of(context);
-
-//     // Fetch meal logs when the screen is built
-//     if (provider.mealLogs.isEmpty) {
-//       provider
-//           .fetchMealLogs(); // This will load the meal logs if they are not already loaded
-//     }
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Meal Logs'),
-//         backgroundColor: theme.colorScheme.primary,
-//       ),
-//       body: provider.isLoading
-//           ? const Center(
-//               child: CircularProgressIndicator()) // Show loading indicator
-//           : provider.hasError
-//               ? const Center(
-//                   child: Text('Error fetching meal logs')) // Show error message
-//               : ListView.builder(
-//                   itemCount: provider.mealLogs.length,
-//                   itemBuilder: (context, index) {
-//                     final mealLog = provider.mealLogs[index];
-//                     return _MealLogCard(mealLog: mealLog);
-//                   },
-//                 ),
-//     );
-//   }
-// }
-
-// class _MealLogCard extends StatelessWidget {
-//   final MealLog mealLog;
-
-//   const _MealLogCard({required this.mealLog});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-
-//     final isDarkMode = theme.brightness == Brightness.dark;
-
-//     return Container(
-//       decoration: BoxDecoration(
-//         color:
-//             isDarkMode ? theme.colorScheme.surface : theme.colorScheme.surface,
-//         borderRadius: BorderRadius.circular(16),
-//         border: Border.all(
-//           color: isDarkMode
-//               ? theme.colorScheme.onSurface.withOpacity(0.1)
-//               : theme.colorScheme.onSurface.withOpacity(0.1),
-//           width: 1.5,
-//         ),
-//       ),
-//       child: Card(
-//         elevation: 0,
-//         child: Row(
-//           children: [
-//             // Meal Image with rounded corners and shadow
-//             if (mealLog.meal.image.isNotEmpty)
-//               ClipRRect(
-//                 borderRadius: BorderRadius.circular(8),
-//                 child: CachedNetworkImage(
-//                     imageUrl: mealLog.meal.image,
-//                     width: 90,
-//                     height: 90,
-//                     fit: BoxFit.cover,
-//                     placeholder: (context, url) =>
-//                         const Center(child: CircularProgressIndicator()),
-//                     errorWidget: (context, url, error) =>
-//                         const Icon(Icons.error)),
-//               ),
-//             const SizedBox(width: 16),
-//             // Meal Details Section
-//             Expanded(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Meal Name
-//                   Text(
-//                     mealLog.meal.mealName,
-//                     style: theme.textTheme.bodyMedium?.copyWith(
-//                       fontWeight: FontWeight.bold,
-//                       color: theme.colorScheme.onSurface,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 6),
-//                   // Quantity and Log Time
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       Text(
-//                         'Quantity: ${mealLog.quantity} servings',
-//                         style: theme.textTheme.bodyMedium?.copyWith(
-//                           color: theme.colorScheme.onSurface.withOpacity(0.7),
-//                         ),
-//                       ),
-//                       const SizedBox(width: 8),
-//                       Text(
-//                         'Logged at: ${mealLog.logTime.toLocal().toString().substring(0, 19)}',
-//                         style: theme.textTheme.bodyMedium?.copyWith(
-//                           color: theme.colorScheme.onSurface.withOpacity(0.7),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // View Details Button
-//             IconButton(
-//               icon: Icon(
-//                 Icons.arrow_forward_ios,
-//                 color: theme.colorScheme.primary,
-//               ),
-//               onPressed: () {
-//                 // Navigate to meal details screen when tapped
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) => MealDetailScreen(meal: mealLog.meal),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/models/diet_log_models/meal_logs_model.dart';
@@ -176,6 +33,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
     // Fetch meal logs when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<DietProvider>(context, listen: false).fetchMealLogs();
+      Provider.of<ProfileProvider>(context, listen: false).fetchProfile();
     });
   }
 
@@ -236,7 +94,10 @@ class _MealLogsScreenState extends State<MealLogsScreen>
         _calculateMealDistribution(filteredMealLogs);
 
     // Target values (you could fetch these from user settings in a real implementation)
-    double targetCalories = 2000.0;
+    final String? calorieGoals =
+        context.read<ProfileProvider>().user?.calorieGoals;
+
+    double targetCalories = double.tryParse(calorieGoals ?? '2000') ?? 2000.0;
     double targetProtein = 150.0;
     double targetCarbs = 200.0;
     double targetFat = 65.0;
@@ -263,7 +124,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
           indicatorColor: theme.colorScheme.primary,
           tabs: const [
             Tab(text: 'TODAY'),
-            Tab(text: 'TRENDS'),
+            // Tab(text: 'TRENDS'),
             Tab(text: 'INSIGHTS'),
           ],
         ),
@@ -285,7 +146,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
               targetFat),
 
           // TRENDS TAB
-          _buildTrendsTab(context, weeklyCalories, provider.mealLogs),
+          // _buildTrendsTab(context, weeklyCalories, provider.mealLogs),
 
           // INSIGHTS TAB
           _buildInsightsTab(context, mealDistribution, provider.mealLogs),

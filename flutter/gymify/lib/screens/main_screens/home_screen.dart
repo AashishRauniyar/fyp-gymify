@@ -1078,12 +1078,12 @@ Widget _buildAttendanceCalender(BuildContext context, DateTime selectedDate,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Calendar',
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
+        // Text(
+        //   'Calendar',
+        //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        // ),
         // Custom Attendance Date Picker
         AttendanceDatePicker(
           initialDate: selectedDate,

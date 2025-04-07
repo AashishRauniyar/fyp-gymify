@@ -13,7 +13,7 @@
 // const url = "10.0.2.2";
 
 // const url = "172.25.4.139";
-const url = "172.25.3.236";
+const url = "172.25.5.213";
 
 // const url = "192.168.1.116";
 // dokan ko ip

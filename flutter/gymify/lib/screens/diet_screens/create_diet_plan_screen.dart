@@ -296,6 +296,8 @@ class _CreateDietPlanScreenState extends State<CreateDietPlanScreen> {
               const SizedBox(height: 12),
               // Description
               TextFormField(
+                maxLines: 3,
+                minLines: 3,
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
               ),

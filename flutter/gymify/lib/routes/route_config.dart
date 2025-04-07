@@ -9,6 +9,7 @@ import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/screens/ai_screen/ai_chatbot_screen.dart';
 import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
 import 'package:gymify/screens/authentication/account_recovery/reset_password.dart';
+import 'package:gymify/screens/authentication/complete_profile/complete_profile_screen.dart';
 import 'package:gymify/screens/authentication/trying/otp_verification.dart';
 import 'package:gymify/screens/authentication/trying/signup.dart';
 import 'package:gymify/screens/chat/chat_user_list_screen.dart';
@@ -91,6 +92,15 @@ final GoRouter router = GoRouter(
         final email = extra?['email'] ?? ''; // Avoid null issue
 
         return OtpVerificationPage(email: email);
+      },
+    ),
+    GoRoute(
+      name: 'complete-profile',
+      path: '/complete-profile',
+      builder: (context, state) {
+        final extra = state.extra as Map<String, dynamic>?;
+        final email = extra?['email'] ?? '';
+        return ProfileCompletionScreen(email: email);
       },
     ),
 

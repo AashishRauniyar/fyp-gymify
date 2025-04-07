@@ -389,6 +389,19 @@ export const completeRegistration = async (req, res) => {
             }
         }
 
+        // check unique for user_name and phone_number
+        const existingUserName = await prisma.users.findUnique({ where: { user_name } });
+        if (existingUserName) {
+            return res.status(400).json({ status: 'failure', message: 'Username already exists' });
+        }
+
+        const existingPhoneNumber = await prisma.users.findUnique({ where: { phone_number } });
+        if (existingPhoneNumber) {
+            return res.status(400).json({ status: 'failure', message: 'Phone number already exists' });
+        }
+
+        
+
         await prisma.users.update({
             where: { email },
             data: {
@@ -405,7 +418,7 @@ export const completeRegistration = async (req, res) => {
                 allergies,
                 calorie_goals,
                 card_number,
-                c
+                profile_image: profileImageUrl || user.profile_image, // Use existing image if upload fails
             },
         });
 

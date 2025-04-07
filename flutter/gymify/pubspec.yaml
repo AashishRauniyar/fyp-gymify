@@ -91,6 +91,7 @@ dependencies:
   chewie: ^1.11.0
   audioplayers: ^6.4.0
   confetti: ^0.8.0
+  iconsax_flutter: ^1.0.0
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:
