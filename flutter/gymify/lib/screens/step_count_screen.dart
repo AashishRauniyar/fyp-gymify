@@ -1,161 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:gymify/providers/pedometer_provider/pedometer_provider.dart';
-// import 'package:provider/provider.dart';
-
-// class StepCountScreen extends StatefulWidget {
-//   const StepCountScreen({super.key});
-
-//   @override
-//   State<StepCountScreen> createState() => _StepCountScreenState();
-// }
-
-// class _StepCountScreenState extends State<StepCountScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Start tracking when the screen is initialized
-//     Future.delayed(Duration.zero, () {
-//       Provider.of<PedometerProvider>(context, listen: false).startTracking();
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Step Count Tracker'),
-//         centerTitle: true,
-//         elevation: 4,
-//         backgroundColor: Theme.of(context).primaryColor,
-//       ),
-//       body: Consumer<PedometerProvider>(
-//         builder: (context, pedometerProvider, child) {
-//           return Padding(
-//             padding: const EdgeInsets.all(20.0),
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.center,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 // Step Count Section
-//                 Card(
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(16),
-//                   ),
-//                   elevation: 6,
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(20.0),
-//                     child: Column(
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         const Text(
-//                           'Steps Taken',
-//                           style: TextStyle(
-//                             fontSize: 24,
-//                             fontWeight: FontWeight.w600,
-//                             color: Colors.grey,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 10),
-//                         Text(
-//                           pedometerProvider.steps,
-//                           style: TextStyle(
-//                             fontSize: 60,
-//                             fontWeight: FontWeight.bold,
-//                             color: Theme.of(context).primaryColor,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 40),
-
-//                 // Pedestrian Status Section
-//                 Card(
-//                   shape: RoundedRectangleBorder(
-//                     borderRadius: BorderRadius.circular(16),
-//                   ),
-//                   elevation: 6,
-//                   child: Padding(
-//                     padding: const EdgeInsets.all(20.0),
-//                     child: Column(
-//                       mainAxisSize: MainAxisSize.min,
-//                       children: [
-//                         const Text(
-//                           'Pedestrian Status',
-//                           style: TextStyle(
-//                             fontSize: 24,
-//                             fontWeight: FontWeight.w600,
-//                             color: Colors.grey,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 20),
-//                         Icon(
-//                           pedometerProvider.status == 'walking'
-//                               ? Icons.directions_walk
-//                               : pedometerProvider.status == 'stopped'
-//                                   ? Icons.accessibility_new
-//                                   : Icons.error,
-//                           size: 80,
-//                           color: pedometerProvider.status == 'walking'
-//                               ? Colors.green
-//                               : pedometerProvider.status == 'stopped'
-//                                   ? Colors.orange
-//                                   : Colors.red,
-//                         ),
-//                         const SizedBox(height: 10),
-//                         Text(
-//                           pedometerProvider.status,
-//                           style: TextStyle(
-//                             fontSize: 30,
-//                             fontWeight: FontWeight.w600,
-//                             color: pedometerProvider.status == 'walking'
-//                                 ? Colors.green
-//                                 : pedometerProvider.status == 'stopped'
-//                                     ? Colors.orange
-//                                     : Colors.red,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 40),
-
-//                 // Start/Stop Tracking Button
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     if (pedometerProvider.isTrackingSteps) {
-//                       pedometerProvider.stopTracking();
-//                     } else {
-//                       pedometerProvider.startTracking();
-//                     }
-//                   },
-//                   style: ElevatedButton.styleFrom(
-
-//                     padding: const EdgeInsets.symmetric(
-//                         horizontal: 40, vertical: 12),
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(30),
-//                     ),
-//                     elevation: 6,
-//                   ),
-//                   child: Text(
-//                     pedometerProvider.isTrackingSteps
-//                         ? 'Stop Tracking'
-//                         : 'Start Tracking',
-//                     style: const TextStyle(fontSize: 18),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/pedometer_provider/pedometer_provider.dart';
 import 'package:provider/provider.dart';
@@ -174,10 +16,12 @@ class _StepCountScreenState extends State<StepCountScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -194,71 +38,124 @@ class _StepCountScreenState extends State<StepCountScreen>
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Consumer<PedometerProvider>(
-        builder: (context, provider, child) {
-          final progress = provider.goalProgress;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-          // Create mock data for weekly view since our simplified provider doesn't have it
-          final Map<String, int> mockWeeklyData =
-              _createMockWeeklyData(provider);
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: isDark ? theme.colorScheme.surface : Colors.grey[50],
+        body: Consumer<PedometerProvider>(
+          builder: (context, provider, child) {
+            final progress = provider.goalProgress;
 
-          return CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              // App Bar with circular progress indicator
-              _buildAppBar(context, provider, progress),
+            // Create mock data for weekly view since our simplified provider doesn't have it
+            final Map<String, int> mockWeeklyData =
+                _createMockWeeklyData(provider);
 
-              // Main content area
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 20),
+            return CustomScrollView(
+              controller: _scrollController,
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                // App Bar with circular progress indicator
+                _buildAppBar(context, provider, progress),
 
-                      // Motivation message
-                      _buildMotivationMessage(provider),
+                // Main content area
+                SliverToBoxAdapter(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(
+                      left: 16.0,
+                      right: 16.0,
+                      bottom:
+                          85.0, // Increased bottom padding to prevent FAB overlap
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 20),
 
-                      const SizedBox(height: 20),
+                        _buildMotivationMessage(provider),
 
-                      // Main stats cards
-                      _buildStatsCards(provider),
+                        const SizedBox(height: 20),
 
-                      const SizedBox(height: 24),
+                        // Main stats cards with horizontal scroll
+                        SizedBox(
+                          height: 125,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            physics: const BouncingScrollPhysics(),
+                            children: [
+                              _buildStatsCard(
+                                context,
+                                'Steps',
+                                provider.steps,
+                                Icons.directions_walk,
+                                theme.colorScheme.primary,
+                                width: 130,
+                                isDark: isDark,
+                              ),
+                              _buildStatsCard(
+                                context,
+                                'Calories',
+                                provider.caloriesBurned.toStringAsFixed(1),
+                                Icons.local_fire_department,
+                                Colors.orange,
+                                isDark: isDark,
+                              ),
+                              _buildStatsCard(
+                                context,
+                                'Distance',
+                                '${provider.distanceWalked.toStringAsFixed(2)} km',
+                                Icons.straighten,
+                                Colors.green,
+                                isDark: isDark,
+                              ),
+                              _buildStatsCard(
+                                context,
+                                'Time',
+                                _formatDuration(provider.elapsedTime),
+                                Icons.timer,
+                                Colors.purple,
+                                isDark: isDark,
+                              ),
+                            ],
+                          ),
+                        ),
 
-                      // Custom tab bar
-                      _buildCustomTabBar(context),
+                        const SizedBox(height: 24),
 
-                      const SizedBox(height: 20),
+                        _buildCustomTabBar(context, isDark),
 
-                      // Tab content based on selection
-                      _selectedIndex == 0
-                          ? _buildDailyView(context, provider, progress)
-                          : _buildWeeklyView(context, provider, mockWeeklyData),
+                        const SizedBox(height: 20),
 
-                      const SizedBox(height: 24),
+                        // Tab content based on selection
+                        _selectedIndex == 0
+                            ? _buildDailyView(
+                                context, provider, progress, isDark)
+                            : _buildWeeklyView(
+                                context, provider, mockWeeklyData, isDark),
 
-                      // Status section
-                      _buildStatusSection(context, provider),
+                        const SizedBox(height: 24),
 
-                      const SizedBox(height: 80), // Bottom padding for FAB
-                    ],
+                        _buildStatusSection(context, provider, isDark),
+
+                        const SizedBox(height: 80), // Bottom padding for FAB
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
+        floatingActionButton: _buildFloatingActionButton(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
-      floatingActionButton: _buildFloatingActionButton(context),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
@@ -328,17 +225,17 @@ class _StepCountScreenState extends State<StepCountScreen>
                         children: [
                           Text(
                             provider.steps,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 24.0,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
-                          const Text(
+                          Text(
                             'steps',
                             style: TextStyle(
                               fontSize: 12.0,
-                              color: Colors.white70,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -434,51 +331,9 @@ class _StepCountScreenState extends State<StepCountScreen>
   }
 
   // Main stats cards (Steps, Calories, Distance)
-  Widget _buildStatsCards(PedometerProvider provider) {
-    return SizedBox(
-      height: 120,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        children: [
-          _buildStatCard(
-            context,
-            'Steps',
-            provider.steps,
-            Icons.directions_walk,
-            Colors.blue,
-            width: 130,
-          ),
-          _buildStatCard(
-            context,
-            'Calories',
-            provider.caloriesBurned.toStringAsFixed(1),
-            Icons.local_fire_department,
-            Colors.orange,
-          ),
-          _buildStatCard(
-            context,
-            'Distance',
-            '${provider.distanceWalked.toStringAsFixed(2)} km',
-            Icons.straighten,
-            Colors.green,
-          ),
-          _buildStatCard(
-            context,
-            'Time',
-            _formatDuration(provider.elapsedTime),
-            Icons.timer,
-            Colors.purple,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Individual stat card
-  Widget _buildStatCard(BuildContext context, String label, String value,
+  Widget _buildStatsCard(BuildContext context, String label, String value,
       IconData icon, Color color,
-      {double width = 120}) {
+      {double width = 120, required bool isDark}) {
     return Container(
       width: width,
       margin: const EdgeInsets.only(right: 12),
@@ -493,7 +348,7 @@ class _StepCountScreenState extends State<StepCountScreen>
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
+                isDark ? Colors.grey.shade800 : Colors.white,
                 color.withOpacity(0.1),
               ],
             ),
@@ -528,11 +383,11 @@ class _StepCountScreenState extends State<StepCountScreen>
   }
 
   // Custom tab bar
-  Widget _buildCustomTabBar(BuildContext context) {
+  Widget _buildCustomTabBar(BuildContext context, bool isDark) {
     return Container(
       height: 50,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
         borderRadius: BorderRadius.circular(25),
       ),
       child: Row(
@@ -604,11 +459,11 @@ class _StepCountScreenState extends State<StepCountScreen>
   }
 
   // Daily view with goal progress
-  Widget _buildDailyView(
-      BuildContext context, PedometerProvider provider, double progress) {
+  Widget _buildDailyView(BuildContext context, PedometerProvider provider,
+      double progress, bool isDark) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.grey.shade800 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -680,7 +535,7 @@ class _StepCountScreenState extends State<StepCountScreen>
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: isDark ? Colors.grey.shade700 : Colors.grey.shade50,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey.shade200),
             ),
@@ -814,7 +669,7 @@ class _StepCountScreenState extends State<StepCountScreen>
 
   // Weekly view with bar chart
   Widget _buildWeeklyView(BuildContext context, PedometerProvider provider,
-      Map<String, int> weeklyData) {
+      Map<String, int> weeklyData, bool isDark) {
     // Mock weekly goal progress
     const weeklyProgress = 0.65;
     final weeklyTotal = weeklyData.values.fold(0, (sum, value) => sum + value);
@@ -826,7 +681,7 @@ class _StepCountScreenState extends State<StepCountScreen>
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.grey.shade800 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -964,7 +819,7 @@ class _StepCountScreenState extends State<StepCountScreen>
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey.shade50,
+              color: isDark ? Colors.grey.shade700 : Colors.grey.shade50,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -1013,7 +868,8 @@ class _StepCountScreenState extends State<StepCountScreen>
   }
 
   // Status section (pedestrian status with animation)
-  Widget _buildStatusSection(BuildContext context, PedometerProvider provider) {
+  Widget _buildStatusSection(
+      BuildContext context, PedometerProvider provider, bool isDark) {
     // Determine status color and icon
     Color statusColor;
     IconData statusIcon;
@@ -1035,7 +891,7 @@ class _StepCountScreenState extends State<StepCountScreen>
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Colors.grey.shade800 : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -1184,7 +1040,6 @@ class _StepCountScreenState extends State<StepCountScreen>
               size: 28,
             ),
             label: Text(
-// Floating action button (continuation)
               isTracking ? 'Stop Tracking' : 'Start Tracking',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -1447,9 +1302,6 @@ class _StepCountScreenState extends State<StepCountScreen>
   List<BarChartGroupData> _prepareChartData(
       BuildContext context, Map<String, int> weeklyData) {
     final List<BarChartGroupData> result = [];
-    final today = DateTime.now();
-    final todayWeekday = today.weekday - 1; // 0-based index (0 = Monday)
-
     final values = weeklyData.values.toList();
 
     for (int i = 0; i < 7; i++) {

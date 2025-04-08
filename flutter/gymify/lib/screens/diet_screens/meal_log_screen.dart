@@ -523,7 +523,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
         children: [
           Text(
             'Meal Type Distribution',
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -550,7 +550,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
           const SizedBox(height: 24),
           Text(
             'Most Frequent Foods',
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -560,16 +560,17 @@ class _MealLogsScreenState extends State<MealLogsScreen>
               : Container(
                   padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+                    border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                    // boxShadow: [
+                    //   BoxShadow(
+                    //     color: Colors.grey.withOpacity(0.1),
+                    //     spreadRadius: 1,
+                    //     blurRadius: 5,
+                    //     offset: const Offset(0, 3),
+                    //   ),
+                    // ],
                   ),
                   child: Column(
                     children: sortedFoods
@@ -601,7 +602,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
                             Expanded(
                               child: Text(
                                 entry.key,
-                                style: theme.textTheme.titleMedium,
+                                style: theme.textTheme.bodyLarge,
                               ),
                             ),
                           ],
@@ -613,7 +614,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
           const SizedBox(height: 24),
           Text(
             'Nutrition Tips',
-            style: theme.textTheme.titleLarge?.copyWith(
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -658,16 +659,17 @@ class _MealLogsScreenState extends State<MealLogsScreen>
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.grey.withOpacity(0.1),
+        //     spreadRadius: 1,
+        //     blurRadius: 5,
+        //     offset: const Offset(0, 3),
+        //   ),
+        // ],
       ),
       child: InkWell(
         onTap: () {
@@ -717,7 +719,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
                         Expanded(
                           child: Text(
                             mealLog.meal.mealName,
-                            style: theme.textTheme.titleMedium?.copyWith(
+                            style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                             maxLines: 1,
@@ -1300,16 +1302,17 @@ Widget _buildMacronutrientProgressBars(
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 5,
-          offset: const Offset(0, 3),
-        ),
-      ],
+      border: Border.all(color: Colors.grey.withOpacity(0.2)),
+      // boxShadow: [
+      //   BoxShadow(
+      //     color: Colors.grey.withOpacity(0.1),
+      //     spreadRadius: 1,
+      //     blurRadius: 5,
+      //     offset: const Offset(0, 3),
+      //   ),
+      // ],
     ),
     child: Column(
       children: [
@@ -1339,7 +1342,7 @@ Widget _buildMacroProgressBar(BuildContext context, String label, double value,
         children: [
           Text(
             label,
-            style: theme.textTheme.titleSmall?.copyWith(
+            style: theme.textTheme.bodySmall?.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -1787,16 +1790,17 @@ Widget _buildNutritionTipCard(
   return Container(
     padding: const EdgeInsets.all(16),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: theme.colorScheme.surface,
       borderRadius: BorderRadius.circular(16),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          spreadRadius: 1,
-          blurRadius: 5,
-          offset: const Offset(0, 3),
-        ),
-      ],
+      border: Border.all(color: Colors.grey.withOpacity(0.2)),
+      // boxShadow: [
+      //   BoxShadow(
+      //     color: Colors.grey.withOpacity(0.1),
+      //     spreadRadius: 1,
+      //     blurRadius: 5,
+      //     offset: const Offset(0, 3),
+      //   ),
+      // ],
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1820,7 +1824,7 @@ Widget _buildNutritionTipCard(
             children: [
               Text(
                 title,
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),

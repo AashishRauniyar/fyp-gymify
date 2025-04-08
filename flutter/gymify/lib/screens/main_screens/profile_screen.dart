@@ -156,47 +156,63 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 210.0,
+            expandedHeight: 280.0, // Increased height to accommodate content
             floating: false,
             pinned: true,
             backgroundColor: theme.colorScheme.primary,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                'My Profile',
-                style: TextStyle(
-                  color: theme.colorScheme.onPrimary,
-                  fontWeight: FontWeight.bold,
+              centerTitle: true,
+              titlePadding: const EdgeInsets.only(bottom: 16),
+              title: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: 1.0,
+                child: Text(
+                  'My Profile',
+                  style: TextStyle(
+                    color: theme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               background: Stack(
                 fit: StackFit.expand,
                 children: [
+                  // Gradient overlay
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          theme.colorScheme.primary,
                           theme.colorScheme.primary.withOpacity(0.8),
+                          theme.colorScheme.primary,
                         ],
                       ),
                     ),
                   ),
-                  Positioned(
-                    top: 50,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Hero(
-                            tag: 'profile-image',
+                  // Profile content
+                  SafeArea(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 32), // Increased top spacing
+                        // Profile image with hero animation
+                        Hero(
+                          tag: 'profile-image',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: theme.colorScheme.onPrimary
+                                    .withOpacity(0.5),
+                                width: 3,
+                              ),
+                            ),
                             child: CircleAvatar(
-                              radius: 45,
-                              backgroundColor: Colors.white,
+                              radius: 50,
+                              backgroundColor: theme.colorScheme.onPrimary,
                               child: CircleAvatar(
-                                radius: 42,
+                                radius: 47,
                                 backgroundImage: user?.profileImage != null
                                     ? NetworkImage(user!.profileImage!)
                                     : const AssetImage(
@@ -205,15 +221,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 12),
-                          Text(
-                            user?.fullName ?? 'Fitness Enthusiast',
-                            style: theme.textTheme.bodyLarge?.copyWith(
+                        ),
+                        const SizedBox(
+                            height: 24), // Increased spacing between elements
+                        // User name
+                        Text(
+                          user?.fullName ?? 'Fitness Enthusiast',
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12), // Increased spacing
+                        // User role badge
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            user?.role ?? 'Member',
+                            style: TextStyle(
                               color: theme.colorScheme.onPrimary,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                        ],
+                        ),
+                        const SizedBox(height: 24), // Added bottom spacing
+                      ],
+                    ),
+                  ),
+                  // Decorative pattern overlay
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            theme.colorScheme.primary.withOpacity(0.2),
+                            theme.colorScheme.primary.withOpacity(0),
+                          ],
+                        ),
                       ),
                     ),
                   ),
