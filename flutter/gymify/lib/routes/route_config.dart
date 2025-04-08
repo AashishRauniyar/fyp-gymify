@@ -14,6 +14,7 @@ import 'package:gymify/screens/authentication/trying/otp_verification.dart';
 import 'package:gymify/screens/authentication/trying/signup.dart';
 import 'package:gymify/screens/chat/chat_user_list_screen.dart';
 import 'package:gymify/screens/create_workout_screen/edit_workout_screen.dart';
+import 'package:gymify/screens/create_workout_screen/manage_exercise_screen.dart';
 import 'package:gymify/screens/create_workout_screen/manage_workout_exercises_screen.dart';
 import 'package:gymify/screens/create_workout_screen/manage_workout_screen.dart';
 import 'package:gymify/screens/custom_workout_screen/create_custom_workout_screen.dart';
@@ -478,6 +479,10 @@ GoRoute(
         name: 'weightLog',
         path: '/weightLog',
         builder: (context, state) => const WeightLog()),
+    GoRoute(
+        name: 'manageExercise',
+        path: '/manageExercise',
+        builder: (context, state) => const ManageExerciseScreen()),
     GoRoute(
         name: 'resetPassword',
         path: '/resetPassword',

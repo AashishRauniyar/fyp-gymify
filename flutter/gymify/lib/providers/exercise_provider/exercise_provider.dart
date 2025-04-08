@@ -244,4 +244,30 @@ class ExerciseProvider with ChangeNotifier {
       }
     });
   }
+
+  // method to delete exercise
+  Future<void> deleteExercise(int exerciseId) async {
+    await handleApiCall(() async {
+      final response = await httpClient.delete('/exercises/$exerciseId');
+
+      // final apiResponse = ApiResponse<Map<String, dynamic>>.fromJson(
+      //   response.data,
+      //   (data) => data as Map<String, dynamic>,
+      // );
+      if (response.data == null) {
+        throw Exception('No response data received from the server');
+      }
+
+      if (response.data['status'] == 'success') {
+        // Remove the diet plan from the list
+        _exercises.removeWhere((exercise) => exercise.exerciseId == exerciseId);
+
+        await fetchAllExercises(); // Refresh the list of exercises
+      } else {
+        throw Exception(response.data['message'].isNotEmpty
+            ? response.data['message'].message
+            : 'Unknown error occurred while deleting exercise');
+      }
+    });
+  }
 }

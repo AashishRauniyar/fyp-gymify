@@ -435,68 +435,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   const SizedBox(height: 24),
 
-                  // Fitness Tools Section
-                  // Text(
-                  //   'Fitness Tools',
-                  //   style: theme.textTheme.titleLarge?.copyWith(
-                  //     fontWeight: FontWeight.bold,
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 16),
-
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: _buildToolCard(
-                  //         context,
-                  //         CupertinoIcons.flame_fill,
-                  //         'Workouts',
-                  //         'Create and manage your workout routines',
-                  //         () => context.pushNamed('createWorkout'),
-                  //       ),
-                  //     ),
-                  //     const SizedBox(width: 16),
-                  //     Expanded(
-                  //       child: _buildToolCard(
-                  //         context,
-                  //         CupertinoIcons.shopping_cart,
-                  //         'Nutrition',
-                  //         'Manage your diet and meal plans',
-                  //         () => context.pushNamed('manageDietPlans'),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-
-                  // const SizedBox(height: 16),
-
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: _buildToolCard(
-                  //         context,
-                  //         CupertinoIcons.waveform_path,
-                  //         'Exercises',
-                  //         'Create custom exercises',
-                  //         () => context.pushNamed('createExercise'),
-                  //       ),
-                  //     ),
-                  //     const SizedBox(width: 16),
-                  //     Expanded(
-                  //       child: _buildToolCard(
-                  //         context,
-                  //         CupertinoIcons.chart_bar_fill,
-                  //         'Progress',
-                  //         'Track your fitness journey',
-                  //         () {
-                  //           context.pushNamed('workoutHistory',
-                  //               extra: profileProvider.user?.userId.toString());
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-
                   // Check if the user's role is "Trainer"
                   if (profileProvider.user?.role == "Trainer") ...[
                     Text(
@@ -539,7 +477,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             CupertinoIcons.waveform_path,
                             'Manage Exercises',
                             'Create custom exercises',
-                            () => context.pushNamed('createExercise'),
+                            () => context.pushNamed('manageExercise'),
                           ),
                         ),
                         const SizedBox(width: 16),

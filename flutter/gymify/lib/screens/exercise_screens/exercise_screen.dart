@@ -19,7 +19,21 @@ class ExerciseScreen extends StatefulWidget {
 class _ExerciseScreenState extends State<ExerciseScreen> {
   final TextEditingController _searchController = TextEditingController();
   List<Exercise> _filteredExercises = [];
-  String _selectedMuscleGroup = 'All';
+
+  // Define muscle groups
+  final List<String> muscleGroups = [
+    'Chest',
+    'Back',
+    'Arms',
+    'Legs',
+    'Core',
+    'Shoulders',
+    'Glutes',
+    'Full Body',
+  ];
+
+  // Filter variable - only filter by muscle group
+  String? selectedTargetMuscleGroup;
 
   @override
   void initState() {
@@ -27,39 +41,53 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<ExerciseProvider>().fetchAllExercises();
     });
-    _searchController.addListener(_filterExercises);
+    _searchController.addListener(() {
+      // Debounce search input to prevent too frequent updates
+      Future.microtask(() => _filterExercises());
+    });
+  }
+
+  @override
+  void didUpdateWidget(ExerciseScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Safely filter again if widget updates
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _filterExercises();
+    });
   }
 
   void _filterExercises() {
+    if (!mounted) return;
+
     final query = _searchController.text.toLowerCase();
+    final allExercises = context.read<ExerciseProvider>().exercises;
+
     setState(() {
-      _filteredExercises = context
-          .read<ExerciseProvider>()
-          .exercises
-          .where(
-              (exercise) => exercise.exerciseName.toLowerCase().contains(query))
-          .toList();
+      // More strict filtering logic
+      _filteredExercises = allExercises.where((exercise) {
+        final matchesSearch = query.isEmpty ||
+            exercise.exerciseName.toLowerCase().contains(query);
+
+        final matchesMuscle = selectedTargetMuscleGroup == null ||
+            exercise.targetMuscleGroup.trim().toLowerCase() ==
+                selectedTargetMuscleGroup?.trim().toLowerCase();
+
+        return matchesSearch && matchesMuscle;
+      }).toList();
+
+      // If we have filters but no results, ensure filtered list stays empty
+      if ((query.isNotEmpty || selectedTargetMuscleGroup != null) &&
+          _filteredExercises.isEmpty) {
+        _filteredExercises = [];
+      }
     });
   }
 
-  void _sortExercises() {
+  void _resetFilters() {
     setState(() {
-      if (_selectedMuscleGroup == 'All') {
-        // Sort exercises by muscle group alphabetically
-        context
-            .read<ExerciseProvider>()
-            .exercises
-            .sort((a, b) => a.targetMuscleGroup.compareTo(b.targetMuscleGroup));
-      } else {
-        // Filter exercises by the selected muscle group
-        _filteredExercises = context
-            .read<ExerciseProvider>()
-            .exercises
-            .where((exercise) =>
-                exercise.targetMuscleGroup == _selectedMuscleGroup)
-            .toList();
-      }
+      selectedTargetMuscleGroup = null;
     });
+    _filterExercises();
   }
 
   @override
@@ -70,6 +98,13 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
         title: "Exercises",
         showBackButton: true,
         actions: [
+          // Filter icon button
+          IconButton(
+            icon: Icon(Icons.filter_list, color: theme.colorScheme.primary),
+            onPressed: () {
+              _openFilterDrawer(context);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
@@ -84,26 +119,116 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
             return _buildShimmerLoading();
           }
 
-          final exercisesToDisplay = _filteredExercises.isEmpty
+          // Changed this logic to properly handle filtering
+          final exercisesToDisplay = _searchController.text.isEmpty &&
+                  selectedTargetMuscleGroup == null
               ? exerciseProvider.exercises
               : _filteredExercises;
 
           return Column(
             children: [
               _buildSearchBar(),
-              _buildSortDropdown(),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: exercisesToDisplay.length,
-                  itemBuilder: (context, index) {
-                    final exercise = exercisesToDisplay[index];
-                    return ExerciseTile(exercise: exercise);
-                  },
+              if (selectedTargetMuscleGroup != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.filter_alt_outlined,
+                                size: 16,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Filtered by: $selectedTargetMuscleGroup',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: () {
+                                  // Use a post-frame callback to avoid setState during build
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    setState(() {
+                                      selectedTargetMuscleGroup = null;
+                                    });
+                                    _filterExercises();
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
+              Expanded(
+                child: exercisesToDisplay.isEmpty
+                    ? _buildEmptyState(theme)
+                    : ListView.builder(
+                        itemCount: exercisesToDisplay.length,
+                        itemBuilder: (context, index) {
+                          final exercise = exercisesToDisplay[index];
+                          return ExerciseTile(exercise: exercise);
+                        },
+                      ),
               ),
             ],
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(ThemeData theme) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.search_off, size: 80, color: Colors.grey),
+          const SizedBox(height: 20),
+          Text(
+            "No exercises found.",
+            style: theme.textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            "Try adjusting your filters or search query.",
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () {
+              _resetFilters();
+              _searchController.clear();
+            },
+            icon: const Icon(Icons.refresh),
+            label: const Text("Reset All Filters"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -120,39 +245,154 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
             borderSide: BorderSide(color: Colors.grey[400]!),
           ),
           prefixIcon: const Icon(Icons.search),
+          suffixIcon: _searchController.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    _filterExercises();
+                  },
+                )
+              : null,
         ),
       ),
     );
   }
 
-  Widget _buildSortDropdown() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-      child: DropdownButtonFormField<String>(
-        decoration: const InputDecoration(labelText: 'Sort by Muscle Group'),
-        value: _selectedMuscleGroup,
-        onChanged: (value) {
-          setState(() {
-            _selectedMuscleGroup = value!;
-          });
-          _sortExercises();
-        },
-        items: [
-          'All',
-          'Chest',
-          'Back',
-          'Arms',
-          'Legs',
-          'Core',
-          'Shoulders',
-          'Glutes',
-          'Full Body'
-        ].map<DropdownMenuItem<String>>((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
+  // Method to open the filter drawer (modal bottom sheet)
+  void _openFilterDrawer(BuildContext context) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setModalState) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Filter by Muscle Group",
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Wrap the muscle group options in a GridView for better layout
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                  ),
+                  itemCount: muscleGroups.length,
+                  itemBuilder: (context, index) {
+                    final muscleGroup = muscleGroups[index];
+                    final isSelected = selectedTargetMuscleGroup == muscleGroup;
+
+                    return InkWell(
+                      onTap: () {
+                        setModalState(() {
+                          selectedTargetMuscleGroup =
+                              isSelected ? null : muscleGroup;
+                        });
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline.withOpacity(0.5),
+                          ),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          muscleGroup,
+                          style: TextStyle(
+                            color: isSelected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onSurface,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setModalState(() {
+                          selectedTargetMuscleGroup = null;
+                        });
+                        Navigator.pop(context);
+                        // Update state and filter after navigation
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            selectedTargetMuscleGroup = null;
+                          });
+                          _filterExercises();
+                        });
+                      },
+                      child: Text(
+                        "Clear Filter",
+                        style: TextStyle(color: theme.colorScheme.error),
+                      ),
+                    ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        // Ensure filter is applied after modal is closed
+                        Future.microtask(() {
+                          if (mounted) {
+                            setState(() {
+                              // State is already updated in the modal
+                            });
+                            _filterExercises();
+                          }
+                        });
+                      },
+                      child: const Text("Apply"),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           );
-        }).toList(),
+        },
       ),
     );
   }
@@ -236,4 +476,3 @@ class ExerciseTileShimmer extends StatelessWidget {
     );
   }
 }
-
