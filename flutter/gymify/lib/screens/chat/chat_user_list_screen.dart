@@ -1172,7 +1172,7 @@ class _UserTrainerPageState extends State<UserTrainerPage>
         0; // Just for demonstration, replace with actual online status
 
     return Card(
-      elevation: 1,
+      elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),

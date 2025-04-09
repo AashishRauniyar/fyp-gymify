@@ -260,6 +260,38 @@ class PersonalBestProvider with ChangeNotifier {
     }
   }
 
+  // delete supported exercise (Trainer only)
+  Future<bool> deleteSupportedExercise(int exerciseId) async {
+    _setLoading(true);
+    try {
+      final response =
+          await httpClient.delete('/supported_exercise/$exerciseId');
+
+      if (response.data == null) {
+        throw Exception('No response data received from the server');
+      }
+      if (response.data['status'] == 'success') {
+        // Remove the diet plan from the list
+        _supportedExercises.removeWhere(
+            (exercise) => exercise.supportedExerciseId == exerciseId);
+
+        await fetchSupportedExercises();
+
+        notifyListeners();
+        return true;
+      } else {
+        _setError(true, response.data['message']);
+        return false;
+      }
+    } catch (e) {
+      _setError(true, 'Error deleting supported exercise: $e');
+      print('Error deleting supported exercise: $e');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   /// Reset personal best history
   void clearPersonalBestHistory() {
     _personalBestHistory = [];

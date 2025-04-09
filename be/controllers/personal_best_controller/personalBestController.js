@@ -285,6 +285,40 @@ export const createSupportedExercise = async (req, res) => {
     }
 };
 
+
+// delete supported exercise
+
+export const deleteSupportedExercise = async (req, res) => {
+    try {
+        const { exerciseId } = req.params;
+        const { role } = req.user;
+
+        if (role !== 'Trainer') {
+            return res.status(403).json({ message: 'Only trainers can delete exercises' });
+        }
+
+        const exercise = await prisma.supported_exercises.findUnique({
+            where: { supported_exercise_id: parseInt(exerciseId) },
+        });
+
+        if (!exercise) {
+            return res.status(404).json({ message: 'Exercise not found' });
+        }
+
+        await prisma.supported_exercises.delete({
+            where: { supported_exercise_id: parseInt(exerciseId) },
+        });
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Supported exercise deleted successfully',
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'An error occurred while deleting the exercise' });
+    }
+}
+
 /**
  * Validation rules for logging a personal best
  */

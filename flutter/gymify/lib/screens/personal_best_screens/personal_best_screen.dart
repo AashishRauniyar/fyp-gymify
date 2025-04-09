@@ -3,6 +3,7 @@ import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -159,9 +160,19 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
     final personalBestProvider = context.watch<PersonalBestProvider>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Personal Bests"),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+      // appBar: AppBar(
+      //   title: const Text("Personal Bests"),
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
+      //   bottom: TabBar(
+      //     controller: _tabController,
+      //     tabs: const [
+      //       Tab(text: "Current Bests"),
+      //       Tab(text: "History"),
+      //     ],
+      //   ),
+      // ),
+      appBar: CustomAppBar(
+        title: "Personal Bests",
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

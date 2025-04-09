@@ -539,10 +539,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: _buildToolCard(
                             context,
                             CupertinoIcons.chart_bar_fill,
-                            'See Progress',
-                            'Track your fitness journey',
+                            'Create Supported Exercise',
+                            'create exercise which can be logged',
                             () {
-                              context.pushNamed('workoutHistory',
+                              context.pushNamed('createSupportedExercise',
                                   extra:
                                       profileProvider.user?.userId.toString());
                             },

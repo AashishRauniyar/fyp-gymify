@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
-import 'package:gymify/models/workout_log_models/workout_exercise_log_model.dart';
+import 'package:gymify/utils/workout_utils.dart/exercise_log_item.dart';
 import 'package:gymify/models/workout_log_models/workout_log_model.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/attendance_provider/attendance_provider.dart';
@@ -15,6 +15,7 @@ import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/workout_utils.dart/workout_card.dart';
 import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:gymify/widget/attendance_date_picker_widget.dart';
 import 'package:gymify/widget/attendance_stats_widget.dart';
@@ -182,40 +183,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         });
                       }),
 
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('aiChatScreen');
-                      //     },
-                      //     child: const Text("AI chat")),
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('manageWorkouts');
-                      //     },
-                      //     child: const Text("Manage Workout")),
-
-                      // TextButton(
-                      //   onPressed: () {
-                      //     context.pushNamed('workoutHistory',
-                      //         extra: context
-                      //                 .read<ProfileProvider>()
-                      //                 .user
-                      //                 ?.userId
-                      //                 .toString() ??
-                      //             '0');
-                      //   },
-                      //   child: const Text("Workout Log History"),
-                      // ),
-
                       const SizedBox(height: 10),
                       _buildAttendanceSection(context),
                       const SizedBox(height: 10),
                       _buildStepCountSection(context),
 
-                      TextButton(
-                          onPressed: () {
-                            context.pushNamed('stepCount');
-                          },
-                          child: const Text("Step Count")),
+                      // TextButton(
+                      //     onPressed: () {
+                      //       context.pushNamed('stepCount');
+                      //     },
+                      //     child: const Text("Step Count")),
 
                       _buildWeightSection(
                           context, user!.currentWeight.toString()),
@@ -348,122 +325,6 @@ Widget _buildHeader(
     ],
   );
 }
-
-// Widget _buildOfferBanner(BuildContext context) {
-//   final membershipStatus =
-//       context.watch<MembershipProvider>().membership?.status;
-
-//   // Check for each membership status
-//   final isMembershipActive = membershipStatus == 'Active';
-//   final isMembershipPending = membershipStatus == 'Pending';
-//   final isMembershipNotApplied = membershipStatus == 'Not Applied';
-
-//   return Container(
-//     padding: const EdgeInsets.all(20),
-//     decoration: BoxDecoration(
-//       gradient: isMembershipActive
-//           ? const LinearGradient(
-//               colors: [Color.fromARGB(255, 152, 115, 50), Color(0xFF2A1B4D)],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
-//             )
-//           : isMembershipPending
-//               ? const LinearGradient(
-//                   colors: [
-//                     Color(0xFFB02A2A),
-//                     Color(0xFF6D1111)
-//                   ], // Red Gradient
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                 )
-//               : const LinearGradient(
-//                   colors: [
-//                     Color.fromARGB(255, 152, 115, 50),
-//                     Color.fromARGB(255, 77, 65, 1)
-//                   ],
-//                   begin: Alignment.topLeft,
-//                   end: Alignment.bottomRight,
-//                 ),
-//       borderRadius: BorderRadius.circular(16),
-//     ),
-//     child: Row(
-//       children: [
-//         Expanded(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text(
-//                     isMembershipActive
-//                         ? 'Membership Active'
-//                         : isMembershipPending
-//                             ? 'Membership Pending'
-//                             : 'Premium Membership',
-//                     style: const TextStyle(
-//                       color: Colors.white,
-//                       fontSize: 18,
-//                       fontWeight: FontWeight.bold,
-//                     ),
-//                   ),
-//                   GestureDetector(
-//                     onTap: () {
-//                       _showBottomSheet(context);
-//                     },
-//                     child: const Icon(
-//                       LineAwesomeIcons.info_circle_solid,
-//                       color: Colors.white,
-//                       size: 24,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 8),
-//               Text(
-//                 isMembershipActive
-//                     ? 'You are now a premium member.\nEnjoy all benefits!'
-//                     : isMembershipPending
-//                         ? 'Your membership is pending, waiting for approval.\nAfter approval, collect your membership card from the counter.'
-//                         : 'Get your gym membership\nstarting at Rs 1500',
-//                 style: TextStyle(
-//                   color: Colors.white,
-//                   fontSize: isMembershipActive ? 22 : 14,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               const SizedBox(height: 12),
-//               // Show the appropriate button based on the membership status
-//               if (isMembershipNotApplied)
-//                 ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.white,
-//                     foregroundColor: const Color.fromARGB(255, 152, 115, 50),
-//                   ),
-//                   onPressed: () => context.pushNamed('membershipPlans'),
-//                   child: const Text('Apply Now 💪'),
-//                 )
-//               else
-//                 ElevatedButton(
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: Colors.white,
-//                     foregroundColor: const Color(0xFF4A3298),
-//                   ),
-//                   onPressed: () {
-//                     // Show the membership details or redirect to the profile
-//                     context.pushNamed('membershipPlans');
-//                   },
-//                   child: isMembershipPending
-//                       ? const Text('Pending Approval')
-//                       : const Text('View Membership Details'),
-//                 ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
 
 Widget _buildOfferBanner(BuildContext context) {
   final membershipStatus =
@@ -817,12 +678,49 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "No personal bests recorded yet",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.fitness_center,
+                  size: 48,
+                  color: Colors.grey,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  "No personal bests recorded yet",
+                  style: TextStyle(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.6),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    // Navigate to personal best screen without specifying initial exercise
+                    context.pushNamed('personalBest', extra: {
+                      'initialTab': 1,
+                    });
+                  },
+                  child: const Text("Add Personal Best"),
+                ),
+              ],
             ),
+            // child: Text(
+            //   "No personal bests recorded yet",
+            //   style: TextStyle(
+            //     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+            //   ),
+            // ),
           ),
         );
       }
@@ -941,23 +839,6 @@ Widget _buildWeightSection(BuildContext context, String weight) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 6),
     padding: const EdgeInsets.all(16.0),
-    // decoration: BoxDecoration(
-    //   borderRadius: BorderRadius.circular(16),
-    //   gradient: LinearGradient(
-    //     colors: [
-    //       Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-    //       Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-    //     ],
-    //     begin: Alignment.topLeft,
-    //     end: Alignment.bottomRight,
-    //   ),
-    //   border: Border.all(
-    //     color: isDarkMode
-    //         ? theme.colorScheme.onSurface.withOpacity(0.1)
-    //         : theme.colorScheme.onSurface.withOpacity(0.1),
-    //     width: 1.5,
-    //   ),
-    // ),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16),
 
@@ -979,19 +860,6 @@ Widget _buildWeightSection(BuildContext context, String weight) {
         width: 1.5,
       ),
     ),
-
-    // padding: const EdgeInsets.all(16),
-    // decoration: BoxDecoration(
-    //   gradient: LinearGradient(
-    //     colors: [
-    //       Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-    //       Theme.of(context).colorScheme.secondary.withOpacity(0.05),
-    //     ],
-    //     begin: Alignment.topLeft,
-    //     end: Alignment.bottomRight,
-    //   ),
-    //   borderRadius: BorderRadius.circular(16),
-    // ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1015,32 +883,6 @@ Widget _buildWeightSection(BuildContext context, String weight) {
           onPressed: () => context.pushNamed('weightLog'),
         ),
       ],
-    ),
-  );
-}
-
-Widget _buildProgressCard(BuildContext context, String value, String label) {
-  return Expanded(
-    child: Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 4),
-          Text(label,
-              style: TextStyle(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withOpacity(0.6))),
-        ],
-      ),
     ),
   );
 }
@@ -1078,13 +920,6 @@ Widget _buildAttendanceCalender(BuildContext context, DateTime selectedDate,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Text(
-        //   'Calendar',
-        //   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        // ),
-        // Custom Attendance Date Picker
         AttendanceDatePicker(
           initialDate: selectedDate,
           height: 110,
@@ -1293,7 +1128,10 @@ class _WorkoutLogCard extends StatelessWidget {
               const SizedBox(height: 8),
               if (log.workoutexerciseslogs.isNotEmpty)
                 ...log.workoutexerciseslogs.map(
-                  (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
+                  // (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
+                  (exerciseLog) => ExerciseLogItem(
+                    exerciseLog: exerciseLog,
+                  ),
                 )
               else
                 const Text('No exercise details available'),
@@ -1301,233 +1139,6 @@ class _WorkoutLogCard extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-// class _WorkoutLogCard extends StatelessWidget {
-//   final WorkoutLog log;
-//   final DateFormat dateFormat;
-
-//   const _WorkoutLogCard({
-//     required this.log,
-//     required this.dateFormat,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: BoxDecoration(
-//         color: Theme.of(context).colorScheme.surface,
-//         borderRadius: BorderRadius.circular(16),
-//         border: Border.all(
-//           color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-//           width: 1.5,
-//         ),
-//       ),
-//       child: ExpansionTile(
-//         expandedCrossAxisAlignment: CrossAxisAlignment.start,
-//         expandedAlignment: Alignment.topLeft,
-//         tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//         title: Text(
-//           'Workout on ${dateFormat.format(log.workoutDate)}',
-//           style: const TextStyle(fontWeight: FontWeight.bold),
-//         ),
-//         subtitle: Padding(
-//           padding: const EdgeInsets.only(top: 4.0),
-//           child: Text(
-//             'Duration: ${double.parse(log.totalDuration).toStringAsFixed(2)} min  |  Exercises: ${log.workoutexerciseslogs.length}',
-//             style: const TextStyle(color: Colors.grey),
-//           ),
-//         ),
-//         childrenPadding: const EdgeInsets.all(16),
-//         children: [
-//           if (log.performanceNotes.isNotEmpty) ...[
-//             const Text(
-//               'Performance Notes:',
-//               style: TextStyle(fontWeight: FontWeight.bold),
-//             ),
-//             const SizedBox(height: 4),
-//             Text(log.performanceNotes),
-//             const Divider(),
-//           ],
-//           const Text(
-//             'Exercises:',
-//             style: TextStyle(fontWeight: FontWeight.bold),
-//           ),
-//           const SizedBox(height: 8),
-//           if (log.workoutexerciseslogs.isNotEmpty)
-//             ...log.workoutexerciseslogs.map(
-//               (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
-//             )
-//           else
-//             const Text('No exercise details available'),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class _ExerciseLogItem extends StatelessWidget {
-  final Workoutexerciseslog exerciseLog;
-
-  const _ExerciseLogItem({required this.exerciseLog});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to exercise details screen (if needed)
-        context.pushNamed('exerciseDetails', extra: exerciseLog.exercises);
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-            width: 1.5,
-          ),
-        ),
-        child: ListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          leading: exerciseLog.exercises.imageUrl != null
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    exerciseLog.exercises.imageUrl,
-                    width: 80,
-                    height: 80,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      width: 80,
-                      height: 80,
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.fitness_center),
-                    ),
-                  ),
-                )
-              : Container(
-                  width: 80,
-                  height: 80,
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.fitness_center),
-                ),
-          title: Text(
-            exerciseLog.exercises.exerciseName ?? 'Unknown Exercise',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-          subtitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 4),
-              Text(
-                'Target: ${exerciseLog.exercises.targetMuscleGroup ?? 'N/A'}',
-                style: TextStyle(color: Colors.grey[700]),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'Duration: ${double.parse(exerciseLog.exerciseDuration).toStringAsFixed(2)} min',
-              ),
-              if ((double.tryParse(exerciseLog.restDuration) ?? 0) > 0)
-                Text(
-                  'Rest: ${double.parse(exerciseLog.restDuration).toStringAsFixed(2)} min',
-                ),
-              if (exerciseLog.skipped)
-                const Text(
-                  'Skipped',
-                  style: TextStyle(color: Colors.red),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class WorkoutCard extends StatelessWidget {
-  final Workout workout;
-  final VoidCallback onTap;
-
-  const WorkoutCard({
-    super.key,
-    required this.workout,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        elevation: 5,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
-          child: Stack(
-            children: [
-              Image.network(
-                workout.workoutImage.isNotEmpty
-                    ? workout.workoutImage
-                    : 'https://via.placeholder.com/150',
-                fit: BoxFit.cover,
-                height: 200,
-                width: 320,
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.black.withOpacity(0.6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        workout.fitnessLevel,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                      Text(
-                        workout.workoutName,
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  color: Colors.white,
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: onTap,
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                            horizontal: 16,
-                          ),
-                        ),
-                        child: const Text('Start'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

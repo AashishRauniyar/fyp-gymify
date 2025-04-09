@@ -36,18 +36,20 @@
 
 import express from 'express';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { 
-    createSupportedExercise, 
-    getAllSupportedExercises, 
-    getCurrentUserPersonalBestHistory, 
-    logPersonalBest, 
+import {
+    createSupportedExercise,
+    getAllSupportedExercises,
+    getCurrentUserPersonalBestHistory,
+    logPersonalBest,
     getUserCurrentPersonalBests,
     deletePersonalBest,
     getExerciseProgressOverTime,
-    validatePersonalBest, 
+    validatePersonalBest,
     validateSupportedExercise,
-    validateGetPersonalBestHistory
+    validateGetPersonalBestHistory,
+    deleteSupportedExercise
 } from '../controllers/personal_best_controller/personalBestController.js';
+
 
 export const personalBestRouter = express.Router();
 
@@ -58,6 +60,15 @@ personalBestRouter.post(
     authenticate,
     validateSupportedExercise,
     createSupportedExercise
+);
+
+
+// delete supported exercise
+personalBestRouter.delete(
+    '/supported_exercise/:exerciseId',
+    authenticate,
+    validateSupportedExercise,
+    deleteSupportedExercise
 );
 
 // ! Done
