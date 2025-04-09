@@ -4,167 +4,247 @@
 
 **Gymify** is a comprehensive platform designed to manage all aspects of a gym, including user management, workout tracking, diet planning, gym attendance, and communication between trainers and users. This project features an **admin panel built with React**, a **mobile app for users developed with Flutter**, and a **backend API built using Express.js** with a PostgreSQL database for data management.
 
-### Key Features
 
-- **User Management**: Users can create profiles, track their fitness goals, and manage their subscriptions to gyms. Trainers and gym owners have separate management interfaces to monitor and assist users.
-- **Workout Management**: Trainers can create and assign predefined workouts, while users can create their own custom workout plans. Workouts are linked to exercises, which include details like calories burned and target muscle groups.
-- **Diet Planning and Tracking**: Trainers can create diet plans for users, which include multiple meals with calorie and nutrition information. Users can track their diets, weight, BMI, and set calorie goals based on their fitness objectives (weight loss, muscle gain, maintenance).
-- **Attendance Tracking**: Gym attendance is tracked using RFID cards, allowing users to log their gym visits. The system keeps a record of streaks (consecutive days of attendance), and users can earn rewards for maintaining their attendance streaks.
-- **Subscriptions and Payments**: Users can subscribe to gyms with different plans (monthly, yearly, etc.), and payments are processed with a status tracking system. Subscription details, start/end dates, and payment statuses are managed efficiently.
-- **Chat System**: Integrated chat feature that allows users to communicate directly with trainers for guidance and feedback.
-- **Admin Panel**: Gym owners and admins can monitor gym activity, user subscriptions, payments, and more through a React-based admin dashboard.
-- **Mobile App**: Users access the system via a Flutter-based mobile application, allowing them to view workout plans, diet progress, track attendance, and chat with trainers on the go.
+- **Admin Panel**: A React-based web application for gym administrators and trainers
+- **Mobile App**: A Flutter application for gym members
+- **Backend API**: An Express.js server with PostgreSQL database
+
+## Key Features
+
+### User Management
+- User registration and authentication
+- Role-based access (Member, Trainer, Admin)
+- Profile management with fitness metrics tracking
+- Weight and progress tracking
+
+### Workout Management
+- Predefined workout plans created by trainers
+- Custom workout creation for members
+- Exercise library with descriptions and demonstration videos/images
+- Workout logs to track performance and progress
+
+### Diet Planning and Tracking
+- Diet plans created by trainers with calorie goals
+- Meal logging and tracking
+- Nutritional information and macronutrient tracking
+- Diet progress reports
+
+### Attendance Tracking
+- Check-in/check-out system
+- Attendance history and streak tracking
+- Attendance analytics
+
+### Subscriptions and Payments
+- Multiple membership plan options
+- Payment processing with status tracking
+- Subscription management and renewal notifications
+- Revenue reporting and analytics
+
+### Communication
+- Chat system between members and trainers
+- Notifications for workouts, diet plans, and gym updates
+- Feedback system
+
+### Analytics
+- User growth and demographics
+- Attendance patterns
+- Revenue reporting
+- Workout and diet adherence metrics
 
 ## Tech Stack
 
 ### Frontend
-
-- **Admin Panel**: Built with **React**, the admin panel offers a responsive interface for gym owners and trainers to manage users, subscriptions, and gym operations.
-- **User Mobile App**: Developed using **Flutter**, providing users with a smooth and intuitive interface for tracking their progress, accessing workout plans, and managing gym attendance.
+- **Admin Panel**: React, Tailwind CSS, Recharts for data visualization
+- **Mobile App**: Flutter
 
 ### Backend
-
-- **Express.js**: The backend is powered by **Express.js**, which serves as the API layer for handling user data, workout plans, diet tracking, chat, and attendance. The API is designed with RESTful principles to ensure scalability and ease of use.
-- **PostgreSQL**: A **PostgreSQL** database is used to manage user data, workouts, subscriptions, payments, and gym information. The schema is designed with normalization principles to ensure efficient querying and data consistency.
-
-## Features Breakdown
-
-### Admin Panel (React)
-
-- Manage gym operations, including user subscriptions, payments, and workouts.
-- View and track user attendance, streaks, and performance.
-- Access analytics related to gym activities, user progress, and overall performance.
-
-### Mobile App (Flutter)
-
-- Users can sign up, create profiles, and view their workout and diet plans.
-- Access a detailed view of their progress, including current weight, BMI, and attendance streaks.
-- Chat directly with trainers for personalized guidance.
-- Receive notifications and updates about workouts, diet plans, and gym attendance.
-
-### Backend API (Express.js)
-
-- Secure API endpoints for user authentication, gym management, workout and diet tracking.
-- Real-time chat system for trainers and users.
-- Subscription and payment handling with status tracking.
+- **Server**: Express.js (Node.js)
+- **Database**: PostgreSQL
+- **Authentication**: JWT (JSON Web Tokens)
+- **File Storage**: Cloudinary for image and video uploads
 
 ## Installation and Setup
 
 ### Prerequisites
+- **Node.js** (v18+)
+- **npm** or **yarn** package manager
+- **PostgreSQL** database server
+- **Flutter SDK** (for mobile app)
+- **Docker** (optional, for containerized deployment)
 
-- **Node.js** for backend (Express.js)
-- **Flutter SDK** for mobile app development
-- **React** for admin panel
-- **PostgreSQL** for database management
-
-### Steps to Run the Project
+### Backend Setup
 
 1. **Clone the repository**:
-    
+   ```bash
+   git clone https://github.com/aashishrauniyar/fyp-gymify.git
+   cd fyp-gymify
+   ```
+
+2. **Setup the backend**:
     ```bash
-    bash
-    Copy code
-    git clone https://github.com/AashishRauniyar/fyp-gymify
-    
+    cd be
+    npm install
     ```
-    
-2. **Backend Setup**:
-    - Navigate to the backend directory:
-        
-        ```bash
-        bash
-        Copy code
-        cd be
-        
-        ```
-        
-    - Install the dependencies:
-        
-        ```bash
-        bash
-        Copy code
-        npm install
-        
-        ```
-        
-    - Set up the PostgreSQL database and environment variables:
-        
-        ```bash
-        bash
-        Copy code
-        cp .env.example .env
-        
-        ```
-        
-    - Run the backend server:
-        
-        ```bash
-        bash
-        Copy code
-        npm run dev
-        
-        ```
-        
-3. **Front end Admin Panel Setup**:
-    - Navigate to the admin panel directory:
-        
-        ```bash
-        bash
-        Copy code
-        cd fe
-        
-        ```
-        
-    - Install the dependencies:
-        
-        ```bash
-        bash
-        Copy code
-        npm install
-        
-        ```
-        
-    - Run the admin panel in development mode:
-        
-        ```bash
-        bash
-        Copy code
-        npm run dev
-        
-        ```
-        
-4. **Mobile App Setup**:
-    - Navigate to the Flutter app directory:
-        
-        ```bash
-        bash
-        Copy code
-        cd mobile
-        
-        ```
-        
-    - Install the dependencies:
-        
-        ```bash
-        bash
-        Copy code
-        flutter pub get
-        
-        ```
-        
-    - Run the Flutter app on a device or emulator:
-        
-        ```bash
-        bash
-        Copy code
-        flutter run
-        
-        ```
-        
 
-## More Features
+3. **Configure environment variables**:
+   Create a `.env` file in the `be` directory with the following variables:
+   ```
+   DATABASE_URL="postgresql://username:password@localhost:5432/gymify"
+   JWT_SECRET="your-jwt-secret-key"
+   PORT=3000
+   CLOUDINARY_CLOUD_NAME="your-cloud-name"
+   CLOUDINARY_API_KEY="your-api-key"
+   CLOUDINARY_API_SECRET="your-api-secret"
+   ```
 
-- **Push Notifications**: Integrate Firebase for push notifications to alert users about workout plans, diet reminders, and gym updates.
+4. **Set up the database**:
+   ```bash
+   # Create database tables from schema
+   npx prisma migrate deploy
+   
+   # Optional: Seed the database with initial data
+   npm run seed
+   ```
+
+5. **Start the backend server**:
+   ```bash
+   npm start
+   ```
+   For development with auto-reload:
+   ```bash
+   npm run dev
+   ```
+
+### Frontend Admin Panel Setup
+
+1. **Navigate to the frontend directory**:
+   ```bash
+   cd ../fe
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables**:
+   Create a `.env` file in the `fe` directory:
+   ```
+   VITE_API_BASE_URL=http://localhost:3000/api
+   ```
+
+4. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
+
+5. **Build for production**:
+   ```bash
+   npm run build
+   ```
+
+### Mobile App Setup
+
+1. **Navigate to the Flutter app directory**:
+   ```bash
+   cd ../flutter/gymify
+   ```
+
+2. **Install Flutter dependencies**:
+   ```bash
+   flutter pub get
+   ```
+
+3. **Configure API endpoint**:
+   Update the API base URL in `lib/config/api_config.dart`
+
+4. **Run on a device or emulator**:
+   ```bash
+   flutter run
+   ```
+
+5. **Build APK for Android**:
+   ```bash
+   flutter build apk
+   ```
+
+### Docker Deployment
+
+1. **Build and run the backend with Docker**:
+   ```bash
+   cd be
+   docker build -t gymify-backend -f DockerFile .
+   docker run -p 3000:3000 --env-file .env gymify-backend
+   ```
+
+2. **Build and run the frontend with Docker**:
+   ```bash
+   cd ../fe
+   docker build -t gymify-frontend -f Dockerfile .
+   docker run -p 80:80 gymify-frontend
+   ```
+
+## API Documentation
+
+The backend provides a RESTful API with the following key endpoints:
+
+### Authentication
+- `POST /api/auth/register`: Register a new user
+- `POST /api/auth/login`: Login and receive JWT token
+
+### Users
+- `GET /api/users/profile`: Get current user profile
+- `PUT /api/users/profile`: Update user profile
+- `PUT /api/users/weight`: Log new weight measurement
+
+### Workouts
+- `GET /api/workouts`: Get all available workouts
+- `POST /api/workouts`: Create a new workout (Trainer/Admin)
+- `GET /api/workouts/:id`: Get specific workout details
+- `POST /api/workouts/:id/exercises`: Add exercise to a workout
+
+### Exercises
+- `GET /api/exercises`: Get all exercises
+- `POST /api/exercises`: Create a new exercise (Trainer/Admin)
+- `GET /api/exercises/:id`: Get specific exercise details
+
+### Diet
+- `GET /api/diet-plans`: Get user's diet plans
+- `POST /api/diet-plans`: Create a new diet plan (Trainer/Admin)
+- `POST /api/meals/log`: Log a consumed meal
+
+### Attendance
+- `POST /api/attendance/check-in`: Record gym attendance
+- `GET /api/attendance/history`: Get attendance history
+
+### Payments
+- `GET /api/payments`: Get payment history
+- `POST /api/payments`: Process a new payment
+
+### Analytics
+- `GET /api/admin/dashboard/stats`: Get overall statistics
+- `GET /api/admin/dashboard/revenue`: Get revenue reports
+- `GET /api/admin/dashboard/user-growth`: Get user growth analytics
+
+## User Roles and Permissions
+
+1. **Admin**
+   - Access to all features
+   - Manage users, trainers, memberships
+   - View comprehensive analytics
+   - Configure system settings
+
+2. **Trainer**
+   - Create and manage workout plans
+   - Create and assign diet plans
+   - Monitor member progress
+   - Communicate with assigned members
+
+3. **Member**
+   - View assigned workout and diet plans
+   - Track personal progress
+   - Log workouts and meals
+   - Communicate with trainers
 
 # Business Rules
 
