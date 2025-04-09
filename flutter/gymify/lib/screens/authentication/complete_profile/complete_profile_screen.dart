@@ -812,6 +812,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
 
                     // Gender dropdown
                     DropdownButtonFormField<String>(
+                      style: theme.textTheme.bodyLarge,
                       value: _selectedGender,
                       decoration: InputDecoration(
                         labelText: 'Gender',
@@ -903,6 +904,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
 
                     // Fitness Level dropdown
                     DropdownButtonFormField<String>(
+                      style: theme.textTheme.bodyLarge,
                       value: _selectedFitnessLevel,
                       decoration: InputDecoration(
                         labelText: 'Fitness Level',
@@ -930,6 +932,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
 
                     // Goal Type dropdown
                     DropdownButtonFormField<String>(
+                      style: theme.textTheme.bodyLarge,
                       value: _selectedGoalType,
                       decoration: InputDecoration(
                         labelText: 'Goal Type',

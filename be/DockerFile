@@ -1,0 +1,27 @@
+FROM node:22
+
+
+# workdir 
+
+WORKDIR /usr/src/app
+
+#copy package.json and package-lock.json
+
+COPY package*.json ./
+
+# install dependencies
+RUN npm install
+
+
+# copy all files to workdir
+COPY . .
+
+
+# build the app
+# RUN npm run build
+
+# expose the port
+EXPOSE 3000
+
+# start the app
+CMD ["npm", "start"]

@@ -1,3 +1,89 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 50% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 221 83% 53%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 221 83% 53%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 221 83% 53%;
+    --sidebar-accent: 213 94% 68%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 213 94% 68%;
+    --sidebar-ring: 217 92% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    height: 100%;
+    width: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  #root {
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+@layer utilities {
+  .page-container {
+    @apply max-w-7xl mx-auto p-4 md:p-6 animate-fade-in;
+  }
+  
+  .glass-morphism {
+    @apply bg-white/90 backdrop-blur-md border border-white/20;
+  }
+  
+  .transition-all-200 {
+    @apply transition-all duration-200;
+  }
+  
+  .transition-transform-300 {
+    @apply transition-transform duration-300;
+  }
+}
