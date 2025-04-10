@@ -48,3 +48,4 @@ void showCoolSnackBar(
   // Show the new SnackBar
   scaffoldMessenger.showSnackBar(snackBar);
 }
+

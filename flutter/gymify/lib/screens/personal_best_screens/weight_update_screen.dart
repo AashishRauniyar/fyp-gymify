@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/models/weight_history_model.dart';
@@ -20,10 +22,6 @@ class _WeightLogState extends State<WeightLog> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // if (!_isInit) {
-    //   _initData();
-    //   _isInit = true;
-    // }
     if (!_isInit) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _initData(); // Fetch data after the build phase
@@ -98,6 +96,8 @@ class _WeightLogState extends State<WeightLog> {
                         content: Text('Weight updated successfully'),
                       ),
                     );
+                    // showCoolSnackBar(
+                    // context, 'Weight updated successfully', true);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -130,15 +130,6 @@ class _WeightLogState extends State<WeightLog> {
     final isDarkMode = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Gymify'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.refresh),
-      //       onPressed: _initData,
-      //     ),
-      //   ],
-      // ),
       appBar: CustomAppBar(
         title: 'Weight Log',
         actions: [
@@ -237,7 +228,10 @@ class _WeightLogState extends State<WeightLog> {
                                 children: [
                                   Text(
                                     user.userName ?? 'User',
-                                    style: theme.textTheme.titleLarge,
+                                    style: theme.textTheme.bodyLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(user.email ?? ''),
@@ -248,30 +242,85 @@ class _WeightLogState extends State<WeightLog> {
                         ),
                         const SizedBox(height: 16),
 
-                        // Current Weight & Goal
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //Column for weight and goal type
+
+                        Column(
                           children: [
-                            _buildStatCard(
-                              'Current Weight',
-                              user.currentWeight != null
-                                  ? '${user.currentWeight} kg'
-                                  : 'Not set',
-                              Icons.monitor_weight_outlined,
-                              theme,
-                              isDarkMode,
+                            Row(
+                              spacing: 4,
+                              children: [
+                                // icon
+                                const Icon(
+                                  Iconsax.flag_2,
+                                  size: 20,
+                                ),
+                                Text(
+                                  'Goal Type :',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  user.goalType ?? 'Not set',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
                             ),
-                            _buildStatCard(
-                              'Goal Weight',
-                              user.goalType != null
-                                  ? '${user.goalType}'
-                                  : 'Not set',
-                              Icons.flag_outlined,
-                              theme,
-                              isDarkMode,
-                            ),
+                            Row(
+                              spacing: 4,
+                              children: [
+                                const Icon(
+                                  Iconsax.weight_1,
+                                  size: 20,
+                                ),
+                                Text(
+                                  'Current Weight:',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  user.currentWeight != null
+                                      ? '${user.currentWeight} kg'
+                                      : 'Not set',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            )
                           ],
                         ),
+
+                        // Current Weight & Goal
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //   children: [
+                        //     _buildStatCard(
+                        //       'Current Weight',
+                        //       user.currentWeight != null
+                        //           ? '${user.currentWeight} kg'
+                        //           : 'Not set',
+                        //       Icons.monitor_weight_outlined,
+                        //       theme,
+                        //       isDarkMode,
+                        //     ),
+                        //     _buildStatCard(
+                        //       'Goal Weight',
+                        //       user.goalType != null
+                        //           ? '${user.goalType}'
+                        //           : 'Not set',
+                        //       Icons.flag_outlined,
+                        //       theme,
+                        //       isDarkMode,
+                        //     ),
+                        //   ],
+                        // ),
+
                         const SizedBox(height: 16),
 
                         // Update Weight Button

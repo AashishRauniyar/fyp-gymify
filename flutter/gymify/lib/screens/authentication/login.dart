@@ -269,30 +269,30 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: [
           // Background design elements
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -80,
-            left: -80,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondary.withOpacity(0.1),
-                shape: BoxShape.circle,
-              ),
-            ),
-          ),
+          // Positioned(
+          //   top: -100,
+          //   right: -100,
+          //   child: Container(
+          //     width: 300,
+          //     height: 300,
+          //     decoration: BoxDecoration(
+          //       color: theme.colorScheme.primary.withOpacity(0.1),
+          //       shape: BoxShape.circle,
+          //     ),
+          //   ),
+          // ),
+          // Positioned(
+          //   bottom: -80,
+          //   left: -80,
+          //   child: Container(
+          //     width: 200,
+          //     height: 200,
+          //     decoration: BoxDecoration(
+          //       color: theme.colorScheme.secondary.withOpacity(0.1),
+          //       shape: BoxShape.circle,
+          //     ),
+          //   ),
+          // ),
 
           // Main content
           SafeArea(
@@ -421,7 +421,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 isDarkMode ? Colors.grey[400] : theme.hintColor,
                           ),
                           prefixIcon: Icon(
-                            FontAwesomeIcons.envelope,
+                            FontAwesomeIcons.envelopeCircleCheck,
                             color: theme.colorScheme.primary,
                             size: 18,
                           ),

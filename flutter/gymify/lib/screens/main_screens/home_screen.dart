@@ -1,8 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
+import 'package:gymify/models/weight_history_model.dart';
 import 'package:gymify/utils/workout_utils.dart/exercise_log_item.dart';
 import 'package:gymify/models/workout_log_models/workout_log_model.dart';
 import 'package:gymify/models/workout_model.dart';
@@ -22,6 +24,7 @@ import 'package:gymify/widget/attendance_stats_widget.dart';
 import 'package:gymify/widget/fitnes_stats_widget.dart';
 import 'package:gymify/widget/nutrition_stats_widget.dart';
 import 'package:gymify/widget/workout_stats_widget.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -50,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
       context.read<PersonalBestProvider>().fetchCurrentPersonalBests(),
       context.read<MembershipProvider>().fetchMembershipPlans(),
       context.read<DietProvider>().fetchMealLogs(),
+      context
+          .read<ProfileProvider>()
+          .fetchWeightHistory(), // Add this line to fetch weight history
     ]);
 
     final authProvider = context.read<AuthProvider>();
@@ -195,7 +201,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     child: const Text("Step Count")),
 
                       _buildWeightSection(
-                          context, user!.currentWeight.toString()),
+                          context,
+                          user!.currentWeight.toString(),
+                          context.watch<ProfileProvider>().weightHistory),
                       const SizedBox(height: 10),
 
                       _buildNutritionSection(context),
@@ -833,57 +841,352 @@ Widget _buildPBItem(
   );
 }
 
-Widget _buildWeightSection(BuildContext context, String weight) {
+// Widget _buildWeightSection(BuildContext context, String weight) {
+//   final theme = Theme.of(context);
+//   final isDarkMode = theme.brightness == Brightness.dark;
+//   return Container(
+//     margin: const EdgeInsets.symmetric(vertical: 6),
+//     padding: const EdgeInsets.all(16.0),
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(16),
+
+//       gradient: isDarkMode
+//           ? LinearGradient(
+//               colors: [
+//                 theme.colorScheme.onSurface.withOpacity(0.1),
+//                 theme.colorScheme.onSurface.withOpacity(0.05),
+//               ],
+//               begin: Alignment.topLeft,
+//               end: Alignment.bottomRight,
+//             )
+//           : null, // For light mode, no gradient, just a white background
+//       color: Theme.of(context).brightness == Brightness.light
+//           ? Colors.white // White background for light mode
+//           : null, // Dark mode will apply the gradient above
+//       border: Border.all(
+//         color: theme.colorScheme.onSurface.withOpacity(0.1),
+//         width: 1.5,
+//       ),
+//     ),
+//     child: Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text('Current Weight',
+//                 style: TextStyle(
+//                     color: Theme.of(context)
+//                         .colorScheme
+//                         .onSurface
+//                         .withOpacity(0.6))),
+//             const SizedBox(height: 8),
+//             Text('$weight kg',
+//                 style:
+//                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+//           ],
+//         ),
+//         ElevatedButton.icon(
+//           label: const Text('Log Weight'),
+//           onPressed: () => context.pushNamed('weightLog'),
+//         ),
+//       ],
+//     ),
+//   );
+// }
+
+Widget _buildWeightSection(
+    BuildContext context, String weight, List<WeightHistory>? weightHistory) {
   final theme = Theme.of(context);
   final isDarkMode = theme.brightness == Brightness.dark;
+
+  // Parse the current weight
+  final currentWeight = double.tryParse(weight) ?? 0.0;
+
+  // Get the last 5 entries for mini chart (or fewer if not available)
+  final chartData = weightHistory != null && weightHistory.isNotEmpty
+      ? List<WeightHistory>.from(weightHistory)
+          .where((item) => item.weight.isNotEmpty)
+          .toList()
+      : <WeightHistory>[];
+
+  // Sort data and take last 5 entries
+  if (chartData.isNotEmpty) {
+    chartData.sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
+    if (chartData.length > 5) {
+      // Take the 5 most recent entries
+      chartData.removeRange(0, chartData.length - 5);
+    }
+  }
+
   return Container(
-    margin: const EdgeInsets.symmetric(vertical: 6),
+    margin: const EdgeInsets.symmetric(vertical: 10),
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16),
-
-      gradient: isDarkMode
-          ? LinearGradient(
-              colors: [
-                theme.colorScheme.onSurface.withOpacity(0.1),
-                theme.colorScheme.onSurface.withOpacity(0.05),
+      gradient: LinearGradient(
+        colors: isDarkMode
+            ? [
+                theme.colorScheme.primary.withOpacity(0.2),
+                theme.colorScheme.primary.withOpacity(0.05),
+              ]
+            : [
+                theme.colorScheme.primary.withOpacity(0.1),
+                theme.colorScheme.primary.withOpacity(0.02),
               ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            )
-          : null, // For light mode, no gradient, just a white background
-      color: Theme.of(context).brightness == Brightness.light
-          ? Colors.white // White background for light mode
-          : null, // Dark mode will apply the gradient above
-      border: Border.all(
-        color: theme.colorScheme.onSurface.withOpacity(0.1),
-        width: 1.5,
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
       ),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Current Weight',
-                style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.6))),
-            const SizedBox(height: 8),
-            Text('$weight kg',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          ],
-        ),
-        ElevatedButton.icon(
-          label: const Text('Log Weight'),
-          onPressed: () => context.pushNamed('weightLog'),
+      boxShadow: [
+        BoxShadow(
+          color: theme.shadowColor.withOpacity(0.1),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
         ),
       ],
     ),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Iconsax.weight_1,
+                      size: 18,
+                      color: theme.colorScheme.primary,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'Current Weight',
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '$weight kg',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                if (weightHistory != null && weightHistory.length > 1)
+                  _buildWeightTrend(context, weightHistory),
+              ],
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: IconButton(
+                icon: Icon(
+                  Iconsax.add_square,
+                  color: theme.colorScheme.onPrimaryContainer,
+                  size: 32,
+                ),
+                onPressed: () => context.pushNamed('weightLog'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Mini chart
+        if (chartData.length > 1)
+          SizedBox(
+            height: 60,
+            child: LineChart(
+              LineChartData(
+                gridData: const FlGridData(show: false),
+                titlesData: const FlTitlesData(show: false),
+                borderData: FlBorderData(show: false),
+                lineTouchData: const LineTouchData(enabled: false),
+                minX: 0,
+                maxX: (chartData.length - 1).toDouble(),
+                minY: _getMinWeight(chartData) * 0.95, // Add some padding
+                maxY: _getMaxWeight(chartData) * 1.05,
+                lineBarsData: [
+                  LineChartBarData(
+                    spots: _createSpots(chartData),
+                    isCurved: true,
+                    color: theme.colorScheme.primary,
+                    barWidth: 3,
+                    isStrokeCapRound: true,
+                    dotData: FlDotData(
+                      show: true,
+                      getDotPainter: (spot, percent, barData, index) =>
+                          FlDotCirclePainter(
+                        radius: 4,
+                        color: theme.colorScheme.primary,
+                        strokeWidth: 2,
+                        strokeColor: theme.colorScheme.surface,
+                      ),
+                    ),
+                    belowBarData: BarAreaData(
+                      show: true,
+                      color: theme.colorScheme.primary.withOpacity(0.15),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        else
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Iconsax.chart_2,
+                  size: 16,
+                  color: theme.colorScheme.primary.withOpacity(0.6),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Add more entries to see your progress',
+                  style: TextStyle(
+                    color: theme.colorScheme.onSurface.withOpacity(0.6),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        // View Details button
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: TextButton(
+            onPressed: () => context.pushNamed('weightLog'),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'View Details',
+                  style: TextStyle(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward,
+                  size: 16,
+                  color: theme.colorScheme.primary,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+// Helper function to create chart spots
+List<FlSpot> _createSpots(List<WeightHistory> history) {
+  return history.asMap().entries.map((entry) {
+    final weight = double.tryParse(entry.value.weight) ?? 0.0;
+    return FlSpot(entry.key.toDouble(), weight);
+  }).toList();
+}
+
+// Helper function to get minimum weight
+double _getMinWeight(List<WeightHistory> history) {
+  if (history.isEmpty) return 0;
+
+  // Safely parse weight values and filter out zeros/invalid values
+  final weights = history
+      .map((e) => double.tryParse(e.weight) ?? 0.0)
+      .where((weight) => weight > 0)
+      .toList();
+
+  if (weights.isEmpty) return 0;
+  return weights.reduce((a, b) => a < b ? a : b);
+}
+
+// Helper function to get maximum weight
+double _getMaxWeight(List<WeightHistory> history) {
+  if (history.isEmpty) return 0;
+
+  // Safely parse weight values and filter out zeros/invalid values
+  final weights = history
+      .map((e) => double.tryParse(e.weight) ?? 0.0)
+      .where((weight) => weight > 0)
+      .toList();
+
+  if (weights.isEmpty) return 1; // Avoid 0 which causes chart issues
+  return weights.reduce((a, b) => a > b ? a : b);
+}
+
+// Helper function to show weight trend
+Widget _buildWeightTrend(BuildContext context, List<WeightHistory> history) {
+  // Filter for non-empty weights
+  final validHistory = history.where((item) => item.weight.isNotEmpty).toList();
+
+  if (validHistory.length < 2) return const SizedBox();
+
+  final sortedHistory = List<WeightHistory>.from(validHistory)
+    ..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
+
+  // Handle potential parsing errors safely
+  final lastIndex = sortedHistory.length - 1;
+  final previousIndex = lastIndex - 1;
+
+  if (previousIndex < 0 || lastIndex < 0) return const SizedBox();
+
+  final currentWeight = double.tryParse(sortedHistory[lastIndex].weight) ?? 0.0;
+  final previousWeight =
+      double.tryParse(sortedHistory[previousIndex].weight) ?? 0.0;
+
+  if (currentWeight <= 0 || previousWeight <= 0) return const SizedBox();
+
+  final difference = currentWeight - previousWeight;
+
+  // Avoid showing very small changes that might be measurement errors
+  if (difference.abs() < 0.1) return const SizedBox();
+
+  final isGain = difference > 0;
+  final theme = Theme.of(context);
+
+  return Row(
+    children: [
+      Icon(
+        isGain ? Icons.arrow_upward : Icons.arrow_downward,
+        size: 14,
+        color: isGain ? Colors.red : Colors.green,
+      ),
+      const SizedBox(width: 4),
+      Text(
+        '${difference.abs().toStringAsFixed(1)} kg',
+        style: TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: isGain ? Colors.red : Colors.green,
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        'since last entry',
+        style: TextStyle(
+          fontSize: 12,
+          color: theme.colorScheme.onSurface.withOpacity(0.6),
+        ),
+      ),
+    ],
   );
 }
 
