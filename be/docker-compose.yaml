@@ -26,5 +26,14 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data
 
+  frontend:
+    build:
+      context: ../fe
+      dockerfile: DockerFile
+    ports:
+      - "3000:80" # Map Nginx container port 80 to host port 3000
+    depends_on:
+      - backend # Ensure the backend starts before the frontend
+
 volumes:
   postgres_data: # Named volume to persist PostgreSQL data
