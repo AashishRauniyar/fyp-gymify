@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: DockerFile
+    ports:
+      - "8000:8000" # Map backend container port 8000 to host port 8000
+    env_file:
+      - .env # Load environment variables from .env file
+    depends_on:
+      - postgres # Ensure PostgreSQL starts before the backend
+    command: sh -c "npx prisma migrate deploy && npm start" # Run migrations and start the app
+
+  postgres:
+    image: postgres:15 # Use PostgreSQL version 15
+    container_name: gymify-postgres # Name the PostgreSQL container
+    restart: always # Restart the container automatically if it stops
+    environment:
+      POSTGRES_USER: postgres # PostgreSQL username
+      POSTGRES_PASSWORD: password # PostgreSQL password
+      POSTGRES_DB: gymify # PostgreSQL database name
+    ports:
+      - "5432:5432" # Map PostgreSQL container port 5432 to host port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist PostgreSQL data
+
+volumes:
+  postgres_data: # Named volume to persist PostgreSQL data

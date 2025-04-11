@@ -1,27 +1,22 @@
 FROM node:22
 
-
-# workdir 
-
+# Set the working directory inside the container
 WORKDIR /usr/src/app
 
-#copy package.json and package-lock.json
-
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# install dependencies
+# Install dependencies
 RUN npm install
 
-
-# copy all files to workdir
+# Copy all application files to the working directory
 COPY . .
 
+# Generate Prisma client
+RUN npx prisma generate
 
-# build the app
-# RUN npm run build
+# Expose the port the app will run on
+EXPOSE 8000
 
-# expose the port
-EXPOSE 3000
-
-# start the app
-CMD ["npm", "start"]
+# Run migrations and start the app
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

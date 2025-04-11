@@ -156,7 +156,8 @@ const LoginPage = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Login to Admin Dashboard</CardTitle>
+          
+          <CardTitle>Login to Gymify Admin Dashboard</CardTitle>
           <CardDescription>Please enter your email and password to log in</CardDescription>
         </CardHeader>
         <CardContent>

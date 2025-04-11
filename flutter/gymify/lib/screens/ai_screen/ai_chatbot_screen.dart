@@ -1383,6 +1383,8 @@ class _AIChatbotScreenState extends State<AIChatbotScreen>
     );
   }
 
+
+//TODO : Implement this function to navigate to a specific exercise
   // Navigate to a specific exercise
   void _navigateToExercise(int exerciseId) {
     context.pushNamed(
