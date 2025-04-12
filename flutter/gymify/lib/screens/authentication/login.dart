@@ -208,7 +208,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-  bool _rememberMe = false;
+  final bool _rememberMe = false;
 
   @override
   void dispose() {
@@ -475,36 +475,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     // Remember me & Forgot password
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         // Remember me checkbox
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: Checkbox(
-                                value: _rememberMe,
-                                onChanged: (value) {
-                                  setState(() {
-                                    _rememberMe = value ?? false;
-                                  });
-                                },
-                                activeColor: theme.colorScheme.primary,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              'Remember me',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: isDarkMode
-                                    ? Colors.white70
-                                    : theme.colorScheme.onSurface
-                                        .withOpacity(0.8),
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Row(
+                        //   children: [
+                        //     SizedBox(
+                        //       width: 24,
+                        //       height: 24,
+                        //       child: Checkbox(
+                        //         value: _rememberMe,
+                        //         onChanged: (value) {
+                        //           setState(() {
+                        //             _rememberMe = value ?? false;
+                        //           });
+                        //         },
+                        //         activeColor: theme.colorScheme.primary,
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 8),
+                        //     Text(
+                        //       'Remember me',
+                        //       style: theme.textTheme.bodyMedium?.copyWith(
+                        //         color: isDarkMode
+                        //             ? Colors.white70
+                        //             : theme.colorScheme.onSurface
+                        //                 .withOpacity(0.8),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
 
                         // Forgot password link
                         TextButton(

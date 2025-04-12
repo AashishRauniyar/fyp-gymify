@@ -99,6 +99,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
                       // Description
                       TextFormField(
+                        maxLines: 4,
                         decoration:
                             const InputDecoration(labelText: 'Description'),
                         onSaved: (value) => description = value,

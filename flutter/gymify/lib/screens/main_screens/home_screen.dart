@@ -280,9 +280,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// have to give user name and profile image
+// Improved alignment and added a button for premium members to go to membership plans
+
 Widget _buildHeader(
     BuildContext context, String username, String profileImage) {
+  // Check if the user has an active membership
+  final membershipProvider = Provider.of<MembershipProvider>(context);
+  final hasActiveMembership = membershipProvider.membership != null &&
+      membershipProvider.membership!.status.toLowerCase() == 'active';
+
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -298,36 +304,85 @@ Widget _buildHeader(
                         .onSurface
                         .withOpacity(0.6))),
             const SizedBox(height: 4),
-            // make first letter capitalize
+            // Make first letter capitalize
             Text(username[0].toUpperCase() + username.substring(1),
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            if (hasActiveMembership) ...[
+              const SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () {
+                  context.pushNamed('membershipPlans');
+                },
+                style: ElevatedButton.styleFrom(
+                  
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('Premium Member'),
+              ),
+            ],
           ],
         ),
       ),
-      Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(
-            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-            width: 1.5,
-          ),
-        ),
-        child: ClipOval(
-          child: CachedNetworkImage(
-            imageUrl: profileImage,
-            width: 60,
-            height: 60,
-            fit: BoxFit.cover,
-            errorWidget: (context, url, error) => Image.asset(
-              'assets/images/profile/default_avatar.jpg',
-              width: 50,
-              height: 50,
-              fit: BoxFit.cover,
+      GestureDetector(
+        onTap: () {
+          context.pushNamed('membershipPlans');
+        },
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
+                  width: 1.5,
+                ),
+              ),
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: profileImage,
+                  width: 60,
+                  height: 60,
+                  fit: BoxFit.cover,
+                  errorWidget: (context, url, error) => Image.asset(
+                    'assets/images/profile/default_avatar.jpg',
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                  placeholder: (context, url) => const CustomLoadingAnimation(),
+                ),
+              ),
             ),
-            placeholder: (context, url) => const CustomLoadingAnimation(),
-          ),
+            if (hasActiveMembership)
+              Positioned(
+                top: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.surface,
+                      width: 1.5,
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.star,
+                    size: 16,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     ],

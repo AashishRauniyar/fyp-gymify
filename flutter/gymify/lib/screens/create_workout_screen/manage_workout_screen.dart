@@ -985,147 +985,158 @@ class _ManageWorkoutScreenState extends State<ManageWorkoutScreen> {
     return Stack(
       children: [
         // Use the WorkoutListItem for UI consistency
-        Container(
-          margin: const EdgeInsets.only(
-              right: 8), // Add margin for delete button to show when sliding
+        GestureDetector(
+          onTap: () {
+            context.pushNamed(
+              'workoutDetail',
+              queryParameters: {
+                'workoutId': workout.workoutId.toString(),
+              },
+            );
+          },
           child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 6),
-            decoration: BoxDecoration(
-              color: isDarkMode
-                  ? theme.colorScheme.surface
-                  : theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
+            margin: const EdgeInsets.only(
+                right: 8), // Add margin for delete button to show when sliding
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 6),
+              decoration: BoxDecoration(
                 color: isDarkMode
-                    ? theme.colorScheme.onSurface.withOpacity(0.1)
-                    : theme.colorScheme.onSurface.withOpacity(0.1),
-                width: 1.5,
+                    ? theme.colorScheme.surface
+                    : theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isDarkMode
+                      ? theme.colorScheme.onSurface.withOpacity(0.1)
+                      : theme.colorScheme.onSurface.withOpacity(0.1),
+                  width: 1.5,
+                ),
               ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Workout Image
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: CachedNetworkImage(
-                    imageUrl: workout.workoutImage.isNotEmpty
-                        ? workout.workoutImage
-                        : 'https://via.placeholder.com/150', // Placeholder for missing image
-                    width: 90,
-                    height: 90,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Workout Image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: CachedNetworkImage(
+                      imageUrl: workout.workoutImage.isNotEmpty
+                          ? workout.workoutImage
+                          : 'https://via.placeholder.com/150', // Placeholder for missing image
                       width: 90,
                       height: 90,
-                      color: theme.colorScheme.primary.withOpacity(0.1),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.dumbbell,
-                          color: theme.colorScheme.primary.withOpacity(0.5),
-                          size: 24,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Container(
+                        width: 90,
+                        height: 90,
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.dumbbell,
+                            color: theme.colorScheme.primary.withOpacity(0.5),
+                            size: 24,
+                          ),
                         ),
                       ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      width: 90,
-                      height: 90,
-                      color: theme.colorScheme.primary.withOpacity(0.1),
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.dumbbell,
-                          color: theme.colorScheme.primary.withOpacity(0.5),
-                          size: 24,
+                      errorWidget: (context, url, error) => Container(
+                        width: 90,
+                        height: 90,
+                        color: theme.colorScheme.primary.withOpacity(0.1),
+                        child: Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.dumbbell,
+                            color: theme.colorScheme.primary.withOpacity(0.5),
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
+                  const SizedBox(width: 12),
 
-                // Workout Details
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  // Workout Details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          workout.workoutName,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            color: isDarkMode ? Colors.white : Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${workout.workoutexercises?.length} exercises',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: isDarkMode
+                                ? Colors.white.withOpacity(0.6)
+                                : Colors.black.withOpacity(0.6),
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            // Difficulty badge
+                            Container(
+                              margin: const EdgeInsets.only(top: 4, right: 8),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: _getDifficultyColor(workout.difficulty)
+                                    .withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                workout.difficulty,
+                                style: TextStyle(
+                                  color:
+                                      _getDifficultyColor(workout.difficulty),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                            // Target muscle group
+                            Expanded(
+                              child: Text(
+                                workout.targetMuscleGroup ?? "Full Body",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.4)
+                                      : Colors.black.withOpacity(0.4),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Right side actions
+                  Row(
                     children: [
-                      Text(
-                        workout.workoutName,
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          color: isDarkMode ? Colors.white : Colors.black,
-                          fontWeight: FontWeight.bold,
+                      // Delete button (small version)
+                      IconButton(
+                        onPressed: () =>
+                            _showDeleteConfirmationDialog(context, workout),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: theme.colorScheme.error,
+                          size: 20,
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${workout.workoutexercises?.length} exercises',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDarkMode
-                              ? Colors.white.withOpacity(0.6)
-                              : Colors.black.withOpacity(0.6),
-                        ),
+                      // Arrow icon for visual accent
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: theme.primaryColor,
+                        size: 16,
                       ),
-                      Row(
-                        children: [
-                          // Difficulty badge
-                          Container(
-                            margin: const EdgeInsets.only(top: 4, right: 8),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: _getDifficultyColor(workout.difficulty)
-                                  .withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              workout.difficulty,
-                              style: TextStyle(
-                                color: _getDifficultyColor(workout.difficulty),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 10,
-                              ),
-                            ),
-                          ),
-                          // Target muscle group
-                          Expanded(
-                            child: Text(
-                              workout.targetMuscleGroup ?? "Full Body",
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: isDarkMode
-                                    ? Colors.white.withOpacity(0.4)
-                                    : Colors.black.withOpacity(0.4),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
+                      const SizedBox(width: 12),
                     ],
                   ),
-                ),
-
-                // Right side actions
-                Row(
-                  children: [
-                    // Delete button (small version)
-                    IconButton(
-                      onPressed: () =>
-                          _showDeleteConfirmationDialog(context, workout),
-                      icon: Icon(
-                        Icons.delete_outline,
-                        color: theme.colorScheme.error,
-                        size: 20,
-                      ),
-                    ),
-                    // Arrow icon for visual accent
-                    Icon(
-                      Icons.arrow_forward_ios,
-                      color: theme.primaryColor,
-                      size: 16,
-                    ),
-                    const SizedBox(width: 12),
-                  ],
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

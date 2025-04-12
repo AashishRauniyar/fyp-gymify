@@ -1,206 +1,3 @@
-// import 'dart:io';
-// import 'package:file_picker/file_picker.dart';
-// import 'package:flutter/material.dart';
-// import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
-// import 'package:gymify/utils/custom_appbar.dart';
-
-// import 'package:image_picker/image_picker.dart';
-// import 'package:provider/provider.dart';
-
-// class CreateExerciseScreen extends StatefulWidget {
-//   const CreateExerciseScreen({super.key});
-
-//   @override
-//   _CreateExerciseScreenState createState() => _CreateExerciseScreenState();
-// }
-
-// class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
-//   final _formKey = GlobalKey<FormState>();
-//   late String exerciseName;
-//   late String description;
-//   String targetMuscleGroup = ''; // Initialize with an empty string
-//   late String caloriesBurnedPerMinute;
-//   late String videoUrl;
-
-//   File? exerciseImage;
-//   File? exerciseVideo; // Declare the video file variable
-
-//   // List for muscle groups (You can customize this list as needed)
-//   final List<String> muscleGroups = [
-//     'Chest',
-//     'Back',
-//     'Arms',
-//     'Legs',
-//     'Core',
-//     'Shoulders',
-//     'Glutes',
-//     'Full Body'
-//   ];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Initializing default values
-//     exerciseName = '';
-//     description = '';
-//     caloriesBurnedPerMinute = '';
-//     videoUrl = '';
-//   }
-
-//   // Function to pick a video
-//   Future<void> _pickVideo() async {
-//     FilePickerResult? result = await FilePicker.platform.pickFiles(
-//       type: FileType.video, // Set file type to video
-//     );
-
-//     if (result != null) {
-//       setState(() {
-//         exerciseVideo = File(result.files.single.path!);
-//       });
-//     } else {
-//       // User canceled the picker
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final exerciseProvider = Provider.of<ExerciseProvider>(context);
-//     final theme = Theme.of(context);
-
-//     return Scaffold(
-//       appBar: const CustomAppBar(title: "Create Exercise"),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Form(
-//           key: _formKey,
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               // Exercise Name
-//               TextFormField(
-//                 decoration: const InputDecoration(labelText: 'Exercise Name'),
-//                 onSaved: (value) => exerciseName = value ?? '',
-//                 validator: (value) {
-//                   if (value == null || value.isEmpty) {
-//                     return 'Please enter an exercise name';
-//                   }
-//                   return null;
-//                 },
-//               ),
-//               // Description
-//               TextFormField(
-//                 decoration: const InputDecoration(labelText: 'Description'),
-//                 onSaved: (value) => description = value ?? '',
-//               ),
-//               // Target Muscle Group Dropdown
-//               DropdownButtonFormField<String>(
-//                 decoration:
-//                     const InputDecoration(labelText: 'Target Muscle Group'),
-//                 value: targetMuscleGroup.isNotEmpty ? targetMuscleGroup : null,
-//                 onChanged: (String? newValue) {
-//                   setState(() {
-//                     targetMuscleGroup = newValue!;
-//                   });
-//                 },
-//                 items:
-//                     muscleGroups.map<DropdownMenuItem<String>>((String value) {
-//                   return DropdownMenuItem<String>(
-//                     value: value,
-//                     child: Text(value),
-//                   );
-//                 }).toList(),
-//                 validator: (value) {
-//                   if (value == null || value.isEmpty) {
-//                     return 'Please select a target muscle group';
-//                   }
-//                   return null;
-//                 },
-//               ),
-//               // Calories Burned Per Minute
-//               TextFormField(
-//                 decoration:
-//                     const InputDecoration(labelText: 'Calories Burned per Min'),
-//                 keyboardType: TextInputType.number,
-//                 onSaved: (value) => caloriesBurnedPerMinute = value ?? '',
-//                 validator: (value) {
-//                   if (value == null || value.isEmpty) {
-//                     return 'Please enter calories burned per minute';
-//                   }
-//                   return null;
-//                 },
-//               ),
-//               // Video URL
-//               // TextFormField(
-//               //   decoration: const InputDecoration(labelText: 'Video URL'),
-//               //   onSaved: (value) => videoUrl = value ?? '',
-//               // ),
-//               const SizedBox(height: 20),
-//               // Pick Exercise Image
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   final picker = ImagePicker();
-//                   final pickedFile =
-//                       await picker.pickImage(source: ImageSource.gallery);
-
-//                   if (pickedFile != null) {
-//                     setState(() {
-//                       exerciseImage = File(pickedFile.path);
-//                     });
-//                   }
-//                 },
-//                 child: const Text('Pick Exercise Image'),
-//               ),
-//               if (exerciseImage != null)
-//                 Image.file(exerciseImage!, height: 100, width: 100),
-//               const SizedBox(height: 20),
-//               // Pick Exercise Video
-//               ElevatedButton(
-//                 onPressed: _pickVideo, // Use the video picker
-//                 child: const Text('Pick Exercise Video'),
-//               ),
-//               if (exerciseVideo != null)
-//                 Text('Video selected: ${exerciseVideo!.path}'),
-//               const SizedBox(height: 20),
-//               // Create Exercise Button
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   // Save form and create exercise
-//                   if (_formKey.currentState?.validate() ?? false) {
-//                     _formKey.currentState?.save();
-//                     try {
-//                       await exerciseProvider.createExercise(
-//                         context: context,
-//                         exerciseName: exerciseName,
-//                         description: description,
-//                         targetMuscleGroup: targetMuscleGroup,
-//                         caloriesBurnedPerMinute: caloriesBurnedPerMinute,
-//                         videoUrl: videoUrl,
-//                         exerciseImage: exerciseImage,
-//                         exerciseVideo:
-//                             exerciseVideo, // Pass the video to provider
-//                       );
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(
-//                             content: Text('Exercise created successfully')),
-//                       );
-//                       // Optionally, you can clear the form or navigate to another page.
-//                     } catch (e) {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         SnackBar(content: Text('Error creating exercise: $e')),
-//                       );
-//                     }
-//                   }
-//                 },
-//                 child: const Text('Create Exercise'),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -297,7 +94,10 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
             children: [
               // Exercise Name
               TextFormField(
-                decoration: const InputDecoration(labelText: 'Exercise Name'),
+                decoration: const InputDecoration(
+                  labelText: 'Exercise Name',
+                  helperText: 'Enter a unique name for the exercise.',
+                ),
                 onSaved: (value) => exerciseName = value ?? '',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -311,7 +111,10 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               // Description
               TextFormField(
                 maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  helperText: 'Provide a brief description of the exercise.',
+                ),
                 onSaved: (value) => description = value ?? '',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -324,8 +127,11 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
 
               // Target Muscle Group Dropdown
               DropdownButtonFormField<String>(
-                decoration:
-                    const InputDecoration(labelText: 'Target Muscle Group'),
+                style: theme.textTheme.bodyMedium,
+                decoration: const InputDecoration(
+                  labelText: 'Target Muscle Group',
+                  helperText: 'Select the target muscle group.',
+                ),
                 value: targetMuscleGroup.isNotEmpty ? targetMuscleGroup : null,
                 onChanged: (String? newValue) {
                   setState(() {
@@ -350,13 +156,24 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
 
               // Calories Burned Per Minute
               TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Calories Burned per Min'),
+                decoration: const InputDecoration(
+                  labelText: 'Calories Burned per Min',
+                  helperMaxLines: 2,
+                  helperText:
+                      'Enter the calories burned per minute (max 999.99).',
+                ),
                 keyboardType: TextInputType.number,
                 onSaved: (value) => caloriesBurnedPerMinute = value ?? '',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter calories burned per minute';
+                  }
+                  final calories = double.tryParse(value);
+                  if (calories == null || calories <= 0) {
+                    return 'Please enter a valid number';
+                  }
+                  if (calories > 999.99) {
+                    return 'Calories burned per minute cannot exceed 999.99';
                   }
                   return null;
                 },

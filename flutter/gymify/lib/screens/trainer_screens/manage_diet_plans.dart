@@ -72,7 +72,7 @@ class _ManageDietPlansState extends State<ManageDietPlans> {
               fit: BoxFit.scaleDown,
               child: Text(
                 value,
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: theme.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -240,10 +240,10 @@ class _ManageDietPlansState extends State<ManageDietPlans> {
                     children: [
                       Text(
                         "Diet Plans Overview",
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20),
                       ),
                       const SizedBox(height: 16),
                       Row(
@@ -393,7 +393,7 @@ class _ManageDietPlansState extends State<ManageDietPlans> {
                                           children: [
                                             Text(
                                               diet.name,
-                                              style: theme.textTheme.titleMedium
+                                              style: theme.textTheme.bodyLarge
                                                   ?.copyWith(
                                                 fontWeight: FontWeight.bold,
                                               ),

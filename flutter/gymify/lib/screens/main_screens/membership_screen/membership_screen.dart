@@ -818,136 +818,6 @@ class _MembershipScreenState extends State<MembershipScreen>
     );
   }
 
-  // Future<void> _showPaymentDialog(
-  //   BuildContext context,
-  //   int planId,
-  //   String planType,
-  //   String price,
-  // ) async {
-  //   if (_isApplying) return;
-
-  //   final membershipProvider =
-  //       Provider.of<MembershipProvider>(context, listen: false);
-  //   final currentStatus = membershipProvider.membershipStatus;
-
-  //   if (currentStatus != null &&
-  //       (currentStatus['status']?.toLowerCase() == 'active' ||
-  //           currentStatus['status']?.toLowerCase() == 'pending')) {
-  //     showCoolSnackBar(
-  //       context,
-  //       "You already have an ${currentStatus['status']} membership",
-  //       false,
-  //     );
-  //     return;
-  //   }
-
-  //   return showDialog(
-  //     context: context,
-  //     barrierDismissible: !_isApplying,
-  //     builder: (BuildContext dialogContext) => AlertDialog(
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(20),
-  //       ),
-  //       title: Column(
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: [
-  //           Text(
-  //             'Confirm Membership',
-  //             style: TextStyle(
-  //               color: Theme.of(context).colorScheme.primary,
-  //               fontWeight: FontWeight.bold,
-  //             ),
-  //           ),
-  //           const SizedBox(height: 12),
-  //           Container(
-  //             padding: const EdgeInsets.all(12),
-  //             decoration: BoxDecoration(
-  //               color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-  //               borderRadius: BorderRadius.circular(12),
-  //             ),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 Text(
-  //                   planType,
-  //                   style: const TextStyle(
-  //                     fontSize: 18,
-  //                     fontWeight: FontWeight.bold,
-  //                   ),
-  //                 ),
-  //                 const SizedBox(height: 4),
-  //                 Text(
-  //                   'NRS $price',
-  //                   style: TextStyle(
-  //                     fontSize: 16,
-  //                     color: Theme.of(context).colorScheme.secondary,
-  //                     fontWeight: FontWeight.w600,
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //       content: Column(
-  //         mainAxisSize: MainAxisSize.min,
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           const Text(
-  //             'Select Payment Method:',
-  //             style: TextStyle(
-  //               fontWeight: FontWeight.w600,
-  //               fontSize: 16,
-  //             ),
-  //           ),
-  //           const SizedBox(height: 16),
-  //           _buildPaymentOption(
-  //             dialogContext,
-  //             'Pay with Khalti',
-  //             Icons.account_balance_wallet,
-  //             Colors.purple,
-  //             !_isApplying,
-  //             () async {
-  //               Navigator.pop(dialogContext);
-  //               final provider =
-  //                   Provider.of<MembershipProvider>(context, listen: false);
-  //               await provider.applyForMembershipUsingKhalti(
-  //                   context, planId, int.parse(price), 'Khalti');
-  //               if (context.mounted) {
-  //                 context.pushNamed('khalti');
-  //               }
-  //             },
-  //           ),
-  //           const SizedBox(height: 12),
-  //           _buildPaymentOption(
-  //             dialogContext,
-  //             'Pay with Cash',
-  //             Icons.money,
-  //             Colors.green,
-  //             !_isApplying,
-  //             () async {
-  //               Navigator.pop(dialogContext);
-  //               await _applyForMembership(context, planId, 'Cash');
-  //             },
-  //           ),
-  //         ],
-  //       ),
-  //       actions: [
-  //         TextButton(
-  //           style: TextButton.styleFrom(
-  //             shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8),
-  //             ),
-  //           ),
-  //           onPressed: _isApplying ? null : () => Navigator.pop(dialogContext),
-  //           child: const Text('Cancel'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Future<void> _showPaymentDialog(
     BuildContext context,
     int planId,
@@ -1384,6 +1254,11 @@ class _MembershipScreenState extends State<MembershipScreen>
     final primaryColor = colors[colorIndex][0];
     final secondaryColor = colors[colorIndex][1];
 
+    // Check if the user has an active membership
+    final membershipProvider = Provider.of<MembershipProvider>(context);
+    final hasActiveMembership = membershipProvider.membership != null &&
+        membershipProvider.membership!.status.toLowerCase() == 'active';
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -1508,7 +1383,8 @@ class _MembershipScreenState extends State<MembershipScreen>
                         ),
                         elevation: 2,
                       ),
-                      onPressed: _isApplying ? null : onApply,
+                      onPressed:
+                          (hasActiveMembership || _isApplying) ? null : onApply,
                       child: _isApplying
                           ? const SizedBox(
                               height: 20,
@@ -1519,9 +1395,11 @@ class _MembershipScreenState extends State<MembershipScreen>
                                     AlwaysStoppedAnimation<Color>(Colors.white),
                               ),
                             )
-                          : const Text(
-                              'Apply Now',
-                              style: TextStyle(
+                          : Text(
+                              hasActiveMembership
+                                  ? 'Active Membership'
+                                  : 'Apply Now',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1536,6 +1414,179 @@ class _MembershipScreenState extends State<MembershipScreen>
       ),
     );
   }
+
+  // Widget _buildPlanCard(
+  //   int index,
+  //   String planType,
+  //   String price,
+  //   String duration,
+  //   String description,
+  //   VoidCallback onApply,
+  // ) {
+  //   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+  //   final colors = [
+  //     [Colors.blue, Colors.lightBlue],
+  //     [Colors.purple, Colors.purpleAccent],
+  //     [Colors.green, Colors.lightGreen],
+  //     [Colors.orange, Colors.amber],
+  //   ];
+
+  //   final colorIndex = index % colors.length;
+  //   final primaryColor = colors[colorIndex][0];
+  //   final secondaryColor = colors[colorIndex][1];
+
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       gradient: LinearGradient(
+  //         colors: [
+  //           primaryColor.withOpacity(isDarkMode ? 0.2 : 0.1),
+  //           secondaryColor.withOpacity(isDarkMode ? 0.1 : 0.05),
+  //         ],
+  //         begin: Alignment.topLeft,
+  //         end: Alignment.bottomRight,
+  //       ),
+  //       borderRadius: BorderRadius.circular(20),
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: primaryColor.withOpacity(0.1),
+  //           blurRadius: 10,
+  //           offset: const Offset(0, 5),
+  //         ),
+  //       ],
+  //       border: Border.all(color: primaryColor.withOpacity(0.3), width: 2),
+  //     ),
+  //     child: ClipRRect(
+  //       borderRadius: BorderRadius.circular(20),
+  //       child: Stack(
+  //         children: [
+  //           // Background pattern
+  //           Positioned(
+  //             right: -20,
+  //             top: -20,
+  //             child: Container(
+  //               width: 120,
+  //               height: 120,
+  //               decoration: BoxDecoration(
+  //                 shape: BoxShape.circle,
+  //                 color: primaryColor.withOpacity(0.1),
+  //               ),
+  //             ),
+  //           ),
+
+  //           // Content
+  //           Padding(
+  //             padding: const EdgeInsets.all(20),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 // Plan type and icon
+  //                 Row(
+  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                   children: [
+  //                     Text(
+  //                       planType,
+  //                       style: TextStyle(
+  //                         fontSize: 22,
+  //                         fontWeight: FontWeight.bold,
+  //                         color: primaryColor,
+  //                       ),
+  //                     ),
+  //                     Container(
+  //                       padding: const EdgeInsets.all(8),
+  //                       decoration: BoxDecoration(
+  //                         color: primaryColor.withOpacity(0.2),
+  //                         shape: BoxShape.circle,
+  //                       ),
+  //                       child: Icon(
+  //                         Icons.fitness_center,
+  //                         color: primaryColor,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+
+  //                 const SizedBox(height: 12),
+
+  //                 // Price and duration
+  //                 Row(
+  //                   children: [
+  //                     Text(
+  //                       'NRS $price',
+  //                       style: const TextStyle(
+  //                         fontSize: 24,
+  //                         fontWeight: FontWeight.bold,
+  //                       ),
+  //                     ),
+  //                     const SizedBox(width: 8),
+  //                     Text(
+  //                       '/ $duration months',
+  //                       style: TextStyle(
+  //                         fontSize: 16,
+  //                         color: Colors.grey[600],
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+
+  //                 const SizedBox(height: 12),
+
+  //                 // Description
+  //                 Expanded(
+  //                   child: Text(
+  //                     description,
+  //                     style: TextStyle(
+  //                       fontSize: 14,
+  //                       color: Theme.of(context)
+  //                           .colorScheme
+  //                           .onSurface
+  //                           .withOpacity(0.7),
+  //                     ),
+  //                     maxLines: 2,
+  //                     overflow: TextOverflow.ellipsis,
+  //                   ),
+  //                 ),
+
+  //                 // Apply button
+  //                 SizedBox(
+  //                   width: double.infinity,
+  //                   child: ElevatedButton(
+  //                     style: ElevatedButton.styleFrom(
+  //                       backgroundColor: primaryColor,
+  //                       foregroundColor: Colors.white,
+  //                       padding: const EdgeInsets.symmetric(vertical: 12),
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(12),
+  //                       ),
+  //                       elevation: 2,
+  //                     ),
+  //                     onPressed: _isApplying ? null : onApply,
+  //                     child: _isApplying
+  //                         ? const SizedBox(
+  //                             height: 20,
+  //                             width: 20,
+  //                             child: CircularProgressIndicator(
+  //                               strokeWidth: 2,
+  //                               valueColor:
+  //                                   AlwaysStoppedAnimation<Color>(Colors.white),
+  //                             ),
+  //                           )
+  //                         : const Text(
+  //                             'Apply Now',
+  //                             style: TextStyle(
+  //                               fontSize: 16,
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
 
 void showCoolSnackBar(
