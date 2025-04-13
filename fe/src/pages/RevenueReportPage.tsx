@@ -173,12 +173,14 @@ const RevenueReportPage = () => {
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-NP', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'NPR',
+      currencyDisplay: 'code',
       minimumFractionDigits: 2
     }).format(amount);
-  };
+};
+
 
   // Handle date range select
   const handleDateRangeSelect = (range) => {

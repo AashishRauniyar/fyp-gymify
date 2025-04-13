@@ -321,11 +321,12 @@ const MembershipPlansPage = () => {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium">Lowest Plan</CardTitle>
-              <DollarSign className="h-4 w-4 text-green-500" />
+              {/* <DollarSign className="h-4 w-4 text-green-500" /> */}
+              {/* <div className="h-4 w-4 text-green-500">NPR </div> */}
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${Math.min(...plans.map(p => p.price).filter(p => !isNaN(p)), 0).toFixed(2)}
+                NPR {Math.min(...plans.map(p => p.price).filter(p => !isNaN(p)), 0).toFixed(2)}
               </div>
             </CardContent>
           </Card>
@@ -337,7 +338,7 @@ const MembershipPlansPage = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
-                ${Math.max(...plans.map(p => p.price).filter(p => !isNaN(p)), 0).toFixed(2)}
+                NPR {Math.max(...plans.map(p => p.price).filter(p => !isNaN(p)), 0).toFixed(2)}
               </div>
             </CardContent>
           </Card>
@@ -398,7 +399,7 @@ const MembershipPlansPage = () => {
                         </TableCell>
                         
                         <TableCell>
-                          <div className="font-mono">${Number(plan.price).toFixed(2)}</div>
+                          <div className="font-mono">NPR {Number(plan.price).toFixed(2)}</div>
                         </TableCell>
                         
                         <TableCell>

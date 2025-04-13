@@ -368,10 +368,10 @@ const Dashboard = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="month_name" />
                       <YAxis
-                        tickFormatter={(value) => `$${value}`}
+                        tickFormatter={(value) => `NPR ${value}`}
                       />
                       <Tooltip
-                        formatter={(value) => [`$${value}`, 'Revenue']}
+                        formatter={(value) => [`NPR ${value}`, 'Revenue']}
                       />
                       <Legend />
                       <Line

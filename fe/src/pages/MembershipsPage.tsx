@@ -774,7 +774,7 @@ const handleCreateMembership = async (data) => {
                           <div>
                             <div className="font-medium">{membership.membership_plan?.plan_type || 'Unknown'}</div>
                             <div className="text-xs text-muted-foreground">
-                              ${Number(membership.membership_plan?.price || 0).toFixed(2)} / {membership.membership_plan?.duration || 0} month(s)
+                              NPR {Number(membership.membership_plan?.price || 0).toFixed(2)} / {membership.membership_plan?.duration || 0} month(s)
                             </div>
                           </div>
                         </TableCell>
@@ -1012,7 +1012,7 @@ const handleCreateMembership = async (data) => {
                         <SelectContent>
                           {plans.map(plan => (
                             <SelectItem key={plan.plan_id} value={plan.plan_id.toString()}>
-                              {plan.plan_type} - ${Number(plan.price).toFixed(2)} / {plan.duration} Month(s)
+                              {plan.plan_type} - NPR {Number(plan.price).toFixed(2)} / {plan.duration} Month(s)
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1153,7 +1153,7 @@ const handleCreateMembership = async (data) => {
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-muted-foreground">Price</h4>
-                      <p>${Number(membershipDetails.membership_plan?.price || 0).toFixed(2)}</p>
+                      <p>NPR {Number(membershipDetails.membership_plan?.price || 0).toFixed(2)}</p>
                     </div>
                     <div>
                       <h4 className="text-sm font-medium text-muted-foreground">Start Date</h4>
@@ -1192,7 +1192,7 @@ const handleCreateMembership = async (data) => {
                             <TableRow key={payment.payment_id}>
                               <TableCell>{payment.payment_id}</TableCell>
                               <TableCell>{formatDate(payment.payment_date)}</TableCell>
-                              <TableCell>${Number(payment.price).toFixed(2)}</TableCell>
+                              <TableCell>NPR {Number(payment.price).toFixed(2)}</TableCell>
                               <TableCell className="capitalize">{payment.payment_method}</TableCell>
                               <TableCell>
                                 <Badge 
