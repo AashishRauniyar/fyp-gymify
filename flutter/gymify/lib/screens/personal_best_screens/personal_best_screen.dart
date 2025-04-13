@@ -4,6 +4,7 @@ import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';

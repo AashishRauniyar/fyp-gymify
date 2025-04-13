@@ -33,7 +33,7 @@ void showCoolSnackBar(
       borderRadius: BorderRadius.circular(10),
     ),
     behavior: SnackBarBehavior.floating, // Makes it float
-    elevation: 6.0,
+    elevation: 2.0,
     margin: const EdgeInsets.all(16.0),
     duration: const Duration(seconds: 3),
     action: actionLabel != null && onActionPressed != null
@@ -48,4 +48,3 @@ void showCoolSnackBar(
   // Show the new SnackBar
   scaffoldMessenger.showSnackBar(snackBar);
 }
-

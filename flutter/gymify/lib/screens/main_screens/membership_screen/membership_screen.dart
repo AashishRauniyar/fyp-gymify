@@ -471,6 +471,7 @@ import 'package:gymify/models/membership_models/membership_model.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -1589,50 +1590,3 @@ class _MembershipScreenState extends State<MembershipScreen>
   // }
 }
 
-void showCoolSnackBar(
-  BuildContext context,
-  String message,
-  bool isSuccess, {
-  String? actionLabel,
-  VoidCallback? onActionPressed,
-}) {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-  // Dismiss any existing SnackBars before showing a new one
-  scaffoldMessenger.hideCurrentSnackBar();
-
-  final snackBar = SnackBar(
-    content: Row(
-      children: [
-        Icon(
-          isSuccess ? Icons.check_circle : Icons.error,
-          color: Colors.white,
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Text(
-            message,
-            style: const TextStyle(color: Colors.white, fontSize: 16),
-          ),
-        ),
-      ],
-    ),
-    backgroundColor: isSuccess ? Colors.green.shade600 : Colors.red.shade600,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    behavior: SnackBarBehavior.floating,
-    elevation: 6.0,
-    margin: const EdgeInsets.all(16.0),
-    duration: const Duration(seconds: 3),
-    action: actionLabel != null && onActionPressed != null
-        ? SnackBarAction(
-            label: actionLabel,
-            textColor: Colors.white,
-            onPressed: onActionPressed,
-          )
-        : null,
-  );
-
-  scaffoldMessenger.showSnackBar(snackBar);
-}

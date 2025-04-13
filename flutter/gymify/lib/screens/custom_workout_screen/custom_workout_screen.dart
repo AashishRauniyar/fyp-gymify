@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
@@ -37,41 +38,7 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
     theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.primary,
-        elevation: 0,
-        leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Container(
-            margin: const EdgeInsets.all(8),
-            child: const Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-            ),
-          ),
-        ),
-        title: Text(
-          'Custom Workouts',
-          style: GoogleFonts.poppins(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                theme.colorScheme.primary,
-                theme.colorScheme.primary.withBlue(
-                    (theme.colorScheme.primary.blue + 40).clamp(0, 255)),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: const CustomAppBar(title: 'Custom Workouts'),
       body: ChangeNotifierProvider(
         create: (_) {
           customWorkoutProvider = CustomWorkoutProvider()

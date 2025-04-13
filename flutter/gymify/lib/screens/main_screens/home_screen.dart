@@ -315,7 +315,6 @@ Widget _buildHeader(
                   context.pushNamed('membershipPlans');
                 },
                 style: ElevatedButton.styleFrom(
-                  
                   backgroundColor: Colors.green,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
@@ -501,7 +500,7 @@ Widget _buildOfferBanner(BuildContext context) {
                   },
                   child: isMembershipPending
                       ? const Text('Pending Approval')
-                      : const Text('View Membership Details'),
+                      : const Text('Explore Membership Plan'),
                 ),
             ],
           ),

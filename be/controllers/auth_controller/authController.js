@@ -133,11 +133,14 @@ export const register = async (req, res) => {
             }
         });
 
+
+        // TODO: change this if necessary
         if (existingUser) {
             if (existingUser.verified) {
                 return res.status(409).json({
                     status: 'failure',
-                    message: 'Email already registered and verified',
+                    // message: 'Email already registered and verified',
+                    message: 'Email already registered',
                     details: {
                         email: normalizedEmail,
                         registered: true,

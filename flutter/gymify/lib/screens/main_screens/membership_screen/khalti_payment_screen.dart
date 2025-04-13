@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:khalti_checkout_flutter/khalti_checkout_flutter.dart';
 import 'dart:developer';
 import 'package:provider/provider.dart';

@@ -305,6 +305,7 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
                                       ),
                                     ),
                                     const SizedBox(height: 10),
+                                    const Text("Custom : "),
                                     // Workout title
                                     Text(
                                       workout.customWorkoutName,

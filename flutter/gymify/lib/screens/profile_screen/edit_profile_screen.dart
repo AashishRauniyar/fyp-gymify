@@ -6,6 +6,7 @@ import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 enum FitnessLevel {
@@ -78,8 +79,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           });
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Logout failed. Please try again.')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text('Logout failed. Please try again.')),
+        // );
+        showCoolSnackBar(
+          context,
+          'Logout failed. Please try again.',
+          false,
         );
       }
     }
@@ -271,15 +277,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     await profileProvider.updateProfile(updatedData);
 
                     if (!profileProvider.hasError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Profile updated successfully')),
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   const SnackBar(
+                      //       content: Text('Profile updated successfully')),
+                      // );
+                      showCoolSnackBar(
+                        context,
+                        'Profile updated successfully',
+                        true,
                       );
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content:
-                                Text(profileProvider.errorMessage ?? 'Error')),
+                      // ScaffoldMessenger.of(context).showSnackBar(
+                      //   SnackBar(
+                      //       content:
+                      //           Text(profileProvider.errorMessage ?? 'Error')),
+                      // );
+                      showCoolSnackBar(
+                        context,
+                        profileProvider.errorMessage ?? 'Error',
+                        false,
                       );
                     }
                   }
