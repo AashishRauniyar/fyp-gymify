@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
 import moment from 'moment-timezone';
+import { sendWelcomeEmail } from '../../utils/sendMail.js';
 
 const prisma = new PrismaClient();
+
 
 export const markAttendance = async (req, res) => {
     try {
@@ -83,6 +85,12 @@ export const markAttendance = async (req, res) => {
             }
         });
 
+        // Send welcome email after marking attendance
+        const emailSent = await sendWelcomeEmail(user.email, user.user_name);
+        if (!emailSent) {
+            console.error("Failed to send welcome email");
+        }
+
         res.status(201).json({
             status: 'success',
             message: 'Attendance marked successfully',
@@ -102,6 +110,106 @@ export const markAttendance = async (req, res) => {
         });
     }
 };
+
+
+// export const markAttendance = async (req, res) => {
+//     try {
+//         // Validate card number
+//         await body('card_number').notEmpty().withMessage('Card number is required').run(req);
+        
+//         const errors = validationResult(req);
+//         if (!errors.isEmpty()) {
+//             return res.status(400).json({
+//                 status: 'failure',
+//                 message: 'Validation failed',
+//                 errors: errors.array()
+//             });
+//         }
+
+//         const { card_number } = req.body;
+
+//         // Find user by card number
+//         const user = await prisma.users.findFirst({
+//             where: { card_number },
+//             include: {
+//                 memberships: {
+//                     where: {
+//                         status: 'Active',
+//                         end_date: {
+//                             gte: new Date().toISOString()
+//                         }
+//                     }
+//                 }
+//             }
+//         });
+
+//         if (!user) {
+//             return res.status(404).json({
+//                 status: 'failure',
+//                 message: 'Invalid card or user not found'
+//             });
+//         }
+
+//         // Check for active membership
+//         if (!user.memberships || user.memberships.length === 0) {
+//             return res.status(403).json({
+//                 status: 'failure',
+//                 message: 'No active membership found'
+//             });
+//         }
+
+//         // Get current time in Nepal timezone
+//         const nepalDateTime = moment().tz('Asia/Kathmandu');
+        
+//         // Start of day in Nepal for checking existing attendance
+//         const nepalStartOfDay = nepalDateTime.clone().startOf('day').toDate();
+//         const nepalEndOfDay = nepalDateTime.clone().endOf('day').toDate();
+
+//         // Check for existing attendance today
+//         const existingAttendance = await prisma.attendance.findFirst({
+//             where: {
+//                 user_id: user.user_id,
+//                 attendance_date: {
+//                     gte: nepalStartOfDay,
+//                     lte: nepalEndOfDay
+//                 }
+//             }
+//         });
+
+//         if (existingAttendance) {
+//             return res.status(400).json({
+//                 status: 'failure',
+//                 message: 'Attendance already marked for today'
+//             });
+//         }
+
+//         // Mark attendance with current Nepal time
+//         const attendance = await prisma.attendance.create({
+//             data: {
+//                 user_id: user.user_id,
+//                 attendance_date: nepalDateTime.toDate() // Store the full Nepal datetime
+//             }
+//         });
+
+//         res.status(201).json({
+//             status: 'success',
+//             message: 'Attendance marked successfully',
+//             data: {
+//                 attendance_id: attendance.attendance_id,
+//                 user_name: user.user_name,
+//                 date: attendance.attendance_date,
+//                 nepal_datetime: nepalDateTime.format('YYYY-MM-DD HH:mm:ss')
+//             }
+//         });
+
+//     } catch (error) {
+//         console.error('Error marking attendance:', error);
+//         res.status(500).json({
+//             status: 'failure',
+//             message: 'Server error'
+//         });
+//     }
+// };
 
 // export const markAttendance = async (req, res) => {
 //     try {
