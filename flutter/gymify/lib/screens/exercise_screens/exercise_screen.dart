@@ -7,7 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ExerciseScreen extends StatefulWidget {
-  const ExerciseScreen({super.key});
+  // const ExerciseScreen({super.key});
+
+  final String? muscleGroupFilter;
+
+  const ExerciseScreen({super.key, this.muscleGroupFilter});
 
   @override
   State<ExerciseScreen> createState() => _ExerciseScreenState();
@@ -32,17 +36,28 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   // Filter variable - only filter by muscle group
   String? selectedTargetMuscleGroup;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<ExerciseProvider>().fetchAllExercises();
+  //   });
+  //   _searchController.addListener(() {
+  //     // Debounce search input to prevent too frequent updates
+  //     Future.microtask(() => _filterExercises());
+  //   });
+  // }
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ExerciseProvider>().fetchAllExercises();
-    });
-    _searchController.addListener(() {
-      // Debounce search input to prevent too frequent updates
-      Future.microtask(() => _filterExercises());
-    });
+void initState() {
+  super.initState();
+  if (widget.muscleGroupFilter != null) {
+    selectedTargetMuscleGroup = widget.muscleGroupFilter;
   }
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    context.read<ExerciseProvider>().fetchAllExercises();
+    _filterExercises();
+  });
+}
 
   @override
   void didUpdateWidget(ExerciseScreen oldWidget) {

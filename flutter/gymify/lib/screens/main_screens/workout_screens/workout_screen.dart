@@ -821,8 +821,12 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
     return GestureDetector(
       onTap: () {
         // Navigate to filtered search results
+        // context.pushNamed(
+        //   'workoutSearch',
+        //   queryParameters: {'filter': name},
+        // );
         context.pushNamed(
-          'workoutSearch',
+          'exercises',
           queryParameters: {'filter': name},
         );
       },

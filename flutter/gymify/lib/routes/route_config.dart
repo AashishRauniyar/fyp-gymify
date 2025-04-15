@@ -131,11 +131,22 @@ final GoRouter router = GoRouter(
           final workout = state.extra as Workout;
           return ManageWorkoutExercisesScreen(workout: workout);
         }),
+    // GoRoute(
+    //   name: 'exercises',
+    //   path: '/exercises',
+    //   builder: (context, state) => const ExerciseScreen(),
+    // ),
     GoRoute(
       name: 'exercises',
       path: '/exercises',
-      builder: (context, state) => const ExerciseScreen(),
+      pageBuilder: (context, state) {
+        final filter = state.uri.queryParameters['filter'];
+        return MaterialPage(
+          child: ExerciseScreen(muscleGroupFilter: filter),
+        );
+      },
     ),
+
     GoRoute(
       name: 'createExercise',
       path: '/createExercise',
