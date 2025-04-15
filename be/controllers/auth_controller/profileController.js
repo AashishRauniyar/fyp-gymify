@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import {body, ExpressValidator } from 'express-validator';
+import { body, validationResult } from 'express-validator';
+import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
 const prisma = new PrismaClient();
 
@@ -45,17 +46,13 @@ export const getProfile = async (req, res) => {
         res.status(200).json({
             status: 'success',
             message: 'User profile retrieved successfully',
-            data : user
+            data: user
         });
     } catch (error) {
         console.error('Error retrieving profile:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
-
-
 
 // Validation Middleware
 export const validateUpdateProfile = [
@@ -75,8 +72,6 @@ export const validateUpdateProfile = [
     }
 ];
 
-
-
 export const updateProfile = async (req, res) => {
     try {
         const { user_id } = req.user;
@@ -91,21 +86,38 @@ export const updateProfile = async (req, res) => {
             goal_type
         } = req.body;
 
+        // Handle profile image upload
+        let profileImageUrl = null;
+        if (req.file) {
+            try {
+                profileImageUrl = await uploadToCloudinary(req.file.buffer);
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                return res.status(500).json({ status: 'failure', message: 'Image upload failed' });
+            }
+        }
+
         if (
             !full_name &&
             !phone_number &&
             !address &&
             !height &&
-            
             !fitness_level &&
             !allergies &&
-            !goal_type
+            !goal_type &&
+            !profileImageUrl
         ) {
             return res.status(400).json({ status: 'failure', message: 'No fields to update' });
         }
 
         // Start a database transaction
         const updatedUser = await prisma.$transaction(async (transaction) => {
+            // Get current user to preserve existing profile image if not updating
+            const currentUser = await transaction.users.findUnique({
+                where: { user_id },
+                select: { profile_image: true }
+            });
+
             // Update the user's profile
             const user = await transaction.users.update({
                 where: { user_id },
@@ -117,6 +129,7 @@ export const updateProfile = async (req, res) => {
                     fitness_level,
                     allergies,
                     goal_type,
+                    profile_image: profileImageUrl || currentUser.profile_image, // Use new image or keep existing
                     updated_at: new Date()
                 },
                 select: {
@@ -126,7 +139,7 @@ export const updateProfile = async (req, res) => {
                     email: true,
                     phone_number: true,
                     address: true,
-                    birthdate : true,
+                    birthdate: true,
                     height: true,
                     current_weight: true,
                     gender: true,
@@ -134,16 +147,13 @@ export const updateProfile = async (req, res) => {
                     fitness_level: true,
                     goal_type: true,
                     allergies: true,
-                    profile_image : true,
-                    card_number : true,
+                    profile_image: true,
+                    card_number: true,
                     calorie_goals: true,
                     created_at: true,
                     updated_at: true
                 }
             });
-            
-            
-           
 
             return user;
         });
@@ -158,9 +168,6 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
-
 
 export const updateWeight = async (req, res) => {
     try {
@@ -211,10 +218,6 @@ export const updateWeight = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
-
-
 
 //TODO: Add weight history , check error in deployment
 export const getWeightHistory = async (req, res) => {

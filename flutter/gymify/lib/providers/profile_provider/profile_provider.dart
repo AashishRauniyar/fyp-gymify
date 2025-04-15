@@ -1,8 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymify/models/api_response.dart';
 import 'package:gymify/models/user_model.dart';
 import 'package:gymify/models/weight_history_model.dart';
 import 'package:gymify/network/http.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 class ProfileProvider with ChangeNotifier {
   Users? _user;
@@ -38,6 +42,18 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // Helper method to determine content type from file
+  MediaType? _getContentType(File file) {
+    final mimeType = lookupMimeType(file.path);
+    if (mimeType == null) return null;
+
+    final parts = mimeType.split('/');
+    if (parts.length == 2) {
+      return MediaType(parts[0], parts[1]);
+    }
+    return null;
+  }
+
   // Fetch user profile
   Future<void> fetchProfile() async {
     _setLoading(true);
@@ -61,26 +77,64 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  // Update user profile
-  Future<void> updateProfile(Map<String, dynamic> updatedData) async {
-    if (updatedData.isEmpty) {
+  // Update user profile with optional image upload
+  Future<void> updateProfile(Map<String, dynamic> updatedData,
+      [File? imageFile]) async {
+    if (updatedData.isEmpty && imageFile == null) {
       _setError('No fields to update.');
       return;
     }
 
     _setLoading(true);
     try {
-      final response = await httpClient.put('/profile', data: updatedData);
-      final apiResponse = ApiResponse<Users>.fromJson(
-        response.data,
-        (data) => Users.fromJson(data as Map<String, dynamic>),
-      );
+      // If we have an image file, we need to use FormData for multipart request
+      if (imageFile != null) {
+        // Create FormData for multipart request
+        final formData = dio.FormData.fromMap({
+          ...updatedData,
+          'profile_image': await dio.MultipartFile.fromFile(
+            imageFile.path,
+            filename: 'profile_image.jpg',
+            contentType: _getContentType(imageFile),
+          ),
+        });
 
-      if (apiResponse.status == 'success') {
-        _user = apiResponse.data;
-        resetError();
+        // Send multipart request
+        final response = await httpClient.put(
+          '/profile',
+          data: formData,
+          options: dio.Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
+
+        final apiResponse = ApiResponse<Users>.fromJson(
+          response.data,
+          (data) => Users.fromJson(data as Map<String, dynamic>),
+        );
+
+        if (apiResponse.status == 'success') {
+          _user = apiResponse.data;
+          resetError();
+        } else {
+          _setError(apiResponse.message);
+        }
       } else {
-        _setError(apiResponse.message);
+        // Regular update without image
+        final response = await httpClient.put('/profile', data: updatedData);
+        final apiResponse = ApiResponse<Users>.fromJson(
+          response.data,
+          (data) => Users.fromJson(data as Map<String, dynamic>),
+        );
+
+        if (apiResponse.status == 'success') {
+          _user = apiResponse.data;
+          resetError();
+        } else {
+          _setError(apiResponse.message);
+        }
       }
     } catch (e) {
       _setError('Error updating profile: ${e.toString()}');
@@ -142,5 +196,6 @@ class ProfileProvider with ChangeNotifier {
       _setLoading(false);
     }
   }
+
   // method to get user details from user id
 }

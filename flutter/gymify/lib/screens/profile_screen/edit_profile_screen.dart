@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
@@ -8,6 +9,7 @@ import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
 
 enum FitnessLevel {
   Beginner,
@@ -44,7 +46,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   FitnessLevel? _selectedFitnessLevel = FitnessLevel.Athlete;
   GoalType? _selectedGoalType = GoalType.Weight_Loss;
 
+  File? _selectedImage;
+  final ImagePicker _imagePicker = ImagePicker();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedImage = await _imagePicker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+
+    if (pickedImage != null) {
+      setState(() {
+        _selectedImage = File(pickedImage.path);
+      });
+    }
+  }
 
   Future<void> _logout(BuildContext context) async {
     try {
@@ -79,9 +97,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           });
     } catch (e) {
       if (context.mounted) {
-        // ScaffoldMessenger.of(context).showSnackBar(
-        //   const SnackBar(content: Text('Logout failed. Please try again.')),
-        // );
         showCoolSnackBar(
           context,
           'Logout failed. Please try again.',
@@ -197,10 +212,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: user?.profileImage != null
-                              ? NetworkImage(user!.profileImage!)
-                              : const NetworkImage(
-                                  'https://via.placeholder.com/150'),
+                          backgroundImage: _selectedImage != null
+                              ? FileImage(_selectedImage!) as ImageProvider
+                              : user?.profileImage != null
+                                  ? NetworkImage(user!.profileImage!)
+                                  : const NetworkImage(
+                                      'https://via.placeholder.com/150'),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            height: 36,
+                            width: 36,
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.camera_alt,
+                                size: 18,
+                                color: theme.colorScheme.onPrimary,
+                              ),
+                              onPressed: _pickImage,
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -274,24 +311,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           _selectedGoalType?.toString().split('.').last,
                     };
 
-                    await profileProvider.updateProfile(updatedData);
+                    await profileProvider.updateProfile(
+                        updatedData, _selectedImage);
 
                     if (!profileProvider.hasError) {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   const SnackBar(
-                      //       content: Text('Profile updated successfully')),
-                      // );
                       showCoolSnackBar(
                         context,
                         'Profile updated successfully',
                         true,
                       );
                     } else {
-                      // ScaffoldMessenger.of(context).showSnackBar(
-                      //   SnackBar(
-                      //       content:
-                      //           Text(profileProvider.errorMessage ?? 'Error')),
-                      // );
                       showCoolSnackBar(
                         context,
                         profileProvider.errorMessage ?? 'Error',
