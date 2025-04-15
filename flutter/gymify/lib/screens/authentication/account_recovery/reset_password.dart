@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/multipage_register_provider/signup_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_input.dart';
@@ -77,9 +78,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        title: const Text("Reset Password"),
-        backgroundColor: theme.colorScheme.primary,
+      // appBar: AppBar(
+      //   title: const Text("Reset Password"),
+      //   backgroundColor: theme.colorScheme.primary,
+      // ),
+      appBar: const CustomAppBar(
+        title: "Reset Password",
+        showBackButton: true,
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -139,9 +144,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 const SizedBox(height: 24),
                 _isLoading
                     ? const CircularProgressIndicator()
-                    : CustomButton(
-                        text: "Reset Password",
-                        onPressed: _resetPassword,
+                    : SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _resetPassword,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: Text(
+                            "Reset Password",
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                 const SizedBox(height: 16),
                 // Resend OTP Button

@@ -5,7 +5,6 @@ import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 import fs from 'fs';
 import crypto from 'crypto';
 const prisma = new PrismaClient();
-import nodemailer from 'nodemailer';
 
 
 import { body, validationResult } from 'express-validator';

@@ -895,59 +895,6 @@ Widget _buildPBItem(
   );
 }
 
-// Widget _buildWeightSection(BuildContext context, String weight) {
-//   final theme = Theme.of(context);
-//   final isDarkMode = theme.brightness == Brightness.dark;
-//   return Container(
-//     margin: const EdgeInsets.symmetric(vertical: 6),
-//     padding: const EdgeInsets.all(16.0),
-//     decoration: BoxDecoration(
-//       borderRadius: BorderRadius.circular(16),
-
-//       gradient: isDarkMode
-//           ? LinearGradient(
-//               colors: [
-//                 theme.colorScheme.onSurface.withOpacity(0.1),
-//                 theme.colorScheme.onSurface.withOpacity(0.05),
-//               ],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
-//             )
-//           : null, // For light mode, no gradient, just a white background
-//       color: Theme.of(context).brightness == Brightness.light
-//           ? Colors.white // White background for light mode
-//           : null, // Dark mode will apply the gradient above
-//       border: Border.all(
-//         color: theme.colorScheme.onSurface.withOpacity(0.1),
-//         width: 1.5,
-//       ),
-//     ),
-//     child: Row(
-//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//       children: [
-//         Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text('Current Weight',
-//                 style: TextStyle(
-//                     color: Theme.of(context)
-//                         .colorScheme
-//                         .onSurface
-//                         .withOpacity(0.6))),
-//             const SizedBox(height: 8),
-//             Text('$weight kg',
-//                 style:
-//                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-//           ],
-//         ),
-//         ElevatedButton.icon(
-//           label: const Text('Log Weight'),
-//           onPressed: () => context.pushNamed('weightLog'),
-//         ),
-//       ],
-//     ),
-//   );
-// }
 
 Widget _buildWeightSection(
     BuildContext context, String weight, List<WeightHistory>? weightHistory) {
@@ -990,6 +937,10 @@ Widget _buildWeightSection(
               ],
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
+      ),
+      border: Border.all(
+        color: theme.colorScheme.onSurface.withOpacity(0.1),
+        width: 1.5,
       ),
       boxShadow: [
         BoxShadow(

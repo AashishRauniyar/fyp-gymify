@@ -1168,9 +1168,6 @@ class _UserTrainerPageState extends State<UserTrainerPage>
     ChatProvider chatProvider,
     bool isDarkMode,
   ) {
-    final isOnline = user.userId % 2 ==
-        0; // Just for demonstration, replace with actual online status
-
     return Card(
       elevation: 0,
       margin: const EdgeInsets.symmetric(vertical: 6),
@@ -1249,25 +1246,6 @@ class _UserTrainerPageState extends State<UserTrainerPage>
                             ),
                           ),
                   ),
-
-                  // Online indicator
-                  if (isOnline)
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        width: 14,
-                        height: 14,
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isDarkMode ? Colors.black : Colors.white,
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
                 ],
               ),
 
@@ -1306,22 +1284,6 @@ class _UserTrainerPageState extends State<UserTrainerPage>
                           ),
                         ),
                         const SizedBox(width: 8),
-                        if (isOnline)
-                          const Text(
-                            'Online',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.green,
-                            ),
-                          )
-                        else
-                          Text(
-                            'Last seen recently',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
                       ],
                     ),
                   ],
@@ -1501,19 +1463,19 @@ class BackgroundPainter extends CustomPainter {
     // Draw background shapes
     for (int i = 0; i < 5; i++) {
       final progress = (animation.value + i / 5) % 1.0;
-      final size1 = 20 + 60 * i;
-      final x = size.width * (0.1 + 0.2 * i);
-      final y = size.height * (0.1 + progress * 0.8);
+      final double size1 = 20.0 + 60.0 * i; // 👈 explicitly use double values
+      final double x = size.width * (0.1 + 0.2 * i);
+      final double y = size.height * (0.1 + progress * 0.8);
 
       // Circles
-      paint.color = primaryColor.withOpacity(0.03 + 0.02 * i);
-      canvas.drawCircle(Offset(x, y), size1 as double, paint);
+      paint.color = primaryColor.withOpacity(0.001 + 0.001 * i);
+      canvas.drawCircle(Offset(x, y), size1, paint); // 👈 no cast needed
 
       // Lines
       paint.strokeWidth = 2;
-      paint.color = primaryColor.withOpacity(0.05);
-      final lineY =
-          size.height * (0.1 + (animation.value + 0.2 * i) % 1.0 * 0.8);
+      paint.color = primaryColor.withOpacity(0.01);
+      final double lineY =
+          size.height * (0.1 + ((animation.value + 0.2 * i) % 1.0) * 0.8);
       canvas.drawLine(
         Offset(size.width * 0.1, lineY),
         Offset(size.width * 0.9, lineY),

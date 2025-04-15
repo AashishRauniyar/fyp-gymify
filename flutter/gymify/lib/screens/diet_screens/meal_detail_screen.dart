@@ -250,6 +250,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/providers/diet_provider/diet_provider.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
@@ -396,21 +397,32 @@ class MealDetailScreen extends StatelessWidget {
                         mealId: meal.mealId,
                         quantity: quantity.toDouble(),
                       );
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          backgroundColor: theme.colorScheme.primary,
-                          content:
-                              Text('$quantity serving(s) logged successfully!'),
-                          action: SnackBarAction(
-                            label: 'View Logs',
-                            textColor: Colors.white,
-                            onPressed: () {
-                              context.pushNamed('mealLog');
-                            },
-                          ),
-                        ),
-                      );
+
+                      final navigator = Navigator.of(context);
+
+                      // Close the dialog first
+                      navigator.pop();
+
+                      // Delay pushNamed to next frame to ensure context is still valid
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        showCoolSnackBar(
+                          navigator.context,
+                          "$quantity serving(s) logged successfully!",
+                          true,
+                          customActions: [
+                            SnackBarAction(
+                              label: 'View Logs',
+                              textColor: Colors.white,
+                              onPressed: () {
+                                // Ensure context is mounted before navigating
+                                if (navigator.context.mounted) {
+                                  navigator.context.pushNamed('mealLog');
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      });
                     },
                   ),
                 ],

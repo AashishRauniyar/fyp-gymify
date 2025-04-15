@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
-import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/workout_utils.dart/exercise_list_item.dart';
 import 'package:provider/provider.dart';
@@ -105,12 +102,6 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
               _openFilterDrawer(context);
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<ExerciseProvider>().fetchAllExercises();
-            },
-          ),
         ],
       ),
       body: Consumer<ExerciseProvider>(
@@ -153,7 +144,7 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
                               Text(
                                 'Filtered by: $selectedTargetMuscleGroup',
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   color: theme.colorScheme.primary,
                                 ),
                               ),

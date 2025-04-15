@@ -60,12 +60,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      // appBar: AppBar(
-      //   title: const Text("Forgot Password"),
-      //   backgroundColor: theme.colorScheme.primary,
-      // ),
       appBar: const CustomAppBar(title: "Forgot Password"),
-
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -100,9 +95,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               const SizedBox(height: 24),
               _isLoading
                   ? const CustomLoadingAnimation()
-                  : CustomButton(
-                      text: "Send OTP",
-                      onPressed: _sendOTP,
+                  :
+                  // CustomButton(
+                  //     text: "Send OTP",
+                  //     onPressed: _sendOTP,
+                  //   ),
+                  SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _sendOTP,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: Text(
+                          "Send OTP",
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
             ],
           ),

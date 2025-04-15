@@ -26,6 +26,7 @@ import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_log_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
+import 'package:gymify/screens/help_faqs_screen.dart';
 import 'package:gymify/screens/main_screens/attendance_screen/attendance_screen.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
 import 'package:gymify/screens/main_screens/membership_screen/khalti_payment_screen.dart';
@@ -115,23 +116,21 @@ final GoRouter router = GoRouter(
         path: '/manageWorkouts',
         builder: (context, state) => const ManageWorkoutScreen()),
     GoRoute(
-  name: "editWorkout",
-  path: '/editWorkout',
-  builder: (context, state) {
-    final workout = state.extra as Workout;
-    return EditWorkoutScreen(workout: workout);
-  }
-),
+        name: "editWorkout",
+        path: '/editWorkout',
+        builder: (context, state) {
+          final workout = state.extra as Workout;
+          return EditWorkoutScreen(workout: workout);
+        }),
 
 // New route for managing exercises in a workout
-GoRoute(
-  name: "manageWorkoutExercises",
-  path: '/manageWorkoutExercises',
-  builder: (context, state) {
-    final workout = state.extra as Workout;
-    return ManageWorkoutExercisesScreen(workout: workout);
-  }
-),
+    GoRoute(
+        name: "manageWorkoutExercises",
+        path: '/manageWorkoutExercises',
+        builder: (context, state) {
+          final workout = state.extra as Workout;
+          return ManageWorkoutExercisesScreen(workout: workout);
+        }),
     GoRoute(
       name: 'exercises',
       path: '/exercises',
@@ -330,6 +329,10 @@ GoRoute(
         name: 'weightLog',
         path: '/weightLog',
         builder: (context, state) => const WeightLog()),
+    GoRoute(
+        name: 'helpFaqs',
+        path: '/helpFaqs',
+        builder: (context, state) => const HelpFAQsScreen()),
     GoRoute(
         name: 'createSupportedExercise',
         path: '/createSupportedExercise',

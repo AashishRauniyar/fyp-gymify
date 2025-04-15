@@ -28,7 +28,7 @@ class _MealLogsScreenState extends State<MealLogsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
 
     // Fetch meal logs when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -153,108 +153,6 @@ class _MealLogsScreenState extends State<MealLogsScreen>
         ],
       ),
 
-      // body: SafeArea(
-      //   child: NestedScrollView(
-      //     headerSliverBuilder: (context, innerBoxIsScrolled) {
-      //       return [
-      //         SliverAppBar(
-      //           expandedHeight: 200.0,
-      //           floating: true,
-      //           pinned: true,
-      //           backgroundColor: theme.colorScheme.primary,
-      //           flexibleSpace: FlexibleSpaceBar(
-      //             title: const Text(
-      //               'Nutrition Tracker',
-      //               style: TextStyle(
-      //                 color: Colors.white,
-      //                 fontWeight: FontWeight.bold,
-      //               ),
-      //             ),
-      //             background: Stack(
-      //               fit: StackFit.expand,
-      //               children: [
-      //                 Image.asset(
-      //                   'assets/images/nutrition_header.jpg',
-      //                   fit: BoxFit.cover,
-      //                   errorBuilder: (context, error, stackTrace) {
-      //                     return Container(
-      //                       color: theme.colorScheme.primary.withOpacity(0.7),
-      //                     );
-      //                   },
-      //                 ),
-      //                 Container(
-      //                   decoration: BoxDecoration(
-      //                     gradient: LinearGradient(
-      //                       begin: Alignment.topCenter,
-      //                       end: Alignment.bottomCenter,
-      //                       colors: [
-      //                         Colors.transparent,
-      //                         theme.colorScheme.primary.withOpacity(0.8),
-      //                       ],
-      //                     ),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //           actions: [
-      //             IconButton(
-      //               icon: const Icon(Icons.calendar_today, color: Colors.white),
-      //               onPressed: () => _showDatePicker(context),
-      //             ),
-      //             IconButton(
-      //               icon: const Icon(Icons.refresh, color: Colors.white),
-      //               onPressed: () {
-      //                 Provider.of<DietProvider>(context, listen: false)
-      //                     .fetchMealLogs();
-      //               },
-      //             ),
-      //           ],
-      //         ),
-      //         SliverPersistentHeader(
-      //           delegate: _SliverAppBarDelegate(
-      //             TabBar(
-      //               controller: _tabController,
-      //               labelColor: theme.colorScheme.primary,
-      //               unselectedLabelColor:
-      //                   theme.colorScheme.onSurface.withOpacity(0.6),
-      //               indicatorColor: theme.colorScheme.primary,
-      //               tabs: const [
-      //                 Tab(text: 'TODAY'),
-      //                 Tab(text: 'TRENDS'),
-      //                 Tab(text: 'INSIGHTS'),
-      //               ],
-      //             ),
-      //           ),
-      //           pinned: true,
-      //         ),
-      //       ];
-      //     },
-      //     body: TabBarView(
-      //       controller: _tabController,
-      //       children: [
-      //         // TODAY TAB
-      //         _buildTodayTab(
-      //             context,
-      //             filteredMealLogs,
-      //             totalCalories,
-      //             totalProtein,
-      //             totalCarbs,
-      //             totalFat,
-      //             targetCalories,
-      //             targetProtein,
-      //             targetCarbs,
-      //             targetFat),
-
-      //         // TRENDS TAB
-      //         _buildTrendsTab(context, weeklyCalories, provider.mealLogs),
-
-      //         // INSIGHTS TAB
-      //         _buildInsightsTab(context, mealDistribution, provider.mealLogs),
-      //       ],
-      //     ),
-      //   ),
-      // ),
       //TODO: Implement the floating action button to open meal
       floatingActionButton: FloatingActionButton(
         onPressed: () {

@@ -21,10 +21,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  bool _workoutReminders = true;
-  bool _emailNotifications = false;
-  bool _pushNotifications = true;
-
   Future<void> _logout(BuildContext context) async {
     try {
       // Show a dialog to confirm logout
@@ -90,7 +86,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final profileProvider = Provider.of<ProfileProvider>(context);
-
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     if (profileProvider.isLoading) {
@@ -153,711 +148,612 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 280.0, // Increased height to accommodate content
-            floating: false,
-            pinned: true,
-            backgroundColor: theme.colorScheme.primary,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              titlePadding: const EdgeInsets.only(bottom: 16),
-              title: AnimatedOpacity(
-                duration: const Duration(milliseconds: 300),
-                opacity: 1.0,
-                child: Text(
-                  'My Profile',
-                  style: TextStyle(
-                    color: theme.colorScheme.onPrimary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+      appBar: AppBar(
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(CupertinoIcons.ellipsis_vertical),
+            onPressed: () {
+              // Show more options menu
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: Icon(CupertinoIcons.arrow_right_square_fill,
+                            color: theme.colorScheme.primary),
+                        title: const Text('Log Out'),
+                        onTap: () {
+                          Navigator.pop(context);
+                          _logout(context);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(CupertinoIcons.delete_solid,
+                            color: theme.colorScheme.error),
+                        title: Text(
+                          'Delete Account',
+                          style: TextStyle(color: theme.colorScheme.error),
+                        ),
+                        onTap: () {
+                          Navigator.pop(context);
+                          showCupertinoDialog(
+                            context: context,
+                            builder: (context) => CupertinoAlertDialog(
+                              title: const Text('Delete Account'),
+                              content: const Text(
+                                  'This action cannot be undone. Are you sure?'),
+                              actions: [
+                                CupertinoDialogAction(
+                                  onPressed: () => Navigator.pop(context),
+                                  isDefaultAction: true,
+                                  child: const Text('Cancel'),
+                                ),
+                                CupertinoDialogAction(
+                                  onPressed: () => Navigator.pop(context),
+                                  isDestructiveAction: true,
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Profile Header Section
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    theme.colorScheme.primary,
+                    theme.colorScheme.primary.withOpacity(0.8),
+                  ],
+                ),
               ),
-              background: Stack(
-                fit: StackFit.expand,
+              child: Column(
                 children: [
-                  // Gradient overlay
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          theme.colorScheme.primary.withOpacity(0.8),
-                          theme.colorScheme.primary,
+                  // Profile Image
+                  Hero(
+                    tag: 'profile-image',
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                          width: 3,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
                         ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundColor: theme.colorScheme.onPrimary,
+                        child: CircleAvatar(
+                          radius: 47,
+                          backgroundImage: user?.profileImage != null
+                              ? NetworkImage(user!.profileImage!)
+                              : const AssetImage(
+                                      'assets/images/default_profile.png')
+                                  as ImageProvider,
+                        ),
                       ),
                     ),
                   ),
-                  // Profile content
-                  SafeArea(
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 32), // Increased top spacing
-                        // Profile image with hero animation
-                        Hero(
-                          tag: 'profile-image',
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: theme.colorScheme.onPrimary
-                                    .withOpacity(0.5),
-                                width: 3,
-                              ),
-                            ),
-                            child: CircleAvatar(
-                              radius: 50,
-                              backgroundColor: theme.colorScheme.onPrimary,
-                              child: CircleAvatar(
-                                radius: 47,
-                                backgroundImage: user?.profileImage != null
-                                    ? NetworkImage(user!.profileImage!)
-                                    : const AssetImage(
-                                            'assets/images/default_profile.png')
-                                        as ImageProvider,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                            height: 24), // Increased spacing between elements
-                        // User name
-                        Text(
-                          user?.fullName ?? 'Fitness Enthusiast',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: theme.colorScheme.onPrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 12), // Increased spacing
-                        // User role badge
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.onPrimary.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            user?.role ?? 'Member',
-                            style: TextStyle(
-                              color: theme.colorScheme.onPrimary,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24), // Added bottom spacing
-                      ],
+                  const SizedBox(height: 16),
+                  // User Name
+                  Text(
+                    user?.fullName ?? 'Fitness Enthusiast',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: theme.colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Decorative pattern overlay
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            theme.colorScheme.primary.withOpacity(0.2),
-                            theme.colorScheme.primary.withOpacity(0),
-                          ],
-                        ),
+                  const SizedBox(height: 8),
+                  // User Email
+                  Text(
+                    user?.email ?? 'myemail.com',
+                    style: TextStyle(
+                      color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // User Role Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      user?.role ?? 'Member',
+                      style: TextStyle(
+                        color: theme.colorScheme.onPrimary,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Edit Profile Button
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      context.pushNamed('editProfile');
+                    },
+                    icon: const Icon(CupertinoIcons.pencil),
+                    label: const Text('Edit Profile'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.onPrimary,
+                      foregroundColor: theme.colorScheme.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
+
+            // Stats Row
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.surface,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: theme.colorScheme.outline.withOpacity(0.1),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildInfoColumn(
+                        context,
+                        CupertinoIcons.calendar_badge_plus,
+                        user?.birthdate != null
+                            ? '${user!.birthdate!.day}/${user.birthdate!.month}/${user.birthdate!.year}'
+                            : 'Not set',
+                        'Birthday',
+                      ),
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: theme.colorScheme.outline.withOpacity(0.2),
+                      ),
+                      _buildInfoColumn(
+                        context,
+                        CupertinoIcons.location_solid,
+                        user?.address ?? 'Not set',
+                        'Location',
+                      ),
+                      Container(
+                        height: 40,
+                        width: 1,
+                        color: theme.colorScheme.outline.withOpacity(0.2),
+                      ),
+                      _buildInfoColumn(
+                        context,
+                        CupertinoIcons.phone_fill,
+                        user?.phoneNumber ?? 'Not set',
+                        'Contact',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            // Membership Status Card
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Consumer<MembershipProvider>(
+                builder: (context, membershipProvider, child) {
+                  final membershipStatus = membershipProvider.membership;
+                  final currentPlan = membershipStatus != null
+                      ? membershipStatus.status ?? 'Not Active'
+                      : 'Not Active';
+
+                  Color statusColor = Colors.grey;
+                  if (currentPlan == 'Active') {
+                    statusColor = Colors.green;
+                  } else if (currentPlan == 'Pending') {
+                    statusColor = Colors.orange;
+                  }
+
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          theme.colorScheme.primaryContainer,
+                          theme.colorScheme.primaryContainer.withOpacity(0.7),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                CupertinoIcons.creditcard,
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Membership',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: theme.colorScheme.onPrimaryContainer,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Status',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme
+                                          .colorScheme.onPrimaryContainer
+                                          .withOpacity(0.7),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        decoration: BoxDecoration(
+                                          color: statusColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        currentPlan,
+                                        style: theme.textTheme.titleSmall
+                                            ?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                          color: theme
+                                              .colorScheme.onPrimaryContainer,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  context.pushNamed('membershipPlans');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      theme.colorScheme.onPrimaryContainer,
+                                  foregroundColor:
+                                      theme.colorScheme.primaryContainer,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                ),
+                                child: const Text('Manage'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // Trainer Tools Section (if role is trainer)
+            if (profileProvider.user?.role == "Trainer") ...[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Trainer Tools',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          'Manage your resources',
+                          style: TextStyle(
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: theme.colorScheme.outline.withOpacity(0.1),
+                          width: 1,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.03),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildTrainerToolItem(
+                                    context,
+                                    CupertinoIcons.flame_fill,
+                                    'Workouts',
+                                    () => context.pushNamed('manageWorkouts'),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _buildTrainerToolItem(
+                                    context,
+                                    FontAwesomeIcons.carrot,
+                                    'Diet Plans',
+                                    () => context.pushNamed('manageDietPlans'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _buildTrainerToolItem(
+                                    context,
+                                    CupertinoIcons.waveform_path,
+                                    'Exercises',
+                                    () => context.pushNamed('manageExercise'),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: _buildTrainerToolItem(
+                                    context,
+                                    CupertinoIcons.chart_bar_fill,
+                                    'Supported Exercises',
+                                    () {
+                                      context.pushNamed(
+                                          'createSupportedExercise',
+                                          extra: profileProvider.user?.userId
+                                              .toString());
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+            ],
+
+            // Settings & Security Section
+            Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 16),
-
-                  // Membership Status Card
-                  Consumer<MembershipProvider>(
-                    builder: (context, membershipProvider, child) {
-                      final membershipStatus = membershipProvider.membership;
-                      final currentPlan = membershipStatus != null
-                          ? membershipStatus.status ?? 'Not Active'
-                          : 'Not Active';
-
-                      Color statusColor = Colors.grey;
-                      if (currentPlan == 'Active') {
-                        statusColor = Colors.green;
-                      } else if (currentPlan == 'Pending') {
-                        statusColor = Colors.orange;
-                      }
-
-                      return Container(
-                        decoration: BoxDecoration(
-                          // color: isDarkMode
-                          //     ? theme.colorScheme.surface
-                          //     : theme.colorScheme.surface,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: isDarkMode
-                                ? theme.colorScheme.onSurface.withOpacity(0.1)
-                                : theme.colorScheme.onSurface.withOpacity(0.1),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: Card(
-                          elevation: 0,
-                          // shape: RoundedRectangleBorder(
-                          //   borderRadius: BorderRadius.circular(16),
-                          // ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.creditcard,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Membership',
-                                      style:
-                                          theme.textTheme.bodyLarge?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Status',
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                            color: theme.colorScheme.onSurface
-                                                .withOpacity(0.6),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              width: 10,
-                                              height: 10,
-                                              decoration: BoxDecoration(
-                                                color: statusColor,
-                                                shape: BoxShape.circle,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 6),
-                                            Text(
-                                              currentPlan,
-                                              style: theme.textTheme.bodyLarge
-                                                  ?.copyWith(
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        context.pushNamed('membershipPlans');
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            theme.colorScheme.primary,
-                                        foregroundColor:
-                                            theme.colorScheme.onPrimary,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                        ),
-                                      ),
-                                      child: const Text('Manage'),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Personal Info Section
                   Text(
-                    'Personal Information',
-                    style: theme.textTheme.bodyLarge?.copyWith(
+                    'Settings & Account',
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  Container(
-                    decoration: BoxDecoration(
-                      // color: isDarkMode
-                      //     ? theme.colorScheme.surface
-                      //     : theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? theme.colorScheme.onSurface.withOpacity(0.1)
-                            : theme.colorScheme.onSurface.withOpacity(0.1),
-                        width: 1.5,
+                  _buildSettingsCard(
+                    context,
+                    [
+                      _buildActionTile(
+                        context,
+                        CupertinoIcons.lock_fill,
+                        'Reset Password',
+                        'Update your security credentials',
+                        () => context.pushNamed('forgotPassword'),
                       ),
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(16),
-                      // ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            _buildInfoRow(
-                              CupertinoIcons.person_fill,
-                              'Full Name',
-                              user?.fullName ?? 'Not set',
-                            ),
-                            _buildInfoRow(
-                              CupertinoIcons.mail_solid,
-                              'Email',
-                              user?.email ?? 'Not set',
-                            ),
-                            _buildInfoRow(
-                              CupertinoIcons.phone_fill,
-                              'Phone',
-                              user?.phoneNumber ?? 'Not set',
-                            ),
-                            _buildInfoRow(
-                              CupertinoIcons.location_solid,
-                              'Address',
-                              user?.address ?? 'Not set',
-                            ),
-                            _buildInfoRow(
-                              CupertinoIcons.calendar_badge_plus,
-                              'Birthdate',
-                              user?.birthdate != null
-                                  ? '${user!.birthdate!.day}/${user.birthdate!.month}/${user.birthdate!.year}'
-                                  : 'Not set',
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton.icon(
-                                onPressed: () {
-                                  context.pushNamed('editProfile');
-                                },
-                                icon: const Icon(CupertinoIcons.pencil),
-                                label: const Text('Edit Profile'),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      _buildActionTile(
+                        context,
+                        CupertinoIcons.question_circle_fill,
+                        'Help & Support',
+                        'Contact us for assistance',
+                        () {
+                          context.pushNamed('helpFaqs');
+                        },
                       ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Check if the user's role is "Trainer"
-                  if (profileProvider.user?.role == "Trainer") ...[
-                    Text(
-                      'Trainer Tools',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      _buildActionTile(
+                        context,
+                        CupertinoIcons.star_fill,
+                        'Rate the App',
+                        'Let us know how we\'re doing',
+                        () {
+                          // Navigate to app rating
+                        },
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildToolCard(
-                            context,
-                            CupertinoIcons.flame_fill,
-                            'Manage Workouts',
-                            'Create and manage your workout routines',
-                            () => context.pushNamed('manageWorkouts'),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildToolCard(
-                            context,
-                            FontAwesomeIcons.carrot,
-                            'Manage Diet Plans',
-                            'Manage your diet and meal plans',
-                            () => context.pushNamed('manageDietPlans'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildToolCard(
-                            context,
-                            CupertinoIcons.waveform_path,
-                            'Manage Exercises',
-                            'Create custom exercises',
-                            () => context.pushNamed('manageExercise'),
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildToolCard(
-                            context,
-                            CupertinoIcons.chart_bar_fill,
-                            'Create Supported Exercise',
-                            'create exercise which can be logged',
-                            () {
-                              context.pushNamed('createSupportedExercise',
-                                  extra:
-                                      profileProvider.user?.userId.toString());
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-
-                  const SizedBox(height: 24),
-
-                  //
-
-                  Text(
-                    'App Settings',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  Container(
-                    decoration: BoxDecoration(
-                      // color: isDarkMode
-                      //     ? theme.colorScheme.surface
-                      //     : theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? theme.colorScheme.onSurface.withOpacity(0.1)
-                            : theme.colorScheme.onSurface.withOpacity(0.1),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(16),
-                      // ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            _buildSwitchTile(
-                              CupertinoIcons.bell_fill,
-                              'Workout Reminders',
-                              _workoutReminders,
-                              (value) {
-                                setState(() {
-                                  _workoutReminders = value;
-                                });
-                              },
-                            ),
-                            _buildSwitchTile(
-                              CupertinoIcons.mail_solid,
-                              'Email Notifications',
-                              _emailNotifications,
-                              (value) {
-                                setState(() {
-                                  _emailNotifications = value;
-                                });
-                              },
-                            ),
-                            _buildSwitchTile(
-                              CupertinoIcons.app_badge_fill,
-                              'Push Notifications',
-                              _pushNotifications,
-                              (value) {
-                                setState(() {
-                                  _pushNotifications = value;
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Security Section
-                  Text(
-                    'Security',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  Container(
-                    decoration: BoxDecoration(
-                      // color: isDarkMode
-                      //     ? theme.colorScheme.surface
-                      //     : theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? theme.colorScheme.onSurface.withOpacity(0.1)
-                            : theme.colorScheme.onSurface.withOpacity(0.1),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(16),
-                      // ),
-                      child: Column(
-                        children: [
-                          _buildActionTile(
-                            context,
-                            CupertinoIcons.lock_fill,
-                            'Reset Password',
-                            'Update your account password',
-                            () {
-                              // Handle change password action
-
-                              context.pushNamed('forgotPassword');
-                            },
-                          ),
-                          _buildActionTile(
-                            context,
-                            CupertinoIcons.shield_fill,
-                            'Privacy Settings',
-                            'Manage your data and privacy',
-                            () {
-                              // Handle privacy settings action
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Support Section
-                  Text(
-                    'Support',
-                    style: theme.textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  Container(
-                    decoration: BoxDecoration(
-                      // color: isDarkMode
-                      //     ? theme.colorScheme.surface
-                      //     : theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? theme.colorScheme.onSurface.withOpacity(0.1)
-                            : theme.colorScheme.onSurface.withOpacity(0.1),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      child: Column(
-                        children: [
-                          _buildActionTile(
-                            context,
-                            CupertinoIcons.question_circle_fill,
-                            'Help & FAQs',
-                            'Get answers to common questions',
-                            () {
-                              // Navigate to FAQs
-                            },
-                          ),
-                          _buildActionTile(
-                            context,
-                            CupertinoIcons.chat_bubble_text_fill,
-                            'Contact Support',
-                            'Reach out to our support team',
-                            () {
-                              // Navigate to contact form
-                            },
-                          ),
-                          _buildActionTile(
-                            context,
-                            CupertinoIcons.star_fill,
-                            'Rate the App',
-                            'Let us know how we\'re doing',
-                            () {
-                              // Navigate to app rating
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Account Actions Section
-                  Container(
-                    decoration: BoxDecoration(
-                      // color: isDarkMode
-                      //     ? theme.colorScheme.surface
-                      //     : theme.colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: isDarkMode
-                            ? theme.colorScheme.onSurface.withOpacity(0.1)
-                            : theme.colorScheme.onSurface.withOpacity(0.1),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Card(
-                      elevation: 0,
-                      margin: const EdgeInsets.only(bottom: 32, top: 12),
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Icon(
-                              CupertinoIcons.arrow_right_square_fill,
-                              color: theme.colorScheme.primary,
-                            ),
-                            title: Text(
-                              'Log Out',
-                              style: theme.textTheme.bodyLarge,
-                            ),
-                            trailing: const Icon(CupertinoIcons.forward),
-                            onTap: () => _logout(context),
-                          ),
-                          ListTile(
-                            leading: Icon(
-                              CupertinoIcons.delete_solid,
-                              color: theme.colorScheme.error,
-                            ),
-                            title: Text(
-                              'Delete Account',
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: theme.colorScheme.error,
-                              ),
-                            ),
-                            trailing: const Icon(CupertinoIcons.forward),
-                            onTap: () {
-                              // Handle account deletion
-                              showCupertinoDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return CupertinoAlertDialog(
-                                      title: const Text('Delete Account'),
-                                      content: const Text(
-                                          'This action cannot be undone. Are you sure you want to permanently delete your account?'),
-                                      actions: [
-                                        CupertinoDialogAction(
-                                          onPressed: () =>
-                                              Navigator.pop(context),
-                                          isDefaultAction: true,
-                                          child: const Text('Cancel'),
-                                        ),
-                                        CupertinoDialogAction(
-                                          onPressed: () {
-                                            // Handle account deletion
-                                            Navigator.pop(context);
-                                          },
-                                          isDestructiveAction: true,
-                                          child: const Text('Delete'),
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+
+            const SizedBox(height: 30),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
+  Widget _buildTrainerToolItem(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    final theme = Theme.of(context);
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: SizedBox(
+        height: 110, // Slightly increased height for additional text
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primaryContainer,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: theme.colorScheme.primary.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(
+                icon,
+                color: theme.colorScheme.onPrimaryContainer,
+                size: 24,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Manage',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                color: theme.colorScheme.onSurface.withOpacity(0.6),
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoColumn(
+      BuildContext context, IconData icon, String value, String label) {
+    final theme = Theme.of(context);
+
+    return Expanded(
+      child: Column(
         children: [
           Icon(
             icon,
-            color: Theme.of(context).colorScheme.primary,
-            size: 22,
+            color: theme.colorScheme.primary,
+            size: 24,
           ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                  fontSize: 12,
-                ),
-              ),
-              Text(
-                value,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
-              ),
-            ],
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            maxLines: 1,
           ),
         ],
       ),
@@ -867,7 +763,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildSwitchTile(
       IconData icon, String title, bool value, Function(bool) onChanged) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -917,7 +813,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Icon(
           icon,
           color: Theme.of(context).colorScheme.primary,
-          size: 24,
+          size: 22,
         ),
       ),
       title: Text(
@@ -934,7 +830,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           fontSize: 12,
         ),
       ),
-      trailing: const Icon(CupertinoIcons.forward),
+      trailing: Icon(
+        CupertinoIcons.forward,
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+        size: 18,
+      ),
       onTap: onTap,
     );
   }
@@ -946,56 +846,93 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String subtitle,
     VoidCallback onTap,
   ) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+    final theme = Theme.of(context);
+
+    return Container(
+      width: 150,
+      margin: const EdgeInsets.only(right: 16),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: onTap,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primaryContainer
-                      .withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(12),
+                  color: theme.colorScheme.primaryContainer,
                 ),
                 child: Icon(
                   icon,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: theme.colorScheme.onPrimaryContainer,
                   size: 28,
                 ),
               ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 12,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
                 ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-                  fontSize: 12,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSettingsCard(BuildContext context, List<Widget> children) {
+    final theme = Theme.of(context);
+    final isDarkMode = theme.brightness == Brightness.dark;
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: theme.colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: isDarkMode
+              ? theme.colorScheme.onSurface.withOpacity(0.1)
+              : theme.colorScheme.onSurface.withOpacity(0.1),
+          width: 1,
+        ),
+      ),
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        children: children,
       ),
     );
   }
