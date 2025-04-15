@@ -12,6 +12,21 @@ export const createCustomWorkout = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Workout name is required' });
         }
 
+        // Check if user already has a workout with this name
+        const existingWorkout = await prisma.customworkouts.findFirst({
+            where: {
+                user_id,
+                custom_workout_name
+            }
+        });
+
+        if (existingWorkout) {
+            return res.status(400).json({
+                status: 'failure',
+                message: 'You already have a workout with this name. Please use a different name.'
+            });
+        }
+
         const customWorkout = await prisma.customworkouts.create({
             data: {
                 user_id,
@@ -20,7 +35,7 @@ export const createCustomWorkout = async (req, res) => {
             }
         });
 
-        res.status(201).json({ status: 'success', message: 'Custom workout created successfully', data : customWorkout });
+        res.status(201).json({ status: 'success', message: 'Custom workout created successfully', data: customWorkout });
     } catch (error) {
         console.error('Error creating custom workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -87,15 +102,13 @@ export const addExerciseToCustomWorkout = async (req, res) => {
         res.status(201).json({
             status: 'success',
             message: 'Exercises added to custom workout successfully',
-            data : addedExercises
+            data: addedExercises
         });
     } catch (error) {
         console.error('Error adding exercises to custom workout:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
 
 // get all exercises in custom workout
 
@@ -115,15 +128,12 @@ export const getCustomWorkoutsOfUser = async (req, res) => {
             },
         });
 
-        res.status(200).json({ status: 'success', message: "custom workouts" ,data : customWorkouts });
+        res.status(200).json({ status: 'success', message: "custom workouts", data: customWorkouts });
     } catch (error) {
         console.error('Error fetching custom workouts:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
-
 
 // get all exercises in custom workout by id
 
@@ -136,7 +146,7 @@ export const getCustomWorkoutExercisesById = async (req, res) => {
             include: { exercises: true }
         });
 
-        res.status(200).json({ status: 'success', message : "custom workout fetched" ,data : exercises });
+        res.status(200).json({ status: 'success', message: "custom workout fetched", data: exercises });
     } catch (error) {
         console.error('Error fetching exercises:', error);
         res.status(500).json({ status: 'failure', message: 'Server error' });
@@ -184,8 +194,6 @@ export const getCustomWorkoutById = async (req, res) => {
     }
 };
 
-
-
 // remove exercise from custom workout
 export const removeExerciseFromCustomWorkout = async (req, res) => {
     try {
@@ -201,8 +209,6 @@ export const removeExerciseFromCustomWorkout = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
-
 
 // Delete custom workout
 export const deleteCustomWorkout = async (req, res) => {

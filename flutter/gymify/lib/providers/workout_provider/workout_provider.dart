@@ -20,8 +20,6 @@ class WorkoutProvider with ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
-  
-
   void _setLoading(bool loading) {
     _isLoading = loading;
     notifyListeners();
@@ -114,11 +112,29 @@ class WorkoutProvider with ChangeNotifier {
         await fetchAllWorkouts(); // Refresh workouts
         return workoutId;
       } else {
-        throw Exception(apiResponse.message.isNotEmpty
-            ? apiResponse.message
-            : 'Unknown error');
+        // Check for specific error messages
+        if (apiResponse.message.contains('already exists')) {
+          throw Exception(
+              'A workout with this name already exists. Please choose a different name.');
+        } else {
+          throw Exception(apiResponse.message.isNotEmpty
+              ? apiResponse.message
+              : 'Unknown error');
+        }
       }
     } catch (e) {
+      if (e is DioException && e.response != null) {
+        // Handle Dio errors with response data
+        final responseData = e.response?.data;
+        if (responseData != null &&
+            responseData is Map<String, dynamic> &&
+            responseData['message'] != null) {
+          if (responseData['message'].toString().contains('already exists')) {
+            throw Exception(
+                'A workout with this name already exists. Please choose a different name.');
+          }
+        }
+      }
       print('Error creating workout: $e');
       throw Exception('Error creating workout: $e');
     } finally {
@@ -185,181 +201,180 @@ class WorkoutProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   //!----------------------------------------
   Future<Workout?> getWorkoutDetailsById(int workoutId) async {
-  try {
-    final response = await httpClient.get('/workouts/$workoutId');
-    final apiResponse = ApiResponse<Workout>.fromJson(
-      response.data,
-      (data) => Workout.fromJson(data as Map<String, dynamic>),
-    );
+    try {
+      final response = await httpClient.get('/workouts/$workoutId');
+      final apiResponse = ApiResponse<Workout>.fromJson(
+        response.data,
+        (data) => Workout.fromJson(data as Map<String, dynamic>),
+      );
 
-    if (apiResponse.status == 'success') {
-      return apiResponse.data;
-    } else {
-      throw Exception(apiResponse.message.isNotEmpty ? apiResponse.message : 'Unknown error');
-    }
-  } catch (e) {
-    print('Error fetching workout details: $e');
-    return null;
-  }
-}
-
-// Add these methods to your existing WorkoutProvider class
-
-// Delete a workout
-Future<void> deleteWorkout(int workoutId) async {
-  _setLoading(true); // Start loading
-  try {
-    final response = await httpClient.delete(
-      '/workouts/$workoutId',
-      options: Options(headers: {
-        'Accept': 'application/json',
-      }),
-    );
-
-    final apiResponse = ApiResponse<void>.fromJson(
-      response.data,
-      (data) => null,
-    );
-
-    if (apiResponse.status == 'success') {
-      // Remove the workout from the list
-      _workouts.removeWhere((workout) => workout.workoutId == workoutId);
-      notifyListeners();
-    } else {
-      throw Exception(apiResponse.message.isNotEmpty
-          ? apiResponse.message
-          : 'Unknown error');
-    }
-  } catch (e) {
-    print('Error deleting workout: $e');
-    throw Exception('Error deleting workout: $e');
-  } finally {
-    _setLoading(false); // Stop loading
-  }
-}
-
-// Update an existing workout
-Future<void> updateWorkout({
-  required int workoutId,
-  required String workoutName,
-  required String description,
-  required String targetMuscleGroup,
-  required String difficulty,
-  required String goalType,
-  required String fitnessLevel,
-  File? workoutImage, // Optional: To update image
-}) async {
-  _setLoading(true); // Start loading
-  try {
-    // Create FormData for multipart request
-    FormData formData = FormData.fromMap({
-      'workout_name': workoutName,
-      'description': description,
-      'target_muscle_group': targetMuscleGroup,
-      'difficulty': difficulty,
-      'goal_type': goalType,
-      'fitness_level': fitnessLevel,
-      if (workoutImage != null)
-        'workout_image': await MultipartFile.fromFile(
-          workoutImage.path,
-          filename: 'workout_image.jpeg',
-          contentType: getContentType(workoutImage),
-        ),
-    });
-
-    final response = await httpClient.put(
-      '/workouts/$workoutId',
-      options: Options(headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'multipart/form-data'
-      }),
-      data: formData,
-    );
-
-    final apiResponse = ApiResponse<Workout>.fromJson(
-      response.data,
-      (data) => Workout.fromJson(data as Map<String, dynamic>),
-    );
-
-    if (apiResponse.status == 'success') {
-      // Update the workout in the local list
-      final index = _workouts.indexWhere((w) => w.workoutId == workoutId);
-      if (index != -1) {
-        _workouts[index] = apiResponse.data;
+      if (apiResponse.status == 'success') {
+        return apiResponse.data;
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
       }
-      
-      // If this workout is currently selected, update it
-      if (_selectedWorkout?.workoutId == workoutId) {
-        _selectedWorkout = apiResponse.data;
-      }
-      
-      notifyListeners();
-    } else {
-      throw Exception(apiResponse.message.isNotEmpty
-          ? apiResponse.message
-          : 'Unknown error');
+    } catch (e) {
+      print('Error fetching workout details: $e');
+      return null;
     }
-  } catch (e) {
-    print('Error updating workout: $e');
-    throw Exception('Error updating workout: $e');
-  } finally {
-    _setLoading(false); // Stop loading
   }
-}
 
+  // Add these methods to your existing WorkoutProvider class
 
-// Add this method to your WorkoutProvider class
+  // Delete a workout
+  Future<void> deleteWorkout(int workoutId) async {
+    _setLoading(true); // Start loading
+    try {
+      final response = await httpClient.delete(
+        '/workouts/$workoutId',
+        options: Options(headers: {
+          'Accept': 'application/json',
+        }),
+      );
 
-// Remove an exercise from a workout
-Future<void> removeExerciseFromWorkout(int workoutId, int workoutExerciseId) async {
-  _setLoading(true); // Start loading
-  try {
-    final response = await httpClient.delete(
-      '/workouts/$workoutId/exercises/$workoutExerciseId',
-      options: Options(headers: {
-        'Accept': 'application/json',
-      }),
-    );
+      final apiResponse = ApiResponse<void>.fromJson(
+        response.data,
+        (data) {},
+      );
 
-    final apiResponse = ApiResponse<void>.fromJson(
-      response.data,
-      (data) => null,
-    );
-
-    if (apiResponse.status == 'success') {
-      // If this workout is currently selected, update its exercises list
-      if (_selectedWorkout?.workoutId == workoutId) {
-        _selectedWorkout!.workoutexercises?.removeWhere(
-          (exercise) => exercise.workoutExerciseId == workoutExerciseId,
-        );
+      if (apiResponse.status == 'success') {
+        // Remove the workout from the list
+        _workouts.removeWhere((workout) => workout.workoutId == workoutId);
+        notifyListeners();
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
       }
-      
-      // Also update the exercise in the local workouts list if present
-      final workoutIndex = _workouts.indexWhere((w) => w.workoutId == workoutId);
-      if (workoutIndex != -1 && _workouts[workoutIndex].workoutexercises != null) {
-        _workouts[workoutIndex].workoutexercises?.removeWhere(
-          (exercise) => exercise.workoutExerciseId == workoutExerciseId,
-        );
-      }
-      
-      notifyListeners();
-    } else {
-      throw Exception(apiResponse.message.isNotEmpty
-          ? apiResponse.message
-          : 'Unknown error');
+    } catch (e) {
+      print('Error deleting workout: $e');
+      throw Exception('Error deleting workout: $e');
+    } finally {
+      _setLoading(false); // Stop loading
     }
-  } catch (e) {
-    print('Error removing exercise from workout: $e');
-    throw Exception('Error removing exercise: $e');
-  } finally {
-    _setLoading(false); // Stop loading
   }
-}
 
+  // Update an existing workout
+  Future<void> updateWorkout({
+    required int workoutId,
+    required String workoutName,
+    required String description,
+    required String targetMuscleGroup,
+    required String difficulty,
+    required String goalType,
+    required String fitnessLevel,
+    File? workoutImage, // Optional: To update image
+  }) async {
+    _setLoading(true); // Start loading
+    try {
+      // Create FormData for multipart request
+      FormData formData = FormData.fromMap({
+        'workout_name': workoutName,
+        'description': description,
+        'target_muscle_group': targetMuscleGroup,
+        'difficulty': difficulty,
+        'goal_type': goalType,
+        'fitness_level': fitnessLevel,
+        if (workoutImage != null)
+          'workout_image': await MultipartFile.fromFile(
+            workoutImage.path,
+            filename: 'workout_image.jpeg',
+            contentType: getContentType(workoutImage),
+          ),
+      });
 
+      final response = await httpClient.put(
+        '/workouts/$workoutId',
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'multipart/form-data'
+        }),
+        data: formData,
+      );
 
+      final apiResponse = ApiResponse<Workout>.fromJson(
+        response.data,
+        (data) => Workout.fromJson(data as Map<String, dynamic>),
+      );
 
+      if (apiResponse.status == 'success') {
+        // Update the workout in the local list
+        final index = _workouts.indexWhere((w) => w.workoutId == workoutId);
+        if (index != -1) {
+          _workouts[index] = apiResponse.data;
+        }
+
+        // If this workout is currently selected, update it
+        if (_selectedWorkout?.workoutId == workoutId) {
+          _selectedWorkout = apiResponse.data;
+        }
+
+        notifyListeners();
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      print('Error updating workout: $e');
+      throw Exception('Error updating workout: $e');
+    } finally {
+      _setLoading(false); // Stop loading
+    }
+  }
+
+  // Add this method to your WorkoutProvider class
+
+  // Remove an exercise from a workout
+  Future<void> removeExerciseFromWorkout(
+      int workoutId, int workoutExerciseId) async {
+    _setLoading(true); // Start loading
+    try {
+      final response = await httpClient.delete(
+        '/workouts/$workoutId/exercises/$workoutExerciseId',
+        options: Options(headers: {
+          'Accept': 'application/json',
+        }),
+      );
+
+      final apiResponse = ApiResponse<void>.fromJson(
+        response.data,
+        (data) {},
+      );
+
+      if (apiResponse.status == 'success') {
+        // If this workout is currently selected, update its exercises list
+        if (_selectedWorkout?.workoutId == workoutId) {
+          _selectedWorkout!.workoutexercises?.removeWhere(
+            (exercise) => exercise.workoutExerciseId == workoutExerciseId,
+          );
+        }
+
+        // Also update the exercise in the local workouts list if present
+        final workoutIndex =
+            _workouts.indexWhere((w) => w.workoutId == workoutId);
+        if (workoutIndex != -1 &&
+            _workouts[workoutIndex].workoutexercises != null) {
+          _workouts[workoutIndex].workoutexercises?.removeWhere(
+                (exercise) => exercise.workoutExerciseId == workoutExerciseId,
+              );
+        }
+
+        notifyListeners();
+      } else {
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      print('Error removing exercise from workout: $e');
+      throw Exception('Error removing exercise: $e');
+    } finally {
+      _setLoading(false); // Stop loading
+    }
+  }
 }

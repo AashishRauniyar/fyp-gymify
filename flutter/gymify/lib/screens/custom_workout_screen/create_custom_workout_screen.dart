@@ -322,9 +322,27 @@ class _CreateCustomWorkoutScreenState extends State<CreateCustomWorkoutScreen> {
                               Navigator.pop(context,
                                   true); // Return true to indicate success
                             } catch (e) {
+                              // Handle specific error messages
+                              String errorMessage =
+                                  'An error occurred. Please try again.';
+
+                              if (e.toString().contains(
+                                  'already have a workout with this name')) {
+                                errorMessage =
+                                    'You already have a workout with this name. Please use a different name.';
+                              } else if (e.toString().contains(
+                                  'Failed to create custom workout')) {
+                                errorMessage =
+                                    'Failed to create custom workout. Please try again.';
+                              } else {
+                                // Extract just the error message without the exception prefix
+                                errorMessage =
+                                    e.toString().replaceAll('Exception: ', '');
+                              }
+
                               showCoolSnackBar(
                                 context,
-                                'Error: $e',
+                                errorMessage,
                                 false,
                               );
                             }

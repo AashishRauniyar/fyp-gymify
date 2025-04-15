@@ -20,6 +20,21 @@ export const createWorkout = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
         }
 
+        // Check if workout name already exists for this trainer
+        const existingWorkout = await prisma.workouts.findFirst({
+            where: {
+                trainer_id: user_id,
+                workout_name: workout_name
+            }
+        });
+
+        if (existingWorkout) {
+            return res.status(400).json({
+                status: 'failure',
+                message: 'A workout with this name already exists. Please choose a different name.'
+            });
+        }
+
         // Validate difficulty level
         const validDifficulties = ['Easy', 'Intermediate', 'Hard'];
         if (!validDifficulties.includes(difficulty)) {

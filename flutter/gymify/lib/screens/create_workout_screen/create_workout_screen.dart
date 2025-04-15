@@ -507,10 +507,23 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
           exercisesPayload,
         );
 
-        showCoolSnackBar(context, "Workout created successfully", true);
+        if (context.mounted) {
+          showCoolSnackBar(context, "Workout created successfully", true);
+          // Navigate back after successful creation
+          context.pop();
+        }
       } catch (e) {
         if (context.mounted) {
-          showCoolSnackBar(context, "Error: $e", false);
+          // Check for specific duplicate name error
+          if (e.toString().contains('already exists')) {
+            showCoolSnackBar(
+                context,
+                "A workout with this name already exists. Please choose a different name.",
+                false);
+          } else {
+            showCoolSnackBar(context,
+                "Error: ${e.toString().replaceAll('Exception: ', '')}", false);
+          }
         }
       }
     }

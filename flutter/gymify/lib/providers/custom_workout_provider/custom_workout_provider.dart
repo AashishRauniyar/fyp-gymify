@@ -99,11 +99,32 @@ class CustomWorkoutProvider with ChangeNotifier {
         await fetchCustomWorkouts(); // Refresh the workouts list
         return customWorkoutId;
       } else {
-        throw Exception(responseData['message']);
+        if (responseData['message']
+            .toString()
+            .contains('already have a workout with this name')) {
+          throw Exception(
+              'You already have a workout with this name. Please use a different name.');
+        } else {
+          throw Exception(responseData['message']);
+        }
       }
     } catch (e) {
+      if (e is DioException && e.response != null) {
+        // Handle Dio errors with response data
+        final responseData = e.response?.data;
+        if (responseData != null &&
+            responseData is Map<String, dynamic> &&
+            responseData['message'] != null) {
+          if (responseData['message']
+              .toString()
+              .contains('already have a workout with this name')) {
+            throw Exception(
+                'You already have a workout with this name. Please use a different name.');
+          }
+        }
+      }
       print('Error creating custom workout: $e');
-      throw Exception('Error creating custom workout: $e');
+      throw Exception('Failed to create custom workout. Please try again.');
     } finally {
       _setLoading(false);
     }
