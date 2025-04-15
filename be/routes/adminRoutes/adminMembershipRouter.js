@@ -13,7 +13,7 @@ adminMembershipRouter.put('/memberships/:id', authenticate, updateMembershipPlan
 
 
 // Cancel a user's membership
-adminMembershipRouter.put('/memberships/:membershipId/cancel', authenticate, cancelMembership);
+// adminMembershipRouter.put('/memberships/:membershipId/cancel', authenticate, cancelMembership);
 
 // renew a user's membership
 adminMembershipRouter.put('/memberships/:membershipId/renew', authenticate, renewMembership);

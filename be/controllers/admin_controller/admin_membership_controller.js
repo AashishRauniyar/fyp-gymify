@@ -1634,6 +1634,35 @@ export const deleteMembershipPlan = async (req, res) => {
     }
 };
 
+// // Cancel a user's membership (admin only)
+// export const cancelMembershipByAdmin = async (req, res) => {
+//     try {
+//         const { membershipId } = req.params;
+
+//         if (!membershipId || isNaN(parseInt(membershipId))) {
+//             return res.status(400).json({
+//                 status: 'failure',
+//                 message: 'Invalid membership ID format'
+//             });
+//         }
+
+//         // Cancel the membership by setting status to "Cancelled"
+//         const canceledMembership = await prisma.memberships.update({
+//             where: { membership_id: parseInt(membershipId) },
+//             data: { status: 'Cancelled' }
+//         });
+
+//         res.status(200).json({
+//             status: 'success',
+//             message: 'Membership cancelled successfully',
+//             data: canceledMembership
+//         });
+//     } catch (error) {
+//         console.error('Error cancelling membership:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
+
 // Cancel a user's membership (admin only)
 export const cancelMembershipByAdmin = async (req, res) => {
     try {
@@ -1646,20 +1675,44 @@ export const cancelMembershipByAdmin = async (req, res) => {
             });
         }
 
-        // Cancel the membership by setting status to "Cancelled"
-        const canceledMembership = await prisma.memberships.update({
-            where: { membership_id: parseInt(membershipId) },
-            data: { status: 'Cancelled' }
+        // Start a transaction to ensure both operations complete or fail together
+        const result = await prisma.$transaction(async (prisma) => {
+            // Get the user_id from the membership before canceling
+            const membership = await prisma.memberships.findUnique({
+                where: { membership_id: parseInt(membershipId) },
+                select: { user_id: true }
+            });
+
+            if (!membership) {
+                throw new Error('Membership not found');
+            }
+
+            // Cancel the membership by setting status to "Cancelled"
+            const canceledMembership = await prisma.memberships.update({
+                where: { membership_id: parseInt(membershipId) },
+                data: { status: 'Cancelled' }
+            });
+
+            // Clear the card_number for the user
+            const updatedUser = await prisma.users.update({
+                where: { user_id: membership.user_id },
+                data: { card_number: null }
+            });
+
+            return { canceledMembership, updatedUser };
         });
 
         res.status(200).json({
             status: 'success',
-            message: 'Membership cancelled successfully',
-            data: canceledMembership
+            message: 'Membership cancelled successfully and card information cleared',
+            data: result.canceledMembership
         });
     } catch (error) {
         console.error('Error cancelling membership:', error);
-        res.status(500).json({ status: 'failure', message: 'Server error' });
+        res.status(500).json({ 
+            status: 'failure', 
+            message: error.message || 'Server error' 
+        });
     }
 };
 
