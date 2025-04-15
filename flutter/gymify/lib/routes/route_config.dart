@@ -3,8 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
 import 'package:gymify/models/exercise_model.dart';
-import 'package:gymify/models/personal_best_model.dart';
-import 'package:gymify/models/user_model.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/screens/ai_screen/ai_chatbot_screen.dart';
 import 'package:gymify/screens/authentication/account_recovery/forget_password.dart';
@@ -41,12 +39,10 @@ import 'package:gymify/screens/personal_best_screens/create_supported_exercise_s
 import 'package:gymify/screens/personal_best_screens/personal_best_screen.dart';
 import 'package:gymify/screens/personal_best_screens/weight_update_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
-import 'package:gymify/screens/registration_main_screen.dart';
 import 'package:gymify/screens/step_count_screen.dart';
 import 'package:gymify/screens/test/test_screen.dart';
 import 'package:gymify/screens/trainer_screens/manage_diet_plans.dart';
 import 'package:gymify/screens/weight_selecter.dart';
-import 'package:gymify/screens/authentication/trying/multi_register.dart';
 import 'package:gymify/screens/exercise_screens/exercise_screen.dart';
 import 'package:gymify/screens/main_screen/main_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
@@ -105,152 +101,6 @@ final GoRouter router = GoRouter(
         return ProfileCompletionScreen(email: email);
       },
     ),
-
-    // Register Flow - encapsulated in ShellRoute
-    // New ShellRoute for Registration Flow
-    // ShellRoute(
-    //   navigatorKey:
-    //       _registrationNavigatorKey, // Use a new navigator key for registration flow
-    //   builder: (context, state, child) {
-    //     return RegistrationMainScreen(
-    //         child: child); // Your main screen for registration flow
-    //   },
-    //   routes: [
-    //     GoRoute(
-    //       path: '/register',
-    //       builder: (context, state) => const UserNamePage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/fullname',
-    //       name: 'fullname',
-    //       builder: (context, state) => const FullNamePage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/gender',
-    //       name: 'gender',
-    //       builder: (context, state) => const GenderSelectionPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/email',
-    //       name: 'email',
-    //       builder: (context, state) => const EmailPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/password',
-    //       name: 'password',
-    //       builder: (context, state) => const PasswordPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/phonenumber',
-    //       name: 'phonenumber',
-    //       builder: (context, state) => const PhoneNumberPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/address',
-    //       name: 'address',
-    //       builder: (context, state) => const AddressPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/birthdate',
-    //       name: 'birthdate',
-    //       builder: (context, state) => const BirthDatePage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/height',
-    //       name: 'height',
-    //       builder: (context, state) => const HeightSelector(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/weight',
-    //       name: 'weight',
-    //       builder: (context, state) => const WeightSelector(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/fitnesslevel',
-    //       name: 'fitnesslevel',
-    //       builder: (context, state) => const FitnessLevelPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/goaltype',
-    //       name: 'goaltype',
-    //       builder: (context, state) => const GoalTypePage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/caloriegoals',
-    //       name: 'caloriegoals',
-    //       builder: (context, state) => const CalorieGoalsPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/allergies',
-    //       name: 'allergies',
-    //       builder: (context, state) => const AllergiesPage(),
-    //     ),
-    //     GoRoute(
-    //       path: '/register/confirm',
-    //       name: 'confirm',
-    //       builder: (context, state) => const ConfirmRegistrationPage(),
-    //     ),
-    //   ],
-    // ),
-
-    // GoRoute(
-    //   path: '/register',
-    //   builder: (context, state) =>
-    //       const UserNamePage(), // First step in registration
-    // ),
-    // GoRoute(
-    //   path: '/register/fullname',
-    //   builder: (context, state) => const FullNamePage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/email',
-    //   builder: (context, state) => const EmailPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/password',
-    //   builder: (context, state) => const PasswordPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/phonenumber',
-    //   builder: (context, state) => const PhoneNumberPage(),
-    // ),
-
-    // GoRoute(
-    //   path: '/register/address',
-    //   builder: (context, state) => const AddressPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/birthdate',
-    //   builder: (context, state) => const BirthDatePage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/height',
-    //   builder: (context, state) => const HeightSelector(),
-    // ),
-    // GoRoute(
-    //   path: '/register/weight',
-    //   builder: (context, state) =>  WeightSelector(),
-    // ),
-    // GoRoute(
-    //   path: '/register/fitnesslevel',
-    //   builder: (context, state) => const FitnessLevelPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/goaltype',
-    //   builder: (context, state) => const GoalTypePage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/caloriegoals',
-    //   builder: (context, state) => const CalorieGoalsPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/allergies',
-    //   builder: (context, state) => const AllergiesPage(),
-    // ),
-    // GoRoute(
-    //   path: '/register/confirm',
-    //   builder: (context, state) => const ConfirmRegistrationPage(),
-    // ),
     GoRoute(
       name: 'login',
       path: '/login',

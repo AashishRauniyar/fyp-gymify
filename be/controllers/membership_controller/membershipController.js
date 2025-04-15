@@ -1,6 +1,7 @@
 // membershipController.js
 import { PrismaClient } from '@prisma/client';
 import { body, validationResult } from 'express-validator';
+import { sendMembershipApprovalEmail, sendWelcomeEmail } from '../../utils/sendMail.js';
 
 const prisma = new PrismaClient();
 
@@ -305,6 +306,107 @@ export const getPendingMemberships = async (req, res) => {
 };
 
 // Approve membership and assign card number
+// export const approveMembership = async (req, res) => {
+//     try {
+//         const { membershipId } = req.params;
+//         const { card_number } = req.body;
+
+//         // Validate input
+//         if (!card_number) {
+//             return res.status(400).json({
+//                 status: 'failure',
+//                 message: 'Card number is required'
+//             });
+//         }
+
+//         // Check membership existence
+//         const membership = await prisma.memberships.findUnique({
+//             where: { membership_id: parseInt(membershipId) },
+//             include: {
+//                 membership_plan: true,
+//                 payments: true,
+//                 users: true
+//             }
+//         });
+
+//         if (!membership || membership.status !== 'Pending') {
+//             return res.status(404).json({
+//                 status: 'failure',
+//                 message: 'Membership not found or not pending'
+//             });
+//         }
+
+//         // Check if card number is unique
+//         const existingUser = await prisma.users.findFirst({
+//             where: { card_number }
+//         });
+
+//         if (existingUser) {
+//             return res.status(400).json({
+//                 status: 'failure',
+//                 message: 'Card number already in use'
+//             });
+//         }
+
+//         // Calculate membership dates
+//         const start_date = new Date();
+//         let end_date = new Date(start_date);
+
+//         switch (membership.membership_plan.plan_type) {
+//             case 'Monthly':
+//                 end_date.setMonth(end_date.getMonth() + 1);
+//                 break;
+//             case 'Quaterly':
+//                 end_date.setMonth(end_date.getMonth() + 3);
+//                 break;
+//             case 'Yearly':
+//                 end_date.setFullYear(end_date.getFullYear() + 1);
+//                 break;
+//             default:
+//                 return res.status(400).json({
+//                     status: 'failure',
+//                     message: 'Invalid plan type'
+//                 });
+//         }
+
+//         // Update membership
+//         const updatedMembership = await prisma.memberships.update({
+//             where: { membership_id: parseInt(membershipId) },
+//             data: {
+//                 status: 'Active',
+//                 start_date,
+//                 end_date
+//             }
+//         });
+
+//         // Update payment status
+//         await prisma.payments.update({
+//             where: { payment_id: membership.payments[0].payment_id },
+//             data: { payment_status: 'Paid' }
+//         });
+
+//         // Assign card to user
+//         await prisma.users.update({
+//             where: { user_id: membership.user_id },
+//             data: { card_number }
+//         });
+
+
+//         res.status(200).json({
+//             status: 'success',
+//             message: 'Membership approved successfully',
+//             data: updatedMembership
+//         });
+
+//     } catch (error) {
+//         console.error('Error approving membership:', error);
+//         res.status(500).json({ status: 'failure', message: 'Server error' });
+//     }
+// };
+
+
+
+// Approve membership and assign card number
 export const approveMembership = async (req, res) => {
     try {
         const { membershipId } = req.params;
@@ -390,6 +492,26 @@ export const approveMembership = async (req, res) => {
             data: { card_number }
         });
 
+        // Get user details for email
+        const user = await prisma.users.findUnique({
+            where: { user_id: membership.user_id }
+        });
+
+        // Send membership approval email
+        if (user && user.email) {
+            try {
+                const emailSent = await sendMembershipApprovalEmail(user.email, user.full_name || user.user_name);
+                if (!emailSent) {
+                    console.error("Failed to send membership approval email to user:", user.email);
+                } else {
+                    console.log("Successfully sent membership approval email to:", user.email);
+                }
+            } catch (emailError) {
+                console.error("Error sending membership approval email:", emailError);
+                // Don't return error response here - we still want to return success for the membership approval
+            }
+        }
+
         res.status(200).json({
             status: 'success',
             message: 'Membership approved successfully',
@@ -401,7 +523,6 @@ export const approveMembership = async (req, res) => {
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
-
 
 // Update user card number
 export const updateUserCard = async (req, res) => {

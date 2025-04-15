@@ -233,6 +233,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -453,7 +454,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           child: TextFormField(
                             controller: _passwordController,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             onChanged: provider.setPassword,
                             enabled: !provider.isLoading,
                             validator: (value) {
@@ -487,6 +488,23 @@ class _SignupPageState extends State<SignupPage> {
                                 color: theme.colorScheme.primary,
                                 size: 18,
                               ),
+                              // Add suffix icon for password visibility toggle
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: theme.colorScheme.primary
+                                      .withOpacity(0.7),
+                                  size: 22,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                splashRadius: 20,
+                              ),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(
                                   vertical: 16, horizontal: 8),
@@ -512,7 +530,7 @@ class _SignupPageState extends State<SignupPage> {
                           ),
                           child: TextFormField(
                             controller: _confirmPasswordController,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             onChanged: provider.setConfirmPassword,
                             enabled: !provider.isLoading,
                             validator: (value) {
@@ -540,6 +558,23 @@ class _SignupPageState extends State<SignupPage> {
                                 FontAwesomeIcons.lock,
                                 color: theme.colorScheme.primary,
                                 size: 18,
+                              ),
+                              // Add suffix icon for password visibility toggle
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: theme.colorScheme.primary
+                                      .withOpacity(0.7),
+                                  size: 22,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                                splashRadius: 20,
                               ),
                               border: InputBorder.none,
                               contentPadding: const EdgeInsets.symmetric(

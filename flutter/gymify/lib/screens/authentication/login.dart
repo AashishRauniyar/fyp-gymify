@@ -192,7 +192,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -209,6 +208,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
   final bool _rememberMe = false;
+  // Add password visibility state
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -268,32 +269,6 @@ class _LoginScreenState extends State<LoginScreen> {
           isDarkMode ? Colors.black : theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // Background design elements
-          // Positioned(
-          //   top: -100,
-          //   right: -100,
-          //   child: Container(
-          //     width: 300,
-          //     height: 300,
-          //     decoration: BoxDecoration(
-          //       color: theme.colorScheme.primary.withOpacity(0.1),
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
-          // Positioned(
-          //   bottom: -80,
-          //   left: -80,
-          //   child: Container(
-          //     width: 200,
-          //     height: 200,
-          //     decoration: BoxDecoration(
-          //       color: theme.colorScheme.secondary.withOpacity(0.1),
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
-
           // Main content
           SafeArea(
             child: SingleChildScrollView(
@@ -432,7 +407,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
 
-                    // Password field
+                    // Password field with toggle visibility button
                     Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
@@ -449,7 +424,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: TextField(
                         controller: _passwordController,
-                        obscureText: true,
+                        obscureText: _obscurePassword,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: isDarkMode
                               ? Colors.white
@@ -466,6 +441,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: theme.colorScheme.primary,
                             size: 18,
                           ),
+                          // Add suffix icon for password visibility toggle
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: theme.colorScheme.primary.withOpacity(0.7),
+                              size: 22,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                            splashRadius: 20,
+                          ),
                           border: InputBorder.none,
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 16, horizontal: 8),
@@ -477,35 +468,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // Remember me checkbox
-                        // Row(
-                        //   children: [
-                        //     SizedBox(
-                        //       width: 24,
-                        //       height: 24,
-                        //       child: Checkbox(
-                        //         value: _rememberMe,
-                        //         onChanged: (value) {
-                        //           setState(() {
-                        //             _rememberMe = value ?? false;
-                        //           });
-                        //         },
-                        //         activeColor: theme.colorScheme.primary,
-                        //       ),
-                        //     ),
-                        //     const SizedBox(width: 8),
-                        //     Text(
-                        //       'Remember me',
-                        //       style: theme.textTheme.bodyMedium?.copyWith(
-                        //         color: isDarkMode
-                        //             ? Colors.white70
-                        //             : theme.colorScheme.onSurface
-                        //                 .withOpacity(0.8),
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-
                         // Forgot password link
                         TextButton(
                           onPressed: () {
