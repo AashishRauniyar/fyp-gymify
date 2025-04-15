@@ -634,7 +634,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       _buildActionTile(
                         context,
                         CupertinoIcons.question_circle_fill,
-                        'Help & Support',
+                        'Help & FAQs',
                         'Contact us for assistance',
                         () {
                           context.pushNamed('helpFaqs');
