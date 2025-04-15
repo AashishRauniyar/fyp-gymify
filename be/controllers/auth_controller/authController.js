@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 
 import { body, validationResult } from 'express-validator';
-import { sendOTPEmail } from '../../utils/sendMail.js';
+import { sendOTPEmail, sendRegistrationOTPEmail, sendWelcomeEmail } from '../../utils/sendMail.js';
 
 
 
@@ -161,7 +161,7 @@ export const register = async (req, res) => {
                 }
             });
 
-            const emailSent = await sendOTPEmail(normalizedEmail, newOtp, true);
+            const emailSent = await sendWelcomeEmail(normalizedEmail, newOtp, true);
             if (!emailSent) {
                 return res.status(500).json({
                     status: 'failure',
@@ -202,7 +202,7 @@ export const register = async (req, res) => {
             }
         });
 
-        const emailSent = await sendOTPEmail(normalizedEmail, otp);
+        const emailSent = await sendRegistrationOTPEmail(normalizedEmail, otp);
         if (!emailSent) {
             // Rollback user creation if email fails
             await prisma.users.delete({ where: { email: normalizedEmail } });
@@ -344,7 +344,7 @@ export const resendOTP = async (req, res) => {
             }
         });
 
-        const emailSent = await sendOTPEmail(normalizedEmail, newOtp, true);
+        const emailSent = await sendRegistrationOTPEmail(normalizedEmail, newOtp, true);
         if (!emailSent) {
             return res.status(500).json({
                 status: 'failure',
@@ -402,7 +402,7 @@ export const completeRegistration = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Phone number already exists' });
         }
 
-        
+
 
         await prisma.users.update({
             where: { email },

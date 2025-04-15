@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gymify/models/personal_best_model.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
-import 'package:gymify/screens/main_screens/membership_screen/membership_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -772,8 +771,15 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
                     if (value == null || value.isEmpty) {
                       return 'Required';
                     }
-                    if (double.tryParse(value) == null) {
+                    final weight = double.tryParse(value);
+                    if (weight == null) {
                       return 'Invalid number';
+                    }
+                    if (weight <= 0) {
+                      return 'Weight must be positive';
+                    }
+                    if (weight > 350) {
+                      return 'Weight is too high';
                     }
                     return null;
                   },
@@ -792,8 +798,15 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
                     if (value == null || value.isEmpty) {
                       return 'Required';
                     }
-                    if (int.tryParse(value) == null) {
+                    final reps = int.tryParse(value);
+                    if (reps == null) {
                       return 'Invalid number';
+                    }
+                    if (reps <= 0) {
+                      return 'Reps must be positive';
+                    }
+                    if (reps > 200) {
+                      return 'Reps value is too high';
                     }
                     return null;
                   },
