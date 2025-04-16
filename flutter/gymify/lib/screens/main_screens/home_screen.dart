@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
-        toolbarHeight: 60,
+        toolbarHeight: 25,
         title: Text(
           // 'Gymify',
           currentDate,
@@ -894,7 +894,6 @@ Widget _buildPBItem(
     ),
   );
 }
-
 
 Widget _buildWeightSection(
     BuildContext context, String weight, List<WeightHistory>? weightHistory) {
