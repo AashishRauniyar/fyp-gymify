@@ -207,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
-  final bool _rememberMe = false;
+
   // Add password visibility state
   bool _obscurePassword = true;
 
@@ -284,27 +284,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     Stack(
                       alignment: Alignment.center,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.secondary.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          width: 120,
-                          height: 120,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Image.asset(
-                            'assets/images/onboarding/workout.png',
-                            width: 50,
-                            height: 50,
-                            color: theme.colorScheme.onPrimary,
-                          ),
+                        Image.asset(
+                          isDarkMode
+                              ? 'assets/logo/darklogo.png'
+                              : 'assets/logo/lightlogo.png',
+                          width: 150,
+                          height: 150,
                         ),
                       ],
                     ),
@@ -322,26 +307,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.primaryContainer,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'GYM APP',
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: theme.colorScheme.onPrimaryContainer,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
 
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 20),
 
                     // Welcome text
                     Column(
