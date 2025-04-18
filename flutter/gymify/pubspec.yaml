@@ -1,5 +1,5 @@
 name: gymify
-description: "A new Flutter project."
+description: "A modern workout and gym management application."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -93,6 +93,7 @@ dependencies:
   audioplayers: ^6.4.0
   confetti: ^0.8.0
   iconsax_flutter: ^1.0.0
+  flutter_launcher_icons: ^0.14.3
   #khalti_flutter: ^3.0.0
 
 dev_dependencies:
