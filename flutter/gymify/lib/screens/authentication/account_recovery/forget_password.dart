@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/providers/multipage_register_provider/signup_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:provider/provider.dart';
-import 'package:gymify/utils/custom_button.dart';
 import 'package:gymify/utils/custom_input.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
@@ -68,7 +67,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             children: [
               // Illustration for forgot password
               Image.asset(
-                'assets/images/forgot_password.jpg',
+                'assets/images/forgot_password.png',
                 width: 150,
                 height: 150,
               ),

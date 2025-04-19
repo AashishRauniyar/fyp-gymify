@@ -565,7 +565,7 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Explore Exercises',
+          'Exercises',
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),

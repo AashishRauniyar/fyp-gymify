@@ -186,7 +186,7 @@ class _ManageExerciseScreenState extends State<ManageExerciseScreen> {
                   children: [
                     Text(
                       "Filter by Muscle Group",
-                      style: theme.textTheme.titleLarge?.copyWith(
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -545,10 +545,16 @@ class _ManageExerciseScreenState extends State<ManageExerciseScreen> {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return InkWell(
-      onTap: () => context.pushNamed(
-        'exerciseDetails',
-        pathParameters: {'id': exercise.exerciseId.toString()},
-      ),
+      // onTap: () => context.pushNamed(
+      //   'exerciseDetails',
+      //   pathParameters: {'id': exercise.exerciseId.toString()},
+      // ),
+      onTap: () {
+        context.pushNamed(
+          'exerciseDetails',
+          extra: exercise,
+        );
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(

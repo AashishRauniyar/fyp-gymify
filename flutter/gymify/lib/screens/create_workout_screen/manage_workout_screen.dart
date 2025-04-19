@@ -567,7 +567,7 @@ class _ManageWorkoutScreenState extends State<ManageWorkoutScreen> {
 
     return Scaffold(
       appBar: const CustomAppBar(
-        title: "Trainer Workouts",
+        title: "Manange Workouts",
         showBackButton: true,
       ),
       body: _isLoading

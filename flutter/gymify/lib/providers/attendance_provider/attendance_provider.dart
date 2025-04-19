@@ -441,8 +441,6 @@ class AttendanceProvider with ChangeNotifier {
     final today = DateTime(now.year, now.month, now.day);
 
     // Sort attendance by date (newest first)
-    final sortedAttendance = List<Attendance>.from(_attendanceHistory)
-      ..sort((a, b) => b.attendanceDate.compareTo(a.attendanceDate));
 
     // Calculate attendance rate
     double attendanceRate = 0.0;

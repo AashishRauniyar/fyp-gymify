@@ -18,7 +18,7 @@ class ProfileInput extends StatelessWidget {
   final bool autofocus;
 
   const ProfileInput({
-    Key? key,
+    super.key,
     required this.controller,
     required this.labelText,
     this.hintText,
@@ -34,7 +34,7 @@ class ProfileInput extends StatelessWidget {
     this.enabled = true,
     this.focusNode,
     this.autofocus = false,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

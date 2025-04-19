@@ -54,7 +54,7 @@ class PersonalBestProvider with ChangeNotifier {
       );
 
       if (apiResponse.status == 'success') {
-        _supportedExercises = apiResponse.data ?? [];
+        _supportedExercises = apiResponse.data;
       } else {
         _setError(true, apiResponse.message);
       }
@@ -123,7 +123,7 @@ class PersonalBestProvider with ChangeNotifier {
       );
 
       if (apiResponse.status == 'success') {
-        _personalBestHistory = apiResponse.data ?? [];
+        _personalBestHistory = apiResponse.data;
       } else {
         _setError(true, apiResponse.message);
       }
@@ -154,8 +154,7 @@ class PersonalBestProvider with ChangeNotifier {
                           ? PersonalBest.fromJson(item['personalBest'])
                           : null,
                     })
-                .toList() ??
-            [];
+                .toList();
       } else {
         _setError(true, apiResponse.message);
       }

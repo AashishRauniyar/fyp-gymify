@@ -61,25 +61,6 @@ class AuthService {
         profilePicture = await reEncodeImage(profilePicture);
       }
 
-      print('Registering user with the following details:');
-      print('Username: $userName');
-      print('Full Name: $fullName');
-      print('Email: $email');
-      print('Password: $password');
-      print('Phone Number: $phoneNumber');
-      print('Address: $address');
-
-      print('gender: $gender');
-      print('role: $role');
-      print('fitnessLevel: $fitnessLevel');
-      print('goalType: $goalType');
-      print('birthdate: $birthdate');
-      print('height: $height');
-      print('weight: $weight');
-      print('calorieGoals: $calorieGoals');
-      print('cardNumber: $cardNumber');
-      print('allergies: $allergies');
-      print('profilePicture: $profilePicture');
 
       // Create the form data
       final formData = FormData.fromMap({

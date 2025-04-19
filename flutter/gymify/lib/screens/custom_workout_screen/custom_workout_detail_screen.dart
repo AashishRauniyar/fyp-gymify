@@ -1,153 +1,9 @@
-// import 'package:flutter/material.dart';
-// import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
-// import 'package:gymify/utils/custom_button.dart';
-// import 'package:gymify/utils/custom_loader.dart';
-// import 'package:gymify/utils/workout_utils.dart/exercise_list_item.dart';
-// import 'package:provider/provider.dart';
-
-// class CustomWorkoutDetailScreen extends StatelessWidget {
-//   final int customWorkoutId;
-
-//   const CustomWorkoutDetailScreen({super.key, required this.customWorkoutId});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: theme.colorScheme.surface,
-//         elevation: 0,
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back_ios, color: theme.colorScheme.primary),
-//           onPressed: () => Navigator.pop(context),
-//         ),
-//       ),
-//       body: ChangeNotifierProvider(
-//         create: (_) => CustomWorkoutProvider()
-//           ..getCustomWorkoutExercisesById(customWorkoutId),
-//         child: Consumer<CustomWorkoutProvider>(
-//           builder: (context, customWorkoutProvider, child) {
-//             if (customWorkoutProvider.selectedCustomWorkout == null &&
-//                 !customWorkoutProvider.hasError) {
-//               return const Center(child: CustomLoadingAnimation());
-//             }
-
-//             if (customWorkoutProvider.hasError) {
-//               return Center(
-//                 child: Text(
-//                   'Error loading custom workout details.',
-//                   style: theme.textTheme.bodyMedium?.copyWith(
-//                     color: theme.colorScheme.error,
-//                   ),
-//                 ),
-//               );
-//             }
-
-//             final workout = customWorkoutProvider.selectedCustomWorkout!;
-
-//             return SingleChildScrollView(
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   // Custom Workout Header with Gradient Overlay
-//                   Stack(
-//                     children: [
-//                       Container(
-//                         height: 200,
-//                         width: double.infinity,
-//                         decoration: const BoxDecoration(
-//                           image: DecorationImage(
-//                             image: AssetImage('assets/images/exercise.jpeg'),
-//                             fit: BoxFit.cover,
-//                           ),
-//                           borderRadius: BorderRadius.only(
-//                             bottomLeft: Radius.circular(24),
-//                             bottomRight: Radius.circular(24),
-//                           ),
-//                         ),
-//                       ),
-//                       Positioned.fill(
-//                         child: Align(
-//                           alignment: Alignment.center,
-//                           child: Text(
-//                             workout.customWorkoutName,
-//                             style: theme.textTheme.headlineLarge?.copyWith(
-//                               color: theme.colorScheme.onPrimary,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                             textAlign: TextAlign.center,
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-
-//                   Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     children: [
-//                       const SizedBox(height: 16),
-
-//                       // Exercises List Section
-//                       Padding(
-//                         padding: const EdgeInsets.symmetric(horizontal: 12.0),
-//                         child: Text(
-//                           'Exercises',
-//                           style: theme.textTheme.headlineSmall?.copyWith(
-//                             fontWeight: FontWeight.bold,
-//                             color: theme.colorScheme.primary,
-//                           ),
-//                         ),
-//                       ),
-//                       const SizedBox(height: 8),
-//                       ListView.builder(
-//                         shrinkWrap: true,
-//                         physics: const NeverScrollableScrollPhysics(),
-//                         itemCount: workout.customworkoutexercises.length,
-//                         itemBuilder: (context, index) {
-//                           final exercise =
-//                               workout.customworkoutexercises[index];
-//                           return ExerciseTile(exercise: exercise.exercises);
-//                         },
-//                       ),
-//                       const SizedBox(height: 24),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             );
-//           },
-//         ),
-//       ),
-//       bottomNavigationBar: Padding(
-//         padding: const EdgeInsets.all(12.0),
-//         child: CustomButton(
-//             text: "Start Custom Workout",
-//             onPressed: () {
-//               final workoutProvider =
-//                   Provider.of<CustomWorkoutProvider>(context, listen: false);
-//               final workout = workoutProvider.selectedCustomWorkout;
-
-//               // Navigator.push(
-//               //                       context,
-//               //                       MaterialPageRoute(
-//               //                         builder: (context) => ExerciseLogScreen(
-//               //                           workoutId:  workout!.customWorkoutId ,
-//               //                           exercises: workout.customworkoutexercises,
-//               //                         ),
-//               //                       ),
-//               //                     );
-//             }),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
+import 'package:gymify/screens/custom_workout_screen/custom_workout_log_screen.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:gymify/utils/workout_utils.dart/exercise_list_item.dart';
 import 'package:provider/provider.dart';
@@ -340,9 +196,8 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
                                         ),
                                         const SizedBox(width: 8),
                                         Text(
-                                          "${workout.customworkoutexercises.length} exercises",
+                                          '${workout.customworkoutexercises.length} exercises',
                                           style: const TextStyle(
-                                            fontSize: 14,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -496,16 +351,16 @@ class CustomWorkoutDetailScreen extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           onTap: () {
-                            // Commented out navigation code from original file
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => ExerciseLogScreen(
-                            //       workoutId: workout.customWorkoutId,
-                            //       exercises: workout.customworkoutexercises,
-                            //     ),
-                            //   ),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => CustomWorkoutLogScreen(
+                                  customWorkoutId: workout.customWorkoutId,
+                                  exercises: workout.customworkoutexercises,
+                                  workoutName: workout.customWorkoutName,
+                                ),
+                              ),
+                            );
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

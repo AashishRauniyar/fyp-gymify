@@ -13,7 +13,7 @@
 // const url = "10.0.2.2";
 
 // const url = "172.25.3.249";
-const url = "172.25.6.111";
+const url = "192.168.31.96";
 
 // ghar
 // const url = "192.168.1.87";

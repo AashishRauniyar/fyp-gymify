@@ -36,28 +36,23 @@ class _ExerciseScreenState extends State<ExerciseScreen> {
   // Filter variable - only filter by muscle group
   String? selectedTargetMuscleGroup;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     context.read<ExerciseProvider>().fetchAllExercises();
-  //   });
-  //   _searchController.addListener(() {
-  //     // Debounce search input to prevent too frequent updates
-  //     Future.microtask(() => _filterExercises());
-  //   });
-  // }
   @override
-void initState() {
-  super.initState();
-  if (widget.muscleGroupFilter != null) {
-    selectedTargetMuscleGroup = widget.muscleGroupFilter;
+  void initState() {
+    super.initState();
+    if (widget.muscleGroupFilter != null) {
+      selectedTargetMuscleGroup = widget.muscleGroupFilter;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ExerciseProvider>().fetchAllExercises();
+      _filterExercises();
+    });
+
+    // Add listener to search controller to filter exercises when text changes
+    _searchController.addListener(() {
+      // Debounce search input to prevent too frequent updates
+      Future.microtask(() => _filterExercises());
+    });
   }
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    context.read<ExerciseProvider>().fetchAllExercises();
-    _filterExercises();
-  });
-}
 
   @override
   void didUpdateWidget(ExerciseScreen oldWidget) {
@@ -191,12 +186,21 @@ void initState() {
               Expanded(
                 child: exercisesToDisplay.isEmpty
                     ? _buildEmptyState(theme)
-                    : ListView.builder(
-                        itemCount: exercisesToDisplay.length,
-                        itemBuilder: (context, index) {
-                          final exercise = exercisesToDisplay[index];
-                          return ExerciseTile(exercise: exercise);
+                    : RefreshIndicator(
+                        onRefresh: () async {
+                          // Fetch fresh data when user pulls down
+                          await context
+                              .read<ExerciseProvider>()
+                              .fetchAllExercises();
+                          _filterExercises();
                         },
+                        child: ListView.builder(
+                          itemCount: exercisesToDisplay.length,
+                          itemBuilder: (context, index) {
+                            final exercise = exercisesToDisplay[index];
+                            return ExerciseTile(exercise: exercise);
+                          },
+                        ),
                       ),
               ),
             ],
@@ -288,7 +292,7 @@ void initState() {
                   children: [
                     Text(
                       "Filter by Muscle Group",
-                      style: theme.textTheme.titleLarge?.copyWith(
+                      style: theme.textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),

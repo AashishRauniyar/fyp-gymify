@@ -6,7 +6,6 @@ import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';
 import 'package:gymify/models/deit_plan_models/meal_model.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Message {
   final String content;
