@@ -42,42 +42,57 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late Future<void> _initialData;
   DateTime _selectedDate = DateTime.now(); // Define the selected date variable
+  bool _hasError = false; // Add error tracking flag
 
   Future<void> _fetchAllData() async {
-    // Fetch all providers data concurrently
-    await Future.wait([
-      context.read<WorkoutProvider>().fetchAllWorkouts(),
-      context.read<ProfileProvider>().fetchProfile(),
-      context.read<MembershipProvider>().fetchMembershipStatus(context),
-      context.read<PersonalBestProvider>().fetchSupportedExercises(),
-      context.read<PersonalBestProvider>().fetchCurrentPersonalBests(),
-      context.read<MembershipProvider>().fetchMembershipPlans(),
-      context.read<DietProvider>().fetchMealLogs(),
-      context
-          .read<ProfileProvider>()
-          .fetchWeightHistory(), // Add this line to fetch weight history
-    ]);
-
-    final authProvider = context.read<AuthProvider>();
-    final chatProvider = context.read<ChatProvider>();
-    if (authProvider.isLoggedIn && authProvider.userId != null) {
-      if (!chatProvider.isInitialized) {
-        chatProvider.initializeSocket(authProvider.userId!);
-      }
-    }
-
-    // After profile is fetched, get logs
-    final profile = context.read<ProfileProvider>().user;
-    if (profile != null && profile.userId != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context
-            .read<WorkoutLogProvider>()
-            .fetchUserLogs(profile.userId.toString());
-
-        context
-            .read<AttendanceProvider>()
-            .fetchAttendanceHistory(int.parse(profile.userId.toString()));
+    try {
+      // Set error flag to false when starting a fetch
+      setState(() {
+        _hasError = false;
       });
+
+      // Fetch all providers data concurrently
+      await Future.wait([
+        context.read<WorkoutProvider>().fetchAllWorkouts(),
+        context.read<ProfileProvider>().fetchProfile(),
+        context.read<MembershipProvider>().fetchMembershipStatus(context),
+        context.read<PersonalBestProvider>().fetchSupportedExercises(),
+        context.read<PersonalBestProvider>().fetchCurrentPersonalBests(),
+        context.read<MembershipProvider>().fetchMembershipPlans(),
+        context.read<DietProvider>().fetchMealLogs(),
+        context
+            .read<ProfileProvider>()
+            .fetchWeightHistory(), // Add this line to fetch weight history
+      ]);
+
+      final authProvider = context.read<AuthProvider>();
+      final chatProvider = context.read<ChatProvider>();
+      if (authProvider.isLoggedIn && authProvider.userId != null) {
+        if (!chatProvider.isInitialized) {
+          chatProvider.initializeSocket(authProvider.userId!);
+        }
+      }
+
+      // After profile is fetched, get logs
+      final profile = context.read<ProfileProvider>().user;
+      if (profile != null && profile.userId != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          context
+              .read<WorkoutLogProvider>()
+              .fetchUserLogs(profile.userId.toString());
+
+          context
+              .read<AttendanceProvider>()
+              .fetchAttendanceHistory(int.parse(profile.userId.toString()));
+        });
+      }
+    } catch (e) {
+      // Set the error flag to true if any fetch operation fails
+      setState(() {
+        _hasError = true;
+      });
+      // Print error for debugging purposes
+      debugPrint('Error fetching data: $e');
     }
   }
 
@@ -128,7 +143,10 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
-              _fetchAllData();
+              // Refresh data when the refresh button is pressed
+              setState(() {
+                _initialData = _fetchAllData();
+              });
             },
           ),
         ],
@@ -140,9 +158,109 @@ class _HomeScreenState extends State<HomeScreen> {
             // Show loading indicator until all data is fetched
             return const Center(child: CustomLoadingAnimation());
           }
-          if (snapshot.hasError) {
-            return const Center(child: Text('Error loading data.'));
+
+          // If there was an error or snapshot has error, show error UI with retry button
+          if (_hasError || snapshot.hasError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Failed to load data',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Please check your internet connection',
+                    style: TextStyle(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          // Retry fetching data
+                          setState(() {
+                            _initialData = _fetchAllData();
+                          });
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Retry'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          // Logout the user
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Logout?'),
+                              content: const Text(
+                                'Logging out will allow you to sign in again',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    final authProvider =
+                                        context.read<AuthProvider>();
+                                    authProvider.logout().then((_) {
+                                      context.go('/welcome');
+                                    });
+                                  },
+                                  style: TextButton.styleFrom(
+                                    foregroundColor:
+                                        Theme.of(context).colorScheme.error,
+                                  ),
+                                  child: const Text('Logout'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.logout),
+                        label: const Text('Logout'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Theme.of(context).colorScheme.error,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
           }
+
           // Data is fetched; now build your page.
           final user = context.watch<ProfileProvider>().user;
 

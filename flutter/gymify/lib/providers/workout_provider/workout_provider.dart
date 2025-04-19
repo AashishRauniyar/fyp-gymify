@@ -33,6 +33,8 @@ class WorkoutProvider with ChangeNotifier {
   // Fetch all workouts
   Future<void> fetchAllWorkouts() async {
     _setLoading(true); // Start loading
+    _setError(false); // Reset error state BEFORE making the API call
+
     try {
       final response = await httpClient.get('/workouts');
 
