@@ -17,6 +17,9 @@ class DietProvider with ChangeNotifier {
   List<MealLog> _mealLogs = [];
   List<MealLog> get mealLogs => _mealLogs;
 
+  List<Meal> _meals = [];
+  List<Meal> get meals => _meals;
+
   bool _hasError = false;
   bool get hasError => _hasError;
 
@@ -61,6 +64,36 @@ class DietProvider with ChangeNotifier {
       _setError(true);
       print('Error fetching diet plans: $e');
       throw Exception('Error fetching diet plans: $e');
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // Fetch all available meals
+  Future<void> fetchMeals() async {
+    _setLoading(true);
+    try {
+      final response = await httpClient.get('/meals');
+
+      final apiResponse = ApiResponse<List<Meal>>.fromJson(
+        response.data,
+        (data) => (data as List).map((item) => Meal.fromJson(item)).toList(),
+      );
+
+      if (apiResponse.status == 'success') {
+        _meals = apiResponse.data;
+        _setError(false);
+        notifyListeners();
+      } else {
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Unknown error');
+      }
+    } catch (e) {
+      _setError(true);
+      print('Error fetching meals: $e');
+      throw Exception('Error fetching meals: $e');
     } finally {
       _setLoading(false);
     }

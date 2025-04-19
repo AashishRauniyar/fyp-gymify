@@ -105,18 +105,18 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                     children: [
                       const SizedBox(height: 16),
                       _buildSearchBar(theme),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       if (filteredDefaultWorkouts.isNotEmpty)
                         _buildDefaultWorkoutsSection(
                             filteredDefaultWorkouts, theme),
+                      _buildExploreExercisesSection(theme),
+                      const SizedBox(height: 20),
                       if (filteredCustomWorkouts.isNotEmpty)
                         _buildCustomWorkoutsSection(
                             filteredCustomWorkouts, theme),
-                      const SizedBox(height: 24),
-                      _buildExploreExercisesSection(theme),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       _buildCreateWorkoutPlanSection(theme),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       _buildWorkoutCategoriesSection(theme, workoutProvider),
                       const SizedBox(height: 32),
                     ],

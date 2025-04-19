@@ -24,6 +24,7 @@ import 'package:gymify/screens/diet_screens/diet_search_screen.dart';
 import 'package:gymify/screens/diet_screens/diet_detail_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_log_screen.dart';
+import 'package:gymify/screens/diet_screens/meal_list_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/help_faqs_screen.dart';
@@ -59,7 +60,6 @@ import 'package:gymify/screens/create_workout_screen/create_workout_screen.dart'
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 final GlobalKey<NavigatorState> _shellNavigatorKey =
     GlobalKey<NavigatorState>();
-
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -305,6 +305,10 @@ final GoRouter router = GoRouter(
         name: 'mealLog',
         path: '/mealLog',
         builder: (context, state) => const MealLogsScreen()),
+    GoRoute(
+        name: 'mealList',
+        path: '/mealList',
+        builder: (context, state) => const MealListScreen()),
     GoRoute(
         name: 'workoutSearch',
         path: '/workoutSearch',
