@@ -710,7 +710,6 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen>
                   style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-// lib/screens/main_screens/workout_history_screens/workout_history_screen.dart
                 ),
               ],
             ),
@@ -1345,205 +1344,6 @@ class _WorkoutHistoryScreenState extends State<WorkoutHistoryScreen>
   }
 }
 
-// class _WorkoutLogCard extends StatelessWidget {
-//   final WorkoutLog log;
-//   final DateFormat dateFormat;
-
-//   const _WorkoutLogCard({
-//     required this.log,
-//     required this.dateFormat,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final theme = Theme.of(context);
-
-//     final provider = Provider.of<WorkoutProvider>(context, listen: false);
-//     final workout = provider.getWorkoutDetailsById(log.workoutId);
-
-//     return Container(
-//       decoration: BoxDecoration(
-//         color: theme.colorScheme.surface,
-//         borderRadius: BorderRadius.circular(16),
-//         border: Border.all(
-//           color: theme.colorScheme.onSurface.withOpacity(0.1),
-//           width: 1.5,
-//         ),
-//         boxShadow: [
-//           BoxShadow(
-//             color: Colors.black.withOpacity(0.03),
-//             blurRadius: 10,
-//             offset: const Offset(0, 4),
-//           ),
-//         ],
-//       ),
-//       child: ClipRRect(
-//         borderRadius: BorderRadius.circular(16),
-//         child: ExpansionTile(
-//           expandedCrossAxisAlignment: CrossAxisAlignment.start,
-//           expandedAlignment: Alignment.topLeft,
-//           collapsedBackgroundColor: theme.colorScheme.surface,
-//           backgroundColor: theme.colorScheme.surface,
-//           shape: const Border(),
-//           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-//           title: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Row(
-//                 children: [
-//                   Icon(
-//                     Icons.calendar_today,
-//                     size: 16,
-//                     color: theme.colorScheme.primary,
-//                   ),
-//                   const SizedBox(width: 8),
-//                   Text(
-//                     DateFormat('EEEE, MMM d, yyyy').format(log.workoutDate),
-//                     style: TextStyle(
-//                       fontWeight: FontWeight.bold,
-//                       color: theme.colorScheme.onSurface,
-//                       fontSize: 16,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 4),
-//               Row(
-//                 children: [
-//                   Icon(
-//                     Icons.access_time,
-//                     size: 16,
-//                     color: theme.colorScheme.secondary,
-//                   ),
-//                   const SizedBox(width: 8),
-//                   Text(
-//                     DateFormat('h:mm a').format(log.workoutDate),
-//                     style: TextStyle(
-//                       color: theme.colorScheme.onSurface.withOpacity(0.7),
-//                       fontSize: 14,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//           // workout Name
-
-//           subtitle: Padding(
-//             padding: const EdgeInsets.only(top: 12.0),
-//             child: Row(
-//               children: [
-//                 _buildStatColumn(
-//                   context,
-//                   Icons.timer,
-//                   Colors.blue,
-//                   '${double.parse(log.totalDuration).toStringAsFixed(0)} min',
-//                   'Duration',
-//                 ),
-//                 const SizedBox(width: 24),
-//                 _buildStatColumn(
-//                   context,
-//                   Icons.local_fire_department,
-//                   Colors.orange,
-//                   double.parse(log.caloriesBurned).toStringAsFixed(0),
-//                   'Calories',
-//                 ),
-//                 const SizedBox(width: 24),
-//                 _buildStatColumn(
-//                   context,
-//                   Icons.fitness_center,
-//                   Colors.purple,
-//                   '${log.workoutexerciseslogs.length}',
-//                   'Exercises',
-//                 ),
-//               ],
-//             ),
-//           ),
-//           childrenPadding: const EdgeInsets.all(16),
-//           children: [
-//             if (log.performanceNotes.isNotEmpty) ...[
-//               Container(
-//                 padding: const EdgeInsets.all(12),
-//                 decoration: BoxDecoration(
-//                   color: theme.colorScheme.surface,
-//                   borderRadius: BorderRadius.circular(8),
-//                   border: Border.all(
-//                     color: theme.colorScheme.onSurface.withOpacity(0.1),
-//                   ),
-//                 ),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: [
-//                     Row(
-//                       children: [
-//                         Icon(
-//                           Icons.note_alt,
-//                           size: 16,
-//                           color: theme.colorScheme.primary,
-//                         ),
-//                         const SizedBox(width: 8),
-//                         Text(
-//                           'Performance Notes',
-//                           style: TextStyle(
-//                             fontWeight: FontWeight.bold,
-//                             color: theme.colorScheme.onSurface,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                     const SizedBox(height: 8),
-//                     Text(
-//                       log.performanceNotes,
-//                       style: TextStyle(
-//                         color: theme.colorScheme.onSurface.withOpacity(0.8),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//               const SizedBox(height: 16),
-//             ],
-//             Row(
-//               children: [
-//                 Icon(
-//                   Icons.fitness_center,
-//                   size: 16,
-//                   color: theme.colorScheme.primary,
-//                 ),
-//                 const SizedBox(width: 8),
-//                 Text(
-//                   'Exercises',
-//                   style: TextStyle(
-//                     fontWeight: FontWeight.bold,
-//                     color: theme.colorScheme.onSurface,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 12),
-//             if (log.workoutexerciseslogs.isNotEmpty)
-//               ...log.workoutexerciseslogs.map(
-//                 (exerciseLog) => _ExerciseLogItem(exerciseLog: exerciseLog),
-//               )
-//             else
-//               Container(
-//                 padding: const EdgeInsets.all(16),
-//                 decoration: BoxDecoration(
-//                   color: theme.colorScheme.surface,
-//                   borderRadius: BorderRadius.circular(8),
-//                   border: Border.all(
-//                     color: theme.colorScheme.onSurface.withOpacity(0.1),
-//                   ),
-//                 ),
-//                 child: const Center(
-//                   child: Text('No exercise details available'),
-//                 ),
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
 class _WorkoutLogCard extends StatelessWidget {
   final WorkoutLog log;
   final DateFormat dateFormat;
@@ -1556,10 +1356,6 @@ class _WorkoutLogCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // This line is already getting the workout details
-    final provider = Provider.of<WorkoutProvider>(context, listen: false);
-    final workout = provider.getWorkoutDetailsById(log.workoutId);
 
     return Container(
       decoration: BoxDecoration(
@@ -1586,122 +1382,202 @@ class _WorkoutLogCard extends StatelessWidget {
           backgroundColor: theme.colorScheme.surface,
           shape: const Border(),
           tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+          title: FutureBuilder<Workout?>(
+            future: Provider.of<WorkoutProvider>(context, listen: false)
+                .getWorkoutDetailsById(log.workoutId),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                );
+              }
+
+              final workout = snapshot.data;
+              final hasImage =
+                  workout != null && workout.workoutImage.isNotEmpty;
+
+              return Row(
                 children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 16,
-                    color: theme.colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    DateFormat('EEEE, MMM d, yyyy').format(log.workoutDate),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.onSurface,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(
-                    Icons.access_time,
-                    size: 16,
-                    color: theme.colorScheme.secondary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    DateFormat('h:mm a').format(log.workoutDate),
-                    style: TextStyle(
-                      color: theme.colorScheme.onSurface.withOpacity(0.7),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-
-              // Add workout name here
-              const SizedBox(height: 8),
-              FutureBuilder<Workout?>(
-                future: provider.getWorkoutDetailsById(log.workoutId),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text('Loading workout...');
-                  }
-
-                  if (snapshot.hasError || !snapshot.hasData) {
-                    return const Text('Workout details not available');
-                  }
-
-                  return Row(
-                    children: [
-                      Icon(
-                        Icons.fitness_center,
-                        size: 20,
-                        color: theme.colorScheme.onSecondary,
+                  // Circular workout image
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: theme.colorScheme.primaryContainer,
+                      border: Border.all(
+                        color: theme.colorScheme.primary.withOpacity(0.3),
+                        width: 2,
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        snapshot.data!.workoutName,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: theme.colorScheme.onSecondary,
-                          fontSize: 20,
+                      boxShadow: [
+                        BoxShadow(
+                          color: theme.colorScheme.shadow.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-            ],
+                      ],
+                    ),
+                    child: ClipOval(
+                      child: hasImage
+                          ? Image.network(
+                              workout.workoutImage,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(
+                                Icons.fitness_center,
+                                color: theme.colorScheme.primary,
+                                size: 28,
+                              ),
+                            )
+                          : Icon(
+                              Icons.fitness_center,
+                              color: theme.colorScheme.primary,
+                              size: 28,
+                            ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 16),
+
+                  // Workout info column
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Date row
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.calendar_today,
+                              size: 14,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              DateFormat('MMM d, yyyy').format(log.workoutDate),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        // Workout name
+                        Text(
+                          workout?.workoutName ?? 'Workout',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+
+                        const SizedBox(height: 4),
+
+                        // Time and target muscles
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.access_time,
+                              size: 14,
+                              color: theme.colorScheme.secondary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              DateFormat('h:mm a').format(log.workoutDate),
+                              style: TextStyle(
+                                color: theme.colorScheme.onSurface
+                                    .withOpacity(0.7),
+                                fontSize: 12,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Icon(
+                              Icons.fitness_center,
+                              size: 14,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                workout != null
+                                    ? _formatTargetMuscleGroups(workout)
+                                    : 'Unknown muscle groups',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: theme.colorScheme.onSurface
+                                      .withOpacity(0.7),
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           subtitle: Padding(
-            padding: const EdgeInsets.only(top: 12.0),
-            child: Row(
-              children: [
-                _buildStatColumn(
-                  context,
-                  Icons.timer,
-                  Colors.blue,
-                  '${double.parse(log.totalDuration).toStringAsFixed(0)} min',
-                  'Duration',
+            padding: const EdgeInsets.only(
+                top: 12,
+                left: 76), // Align with the content after the circular image
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.1),
                 ),
-                const SizedBox(width: 24),
-                _buildStatColumn(
-                  context,
-                  Icons.local_fire_department,
-                  Colors.orange,
-                  double.parse(log.caloriesBurned).toStringAsFixed(0),
-                  'Calories',
-                ),
-                const SizedBox(width: 24),
-                _buildStatColumn(
-                  context,
-                  Icons.fitness_center,
-                  Colors.purple,
-                  '${log.workoutexerciseslogs.length}',
-                  'Exercises',
-                ),
-              ],
+              ),
+              child: Row(
+                children: [
+                  _buildStatColumn(
+                    context,
+                    Icons.timer,
+                    theme.colorScheme.primary,
+                    '${double.parse(log.totalDuration).toStringAsFixed(0)} min',
+                    'Duration',
+                  ),
+                  const SizedBox(width: 16),
+                  _buildStatColumn(
+                    context,
+                    Icons.local_fire_department,
+                    Colors.orange,
+                    double.parse(log.caloriesBurned).toStringAsFixed(0),
+                    'Calories',
+                  ),
+                  const SizedBox(width: 16),
+                  _buildStatColumn(
+                    context,
+                    Icons.fitness_center,
+                    theme.colorScheme.secondary,
+                    '${log.workoutexerciseslogs.length}',
+                    'Exercises',
+                  ),
+                ],
+              ),
             ),
           ),
-          // Rest of your widget remains the same
           childrenPadding: const EdgeInsets.all(16),
           children: [
             if (log.performanceNotes.isNotEmpty) ...[
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8),
+                  color: theme.colorScheme.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: theme.colorScheme.onSurface.withOpacity(0.1),
+                    color: theme.colorScheme.outline.withOpacity(0.1),
+                    width: 1,
                   ),
                 ),
                 child: Column(
@@ -1711,7 +1587,7 @@ class _WorkoutLogCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.note_alt,
-                          size: 16,
+                          size: 18,
                           color: theme.colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
@@ -1720,35 +1596,40 @@ class _WorkoutLogCard extends StatelessWidget {
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: theme.colorScheme.onSurface,
+                            fontSize: 16,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 12),
                     Text(
                       log.performanceNotes,
                       style: TextStyle(
                         color: theme.colorScheme.onSurface.withOpacity(0.8),
+                        height: 1.3,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
             ],
+
+            // Exercises Section
             Row(
               children: [
                 Icon(
                   Icons.fitness_center,
-                  size: 16,
+                  size: 18,
                   color: theme.colorScheme.primary,
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Exercises',
+                  'Exercises Completed',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: theme.colorScheme.onSurface,
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -1762,20 +1643,42 @@ class _WorkoutLogCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.surface,
-                  borderRadius: BorderRadius.circular(8),
+                  color: theme.colorScheme.surfaceContainerLowest,
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: theme.colorScheme.onSurface.withOpacity(0.1),
+                    color: theme.colorScheme.outline.withOpacity(0.1),
                   ),
                 ),
-                child: const Center(
-                  child: Text('No exercise details available'),
+                child: Center(
+                  child: Text(
+                    'No exercise details available',
+                    style: TextStyle(
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
+                    ),
+                  ),
                 ),
               ),
           ],
         ),
       ),
     );
+  }
+
+  // Helper method to format target muscle groups from workout
+  String _formatTargetMuscleGroups(Workout workout) {
+    final Set<String> muscleGroups = {};
+    if (workout.workoutexercises != null) {
+      for (var exercise in workout.workoutexercises!) {
+        if (exercise.exercises != null &&
+            exercise.exercises!.targetMuscleGroup.isNotEmpty) {
+          muscleGroups.add(exercise.exercises!.targetMuscleGroup);
+        }
+      }
+    }
+
+    if (muscleGroups.isEmpty) return workout.targetMuscleGroup;
+    if (muscleGroups.length <= 3) return muscleGroups.join(' • ');
+    return 'Full Body';
   }
 }
 
