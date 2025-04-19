@@ -279,8 +279,7 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
               const SizedBox(height: 32),
               ElevatedButton.icon(
                 onPressed: () async {
-                  final result =
-                      await Navigator.pushNamed(context, 'createCustomWorkout');
+                  final result = await context.pushNamed('createCustomWorkout');
                   if (result == true) {
                     // Refresh workouts if we get a positive result back
                     await customWorkoutProvider.fetchCustomWorkouts();
@@ -328,8 +327,8 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(16),
                     onTap: () async {
-                      final result = await Navigator.pushNamed(
-                          context, 'createCustomWorkout');
+                      final result =
+                          await context.pushNamed('createCustomWorkout');
                       if (result == true) {
                         // Refresh workouts if we get a positive result back
                         await customWorkoutProvider.fetchCustomWorkouts();
@@ -372,174 +371,6 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
     );
   }
 
-  // Widget _buildWorkoutCard(dynamic workout) {
-  //   // Get actual data from the workout model
-  //   final String workoutName = workout.customWorkoutName;
-  //   final DateTime createdAt = workout.createdAt;
-  //   final int exerciseCount = workout.customworkoutexercises.length;
-
-  //   // Extract unique target muscle groups from exercises
-  //   final Set<String> muscleGroups = {};
-  //   for (final exercise in workout.customworkoutexercises) {
-  //     if (exercise.exercises != null &&
-  //         exercise.exercises.targetMuscleGroup != null) {
-  //       muscleGroups.add(exercise.exercises.targetMuscleGroup);
-  //     }
-  //   }
-
-  //   // Create a display string for muscle groups
-  //   final String muscleGroupsDisplay = _formatMuscleGroups(muscleGroups);
-
-  //   return Container(
-  //     margin: const EdgeInsets.only(bottom: 16),
-  //     decoration: BoxDecoration(
-  //       color: theme.colorScheme.surface,
-  //       borderRadius: BorderRadius.circular(16),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withOpacity(0.05),
-  //           blurRadius: 10,
-  //           offset: const Offset(0, 2),
-  //         ),
-  //       ],
-  //     ),
-  //     child: InkWell(
-  //       borderRadius: BorderRadius.circular(16),
-  //       onTap: () async {
-  //         final result = await Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //             builder: (context) => CustomWorkoutDetailScreen(
-  //               customWorkoutId: workout.customWorkoutId,
-  //             ),
-  //           ),
-  //         );
-
-  //         // If returned with a result, refresh the workouts list
-  //         if (result == true) {
-  //           await customWorkoutProvider.fetchCustomWorkouts();
-  //         }
-  //       },
-  //       child: Column(
-  //         children: [
-  //           // Workout header with title
-  //           Container(
-  //             decoration: BoxDecoration(
-  //               color: theme.colorScheme.primary,
-  //               borderRadius: const BorderRadius.only(
-  //                 topLeft: Radius.circular(16),
-  //                 topRight: Radius.circular(16),
-  //               ),
-  //               gradient: LinearGradient(
-  //                 begin: Alignment.topLeft,
-  //                 end: Alignment.bottomRight,
-  //                 colors: [
-  //                   theme.colorScheme.primary,
-  //                   theme.colorScheme.primary.withBlue(
-  //                       (theme.colorScheme.primary.blue + 40).clamp(0, 255)),
-  //                 ],
-  //               ),
-  //             ),
-  //             padding: const EdgeInsets.all(16),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 // Custom badge
-  //                 Container(
-  //                   padding:
-  //                       const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-  //                   decoration: BoxDecoration(
-  //                     color: theme.colorScheme.secondary,
-  //                     borderRadius: BorderRadius.circular(20),
-  //                   ),
-  //                   child: Text(
-  //                     'CUSTOM',
-  //                     style: GoogleFonts.roboto(
-  //                       fontWeight: FontWeight.bold,
-  //                       fontSize: 12,
-  //                       color: Colors.white,
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 const SizedBox(height: 10),
-  //                 // Workout title
-  //                 Text(
-  //                   workoutName,
-  //                   style: GoogleFonts.poppins(
-  //                     fontSize: 18,
-  //                     fontWeight: FontWeight.bold,
-  //                     color: Colors.white,
-  //                   ),
-  //                   maxLines: 1,
-  //                   overflow: TextOverflow.ellipsis,
-  //                 ),
-  //                 const SizedBox(height: 8),
-  //                 // Workout info
-  //                 Row(
-  //                   children: [
-  //                     const Icon(
-  //                       FontAwesomeIcons.dumbbell,
-  //                       size: 12,
-  //                       color: Colors.white,
-  //                     ),
-  //                     const SizedBox(width: 6),
-  //                     Text(
-  //                       muscleGroupsDisplay,
-  //                       style: const TextStyle(
-  //                         fontSize: 12,
-  //                         color: Colors.white,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(width: 12),
-  //                     const Icon(
-  //                       FontAwesomeIcons.listCheck,
-  //                       size: 12,
-  //                       color: Colors.white,
-  //                     ),
-  //                     const SizedBox(width: 6),
-  //                     Text(
-  //                       "$exerciseCount exercises",
-  //                       style: const TextStyle(
-  //                         fontSize: 12,
-  //                         color: Colors.white,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-
-  //           // Quick info bar
-  //           Padding(
-  //             padding: const EdgeInsets.all(12),
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //               children: [
-  //                 _buildInfoElement(
-  //                   'CREATED',
-  //                   _formatDate(createdAt),
-  //                   FontAwesomeIcons.calendar,
-  //                 ),
-  //                 _buildInfoElement(
-  //                   'EXERCISES',
-  //                   exerciseCount.toString(),
-  //                   FontAwesomeIcons.listCheck,
-  //                 ),
-  //                 _buildInfoElement(
-  //                   'FOCUS',
-  //                   _getWorkoutFocus(muscleGroupsDisplay),
-  //                   FontAwesomeIcons.crosshairs,
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget _buildWorkoutCard(dynamic workout) {
     // Get actual data from the workout model
     final String workoutName = workout.customWorkoutName;
@@ -575,14 +406,8 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
         onTap: () async {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CustomWorkoutDetailScreen(
-                customWorkoutId: workout.customWorkoutId,
-              ),
-            ),
-          );
+          final result = await context
+              .push('/customWorkoutDetail?id=${workout.customWorkoutId}');
 
           // If returned with a result, refresh the workouts list
           if (result == true) {
