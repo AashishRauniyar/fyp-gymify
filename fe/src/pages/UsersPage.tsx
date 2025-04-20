@@ -24,6 +24,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Search, Plus, MoreHorizontal, Edit, Trash, Filter, User, Calendar, Scale, CreditCard, Building } from 'lucide-react';
@@ -94,6 +100,10 @@ const UsersPage = () => {
     verified: false
   });
   const [originalData, setOriginalData] = useState({});
+  // Sorting and filtering state
+  const [sortField, setSortField] = useState('user_name');
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [roleFilter, setRoleFilter] = useState('all');
 
   useEffect(() => {
     fetchUsers();
@@ -247,12 +257,34 @@ const UsersPage = () => {
     }
   };
 
-  const filteredUsers = users.filter(user => 
-    user.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.user_id.toString().includes(searchTerm.toLowerCase()) ||
-    user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredUsers = users
+    .filter(user => 
+      // Text search filter
+      (user.user_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.user_id.toString().includes(searchTerm.toLowerCase()) ||
+      user.role?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      // Role filter
+      (roleFilter === 'all' || user.role?.toLowerCase() === roleFilter.toLowerCase())
+    )
+    // Sort based on sortField and sortDirection
+    .sort((a, b) => {
+      // Default to comparing user_name if sortField doesn't exist
+      const fieldA = a[sortField] || '';
+      const fieldB = b[sortField] || '';
+      
+      // Handle string comparison
+      if (typeof fieldA === 'string' && typeof fieldB === 'string') {
+        return sortDirection === 'asc' 
+          ? fieldA.localeCompare(fieldB)
+          : fieldB.localeCompare(fieldA);
+      }
+      
+      // Handle number comparison
+      return sortDirection === 'asc' 
+        ? fieldA - fieldB
+        : fieldB - fieldA;
+    });
 
   const getRoleBadgeVariant = (role) => {
     switch (role) {
@@ -338,10 +370,40 @@ const UsersPage = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </div>
-              <Button variant="outline" size="sm" className="flex items-center gap-2">
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Filter className="h-4 w-4" />
+                      Filter
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Filter by Role</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuRadioGroup value={roleFilter} onValueChange={setRoleFilter}>
+                      <DropdownMenuRadioItem value="all">All Roles</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="trainer">Trainer</DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="member">Member</DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel>Sort By</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => {setSortField('user_name'); setSortDirection('asc');}}>
+                      Name (A-Z)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {setSortField('user_name'); setSortDirection('desc');}}>
+                      Name (Z-A)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {setSortField('created_at'); setSortDirection('desc');}}>
+                      Newest First
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {setSortField('created_at'); setSortDirection('asc');}}>
+                      Oldest First
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
 
             <div className="rounded-md border">
