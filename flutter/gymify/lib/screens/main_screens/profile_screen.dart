@@ -6,6 +6,7 @@ import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
+import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
 
@@ -148,11 +149,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Profile'),
+      // appBar: AppBar(
+      //   title: const Text('My Profile'),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(CupertinoIcons.ellipsis_vertical),
+      //       onPressed: () {
+      //         // Show more options menu
+      //         showModalBottomSheet(
+      //           context: context,
+      //           builder: (context) => SafeArea(
+      //             child: Column(
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: [
+      //                 ListTile(
+      //                   leading: Icon(CupertinoIcons.arrow_right_square_fill,
+      //                       color: theme.colorScheme.primary),
+      //                   title: const Text('Log Out'),
+      //                   onTap: () {
+      //                     Navigator.pop(context);
+      //                     _logout(context);
+      //                   },
+      //                 ),
+      //                 ListTile(
+      //                   leading: Icon(CupertinoIcons.delete_solid,
+      //                       color: theme.colorScheme.error),
+      //                   title: Text(
+      //                     'Delete Account',
+      //                     style: TextStyle(color: theme.colorScheme.error),
+      //                   ),
+      //                   onTap: () {
+      //                     Navigator.pop(context);
+      //                     showCupertinoDialog(
+      //                       context: context,
+      //                       builder: (context) => CupertinoAlertDialog(
+      //                         title: const Text('Delete Account'),
+      //                         content: const Text(
+      //                             'This action cannot be undone. Are you sure?'),
+      //                         actions: [
+      //                           CupertinoDialogAction(
+      //                             onPressed: () => Navigator.pop(context),
+      //                             isDefaultAction: true,
+      //                             child: const Text('Cancel'),
+      //                           ),
+      //                           CupertinoDialogAction(
+      //                             onPressed: () => Navigator.pop(context),
+      //                             isDestructiveAction: true,
+      //                             child: const Text('Delete'),
+      //                           ),
+      //                         ],
+      //                       ),
+      //                     );
+      //                   },
+      //                 ),
+      //               ],
+      //             ),
+      //           ),
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ),
+      appBar: CustomAppBar(
+        title: 'My Profile',
+        showBackButton: false,
         actions: [
           IconButton(
-            icon: const Icon(CupertinoIcons.ellipsis_vertical),
+            icon: Icon(
+              CupertinoIcons.ellipsis_vertical,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             onPressed: () {
               // Show more options menu
               showModalBottomSheet(
@@ -213,107 +279,140 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Header Section
+            // Profile Header Section - Redesigned with a more subtle appearance
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    theme.colorScheme.primary,
-                    theme.colorScheme.primary.withOpacity(0.8),
-                  ],
-                ),
+                color: theme.colorScheme.surface,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: Column(
                 children: [
-                  // Profile Image
+                  // Profile Image with updated design
                   Hero(
                     tag: 'profile-image',
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: theme.colorScheme.onPrimary.withOpacity(0.8),
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: theme.colorScheme.primary.withOpacity(0.3),
+                              width: 3,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: CircleAvatar(
-                        radius: 50,
-                        backgroundColor: theme.colorScheme.onPrimary,
-                        child: CircleAvatar(
-                          radius: 47,
-                          backgroundImage: user?.profileImage != null
-                              ? NetworkImage(user!.profileImage!)
-                              : const AssetImage(
-                                      'assets/images/default_profile.png')
-                                  as ImageProvider,
+                          child: CircleAvatar(
+                            radius: 50,
+                            backgroundColor: theme.colorScheme.surface,
+                            child: CircleAvatar(
+                              radius: 47,
+                              backgroundImage: user?.profileImage != null
+                                  ? NetworkImage(user!.profileImage!)
+                                  : const AssetImage(
+                                          'assets/images/default_profile.png')
+                                      as ImageProvider,
+                            ),
+                          ),
                         ),
-                      ),
+                        // Small edit indicator
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed('editProfile');
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.primary,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: theme.colorScheme.surface,
+                                width: 2,
+                              ),
+                            ),
+                            child: Icon(
+                              CupertinoIcons.pencil,
+                              size: 14,
+                              color: theme.colorScheme.onPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // User Name
+
+                  // User Name with regular text color
                   Text(
                     user?.fullName ?? 'Fitness Enthusiast',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: theme.textTheme.bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   const SizedBox(height: 8),
+
                   // User Email
                   Text(
                     user?.email ?? 'myemail.com',
                     style: TextStyle(
-                      color: theme.colorScheme.onPrimary.withOpacity(0.8),
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
                       fontSize: 14,
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  // User Role Badge
+                  const SizedBox(height: 12),
+
+                  // User Role Badge with primary color
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 4,
+                      horizontal: 16,
+                      vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.onPrimary.withOpacity(0.2),
+                      color: theme.colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
                       user?.role ?? 'Member',
                       style: TextStyle(
-                        color: theme.colorScheme.onPrimary,
+                        color: theme.colorScheme.onPrimaryContainer,
                         fontSize: 12,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  // Edit Profile Button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      context.pushNamed('editProfile');
-                    },
-                    icon: const Icon(CupertinoIcons.pencil),
-                    label: const Text('Edit Profile'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      foregroundColor: theme.colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                  const SizedBox(height: 20),
+
+                  // Edit Profile Button with updated style
+                  SizedBox(
+                    width: 200,
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        context.pushNamed('editProfile');
+                      },
+                      icon: const Icon(CupertinoIcons.pencil, size: 16),
+                      label: const Text('Edit Profile'),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: theme.colorScheme.primary),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
@@ -432,7 +531,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               const SizedBox(width: 8),
                               Text(
                                 'Membership',
-                                style: theme.textTheme.titleMedium?.copyWith(
+                                style: theme.textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: theme.colorScheme.onPrimaryContainer,
                                 ),
@@ -468,7 +567,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       const SizedBox(width: 6),
                                       Text(
                                         currentPlan,
-                                        style: theme.textTheme.titleSmall
+                                        style: theme.textTheme.bodyMedium
                                             ?.copyWith(
                                           fontWeight: FontWeight.w600,
                                           color: theme
