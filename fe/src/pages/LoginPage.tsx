@@ -32,6 +32,10 @@ const LoginPage = () => {
       });
 
       if (response.status === 200) {
+        if(response.data.data.role !== 'Admin') {
+          setError('You do not have permission to access this page.');
+          return;
+        }
         localStorage.setItem('token', response.data.token);
         navigate('/dashboard', { replace: true });
       }

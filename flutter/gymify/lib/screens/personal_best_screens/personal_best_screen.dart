@@ -52,9 +52,10 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
   void _logPersonalBest() {
     if (_formKey.currentState?.validate() ?? false) {
       if (_selectedExercise == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please select an exercise')),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(content: Text('Please select an exercise')),
+        // );
+        showCoolSnackBar(context, 'Please select an exercise', false);
         return;
       }
 
@@ -73,11 +74,11 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
           // Clear form and refresh data
           _weightController.clear();
           _repsController.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Personal best logged successfully!')),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text('Personal best logged successfully!')),
+          // );
 
-          // showCoolSnackBar(context, 'Personal best logged successfully!', true);
+          showCoolSnackBar(context, 'Personal best logged successfully!', true);
 
           // Refresh data
           context.read<PersonalBestProvider>().fetchCurrentPersonalBests();
@@ -89,9 +90,10 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
                 .fetchExerciseProgress(_selectedExercise!.supportedExerciseId);
           }
         }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error: ${error.toString()}')),
-          );
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(content: Text('Error: ${error.toString()}')),
+          // );
+          showCoolSnackBar(context, 'Error: ${error.toString()}', false);
         });
       }
     }
@@ -912,7 +914,13 @@ class _PersonalBestScreenState extends State<PersonalBestScreen>
                         personalBestProvider.supportedExercises.map((exercise) {
                       return DropdownMenuItem(
                         value: exercise,
-                        child: Text(exercise.exerciseName),
+                        child: Text(
+                          exercise.exerciseName,
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  // fontWeight: FontWeight.bold,
+                                  ),
+                        ),
                       );
                     }).toList(),
                     onChanged: (value) {

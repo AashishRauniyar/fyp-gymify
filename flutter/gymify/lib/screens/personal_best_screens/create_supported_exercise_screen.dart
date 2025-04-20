@@ -148,7 +148,7 @@ class _CreateSupportedExerciseScreenState
         .toList();
 
     return Scaffold(
-      appBar: const CustomAppBar(title: 'Manage Exercises'),
+      appBar: const CustomAppBar(title: 'Manage Supported Exercises'),
       body: personalBestProvider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : personalBestProvider.hasError

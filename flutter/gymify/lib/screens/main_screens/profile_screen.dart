@@ -229,44 +229,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       ListTile(
                         leading: Icon(CupertinoIcons.arrow_right_square_fill,
-                            color: theme.colorScheme.primary),
+                            color: theme.colorScheme.error),
                         title: const Text('Log Out'),
                         onTap: () {
                           Navigator.pop(context);
                           _logout(context);
                         },
                       ),
-                      ListTile(
-                        leading: Icon(CupertinoIcons.delete_solid,
-                            color: theme.colorScheme.error),
-                        title: Text(
-                          'Delete Account',
-                          style: TextStyle(color: theme.colorScheme.error),
-                        ),
-                        onTap: () {
-                          Navigator.pop(context);
-                          showCupertinoDialog(
-                            context: context,
-                            builder: (context) => CupertinoAlertDialog(
-                              title: const Text('Delete Account'),
-                              content: const Text(
-                                  'This action cannot be undone. Are you sure?'),
-                              actions: [
-                                CupertinoDialogAction(
-                                  onPressed: () => Navigator.pop(context),
-                                  isDefaultAction: true,
-                                  child: const Text('Cancel'),
-                                ),
-                                CupertinoDialogAction(
-                                  onPressed: () => Navigator.pop(context),
-                                  isDestructiveAction: true,
-                                  child: const Text('Delete'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                      // ListTile(
+                      //   leading: Icon(CupertinoIcons.delete_solid,
+                      //       color: theme.colorScheme.error),
+                      //   title: Text(
+                      //     'Delete Account',
+                      //     style: TextStyle(color: theme.colorScheme.error),
+                      //   ),
+                      //   onTap: () {
+                      //     Navigator.pop(context);
+                      //     showCupertinoDialog(
+                      //       context: context,
+                      //       builder: (context) => CupertinoAlertDialog(
+                      //         title: const Text('Delete Account'),
+                      //         content: const Text(
+                      //             'This action cannot be undone. Are you sure?'),
+                      //         actions: [
+                      //           CupertinoDialogAction(
+                      //             onPressed: () => Navigator.pop(context),
+                      //             isDefaultAction: true,
+                      //             child: const Text('Cancel'),
+                      //           ),
+                      //           CupertinoDialogAction(
+                      //             onPressed: () => Navigator.pop(context),
+                      //             isDestructiveAction: true,
+                      //             child: const Text('Delete'),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                 ),
