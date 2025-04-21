@@ -12,8 +12,6 @@ const KHALTI_API_URL = process.env.NODE_ENV === "production"
 const KHALTI_SECRET_KEY = process.env.KHALTI_SECRET_KEY;
 const BASE_URL = process.env.BASE_URL;
 
-
-
 export const initiatePayment = async (req, res) => {
     try {
         const { user_id, plan_id, amount, payment_method } = req.body;
@@ -100,9 +98,6 @@ export const initiatePayment = async (req, res) => {
 
         res.status(200).json({
             status: 'success',
-            // pidx: khaltiResponse.data.pidx,
-            // transaction_id: transactionId,
-            // payment_url: khaltiResponse.data.payment_url
             data: {
                 pidx: khaltiResponse.data.pidx,
                 transaction_id: transactionId,
@@ -122,16 +117,19 @@ export const initiatePayment = async (req, res) => {
     }
 };
 
-
-
-
 export const verifyPayment = async (req, res) => {
     try {
         const { transaction_id, status } = req.body;
 
         const payment = await prisma.payments.findUnique({
             where: { transaction_id },
-            include: { memberships: true } // Fetch the linked membership
+            include: {
+                memberships: {
+                    include: {
+                        membership_plan: true
+                    }
+                }
+            }
         });
 
         if (!payment) {
@@ -151,22 +149,52 @@ export const verifyPayment = async (req, res) => {
             data: { payment_status: 'Paid' }
         });
 
-        // Update membership status to Active
+        // Calculate end date based on plan type
+        const start_date = new Date();
+        let end_date = new Date(start_date);
+
+        const planType = payment.memberships.membership_plan.plan_type;
+        const planDuration = payment.memberships.membership_plan.duration;
+
+        if (planDuration) {
+            // Use plan duration directly if available
+            end_date.setMonth(end_date.getMonth() + planDuration);
+        } else {
+            // Fallback to plan type if duration is not available
+            switch (planType) {
+                case 'Monthly':
+                    end_date.setMonth(end_date.getMonth() + 1);
+                    break;
+                case 'Quaterly':
+                    end_date.setMonth(end_date.getMonth() + 3);
+                    break;
+                case 'Yearly':
+                    end_date.setFullYear(end_date.getFullYear() + 1);
+                    break;
+                default:
+                    end_date.setMonth(end_date.getMonth() + 1); // Default to 1 month
+            }
+        }
+
+        // Update membership status to Active with correct end date
         await prisma.memberships.update({
             where: { membership_id: payment.membership_id },
             data: {
                 status: 'Active',
-                start_date: new Date(),
-                end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Adjust based on plan
+                start_date,
+                end_date
             }
         });
 
         res.status(200).json({
             status: 'success',
-            data: res.data,
-            message: 'Payment verified, membership activated'
+            message: 'Payment verified, membership activated',
+            data: {
+                status: 'Active',
+                start_date,
+                end_date
+            }
         });
-
     } catch (error) {
         console.error("Error verifying payment:", error);
         res.status(500).json({

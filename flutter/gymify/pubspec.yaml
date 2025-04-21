@@ -129,6 +129,7 @@ flutter:
     - assets/images/onboarding/
     - assets/logo/lightlogo.png
     - assets/logo/darklogo.png
+    - assets/logo/khalti_logo.png
     - assets/images/profile/default_avatar.jpg
     - assets/gif/
     - assets/images/loading_screen/1.jpg
