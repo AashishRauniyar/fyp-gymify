@@ -13,18 +13,23 @@
 // const url = "10.0.2.2";
 
 // const url = "172.25.3.249";
-const url = "192.168.254.65";
-
-// ghar
-// const url = "192.168.1.87";
-
-// const url = "192.168.1.116";
-// dokan ko ip
-// const url = "172.25.1.183";
-
-const baseUrl = "http://$url:8000/api";
-const socketUrl = "ws://$url:8000";
 
 // production url
 // const baseUrl = "https://fyp-gymify.onrender.com/api";
 // const baseUrl = "https://192.168.31.96:8000/api";
+
+// const url = "192.168.254.65";
+
+// const baseUrl = "http://$url:8000/api";
+// const socketUrl = "ws://$url:8000";
+
+const url = "172.25.0.159";
+
+const baseUrl = "http://$url:8000/api";
+const socketUrl = "ws://$url:8000";
+
+// const url = "https://gymify-m2guj.ondigitalocean.app"; // Remote URL
+
+// const baseUrl = "$url/api"; // Updated base API URL
+// const socketUrl =
+//     "wss://gymify-m2guj.ondigitalocean.app"; // Updated WebSocket URL (use wss:// for secure connections)

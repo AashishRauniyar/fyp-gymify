@@ -22,7 +22,7 @@ const registerValidation = [
     body('password')
         .isLength({ min: 8 })
         .withMessage('Password must be at least 8 characters long')
-        .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
+        .matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/)
         .withMessage('Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character')
 ];
 
