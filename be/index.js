@@ -54,6 +54,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(mainRouter);
+app.set('trust proxy', 1);
 
 // Create an HTTP server to attach Socket.IO
 const server = http.createServer(app);

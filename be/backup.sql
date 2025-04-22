@@ -1275,7 +1275,8 @@ bc632711-d1ae-4289-8f96-1ac90d913336	17f5c55ad407839bfb40a1d1a92fbbed613494ba7fe
 --
 
 COPY public.attendance (attendance_id, user_id, gym_id, attendance_date) FROM stdin;
-1	2	\N	2025-04-10
+4	1	\N	2025-04-13
+5	20	\N	2025-04-13
 \.
 
 
@@ -1284,10 +1285,18 @@ COPY public.attendance (attendance_id, user_id, gym_id, attendance_date) FROM st
 --
 
 COPY public.chatconversations (chat_id, user_id, trainer_id, last_message, last_message_timestamp) FROM stdin;
-23	2	3	\N	2025-04-04 08:53:16.355
-26	2	6	\N	2025-04-04 09:10:01.861
 27	7	2	hello dai	2025-04-05 19:14:59.607
-216	2	16	hello	2025-04-10 05:25:21.075
+26	2	6	oie	2025-04-13 12:04:46.445
+216	2	16	https://media.tenor.com/x18QA0Fg5tIAAAAM/happy-passover.gif	2025-04-13 13:10:56.545
+117	1	17	\N	2025-04-15 07:24:27.057
+221	21	2	okay check the leg workout in home screen	2025-04-15 08:06:57.256
+222	22	2	Most welcome	2025-04-18 09:18:43.079
+1618	16	18	sdfsdf	2025-04-20 03:27:09.202
+1718	18	17	\N	2025-04-20 03:35:39.36
+1621	21	16	\N	2025-04-20 03:36:28.016
+1721	21	17	\N	2025-04-20 03:37:18.84
+218	18	2	hajur	2025-04-20 04:04:55.099
+1827	27	18	Aja k ko workout grne:	2025-04-20 13:01:56.036
 \.
 
 
@@ -1304,6 +1313,51 @@ COPY public.chatmessages (message_id, chat_id, sender_id, message_content, sent_
 6	216	16	{"text":"aja kun workout garam dai?"}	2025-04-10 02:06:47.913	f
 7	216	2	{"text":"aja kun worloiut"}	2025-04-10 02:47:43.679	f
 8	216	2	{"text":"hello"}	2025-04-10 05:25:20.318	f
+9	218	2	{"text":"Heyy"}	2025-04-13 10:55:44.268	f
+10	218	18	{"text":"hajur dai"}	2025-04-13 10:56:26.094	f
+11	218	2	{"text":"Heyyy"}	2025-04-13 10:56:41.082	f
+12	26	2	{"text":"oie"}	2025-04-13 12:04:46.44	f
+13	218	18	{"text":"hi"}	2025-04-13 12:05:37.32	f
+14	218	2	{"text":"hello"}	2025-04-13 12:05:43.06	f
+15	218	2	{"text":"aba k garne gym"}	2025-04-13 12:05:56.37	f
+16	216	2	{"text":"hii"}	2025-04-13 13:10:32.806	f
+17	216	2	{"text":"😂😂"}	2025-04-13 13:10:37.973	f
+18	216	2	{"text":"https://media.tenor.com/x18QA0Fg5tIAAAAM/happy-passover.gif"}	2025-04-13 13:10:56.545	f
+19	221	2	{"text":"hi"}	2025-04-15 08:06:22.388	f
+20	221	21	{"text":"Hello"}	2025-04-15 08:06:25.913	f
+21	221	2	{"text":"k xa aj kun workout grxau"}	2025-04-15 08:06:36.425	f
+22	221	21	{"text":"Leg"}	2025-04-15 08:06:43.969	f
+23	221	2	{"text":"okay check the leg workout in home screen"}	2025-04-15 08:06:57.254	f
+24	222	22	{"text":"Hello sir"}	2025-04-18 09:16:06.755	f
+25	222	22	{"text":"Are you there"}	2025-04-18 09:17:42.012	f
+26	222	2	{"text":"ye i am hjere'"}	2025-04-18 09:17:46.575	f
+27	222	2	{"text":"how can i help you?"}	2025-04-18 09:17:52.12	f
+28	222	22	{"text":"Ohh 😧"}	2025-04-18 09:17:53.315	f
+29	222	2	{"text":"is it showing that i am typing?"}	2025-04-18 09:17:59.999	f
+30	222	22	{"text":"Yep"}	2025-04-18 09:18:05.936	f
+31	222	2	{"text":"wow thanks for testing my app"}	2025-04-18 09:18:18.923	f
+32	222	22	{"text":"Most welcome"}	2025-04-18 09:18:43.079	f
+33	218	2	{"text":"hi"}	2025-04-20 03:12:10.098	f
+34	218	18	{"text":"hajur dai"}	2025-04-20 03:12:54.408	f
+35	218	2	{"text":"ahh"}	2025-04-20 03:12:59.19	f
+36	218	2	{"text":"heyy"}	2025-04-20 03:22:29.418	f
+37	218	18	{"text":"yess"}	2025-04-20 03:22:42.756	f
+38	218	18	{"text":"okk"}	2025-04-20 03:23:05.205	f
+39	1618	16	{"text":"bro?"}	2025-04-20 03:25:30.614	f
+40	1618	18	{"text":"hajur dai"}	2025-04-20 03:25:41.899	f
+41	1618	16	{"text":"fdgdfg"}	2025-04-20 03:26:10.99	f
+42	1618	18	{"text":"sdfsdf"}	2025-04-20 03:26:16.931	f
+43	1618	16	{"text":"sdfsdf"}	2025-04-20 03:27:06.471	f
+44	1618	18	{"text":"sdfsdf"}	2025-04-20 03:27:09.2	f
+45	218	18	{"text":"gfhfgh"}	2025-04-20 03:51:19.057	f
+46	218	2	{"text":"ghjghj"}	2025-04-20 03:51:26.12	f
+47	218	2	{"text":"bnhhhhh"}	2025-04-20 03:51:44.034	f
+48	218	2	{"text":"fdfg"}	2025-04-20 03:52:15.88	f
+49	218	18	{"text":"dfdsfsd"}	2025-04-20 03:52:43.867	f
+50	218	2	{"text":"hey"}	2025-04-20 04:03:48.491	f
+51	218	2	{"text":"dai"}	2025-04-20 04:04:49.526	f
+52	218	18	{"text":"hajur"}	2025-04-20 04:04:55.098	f
+53	1827	27	{"text":"Aja k ko workout grne:"}	2025-04-20 13:01:56.023	f
 \.
 
 
@@ -1312,7 +1366,11 @@ COPY public.chatmessages (message_id, chat_id, sender_id, message_content, sent_
 --
 
 COPY public.customworkoutexercises (custom_workout_exercise_id, custom_workout_id, exercise_id, sets, reps, duration) FROM stdin;
-1	1	1	3	12	12.00
+8	11	5	3	12	12.00
+9	11	10	3	12	12.00
+10	11	13	3	12	12.00
+11	12	5	3	12	18.00
+12	12	23	3	12	10.00
 \.
 
 
@@ -1321,7 +1379,9 @@ COPY public.customworkoutexercises (custom_workout_exercise_id, custom_workout_i
 --
 
 COPY public.customworkouts (custom_workout_id, user_id, custom_workout_name, created_at) FROM stdin;
-1	2	My Sunday Routine	2025-04-09 09:25:36.532
+11	2	My Sunday Routine	2025-04-19 16:17:49.46
+12	27	My Sunday Routine Exercise 	2025-04-20 13:02:50.045
+13	2	Rahul check	2025-04-21 05:22:03.491
 \.
 
 
@@ -1330,7 +1390,9 @@ COPY public.customworkouts (custom_workout_id, user_id, custom_workout_name, cre
 --
 
 COPY public.dietplans (diet_plan_id, user_id, trainer_id, calorie_goal, goal_type, description, created_at, updated_at, name, image) FROM stdin;
-1	2	2	1200.00	Muscle Gain	Junk food to gain weight in the worst way possible	2025-04-05 19:27:40.903	2025-04-05 19:27:40.903	Weight Gain Plan	https://res.cloudinary.com/dqcdosfch/image/upload/v1743881260/diet_images/vn1zulpozeqsqiysjg3y.jpg
+3	2	2	1800.00	Weight Loss	The ultimate diet plan to lose weight instantly within a month	2025-04-19 18:20:50.988	2025-04-19 18:20:50.988	Weight Loss Plan 	https://res.cloudinary.com/dqcdosfch/image/upload/v1745086841/diet_images/hzt4kvz9vsxqz6bstfjx.jpg
+4	2	2	1800.00	Muscle Gain	Gain muscles in few weeks with this certified muscle Gain plan	2025-04-19 18:32:23.144	2025-04-19 18:32:23.144	High Protein Muscle Gain Plan	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087534/diet_images/jtygtv9mtcqe5jvmqvjj.jpg
+5	2	2	1800.00	Maintenance	Best for daily diet plan 	2025-04-19 18:38:22.883	2025-04-19 18:38:22.883	Fit body Maintenance Diet	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087893/diet_images/yffkxpj3dhho4j3jg3oa.jpg
 \.
 
 
@@ -1339,7 +1401,25 @@ COPY public.dietplans (diet_plan_id, user_id, trainer_id, calorie_goal, goal_typ
 --
 
 COPY public.exercises (exercise_id, exercise_name, calories_burned_per_minute, created_at, description, image_url, target_muscle_group, video_url, updated_at) FROM stdin;
-1	Pushups	12.00	2025-04-08 12:10:45.465	Best exercise for ches	https://res.cloudinary.com/dqcdosfch/image/upload/v1744114233/exercise_images/uspukdqiudvas0my06h9.jpg	Chest	https://res.cloudinary.com/dqcdosfch/video/upload/v1744114243/exercise_videos/sxrxcdauihd3a3kkw4f4.mp4	2025-04-08 12:10:45.466
+5	Barbell Curls	7.20	2025-04-18 07:46:52.832	A strength training exercise that targets the biceps and forearms.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962297/exercise_images/ypfhke1ouekcwzitpjlr.jpg	Arms	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962405/exercise_videos/y02ceg9wqassohniwfz2.mp4	2025-04-18 07:46:52.836
+6	Squats	8.00	2025-04-18 07:49:59.801	A lower body workout that targets the quads, hamstrings, and glutes.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962590/exercise_images/ehitquptxqv4hnopxcpj.jpg	Legs	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962593/exercise_videos/yqy85cckgwfglubal5tc.mp4	2025-04-18 07:49:59.803
+7	Deadlift	9.00	2025-04-18 07:51:22.863	A compound movement that targets the back, glutes, and hamstrings.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962669/exercise_images/yddmdzgfrir0adlh4nik.jpg	Back	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962674/exercise_videos/fp8dd2sdleq2o2sn09da.mp4	2025-04-18 07:51:22.864
+8	Push-Ups	6.00	2025-04-18 07:52:10.342	A bodyweight exercise that primarily targets the chest, shoulders, and triceps.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962718/exercise_images/cb0h4iflojmjszk0bsdv.jpg	Chest	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962723/exercise_videos/wqgcpxhzjc2ostfj3zkx.mp4	2025-04-18 07:52:10.343
+9	Lunges	7.00	2025-04-18 07:53:52.807	A lower-body exercise that strengthens the quads, hamstrings, and glutes.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962776/exercise_images/y1m7zh7uvcwk7ztdpwac.jpg	Legs	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962826/exercise_videos/nsgp8lhpmvdj6bsdkqpi.mp4	2025-04-18 07:53:52.808
+10	Plank	4.50	2025-04-18 07:54:05.444	An isometric core exercise that targets the abs and back.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744962836/exercise_images/akrc34kglgcn8hzacwqk.jpg	Legs	https://res.cloudinary.com/dqcdosfch/video/upload/v1744962838/exercise_videos/fdulf9w533dxnjiv6xq3.mp4	2025-04-18 07:54:05.445
+12	Burpees	5.50	2025-04-18 08:01:19.728	Burpees are a high-intensity full-body exercise that combines squats, jumps, and push-ups. It increases heart rate while targeting various muscle groups, including the chest, legs, arms, and core. Burpees are effective for burning calories and improving cardiovascular health\n	https://res.cloudinary.com/dqcdosfch/image/upload/v1744963255/exercise_images/osxstgbln7r9gj2lfsrb.jpg	Full Body	https://res.cloudinary.com/dqcdosfch/video/upload/v1744963273/exercise_videos/x1vwcd0mm28jdkwvqk64.mp4	2025-04-18 08:01:19.73
+13	Cable Rows	6.00	2025-04-18 08:03:45.283	Cable rows are a back exercise performed using a cable machine. The movement involves pulling a handle towards your torso while keeping the back straight. This exercise primarily targets the upper back, including the lats, rhomboids, and traps, and also engages the biceps and forearms.\n	https://res.cloudinary.com/dqcdosfch/image/upload/v1744963413/exercise_images/pjfq90unpsc2lmqflnjd.jpg	Back	https://res.cloudinary.com/dqcdosfch/video/upload/v1744963418/exercise_videos/hpfthxzvsvbh4ttflkta.mp4	2025-04-18 08:03:45.285
+14	Crunches	6.00	2025-04-18 08:04:25.391	Crunches are a popular abdominal exercise that specifically targets the rectus abdominis. By lying on your back and lifting your upper body towards your knees, crunches help tone the abdominal muscles, improve core strength, and support better posture.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744963457/exercise_images/z6catchd6pvyhyj55ebr.jpg	Core	https://res.cloudinary.com/dqcdosfch/video/upload/v1744963459/exercise_videos/lj9bobzidvenupi0w0wm.mp4	2025-04-18 08:04:25.392
+16	Dumbbell Rows	6.50	2025-04-18 08:12:21.705	Dumbbell rows are a simple yet effective exercise to target the back muscles. Performed with one dumbbell at a time, this exercise focuses on the lats, rhomboids, and traps while also engaging the biceps. It helps improve posture and upper body strength.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744963815/exercise_images/onc9w3ccgqcqf7zvnvyt.jpg	Back	https://res.cloudinary.com/dqcdosfch/video/upload/v1744963934/exercise_videos/mg1rfwd40hkwrbfvpocl.mp4	2025-04-18 08:12:21.707
+17	Dumbbell Side Delts	6.50	2025-04-18 08:16:24.338	Dumbbell side lateral raises are an effective isolation exercise targeting the lateral deltoids (side of the shoulders). This exercise helps to develop shoulder width, enhancing the overall look of the upper body. It’s performed by raising dumbbells out to the sides while keeping the elbows slightly bent.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964108/exercise_images/rqyr7ejvsvw9xyz5m8qj.jpg	Shoulders	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964176/exercise_videos/uqu2uxet9jq2xpzwp9j4.mp4	2025-04-18 08:16:24.341
+18	Hammer Curls	6.00	2025-04-18 08:17:30.203	Hammer curls are a variation of bicep curls that target both the biceps and forearms. The exercise involves holding the dumbbells with a neutral grip (palms facing each other) and curling them towards your shoulders. This helps build both the biceps and the brachialis muscle.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964191/exercise_images/zk9ur4fyuoodfttvhahl.jpg	Arms	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964243/exercise_videos/ifpnuqviblxhjbluu6ml.mp4	2025-04-18 08:17:30.205
+19	Headstand	6.00	2025-04-18 08:18:14.951	The headstand is a challenging yoga pose that involves balancing your body upside down on your head. It primarily works the shoulders, core, and arms while improving balance and stability. It's a great exercise for building strength and confidence in your upper body.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964286/exercise_images/ktvqhrske9wrky0pnfqe.jpg	Core	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964288/exercise_videos/vc5xng8b1pyv5bwjtc5x.mp4	2025-04-18 08:18:14.952
+20	Jumping Jack	7.00	2025-04-18 08:19:01.747	Jumping jacks are a classic cardiovascular exercise that engages the whole body. This full-body movement increases heart rate and targets the legs, core, and arms. It's an effective warm-up exercise and helps improve cardiovascular endurance.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964332/exercise_images/zibiegxvi6olhncnpj7o.jpg	Full Body	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964335/exercise_videos/nvhkhmpriqtvoiihhjop.mp4	2025-04-18 08:19:01.749
+21	Leg Press	7.00	2025-04-18 08:20:18.1	The leg press is a machine-based exercise that targets the quadriceps, hamstrings, and glutes. By pressing a weighted platform with the legs, this exercise helps to build lower body strength and muscle mass, particularly in the thighs and buttocks.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964408/exercise_images/pcouf2a4bbjcfdhz1bb2.jpg	Legs	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964411/exercise_videos/dbkzdpzp2haivzkoiivr.mp4	2025-04-18 08:20:18.102
+22	Pull-Ups	7.00	2025-04-18 08:21:50.699	Pull-ups are a bodyweight exercise that targets the back, biceps, and shoulders. This exercise involves hanging from a bar and pulling the body upward, which helps to build upper body strength and muscle mass.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964502/exercise_images/ge0ty0qidrxxr1w1jyby.jpg	Back	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964504/exercise_videos/a2ehrrsgbkgc7omrd2mj.mp4	2025-04-18 08:21:50.701
+23	Rope Cardio	7.00	2025-04-18 08:26:08.241	Rope cardio, often performed with a jump rope, is an excellent cardiovascular workout that targets the legs, arms, and core. This exercise improves endurance and helps with fat burning while engaging multiple muscle groups simultaneously.	https://res.cloudinary.com/dqcdosfch/image/upload/v1744964752/exercise_images/iydzjdrnk2s7fp5gu85f.jpg	Full Body	https://res.cloudinary.com/dqcdosfch/video/upload/v1744964759/exercise_videos/ooflbxiqnamjwemssghq.mp4	2025-04-18 08:26:08.242
+24	Inclined Pushups	12.00	2025-04-20 12:58:13.842	Best for chest	https://res.cloudinary.com/dqcdosfch/image/upload/v1745153879/exercise_images/pnt5uttctnug2h7hssp0.png	Chest	https://res.cloudinary.com/dqcdosfch/video/upload/v1745153882/exercise_videos/qnrxtdxjnydgk5hrbctt.mp4	2025-04-20 12:58:13.844
+25	Leg Raises	5.50	2025-04-21 05:21:51.64	A core exercise that targets the lower abdominals and hip flexors.	\N	Core, Hip Flexors	\N	2025-04-21 05:21:51.681
 \.
 
 
@@ -1356,10 +1436,8 @@ COPY public.gym (gym_id, gym_name, location, contact_number, admin_id, created_a
 --
 
 COPY public.meallogs (meal_log_id, user_id, meal_id, quantity, log_time) FROM stdin;
-2	2	1	10.00	2025-04-05 19:28:45.004
-3	2	1	1.00	2025-04-08 19:34:04.564
-4	18	1	1.00	2025-04-10 02:01:14.008
-6	2	1	2.00	2025-04-10 02:47:21.603
+19	2	4	1.00	2025-04-19 19:59:21.143
+20	27	7	1.00	2025-04-20 13:00:52.398
 \.
 
 
@@ -1368,7 +1446,15 @@ COPY public.meallogs (meal_log_id, user_id, meal_id, quantity, log_time) FROM st
 --
 
 COPY public.meals (meal_id, diet_plan_id, meal_name, meal_time, calories, description, created_at, macronutrients, image) FROM stdin;
-1	1	Apple Pie	Breakfast	120.00	very tastu	2025-04-05 19:28:22.193	"{\\"protein\\":12.0,\\"carbs\\":12.0,\\"fat\\":6.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1743881302/meal_images/c2e8fywzbuoqnqjuwwvr.jpg
+9	5	Turkey Sandwich on Whole Grain Bread	Lunch	550.00	A lean turkey sandwich with whole-grain bread and veggies. Recipe:  Layer 2 slices of turkey breast on whole grain bread with lettuce, tomatoes, and mustard. 	2025-04-19 18:46:39.994	"{\\"protein\\":35.0,\\"carbs\\":50.0,\\"fat\\":15.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745088390/meal_images/supzwm5vylhunlezimjm.jpg
+8	5	Oatmeal with Peanut Butter	Breakfast	450.00	A high-energy breakfast of oatmeal with peanut butter and banana. Recipe: Cook 1/2 cup oats with almond milk. Stir in 1 tablespoon peanut butter and top with banana slices.	2025-04-19 18:46:10.216	"{\\"protein\\":15.0,\\"carbs\\":60.0,\\"fat\\":18.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745088361/meal_images/wpztgvmzan6beil5moes.jpg
+10	5	Grilled Fish with Sweet Potatoes	Dinner	500.00	Grilled fish fillets served with roasted sweet potatoes. Recipe:  Grill fish fillets with lemon and herbs. Roast sweet potatoes with olive oil and rosemary.	2025-04-19 18:47:13.152	"{\\"protein\\":35.0,\\"carbs\\":50.0,\\"fat\\":15.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745088424/meal_images/bvbeeiw5kemnkeoknecn.jpg
+7	4	Chicken Stir Fry with Brown Rice	Dinner	600.00	A hearty chicken stir-fry served with brown rice and vegetables. Recipe: Sauté sliced chicken with onions and bell peppers in olive oil.  Serve with cooked brown rice and soy sauce.	2025-04-19 18:36:47.673	"{\\"protein\\":40.0,\\"carbs\\":50.0,\\"fat\\":25.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087798/meal_images/a1hlfxj9byuoddbx7vhs.jpg
+2	3	Spinach Banana Smoothie	Breakfast	350.00	A refreshing smoothie made with spinach, banana, and almond milk. Recipe: Blend 1 banana, a handful of spinach, and 1/2 cup of almond milk. Add 1 tablespoon of chia seeds and blend until smooth.	2025-04-19 18:25:07.382	"{\\"protein\\":8.0,\\"carbs\\":50.0,\\"fat\\":10.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087098/meal_images/dbxug0f41a4pvhcbaksl.jpg
+3	3	Grilled Chicken Salad	Lunch	550.00	A light and healthy grilled chicken salad with fresh veggies. Recipe: Grill chicken breast with olive oil, lemon juice, and herbs. Toss with mixed greens, tomatoes, cucumbers, and a light vinaigrette. 	2025-04-19 18:26:06.35	"{\\"protein\\":40.0,\\"carbs\\":30.0,\\"fat\\":25.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087157/meal_images/dstu4a6vsqxc38hatdsj.jpg
+4	3	Baked Salmon with Roasted Veggies	Dinner	400.00	Oven-baked salmon served with roasted vegetables like carrots, zucchini, and bell peppers. Recipe: Season salmon with lemon and herbs, bake at 400°F for 15 minutes. Roast carrots, zucchini, and bell peppers in olive oil.	2025-04-19 18:27:33.78	"{\\"protein\\":35.0,\\"carbs\\":20.0,\\"fat\\":20.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087244/meal_images/ql7sskx5lyuoiez0abyz.jpg
+5	4	Scrambled Eggs with Avocado Toast	Breakfast	500.00	Protein-packed scrambled eggs paired with creamy avocado toast. Recipe: Scramble 3 eggs with spinach in a non-stick pan. Toast 2 slices of whole-wheat bread, top with mashed avocado. 	2025-04-19 18:33:45.753	"{\\"protein\\":25.0,\\"carbs\\":40.0,\\"fat\\":25.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087616/meal_images/mddhf2dasjinlmch2ojv.jpg
+6	4	Grilled Chicken and Quinoa	Lunch	700.00	A healthy, high-protein meal with quinoa and grilled chicken. Recipe: Grill chicken breast and serve with cooked quinoa and steamed broccoli. Drizzle with olive oil and lemon juice. 	2025-04-19 18:35:09.825	"{\\"protein\\":45.0,\\"carbs\\":60.0,\\"fat\\":30.0}"	https://res.cloudinary.com/dqcdosfch/image/upload/v1745087700/meal_images/i4k1ximwyjtxrme4fhfz.jpg
 \.
 
 
@@ -1387,14 +1473,17 @@ COPY public.membership_plan (plan_id, plan_type, price, created_at, updated_at, 
 --
 
 COPY public.memberships (membership_id, user_id, start_date, end_date, status, created_at, updated_at, plan_id) FROM stdin;
-1	2	2025-04-04	2025-05-04	Active	2025-04-04 08:38:58.525	2025-04-04 08:38:58.525	1
-2	1	2025-04-04	2025-05-04	Active	2025-04-04 08:40:19.32	2025-04-04 08:40:19.32	1
-3	3	2025-04-04	2025-05-04	Active	2025-04-04 08:47:52.549	2025-04-04 08:47:52.549	1
 4	6	2025-04-04	2025-07-04	Active	2025-04-04 09:09:58.107	2025-04-04 09:09:58.107	2
 5	7	2025-04-06	2025-05-06	Active	2025-04-05 19:11:31.219	2025-04-05 19:11:31.219	1
 7	16	2025-04-07	2025-05-07	Active	2025-04-07 10:38:36.02	2025-04-07 10:38:36.02	1
 8	17	2025-04-09	2025-05-09	Active	2025-04-09 05:37:47.326	2025-04-09 05:37:47.326	1
-9	18	\N	\N	Pending	2025-04-10 02:01:49.588	2025-04-10 02:01:49.588	2
+13	18	2025-04-12	2025-05-12	Active	2025-04-12 19:36:52.652	2025-04-12 19:36:52.652	1
+22	21	2025-04-15	2025-05-15	Active	2025-04-15 08:01:24.644	2025-04-15 08:01:24.644	2
+23	1	2025-04-15	2025-04-15	Pending	2025-04-15 10:58:41.065	2025-04-15 10:58:41.065	1
+14	20	2025-04-13	2025-05-13	Cancelled	2025-04-13 11:30:59.885	2025-04-13 11:30:59.885	1
+24	22	2025-04-18	2025-05-18	Active	2025-04-18 09:09:31.676	2025-04-18 09:09:31.676	2
+26	27	2025-04-20	2025-05-20	Active	2025-04-20 12:52:32.23	2025-04-20 12:52:32.23	1
+28	2	2025-04-21	2025-05-21	Active	2025-04-21 04:55:01.246	2025-04-21 04:55:01.246	1
 \.
 
 
@@ -1403,13 +1492,17 @@ COPY public.memberships (membership_id, user_id, start_date, end_date, status, c
 --
 
 COPY public.payments (payment_id, membership_id, user_id, price, payment_method, payment_date, payment_status, created_at, transaction_id, pidx) FROM stdin;
-1	1	2	1500.00	Cash	2025-04-04	Paid	2025-04-04 08:38:58.525	TXN-1743755938524-2	\N
-2	2	1	1500.00	Cash	2025-04-04	Paid	2025-04-04 08:40:19.614	MANUAL-1743756019612-746	\N
-3	3	3	1500.00	Online	2025-04-04	Paid	2025-04-04 08:47:52.559	MANUAL-1743756472557-187	\N
 4	4	6	4500.00	Cash	2025-04-04	Paid	2025-04-04 09:09:58.151	MANUAL-1743757798150-432	\N
 5	5	7	1500.00	Cash	2025-04-05	Paid	2025-04-05 19:11:31.265	MANUAL-1743880291261-142	\N
 7	7	16	1500.00	Cash	2025-04-07	Paid	2025-04-07 10:38:36.047	MANUAL-1744022316045-782	\N
 8	8	17	1500.00	Online	2025-04-09	Paid	2025-04-09 05:37:47.352	MANUAL-1744177067351-293	\N
+11	13	18	1500.00	Khalti	2025-04-12	Paid	2025-04-12 19:36:53.209	TXN-1744486612688-18	n6a5wwqTkLwa9rqYRHVRNU
+12	14	20	1500.00	Cash	2025-04-13	Paid	2025-04-13 11:30:59.885	TXN-1744543859884-20	\N
+20	22	21	4500.00	Khalti	2025-04-15	Paid	2025-04-15 08:01:25.113	TXN-1744704084684-21	Qr9envycKsk3drEaEUHYUT
+21	23	1	1500.00	Cash	2025-04-15	Pending	2025-04-15 10:58:41.065	TXN-1744714721063-1	\N
+22	24	22	4500.00	Khalti	2025-04-18	Paid	2025-04-18 09:09:32.28	TXN-1744967371680-22	ZJ2k3DocS9ZRLmFVejzoiT
+24	26	27	1500.00	Khalti	2025-04-20	Paid	2025-04-20 12:52:32.614	TXN-1745153552233-27	iJgPAAFV5vtPztaXWFMN96
+26	28	2	1500.00	Khalti	2025-04-21	Paid	2025-04-21 04:55:01.712	TXN-1745211301248-2	9Ty7qD5gTkEqA4rJ8mXQAW
 \.
 
 
@@ -1422,6 +1515,15 @@ COPY public.personal_bests (personal_best_id, user_id, weight, reps, achieved_at
 2	2	130.00	3	2025-04-10 02:38:50.561	1
 3	2	120.00	1	2025-04-10 05:21:02.281	3
 4	2	130.00	2	2025-04-10 05:21:10.888	3
+6	20	120.00	3	2025-04-13 11:39:19.829	1
+7	20	121.00	2	2025-04-13 11:39:26.647	1
+8	21	65.00	3	2025-04-15 08:04:17.969	1
+9	21	150.00	2	2025-04-15 08:04:28.987	3
+10	2	200.00	3	2025-04-15 08:13:36.215	1
+11	2	210.00	2	2025-04-20 04:53:44.626	1
+12	2	120.00	1	2025-04-20 04:54:51.616	3
+13	27	120.00	1	2025-04-20 12:54:34.947	1
+14	27	125.00	1	2025-04-20 12:54:41.199	1
 \.
 
 
@@ -1448,18 +1550,23 @@ COPY public.supported_exercises (supported_exercise_id, exercise_name, created_a
 --
 
 COPY public.users (user_id, user_name, full_name, address, height, current_weight, gender, email, password, phone_number, role, fitness_level, goal_type, card_number, created_at, updated_at, allergies, calorie_goals, profile_image, reset_token, reset_token_expiry, birthdate, otp, otp_expiry, verified, fcm_token) FROM stdin;
-3	Acis	Acis Raw	Kathmandu	165	76	Male	ak.aashish19@gmail.com	$2a$12$sBj7mA8eKmo9voK/QDP4Ze5gC4a0c1ZTAUB.3uhY1R/S8o26N2OCW	1212121212	Member	Beginner	Muscle Gain		2025-04-04 08:47:31.685	2025-04-04 08:47:31.685	Peanuts	2500.00	https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.instagram.com%2Fvladimirshmondenko%2F&psig=AOvVaw0pLDDFDvKpUqylnI82CW-j&ust=1743843173575000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNCp05mAvowDFQAAAAAdAAAAABAE	\N	\N	2002-12-12 00:00:00	\N	\N	t	\N
 5	Sita	Sita	Pokhara	154	55	Male	sita@gmail.com	$2a$12$NFuegjzHS7hhyZ59kmGLb.AIZmiN32T0FNUdfQwFLdRX1xz5B35e2	121212121212	Member	Beginner	Weight Loss		2025-04-04 09:07:32.781	2025-04-04 09:07:32.781		1200.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743757651/profile_images/wwp2kkuwohoh7ejkmq7s.png	\N	\N	1997-12-12 00:00:00	\N	\N	t	\N
 6	Sailesh	Sailesh Gurung	Birauta	170	73	Male	saileshgurung@gmail.com	$2a$12$2nXBceObMuMYyLNsVr.Eze/SHsV.s2aKkGjayL5UyGj31XnX4VW7m	98767545643	Member	Advanced	Muscle Gain		2025-04-04 09:09:20.799	2025-04-04 09:09:20.799	nothing	2400.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743757759/profile_images/p1r8ywzcspwrtbdvvbrn.png	\N	\N	2002-11-11 00:00:00	\N	\N	t	\N
 7	Rahul	Rahul Rauniyar	Nayabazar, Pokhara	175	90	Male	rahulrauniyar@gmail.com	$2a$12$BEQ6vh7HK2j7W5secocZ4edWBNKzHw9dJvF/N3y31wV2slvvcddrG	9806767888	Member	Beginner	Weight Loss		2025-04-05 19:10:05.858	2025-04-05 19:12:47.214	nothing	600.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743880205/profile_images/qbfqylac7jsy53oai2xh.png	\N	\N	1998-12-12 00:00:00	\N	\N	t	\N
 4	ram	Ram	Bagale Tol	187	90	Male	ram@gmail.com	$2a$12$BrIjGA/akJtW3VBHL7bHguukDaA/RtLrBS2X15Kjg4TAfwrWQ99vq	9812121212	Member	Beginner	Weight Loss		2025-04-04 08:59:48.044	2025-04-04 08:59:48.044	milk	1800.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743880205/profile_images/qbfqylac7jsy53oai2xh.png	\N	\N	1999-12-04 00:00:00	\N	\N	t	\N
-1	Aashish	Aashish Rauniyar	123 Main St, City	175.5	70.2	Male	rauniyaaraashish@gmail.com	$2a$12$juVZxo6Hh3LDonhDwus5FO9guL3I24LSI8Y2CzX./aQLkuwrcZ6e.	1234567890	Admin	Intermediate	Muscle Gain	1234-5678-9012-3456	2025-04-04 08:31:35.382	2025-04-04 08:31:35.382	None	2500.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743880205/profile_images/qbfqylac7jsy53oai2xh.png	\N	\N	2002-03-12 00:00:00	\N	\N	t	\N
-18	Rahul Rauniyar	Rahul Rauniyar	Pokhara	170.0	73	Female	me.splashrahul@gmail.com	$2a$12$URXQY8Ey1O7ISe1lpOV44.gTLTf6NRF6FMJC1b660d2/oQzZv2hni	9878675467	Member	Beginner	Weight Loss	\N	2025-04-09 10:08:03.313	2025-04-10 01:54:46.701	nothing	1450.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744193857/profile_images/kldupg5pxjrngu57omba.jpg	\N	\N	1991-05-25 00:00:00	\N	\N	t	\N
+21	krish	krish shrestya	fulbari	179.0	89	Male	matricyt7@gmail.com	$2a$12$FC8HVEfXY6fDF1VLpV3X1ew5QxdOpmbofFlHWKpLqI.CWfhbKPhN6	9806678476	Member	Advanced	Weight Loss	\N	2025-04-15 07:58:31.918	2025-04-15 08:03:37.078	flower	1300.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744704049/profile_images/js9xvbqoyeohly71v3u6.jpg	\N	\N	2006-03-22 00:00:00	\N	\N	t	\N
+27	sujon	Sujon Thapa	Pokhara 8 	170.0	70	Male	sujonthapa88@gmail.com	$2a$12$U.8DgQjUmcCvbUPcYz4Ab.jxU7a8YdqS7CyIaqfQqNnJwvJQiOnQG	9819177029	Trainer	Beginner	Muscle Gain	\N	2025-04-20 12:48:14.256	2025-04-20 12:54:04.634	beans	2000.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1745153427/profile_images/h2aez5h0noxloadieh7f.jpg	\N	\N	1994-04-25 00:00:00	\N	\N	t	\N
 9	Rahul Don	Rahul Gupta	Pokhara	172.0	70.0	Male	rahultech730@gmail.com	$2a$12$v0FkkelN/zWSRCqvg2x8OOa6grGL8j/m5u/vm1LOfPs79/TCrytxC	9806767880	Member	Beginner	Flexibility	\N	2025-04-07 09:19:52.003	2025-04-07 09:19:52.003	nothing	1600.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744018380/profile_images/z5hkorhzm3afka9hzrn7.jpg	\N	\N	2001-04-12 00:00:00	\N	\N	t	\N
-16	Abishek	Abishek Khadka	Pokhara	170.0	78	Male	abishekkhadka70@gmail.com	$2a$12$5s.5AWrtAjb8mwzSsph9Ee6tZma3Ag0ObiUmkgkKTDylOkF4R5sjC	9806754600	Member	Beginner	Weight Loss	\N	2025-04-07 10:22:41.066	2025-04-10 02:20:07.57	diya thapa	2000.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744021580/profile_images/wqcxdb2evswypxkykxp7.jpg	\N	\N	2005-04-12 00:00:00	\N	\N	t	\N
+1	Aashish	Aashish Rauniyar	Nepal	175.5	70.2	Male	rauniyaaraashish@gmail.com	$2a$12$juVZxo6Hh3LDonhDwus5FO9guL3I24LSI8Y2CzX./aQLkuwrcZ6e.	1234567890	Admin	Athlete	Weight Loss	23C14111	2025-04-04 08:31:35.382	2025-04-15 11:06:47.739	None	2500.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744715207/profile_images/fhy76zwrwtq8eax8icew.jpg	\N	\N	2002-03-12 00:00:00	264453	2025-04-21 05:31:44.272	t	\N
+22	ananvolk	rabin Ranabhat 	LEKHNATH 	182.0	96	Male	ananvolk0000@gmail.com	$2a$12$NS19W3n9LBWUtDt2x7Xyn.ZhC6AVRAcymGPstHmcKxriGE2bepI5e	9826195292	Member	Beginner	Weight Loss	\N	2025-04-18 08:58:52.108	2025-04-18 09:15:28.655		2000.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744966953/profile_images/ezrqooktqfq2jnylbiwg.jpg	\N	\N	2003-11-26 00:00:00	\N	\N	t	\N
 17	test	test user	Pokhara	160	64	Female	test@gmail.com	$2a$12$fsk/Hwn99TpOXYDvUGQdi.4ocWmrPbWlBYrv6/fWm7eYtPEU.0BmW	1212121213	Trainer	Intermediate	Endurance		2025-04-09 05:36:52.184	2025-04-09 05:37:14.649	nothing	1200.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744177009/profile_images/dgwncefbwjifeamnagxq.png	\N	\N	2002-12-02 00:00:00	\N	\N	t	\N
-19	\N	\N	\N	\N	\N	\N	abinashchhetri.work@gmail.com	$2a$12$tFcOEhCbsYQ8QARpDdL89uzUOQh5WG/itcvE/5D4YczHUfkIp9ORq	\N	Member	\N	\N	\N	2025-04-10 05:16:31.928	2025-04-10 05:16:31.928	\N	\N	\N	\N	\N	\N	850845	2025-04-10 05:26:31.925	f	\N
-2	trainer	Trainer	Pokhara	175	78	Male	trainer@gmail.com	$2a$12$nxjAPaQCCsuLgElbTpEHS.zbr2nS.NMy0KQzD4GYWAjDqIAb1/7Ly	9811212123	Trainer	Beginner	Weight Loss	GE2323	2025-04-04 08:34:26.53	2025-04-10 05:20:44.172		1500.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1743880205/profile_images/qbfqylac7jsy53oai2xh.png	\N	\N	2002-12-12 00:00:00	\N	\N	t	\N
+20	aacis	Hashish Rauniyar	Pokhara	170.0	70.0	Male	ak.aashish19@gmail.com	$2a$12$tL77oQxstVxqhr2VeABKteT0vOQdENo.yimKMSKermXKTm0vDE6Ly	9806754601	Member	Beginner	Weight Loss	\N	2025-04-13 11:28:37.268	2025-04-13 11:28:37.268	nop	1600.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744543822/profile_images/mxgu1wwkdmlkdjbx4p46.jpg	\N	\N	2005-04-18 00:00:00	\N	\N	t	\N
+16	Abishek	Abishek Khadka	Pokhara	170.0	78	Male	abishekkhadka70@gmail.com	$2a$12$5s.5AWrtAjb8mwzSsph9Ee6tZma3Ag0ObiUmkgkKTDylOkF4R5sjC	9806754600	Trainer	Beginner	Weight Loss	\N	2025-04-07 10:22:41.066	2025-04-10 02:20:07.57	diya thapa	2000.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744021580/profile_images/wqcxdb2evswypxkykxp7.jpg	\N	\N	2005-04-12 00:00:00	\N	\N	t	\N
+23	Gamer	Gamer Dude	Pokhara	164.0	60.0	Male	gamera.ashish@universityedu.top	$2a$12$JmMnBVfKwArhRK00PPYXs.ZFQxx45CIKgs/kM2AOmSSEUKJ9hbbTG	9878675676	Member	Beginner	Weight Loss	\N	2025-04-18 09:40:36.277	2025-04-18 09:40:36.277		2000.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744969413/profile_images/vy6gbrwmsfvjeb3dczbb.jpg	\N	\N	2002-04-23 00:00:00	\N	\N	t	\N
+18	Rahul Rauniyar	Rahul Rauniyar	Pokhara	170.0	75	Female	me.splashrahul@gmail.com	$2a$12$URXQY8Ey1O7ISe1lpOV44.gTLTf6NRF6FMJC1b660d2/oQzZv2hni	9878675467	Member	Beginner	Weight Loss	wwww	2025-04-09 10:08:03.313	2025-04-20 04:24:39.408	nothing	1450.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744193857/profile_images/kldupg5pxjrngu57omba.jpg	\N	\N	1991-05-25 00:00:00	\N	\N	t	\N
+25	Ram	Ram	Kathmandu	170.0	62.5	Female	rauniyaarkrisha@gmail.com	$2a$12$GOaM9VsuYDT7Ip/yAO7ZS.4i2Q4hmRlCIsq.tZjRS3SppHjMIU1F6	9823456516	Member	Beginner	Weight Loss	\N	2025-04-19 17:51:44.235	2025-04-19 17:51:44.235	nothing	1800.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1745085253/profile_images/rwqjf0tuaor57xyfqjf4.jpg	\N	\N	2005-04-24 00:00:00	\N	\N	t	\N
+2	trainer	Aashish Gupta	Kathmandu	175	75	Male	trainer@gmail.com	$2a$12$nxjAPaQCCsuLgElbTpEHS.zbr2nS.NMy0KQzD4GYWAjDqIAb1/7Ly	9801234567	Trainer	Intermediate	Endurance	KOKO	2025-04-04 08:34:26.53	2025-04-21 05:21:51.453	Peanuts	1500.00	https://res.cloudinary.com/dqcdosfch/image/upload/v1744714427/profile_images/jwrtj47wueievnem8g4d.jpg	\N	\N	2002-12-12 00:00:00	\N	\N	t	\N
+29	Secret	Secret	Pokhara	170.0	70.0	Male	secretsofaashish@gmail.com	$2a$12$4./GBYmZHrQ1A.1YKwakRuwxsRWVjbOGotT3Sx5wrQnvUtbWSMh/S	9807878900	Member	Beginner	Weight Loss	\N	2025-04-21 08:53:52.315	2025-04-21 08:53:52.315		2000.00	\N	\N	\N	2005-04-26 00:00:00	\N	\N	t	\N
 \.
 
 
@@ -1481,6 +1588,22 @@ COPY public.weight_logs (id, user_id, weight, logged_at) FROM stdin;
 11	16	78.00	2025-04-10 02:20:07.574
 12	2	75.00	2025-04-10 02:36:54.448
 13	2	78.00	2025-04-10 05:20:44.187
+14	2	80.00	2025-04-13 02:32:45.695
+15	2	82.00	2025-04-13 03:04:11.224
+16	2	83.00	2025-04-13 03:06:02.858
+17	2	84.00	2025-04-13 03:06:13.579
+18	2	85.00	2025-04-13 03:08:51.126
+19	2	86.00	2025-04-13 03:09:17.489
+20	21	90.00	2025-04-15 08:03:29.007
+21	21	89.00	2025-04-15 08:03:37.079
+22	22	90.00	2025-04-18 09:13:29.383
+23	22	88.00	2025-04-18 09:13:34.597
+24	22	96.00	2025-04-18 09:15:28.657
+25	18	75.00	2025-04-20 04:24:39.45
+26	27	70.00	2025-04-20 12:53:54.204
+27	27	72.00	2025-04-20 12:53:58.213
+28	27	70.00	2025-04-20 12:54:04.635
+29	2	75.00	2025-04-21 05:21:51.459
 \.
 
 
@@ -1489,7 +1612,18 @@ COPY public.weight_logs (id, user_id, weight, logged_at) FROM stdin;
 --
 
 COPY public.workoutexercises (workout_exercise_id, workout_id, exercise_id, sets, reps, duration) FROM stdin;
-1	3	1	3	12	10.00
+5	7	8	3	12	12.00
+6	7	12	3	12	12.00
+7	8	7	3	12	1.00
+8	8	13	3	12	10.00
+9	8	16	2	13	10.00
+10	8	22	4	15	10.00
+11	9	6	3	12	12.00
+12	9	9	3	12	12.00
+13	9	10	3	12	8.00
+15	9	21	4	13	10.00
+16	10	5	3	12	10.00
+17	10	18	3	15	12.00
 \.
 
 
@@ -1498,12 +1632,16 @@ COPY public.workoutexercises (workout_exercise_id, workout_id, exercise_id, sets
 --
 
 COPY public.workoutexerciseslogs (log_id, workout_log_id, exercise_id, skipped, exercise_duration, rest_duration) FROM stdin;
-1	1	1	f	0.55	0.03
-3	2	1	f	0.33	0.10
-5	3	1	f	0.13	0.05
-6	4	1	f	0.13	0.50
-7	5	1	f	0.08	0.08
-8	6	1	f	0.27	0.50
+12	10	8	f	0.20	0.33
+13	10	12	f	0.17	0.02
+14	11	8	f	0.68	0.50
+15	11	12	f	0.02	0.00
+16	12	7	f	0.83	0.05
+17	12	13	f	0.02	0.02
+18	12	16	f	0.00	0.02
+19	12	22	f	0.00	0.00
+20	13	8	f	0.18	0.18
+21	13	12	f	0.12	0.02
 \.
 
 
@@ -1512,12 +1650,10 @@ COPY public.workoutexerciseslogs (log_id, workout_log_id, exercise_id, skipped, 
 --
 
 COPY public.workoutlogs (log_id, user_id, workout_id, workout_date, calories_burned, performance_notes, total_duration) FROM stdin;
-1	2	3	2025-04-08 12:19:20.749	0.00	Should increase weights next time	0.63
-2	2	3	2025-04-08 17:20:08.013	0.00	Should increase weights next time.	0.58
-3	18	3	2025-04-10 02:00:06.411	0.00	Felt great during this workout  by pradeep!	0.18
-4	2	3	2025-04-10 02:40:15.132	0.00	Struggled with proper form, need to focus on technique. by hem	0.63
-5	2	3	2025-04-10 02:46:59.612	0.00	aashish	0.17
-6	2	3	2025-04-10 05:23:02.775	0.00	WOKROUT WITH ABINASH Should increase weights next time.	0.77
+10	22	7	2025-04-18 09:04:56.313	0.00	its didn't go well	0.72
+11	2	7	2025-04-18 09:55:13.642	0.00		1.20
+12	2	8	2025-04-19 16:53:18.636	0.00	Should increase weights next time.	0.93
+13	27	7	2025-04-20 13:00:03.878	0.00	ramro workout vayo	0.50
 \.
 
 
@@ -1526,8 +1662,11 @@ COPY public.workoutlogs (log_id, user_id, workout_id, workout_date, calories_bur
 --
 
 COPY public.workouts (workout_id, user_id, workout_name, description, target_muscle_group, difficulty, trainer_id, created_at, updated_at, fitness_level, goal_type, workout_image) FROM stdin;
-2	\N	Aashish Workout	A comprehensive workout for overall strength. Very nice and effective for weight loss.  	Full Body	Intermediate	2	2025-04-04 09:18:21.581	2025-04-04 09:18:21.582	Beginner	Weight Loss	https://res.cloudinary.com/dqcdosfch/image/upload/v1743758300/workout_images/uanxnbxenucfd12yxkke.jpg
-3	\N	chest workout 	overall chest workout	Chest	Easy	2	2025-04-08 12:17:32.916	2025-04-08 12:17:32.918	Athlete	Weight Loss	https://res.cloudinary.com/dqcdosfch/image/upload/v1744114650/workout_images/kgkwzeduyoknwvxsmoga.jpg
+7	\N	Chest Workout	Best workout plan for proper development of chest.	Chest	Easy	2	2025-04-18 08:35:35.244	2025-04-18 08:35:35.246	Beginner	Muscle Gain	https://res.cloudinary.com/dqcdosfch/image/upload/v1744965330/workout_images/zbcez7hdlvpadjjt2j1j.jpg
+8	\N	Ultimate Back Workout	The best back workout routine for a properly toned and strong back	Back	Intermediate	2	2025-04-18 08:51:24.898	2025-04-18 08:51:24.903	Beginner	Muscle Gain	https://res.cloudinary.com/dqcdosfch/image/upload/v1744966279/workout_images/yio7u2oqvj3ufosdlv98.jpg
+9	\N	Leg Routine	Best workout for strong legs. Do it twice a week for better result	Legs	Hard	2	2025-04-18 08:53:19.065	2025-04-18 08:53:19.067	Intermediate	Weight Loss	https://res.cloudinary.com/dqcdosfch/image/upload/v1744966393/workout_images/uofuzjvdrjnt4wxcrptk.jpg
+10	\N	Arms Routine	Best biceps and arms workout for gorilla like arms	Arms	Easy	2	2025-04-18 08:55:39.876	2025-04-18 08:55:39.877	Intermediate	Weight Loss	https://res.cloudinary.com/dqcdosfch/image/upload/v1744966534/workout_images/m5mbszrghs7z9nzp8odm.jpg
+11	\N	Aashish Workout	A comprehensive workout for overall strength. Very nice and effective for weight loss.  	Full Body	Intermediate	2	2025-04-21 05:22:03	2025-04-21 05:22:03.001	Beginner	Weight Loss	https://res.cloudinary.com/dqcdosfch/image/upload/v1745212922/workout_images/mhtmlsb3jaq1jdbhkg7g.jpg
 \.
 
 
@@ -1535,7 +1674,7 @@ COPY public.workouts (workout_id, user_id, workout_name, description, target_mus
 -- Name: attendance_attendance_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.attendance_attendance_id_seq', 1, true);
+SELECT pg_catalog.setval('public.attendance_attendance_id_seq', 5, true);
 
 
 --
@@ -1549,35 +1688,35 @@ SELECT pg_catalog.setval('public.chatconversations_chat_id_seq', 1, false);
 -- Name: chatmessages_message_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.chatmessages_message_id_seq', 8, true);
+SELECT pg_catalog.setval('public.chatmessages_message_id_seq', 53, true);
 
 
 --
 -- Name: customworkoutexercises_custom_workout_exercise_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.customworkoutexercises_custom_workout_exercise_id_seq', 3, true);
+SELECT pg_catalog.setval('public.customworkoutexercises_custom_workout_exercise_id_seq', 12, true);
 
 
 --
 -- Name: customworkouts_custom_workout_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.customworkouts_custom_workout_id_seq', 3, true);
+SELECT pg_catalog.setval('public.customworkouts_custom_workout_id_seq', 13, true);
 
 
 --
 -- Name: dietplans_diet_plan_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.dietplans_diet_plan_id_seq', 1, true);
+SELECT pg_catalog.setval('public.dietplans_diet_plan_id_seq', 5, true);
 
 
 --
 -- Name: exercises_exercise_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.exercises_exercise_id_seq', 4, true);
+SELECT pg_catalog.setval('public.exercises_exercise_id_seq', 25, true);
 
 
 --
@@ -1591,14 +1730,14 @@ SELECT pg_catalog.setval('public.gym_gym_id_seq', 1, false);
 -- Name: meallogs_meal_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.meallogs_meal_log_id_seq', 6, true);
+SELECT pg_catalog.setval('public.meallogs_meal_log_id_seq', 20, true);
 
 
 --
 -- Name: meals_meal_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.meals_meal_id_seq', 1, true);
+SELECT pg_catalog.setval('public.meals_meal_id_seq', 10, true);
 
 
 --
@@ -1612,21 +1751,21 @@ SELECT pg_catalog.setval('public.membership_plan_plan_id_seq', 2, true);
 -- Name: memberships_membership_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.memberships_membership_id_seq', 9, true);
+SELECT pg_catalog.setval('public.memberships_membership_id_seq', 28, true);
 
 
 --
 -- Name: payments_payment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.payments_payment_id_seq', 8, true);
+SELECT pg_catalog.setval('public.payments_payment_id_seq', 26, true);
 
 
 --
 -- Name: personal_bests_personal_best_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.personal_bests_personal_best_id_seq', 4, true);
+SELECT pg_catalog.setval('public.personal_bests_personal_best_id_seq', 14, true);
 
 
 --
@@ -1640,49 +1779,49 @@ SELECT pg_catalog.setval('public.subscription_changes_change_id_seq', 1, false);
 -- Name: supported_exercises_supported_exercise_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.supported_exercises_supported_exercise_id_seq', 3, true);
+SELECT pg_catalog.setval('public.supported_exercises_supported_exercise_id_seq', 4, true);
 
 
 --
 -- Name: users_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_user_id_seq', 19, true);
+SELECT pg_catalog.setval('public.users_user_id_seq', 29, true);
 
 
 --
 -- Name: weight_logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.weight_logs_id_seq', 13, true);
+SELECT pg_catalog.setval('public.weight_logs_id_seq', 29, true);
 
 
 --
 -- Name: workoutexercises_workout_exercise_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.workoutexercises_workout_exercise_id_seq', 2, true);
+SELECT pg_catalog.setval('public.workoutexercises_workout_exercise_id_seq', 17, true);
 
 
 --
 -- Name: workoutexerciseslogs_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.workoutexerciseslogs_log_id_seq', 8, true);
+SELECT pg_catalog.setval('public.workoutexerciseslogs_log_id_seq', 21, true);
 
 
 --
 -- Name: workoutlogs_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.workoutlogs_log_id_seq', 6, true);
+SELECT pg_catalog.setval('public.workoutlogs_log_id_seq', 13, true);
 
 
 --
 -- Name: workouts_workout_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.workouts_workout_id_seq', 3, true);
+SELECT pg_catalog.setval('public.workouts_workout_id_seq', 11, true);
 
 
 --

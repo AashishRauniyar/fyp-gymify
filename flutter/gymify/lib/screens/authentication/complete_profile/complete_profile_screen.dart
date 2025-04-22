@@ -46,6 +46,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
   bool _isUsernameAvailable = true;
   bool _isPhoneAvailable = true;
   bool _isKg = true; // For weight unit toggle
+  bool _useDefaultAvatar = true; // Track if we're using the default avatar
 
   // Lists for dropdowns
   final List<String> _genders = ['Male', 'Female', 'Other'];
@@ -80,11 +81,19 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       if (pickedFile != null) {
         setState(() {
           _profileImage = File(pickedFile.path);
+          _useDefaultAvatar = false;
         });
       }
     } catch (e) {
       showCoolSnackBar(context, "Error picking image: $e", false);
     }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _profileImage = null;
+      _useDefaultAvatar = true;
+    });
   }
 
   Future<void> _checkUsername(SignupProvider provider) async {
@@ -481,22 +490,46 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
                     // Profile image picker
                     GestureDetector(
                       onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundColor:
-                            theme.colorScheme.primary.withOpacity(0.2),
-                        backgroundImage: _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                        child: _profileImage == null
-                            ? Icon(
-                                Icons.add_a_photo,
-                                size: 40,
+                      child: Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundColor:
+                                theme.colorScheme.primary.withOpacity(0.2),
+                            backgroundImage: _profileImage != null
+                                ? FileImage(_profileImage!)
+                                : const AssetImage(
+                                        'assets/images/profile/default_avatar.jpg')
+                                    as ImageProvider,
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
                                 color: theme.colorScheme.primary,
-                              )
-                            : null,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: theme.colorScheme.onPrimary,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(height: 16),
+                    if (_profileImage != null)
+                      TextButton(
+                        onPressed: _removeImage,
+                        child: Text(
+                          'Use Default Avatar',
+                          style: TextStyle(color: theme.colorScheme.error),
+                        ),
+                      ),
                     const SizedBox(height: 16),
                     Text(
                       'Add Profile Picture',

@@ -1,0 +1,1980 @@
+{
+    "info": {
+      "_postman_id": "a9f8e3b7-c142-4d89-9a5c-f5d0d3e7e868",
+      "name": "Gymify API",
+      "description": "A comprehensive API collection for Gymify fitness app",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Authentication",
+        "item": [
+          {
+            "name": "Register User",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/register",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "register"]
+              },
+              "description": "Register a new user"
+            }
+          },
+          {
+            "name": "Login",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/login",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "login"]
+              },
+              "description": "Login user and receive JWT token"
+            }
+          },
+          {
+            "name": "Verify OTP",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/verify-otp",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "verify-otp"]
+              },
+              "description": "Verify OTP for user registration"
+            }
+          },
+          {
+            "name": "Resend OTP",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/resend-otp",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "resend-otp"]
+              },
+              "description": "Resend OTP for verification"
+            }
+          },
+          {
+            "name": "Forgot Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/forgot-password",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "forgot-password"]
+              },
+              "description": "Request OTP for password reset"
+            }
+          },
+          {
+            "name": "Reset Password",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"email\": \"user@example.com\",\n  \"otp\": \"123456\",\n  \"new_password\": \"newpassword123\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/auth/reset-password",
+                "host": ["{{base_url}}"],
+                "path": ["auth", "reset-password"]
+              },
+              "description": "Reset password using OTP"
+            }
+          }
+        ]
+      },
+      {
+        "name": "User Profile",
+        "item": [
+          {
+            "name": "Get Profile",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/profile",
+                "host": ["{{base_url}}"],
+                "path": ["profile"]
+              },
+              "description": "Get current user profile"
+            }
+          },
+          {
+            "name": "Update Profile",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"full_name\": \"John Doe Updated\",\n  \"phone_number\": \"9876543210\",\n  \"address\": \"123 Main St\",\n  \"fitness_level\": \"Intermediate\",\n  \"goal_type\": \"Weight_Loss\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/profile",
+                "host": ["{{base_url}}"],
+                "path": ["profile"]
+              },
+              "description": "Update user profile"
+            }
+          },
+          {
+            "name": "Update Weight",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"current_weight\": 75.5\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/weight",
+                "host": ["{{base_url}}"],
+                "path": ["weight"]
+              },
+              "description": "Log user's new weight"
+            }
+          },
+          {
+            "name": "Get Weight History",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/weight-history",
+                "host": ["{{base_url}}"],
+                "path": ["weight-history"]
+              },
+              "description": "Get user's weight history"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Exercises",
+        "item": [
+          {
+            "name": "Get All Exercises",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/exercises",
+                "host": ["{{base_url}}"],
+                "path": ["exercises"]
+              },
+              "description": "Get all available exercises"
+            }
+          },
+          {
+            "name": "Get Exercise By ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/exercises/1",
+                "host": ["{{base_url}}"],
+                "path": ["exercises", "1"]
+              },
+              "description": "Get details of a specific exercise"
+            }
+          },
+          {
+            "name": "Create Exercise (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "exercise_name",
+                    "value": "Bench Press",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "Chest exercise",
+                    "type": "text"
+                  },
+                  {
+                    "key": "target_muscle_group",
+                    "value": "Chest",
+                    "type": "text"
+                  },
+                  {
+                    "key": "calories_burned_per_minute",
+                    "value": "8.5",
+                    "type": "text"
+                  },
+                  {
+                    "key": "image",
+                    "type": "file",
+                    "src": "/path/to/image.jpg"
+                  },
+                  {
+                    "key": "video",
+                    "type": "file",
+                    "src": "/path/to/video.mp4"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/exercises",
+                "host": ["{{base_url}}"],
+                "path": ["exercises"]
+              },
+              "description": "Create a new exercise (Trainer only)"
+            }
+          },
+          {
+            "name": "Update Exercise (Trainer Only)",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"exercise_name\": \"Incline Bench Press\",\n  \"description\": \"Upper chest exercise\",\n  \"target_muscle_group\": \"Upper Chest\",\n  \"calories_burned_per_minute\": 9.0\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/exercises/1",
+                "host": ["{{base_url}}"],
+                "path": ["exercises", "1"]
+              },
+              "description": "Update an exercise by ID (Trainer only)"
+            }
+          },
+          {
+            "name": "Delete Exercise (Trainer Only)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/exercises/1",
+                "host": ["{{base_url}}"],
+                "path": ["exercises", "1"]
+              },
+              "description": "Delete an exercise by ID (Trainer only)"
+            }
+          },
+          {
+            "name": "Bulk Create Exercises (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "exercises",
+                    "value": "[{\"exercise_name\":\"Push-ups\",\"description\":\"Basic bodyweight exercise\",\"target_muscle_group\":\"Chest\",\"calories_burned_per_minute\":10},{\"exercise_name\":\"Pull-ups\",\"description\":\"Upper body strength exercise\",\"target_muscle_group\":\"Back\",\"calories_burned_per_minute\":12}]",
+                    "type": "text"
+                  },
+                  {
+                    "key": "images",
+                    "type": "file",
+                    "src": "/path/to/exercise_0_image.jpg"
+                  },
+                  {
+                    "key": "videos",
+                    "type": "file",
+                    "src": "/path/to/exercise_0_video.mp4"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/bulk-exercises",
+                "host": ["{{base_url}}"],
+                "path": ["bulk-exercises"]
+              },
+              "description": "Bulk create exercises with media files (Trainer only)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Workouts",
+        "item": [
+          {
+            "name": "Get All Workouts",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/workouts",
+                "host": ["{{base_url}}"],
+                "path": ["workouts"]
+              },
+              "description": "Get all available workouts"
+            }
+          },
+          {
+            "name": "Get Workout By ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/workouts/1",
+                "host": ["{{base_url}}"],
+                "path": ["workouts", "1"]
+              },
+              "description": "Get details of a specific workout"
+            }
+          },
+          {
+            "name": "Create Workout (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "workout_name",
+                    "value": "Full Body Workout",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "Complete full body workout for beginners",
+                    "type": "text"
+                  },
+                  {
+                    "key": "target_muscle_group",
+                    "value": "Full Body",
+                    "type": "text"
+                  },
+                  {
+                    "key": "difficulty",
+                    "value": "Intermediate",
+                    "type": "text"
+                  },
+                  {
+                    "key": "goal_type",
+                    "value": "Muscle_Gain",
+                    "type": "text"
+                  },
+                  {
+                    "key": "fitness_level",
+                    "value": "Intermediate",
+                    "type": "text"
+                  },
+                  {
+                    "key": "workout_image",
+                    "type": "file",
+                    "src": "/path/to/workout.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/create-workouts",
+                "host": ["{{base_url}}"],
+                "path": ["create-workouts"]
+              },
+              "description": "Create a new workout (Trainer only)"
+            }
+          },
+          {
+            "name": "Add Exercise to Workout (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"exercise_id\": 1,\n  \"sets\": 3,\n  \"reps\": 12,\n  \"duration\": 0\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/workouts/1/exercises",
+                "host": ["{{base_url}}"],
+                "path": ["workouts", "1", "exercises"]
+              },
+              "description": "Add an exercise to a workout (Trainer only)"
+            }
+          },
+          {
+            "name": "Update Workout (Trainer Only)",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"workout_name\": \"Advanced Full Body Workout\",\n  \"description\": \"Intense full body workout\",\n  \"target_muscle_group\": \"Full Body\",\n  \"difficulty\": \"Hard\",\n  \"goal_type\": \"Muscle_Gain\",\n  \"fitness_level\": \"Advanced\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/workouts/1",
+                "host": ["{{base_url}}"],
+                "path": ["workouts", "1"]
+              },
+              "description": "Update a workout by ID (Trainer only)"
+            }
+          },
+          {
+            "name": "Delete Workout (Trainer Only)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/workouts/1",
+                "host": ["{{base_url}}"],
+                "path": ["workouts", "1"]
+              },
+              "description": "Delete a workout by ID (Trainer only)"
+            }
+          },
+          {
+            "name": "Bulk Create Workouts (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "workouts",
+                    "value": "{\"workouts\":[{\"workout_name\":\"Full Body Blast\",\"description\":\"Complete full body workout\",\"target_muscle_group\":\"Full Body\",\"difficulty\":\"Intermediate\",\"goal_type\":\"Muscle_Gain\",\"fitness_level\":\"Intermediate\",\"exercises\":[{\"exercise_id\":1,\"sets\":3,\"reps\":12,\"duration\":0},{\"exercise_id\":2,\"sets\":4,\"reps\":10,\"duration\":0}]}]}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "workout_images",
+                    "type": "file",
+                    "src": "/path/to/workout_0.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/bulk-create-workouts",
+                "host": ["{{base_url}}"],
+                "path": ["bulk-create-workouts"]
+              },
+              "description": "Create multiple workouts with exercises (Trainer only)"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Workout Logs",
+        "item": [
+          {
+            "name": "Log Workout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"workout_id\": 1,\n  \"total_duration\": 60,\n  \"calories_burned\": 350,\n  \"performance_notes\": \"Great session, increased weight on all sets.\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/workoutlogs",
+                "host": ["{{base_url}}"],
+                "path": ["workoutlogs"]
+              },
+              "description": "Log a completed workout"
+            }
+          },
+          {
+            "name": "Get Workout Logs for Workout",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/workoutlogs/1",
+                "host": ["{{base_url}}"],
+                "path": ["workoutlogs", "1"]
+              },
+              "description": "Get logs for a specific workout"
+            }
+          },
+          {
+            "name": "Get User Logs",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/userlogs/1",
+                "host": ["{{base_url}}"],
+                "path": ["userlogs", "1"]
+              },
+              "description": "Get all logs for a specific user"
+            }
+          },
+          {
+            "name": "Update Exercise Log",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"sets\": 4,\n  \"reps\": 12,\n  \"weight\": 70,\n  \"exercise_duration\": 15,\n  \"rest_duration\": 60\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/workoutexerciseslogs/1",
+                "host": ["{{base_url}}"],
+                "path": ["workoutexerciseslogs", "1"]
+              },
+              "description": "Update a specific exercise log"
+            }
+          },
+          {
+            "name": "Delete Log",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/logs/1/workout",
+                "host": ["{{base_url}}"],
+                "path": ["logs", "1", "workout"]
+              },
+              "description": "Delete a workout or exercise log (type can be 'workout' or 'exercise')"
+            }
+          },
+          {
+            "name": "Log Multiple Exercises",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"workout_log_id\": 1,\n  \"exercises\": [\n    {\n      \"exercise_id\": 1,\n      \"sets\": 3,\n      \"reps\": 12,\n      \"weight\": 60,\n      \"exercise_duration\": 10,\n      \"rest_duration\": 60\n    },\n    {\n      \"exercise_id\": 2,\n      \"sets\": 3,\n      \"reps\": 10,\n      \"weight\": 80,\n      \"exercise_duration\": 8,\n      \"rest_duration\": 90\n    }\n  ]\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/bulkworkoutexerciseslogs",
+                "host": ["{{base_url}}"],
+                "path": ["bulkworkoutexerciseslogs"]
+              },
+              "description": "Log multiple exercises for a workout"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Custom Workouts",
+        "item": [
+          {
+            "name": "Create Custom Workout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"custom_workout_name\": \"My Custom Chest Day\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/custom-workouts",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts"]
+              },
+              "description": "Create a new custom workout"
+            }
+          },
+          {
+            "name": "Get User's Custom Workouts",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/custom-workouts",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts"]
+              },
+              "description": "Get all custom workouts of the current user"
+            }
+          },
+          {
+            "name": "Add Exercise to Custom Workout",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"custom_workout_id\": 1,\n  \"exercises\": [\n    {\n      \"exercise_id\": 1,\n      \"sets\": 3,\n      \"reps\": 12,\n      \"duration\": 0\n    },\n    {\n      \"exercise_id\": 2,\n      \"sets\": 4,\n      \"reps\": 10,\n      \"duration\": 0\n    }\n  ]\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/custom-workouts/add-exercise",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts", "add-exercise"]
+              },
+              "description": "Add exercises to a custom workout"
+            }
+          },
+          {
+            "name": "Get Custom Workout Exercises",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/custom-workouts/1/exercises",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts", "1", "exercises"]
+              },
+              "description": "Get all exercises in a specific custom workout"
+            }
+          },
+          {
+            "name": "Get Custom Workout by ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/custom-workouts/1",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts", "1"]
+              },
+              "description": "Get custom workout details by ID"
+            }
+          },
+          {
+            "name": "Remove Exercise from Custom Workout",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/custom-workouts/exercises/1",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts", "exercises", "1"]
+              },
+              "description": "Remove an exercise from a custom workout"
+            }
+          },
+          {
+            "name": "Delete Custom Workout",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/custom-workouts/1",
+                "host": ["{{base_url}}"],
+                "path": ["custom-workouts", "1"]
+              },
+              "description": "Delete a custom workout"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Personal Best",
+        "item": [
+          {
+            "name": "Create Supported Exercise (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"exerciseName\": \"Bench Press\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/supported_exercise",
+                "host": ["{{base_url}}"],
+                "path": ["supported_exercise"]
+              },
+              "description": "Create a new supported exercise for personal bests tracking"
+            }
+          },
+          {
+            "name": "Delete Supported Exercise (Trainer Only)",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/supported_exercise/1",
+                "host": ["{{base_url}}"],
+                "path": ["supported_exercise", "1"]
+              },
+              "description": "Delete a supported exercise by ID"
+            }
+          },
+          {
+            "name": "Log Personal Best",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"exerciseId\": 1,\n  \"weight\": 100,\n  \"reps\": 5\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/personal_best",
+                "host": ["{{base_url}}"],
+                "path": ["personal_best"]
+              },
+              "description": "Log a new personal best for an exercise"
+            }
+          },
+          {
+            "name": "Get All Supported Exercises",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/supported_exercises",
+                "host": ["{{base_url}}"],
+                "path": ["supported_exercises"]
+              },
+              "description": "Get all supported exercises for personal bests"
+            }
+          },
+          {
+            "name": "Get Personal Best History",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/history/1",
+                "host": ["{{base_url}}"],
+                "path": ["history", "1"]
+              },
+              "description": "Get personal best history for a specific exercise"
+            }
+          },
+          {
+            "name": "Get Current Personal Bests",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/current_bests",
+                "host": ["{{base_url}}"],
+                "path": ["current_bests"]
+              },
+              "description": "Get current personal bests for all exercises"
+            }
+          },
+          {
+            "name": "Delete Personal Best",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/personal_best/1",
+                "host": ["{{base_url}}"],
+                "path": ["personal_best", "1"]
+              },
+              "description": "Delete a personal best record"
+            }
+          },
+          {
+            "name": "Get Exercise Progress Over Time",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/progress/1",
+                "host": ["{{base_url}}"],
+                "path": ["progress", "1"]
+              },
+              "description": "Get exercise progress over time"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Diet Plans",
+        "item": [
+          {
+            "name": "Create Diet Plan (Trainer Only)",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "name",
+                    "value": "Weight Loss Plan",
+                    "type": "text"
+                  },
+                  {
+                    "key": "calorie_goal",
+                    "value": "1800",
+                    "type": "text"
+                  },
+                  {
+                    "key": "goal_type",
+                    "value": "Weight_Loss",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "A balanced diet plan for weight loss",
+                    "type": "text"
+                  },
+                  {
+                    "key": "image",
+                    "type": "file",
+                    "src": "/path/to/diet_image.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/diet-plans",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans"]
+              },
+              "description": "Create a new diet plan"
+            }
+          },
+          {
+            "name": "Get All Diet Plans",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/diet-plans",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans"]
+              },
+              "description": "Get all diet plans"
+            }
+          },
+          {
+            "name": "Get Diet Plan By ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/diet-plans/1",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans", "1"]
+              },
+              "description": "Get a specific diet plan by ID"
+            }
+          },
+          {
+            "name": "Update Diet Plan",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"name\": \"Updated Weight Loss Plan\",\n  \"calorie_goal\": 1700,\n  \"goal_type\": \"Weight_Loss\",\n  \"description\": \"Updated balanced diet plan for weight loss\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/diet-plans/1",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans", "1"]
+              },
+              "description": "Update a diet plan"
+            }
+          },
+          {
+            "name": "Delete Diet Plan",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/diet-plans/1",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans", "1"]
+              },
+              "description": "Delete a diet plan"
+            }
+          },
+          {
+            "name": "Create Meal",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "diet_plan_id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meal_name",
+                    "value": "Breakfast",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meal_time",
+                    "value": "Morning",
+                    "type": "text"
+                  },
+                  {
+                    "key": "calories",
+                    "value": "450",
+                    "type": "text"
+                  },
+                  {
+                    "key": "description",
+                    "value": "Oatmeal with fruit",
+                    "type": "text"
+                  },
+                  {
+                    "key": "macronutrients",
+                    "value": "Protein: 15g, Carbs: 60g, Fat: 10g",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meal_image",
+                    "type": "file",
+                    "src": "/path/to/meal_image.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/meals",
+                "host": ["{{base_url}}"],
+                "path": ["meals"]
+              },
+              "description": "Create a new meal"
+            }
+          },
+          {
+            "name": "Add Meal To Diet Plan",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "diet_plan_id",
+                    "value": "1",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meals",
+                    "value": "[{\"meal_name\":\"Lunch\",\"meal_time\":\"Afternoon\",\"calories\":600,\"description\":\"Chicken salad\",\"macronutrients\":\"Protein: 40g, Carbs: 30g, Fat: 20g\"}]",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meal_image",
+                    "type": "file",
+                    "src": "/path/to/meal_image.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/diet-plans/add-meal",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans", "add-meal"]
+              },
+              "description": "Add a meal to a diet plan"
+            }
+          },
+          {
+            "name": "Get Meals By Diet Plan",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/diet-plans/1/meals",
+                "host": ["{{base_url}}"],
+                "path": ["diet-plans", "1", "meals"]
+              },
+              "description": "Get all meals for a diet plan"
+            }
+          },
+          {
+            "name": "Get All Meals",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/meals",
+                "host": ["{{base_url}}"],
+                "path": ["meals"]
+              },
+              "description": "Get all meals"
+            }
+          },
+          {
+            "name": "Get Meal By ID",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/meals/1",
+                "host": ["{{base_url}}"],
+                "path": ["meals", "1"]
+              },
+              "description": "Get a specific meal by ID"
+            }
+          },
+          {
+            "name": "Update Meal",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "body": {
+                "mode": "formdata",
+                "formdata": [
+                  {
+                    "key": "meal_name",
+                    "value": "Updated Breakfast",
+                    "type": "text"
+                  },
+                  {
+                    "key": "calories",
+                    "value": "400",
+                    "type": "text"
+                  },
+                  {
+                    "key": "meal_image",
+                    "type": "file",
+                    "src": "/path/to/new_meal_image.jpg"
+                  }
+                ]
+              },
+              "url": {
+                "raw": "{{base_url}}/meals/1",
+                "host": ["{{base_url}}"],
+                "path": ["meals", "1"]
+              },
+              "description": "Update a meal"
+            }
+          },
+          {
+            "name": "Delete Meal",
+            "request": {
+              "method": "DELETE",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/meals/1",
+                "host": ["{{base_url}}"],
+                "path": ["meals", "1"]
+              },
+              "description": "Delete a meal"
+            }
+          },
+          {
+            "name": "Log Meal",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"meal_id\": 1,\n  \"quantity\": 1,\n  \"log_time\": \"2025-04-21T12:30:00Z\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/meal-logs",
+                "host": ["{{base_url}}"],
+                "path": ["meal-logs"]
+              },
+              "description": "Log a meal consumption"
+            }
+          },
+          {
+            "name": "Get User's Meal Logs",
+            "request": {
+              "method": "GET",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                }
+              ],
+              "url": {
+                "raw": "{{base_url}}/meal-logs",
+                "host": ["{{base_url}}"],
+                "path": ["meal-logs"]
+              },
+              "description": "Get meal logs for the current user"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Payment",
+        "item": [
+          {
+            "name": "Initiate Khalti Payment",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Authorization",
+                  "value": "Bearer {{token}}"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"user_id\": 1,\n  \"plan_id\": 1,\n  \"amount\": 1000,\n  \"payment_method\": \"Khalti\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/payments/khalti/initiate",
+                "host": ["{{base_url}}"],
+                "path": ["payments", "khalti", "initiate"]
+              },
+              "description": "Initiate a payment with Khalti"
+            }
+          },
+          {
+            "name": "Verify Khalti Payment",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": {
+                "mode": "raw",
+                "raw": "{\n  \"transaction_id\": \"TXN-123456789\",\n  \"status\": \"Completed\"\n}"
+              },
+              "url": {
+                "raw": "{{base_url}}/payments/khalti/verify",
+                "host": ["{{base_url}}"],
+                "path": ["payments", "khalti", "verify"]
+              },
+              "description": "Verify a Khalti payment"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Admin",
+        "item": [
+          {
+            "name": "Users Management",
+            "item": [
+              {
+                "name": "Get All Users",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/users",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users"]
+                  },
+                  "description": "Get all users (Admin only)"
+                }
+              },
+              {
+                "name": "Get User By ID",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/users/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users", "1"]
+                  },
+                  "description": "Get details of a specific user (Admin only)"
+                }
+              },
+              {
+                "name": "Update User",
+                "request": {
+                  "method": "PUT",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"user_name\": \"updated_username\",\n  \"full_name\": \"Updated Full Name\",\n  \"phone_number\": \"9876543210\",\n  \"role\": \"Member\"\n}"
+                  },
+                  "url": {
+                    "raw": "{{base_url}}/admin/users/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users", "1"]
+                  },
+                  "description": "Update a user (Admin only)"
+                }
+              },
+              {
+                "name": "Delete User",
+                "request": {
+                  "method": "DELETE",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/users/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users", "1"]
+                  },
+                  "description": "Delete a user (Admin only)"
+                }
+              },
+              {
+                "name": "Register New User (Admin)",
+                "request": {
+                  "method": "POST",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "body": {
+                    "mode": "formdata",
+                    "formdata": [
+                      {
+                        "key": "email",
+                        "value": "newuser@example.com",
+                        "type": "text"
+                      },
+                      {
+                        "key": "password",
+                        "value": "Password123!",
+                        "type": "text"
+                      },
+                      {
+                        "key": "user_name",
+                        "value": "newuser",
+                        "type": "text"
+                      },
+                      {
+                        "key": "full_name",
+                        "value": "New User",
+                        "type": "text"
+                      },
+                      {
+                        "key": "role",
+                        "value": "Member",
+                        "type": "text"
+                      },
+                      {
+                        "key": "profile_image",
+                        "type": "file",
+                        "src": "/path/to/image.jpg"
+                      }
+                    ]
+                  },
+                  "url": {
+                    "raw": "{{base_url}}/admin/users/register",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users", "register"]
+                  },
+                  "description": "Register a new user by Admin"
+                }
+              },
+              {
+                "name": "Get User Membership Details",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/users/1/membership",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "users", "1", "membership"]
+                  },
+                  "description": "Get membership details of a specific user (Admin only)"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Dashboard",
+            "item": [
+              {
+                "name": "Get Dashboard Stats",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/dashboard",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "dashboard"]
+                  },
+                  "description": "Get overview statistics for admin dashboard"
+                }
+              },
+              {
+                "name": "Get Monthly Revenue",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/revenue?year=2024",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "revenue"],
+                    "query": [
+                      {
+                        "key": "year",
+                        "value": "2024"
+                      }
+                    ]
+                  },
+                  "description": "Get monthly revenue data for charts"
+                }
+              },
+              {
+                "name": "Get User Growth Stats",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/user-growth?year=2024",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "user-growth"],
+                    "query": [
+                      {
+                        "key": "year",
+                        "value": "2024"
+                      }
+                    ]
+                  },
+                  "description": "Get user growth statistics"
+                }
+              },
+              {
+                "name": "Get User Demographics",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/user-demographics",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "user-demographics"]
+                  },
+                  "description": "Get user demographics data for charts"
+                }
+              },
+              {
+                "name": "Get Attendance Trends",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance-trends?days=30",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance-trends"],
+                    "query": [
+                      {
+                        "key": "days",
+                        "value": "30"
+                      }
+                    ]
+                  },
+                  "description": "Get attendance trends data"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Attendance Management",
+            "item": [
+              {
+                "name": "Get All Attendance Records",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance?page=1&limit=20",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance"],
+                    "query": [
+                      {
+                        "key": "page",
+                        "value": "1"
+                      },
+                      {
+                        "key": "limit",
+                        "value": "20"
+                      },
+                      {
+                        "key": "start_date",
+                        "value": "2025-04-01",
+                        "disabled": true
+                      },
+                      {
+                        "key": "end_date",
+                        "value": "2025-04-21",
+                        "disabled": true
+                      },
+                      {
+                        "key": "user_id",
+                        "value": "1",
+                        "disabled": true
+                      }
+                    ]
+                  },
+                  "description": "Get attendance records with pagination and filters"
+                }
+              },
+              {
+                "name": "Get User Attendance Details",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance/user/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance", "user", "1"]
+                  },
+                  "description": "Get detailed attendance data for a specific user"
+                }
+              },
+              {
+                "name": "Add Attendance Record",
+                "request": {
+                  "method": "POST",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "body": {
+                    "mode": "raw",
+                    "raw": "{\n  \"user_id\": 1,\n  \"attendance_date\": \"2025-04-21\",\n  \"gym_id\": 1\n}"
+                  },
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance"]
+                  },
+                  "description": "Manually add an attendance record for a user"
+                }
+              },
+              {
+                "name": "Delete Attendance Record",
+                "request": {
+                  "method": "DELETE",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance", "1"]
+                  },
+                  "description": "Delete an attendance record"
+                }
+              },
+              {
+                "name": "Get Attendance Statistics",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/attendance/stats",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "attendance", "stats"]
+                  },
+                  "description": "Get attendance statistics for the admin dashboard"
+                }
+              }
+            ]
+          },
+          {
+            "name": "Memberships Management",
+            "item": [
+              {
+                "name": "Get All Memberships",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/memberships?status=Active",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "memberships"],
+                    "query": [
+                      {
+                        "key": "status",
+                        "value": "Active"
+                      }
+                    ]
+                  },
+                  "description": "Get all memberships with optional filters (Admin only)"
+                }
+              },
+              {
+                "name": "Get Membership Details",
+                "request": {
+                  "method": "GET",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/memberships/1",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "memberships", "1"]
+                  },
+                  "description": "Get detailed information about a specific membership (Admin only)"
+                }
+              },
+              {
+                "name": "Approve Membership",
+                "request": {
+                  "method": "PUT",
+                  "header": [
+                    {
+                      "key": "Authorization",
+                      "value": "Bearer {{token}}"
+                    }
+                  ],
+                  "url": {
+                    "raw": "{{base_url}}/admin/memberships/1/approve",
+                    "host": ["{{base_url}}"],
+                    "path": ["admin", "memberships", "1", "approve"]
+                  },
+                  "description": "Approve a pending membership (Admin only)"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "base_url",
+        "value": "http://localhost:8000/api"
+      },
+      {
+        "key": "token",
+        "value": "your_jwt_token_here"
+      }
+    ]
+}
