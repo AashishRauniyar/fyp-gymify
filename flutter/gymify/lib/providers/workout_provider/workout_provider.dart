@@ -72,11 +72,18 @@ class WorkoutProvider with ChangeNotifier {
   }) async {
     _setLoading(true); // Start loading
     try {
+      // Validate required fields
+      if (workoutName.isEmpty ||
+          description.isEmpty ||
+          targetMuscleGroup.isEmpty) {
+        throw Exception('All fields are required');
+      }
+
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final trainerId = authProvider.userId;
 
       if (trainerId == null) {
-        throw Exception('Trainer ID not found');
+        throw Exception('You must be logged in as a trainer');
       }
 
       FormData formData = FormData.fromMap({
@@ -121,24 +128,39 @@ class WorkoutProvider with ChangeNotifier {
         } else {
           throw Exception(apiResponse.message.isNotEmpty
               ? apiResponse.message
-              : 'Unknown error');
+              : 'Failed to create workout');
         }
       }
     } catch (e) {
-      if (e is DioException && e.response != null) {
-        // Handle Dio errors with response data
-        final responseData = e.response?.data;
-        if (responseData != null &&
-            responseData is Map<String, dynamic> &&
-            responseData['message'] != null) {
-          if (responseData['message'].toString().contains('already exists')) {
-            throw Exception(
-                'A workout with this name already exists. Please choose a different name.');
+      if (e is DioException) {
+        if (e.response != null) {
+          // Handle Dio errors with response data
+          final responseData = e.response?.data;
+          if (responseData != null &&
+              responseData is Map<String, dynamic> &&
+              responseData['message'] != null) {
+            if (responseData['message'].toString().contains('already exists')) {
+              throw Exception(
+                  'A workout with this name already exists. Please choose a different name.');
+            } else {
+              throw Exception('Server error: ${responseData['message']}');
+            }
           }
         }
+        // Generic Dio error handling
+        if (e.type == DioExceptionType.connectionTimeout) {
+          throw Exception(
+              'Connection timed out. Please check your internet connection.');
+        } else if (e.type == DioExceptionType.receiveTimeout) {
+          throw Exception(
+              'Server is taking too long to respond. Please try again later.');
+        } else if (e.type == DioExceptionType.connectionError) {
+          throw Exception('No internet connection. Please check your network.');
+        }
+        throw Exception('Failed to create workout. Please try again.');
       }
-      print('Error creating workout: $e');
-      throw Exception('Error creating workout: $e');
+      // Re-throw original exception if it's not a DioException
+      rethrow;
     } finally {
       _setLoading(false); // Stop loading
     }
@@ -149,6 +171,24 @@ class WorkoutProvider with ChangeNotifier {
       List<Map<String, dynamic>> exercises) async {
     _setLoading(true); // Start loading
     try {
+      // Validate input data
+      if (exercises.isEmpty) {
+        throw Exception('No exercises provided');
+      }
+
+      print('\n\nDEBUG - Adding exercises to workout:');
+      print('Workout ID: $workoutId');
+      print('Exercises data: ${exercises.toString()}');
+
+      // Check duration format
+      for (var exercise in exercises) {
+        print('Exercise: ${exercise['exercise_id']}');
+        print('Sets: ${exercise['sets']} (${exercise['sets'].runtimeType})');
+        print('Reps: ${exercise['reps']} (${exercise['reps'].runtimeType})');
+        print(
+            'Duration: ${exercise['duration']} (${exercise['duration'].runtimeType})');
+      }
+
       final response = await httpClient.post(
         '/workouts/$workoutId/exercises',
         data: {'exercises': exercises},
@@ -158,16 +198,54 @@ class WorkoutProvider with ChangeNotifier {
         }),
       );
 
-      final responseData = response.data;
+      print('Response status: ${response.statusCode}');
+      print('Response data: ${response.data}');
 
-      if (responseData['status'] == 'success') {
+      // Fix: Change the expected response type from Map<String, dynamic> to dynamic
+      // This allows us to handle both Map and List responses
+      final apiResponse = ApiResponse<dynamic>.fromJson(
+        response.data,
+        (data) => data, // Just return the data as-is without casting
+      );
+
+      if (apiResponse.status == 'success') {
+        // Exercises added successfully
+        print('Success: Exercises added to workout');
         notifyListeners();
       } else {
-        throw Exception(responseData['message']);
+        print('Error: ${apiResponse.message}');
+        throw Exception(apiResponse.message.isNotEmpty
+            ? apiResponse.message
+            : 'Failed to add exercises to workout');
       }
     } catch (e) {
-      print('Error adding exercises to workout: $e');
-      throw Exception('Error adding exercises: $e');
+      print('Exception: $e');
+      if (e is DioException) {
+        if (e.response != null) {
+          // Handle Dio errors with response data
+          final responseData = e.response?.data;
+          print('DioException response data: $responseData');
+          if (responseData != null &&
+              responseData is Map<String, dynamic> &&
+              responseData['message'] != null) {
+            throw Exception('Server error: ${responseData['message']}');
+          }
+        }
+        // Generic Dio error handling
+        if (e.type == DioExceptionType.connectionTimeout) {
+          throw Exception(
+              'Connection timed out. Please check your internet connection.');
+        } else if (e.type == DioExceptionType.receiveTimeout) {
+          throw Exception(
+              'Server is taking too long to respond. Please try again later.');
+        } else if (e.type == DioExceptionType.connectionError) {
+          throw Exception('No internet connection. Please check your network.');
+        }
+        throw Exception(
+            'Failed to add exercises to workout. Please try again.');
+      }
+      // Re-throw original exception if it's not a DioException
+      rethrow;
     } finally {
       _setLoading(false); // Stop loading
     }

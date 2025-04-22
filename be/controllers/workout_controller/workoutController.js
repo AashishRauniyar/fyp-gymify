@@ -20,6 +20,11 @@ export const createWorkout = async (req, res) => {
             return res.status(400).json({ status: 'failure', message: 'Missing required fields' });
         }
 
+        // Check if workout image is provided
+        if (!req.file) {
+            return res.status(400).json({ status: 'failure', message: 'Workout image is required' });
+        }
+
         // Check if workout name already exists for this trainer
         const existingWorkout = await prisma.workouts.findFirst({
             where: {
@@ -103,10 +108,11 @@ export const addExerciseToWorkout = async (req, res) => {
         const workoutId = parseInt(req.params.workoutId);
         const exercises = req.body.exercises; // Expecting an array of exercises
 
-        console.log('Processing exercise:', exercises);
-
-        console.log('Request payload:', req.body);
+        console.log('\n\n===== WORKOUT EXERCISE DEBUGGING =====');
+        console.log('Processing exercises:', JSON.stringify(exercises, null, 2));
+        console.log('Request payload:', JSON.stringify(req.body, null, 2));
         console.log('Workout ID:', req.params.workoutId);
+        console.log('===== END DEBUGGING =====\n\n');
 
         if (!Array.isArray(exercises) || exercises.length === 0) {
             return res.status(400).json({ status: 'failure', message: 'No exercises provided' });
@@ -115,19 +121,23 @@ export const addExerciseToWorkout = async (req, res) => {
         const addedExercises = [];
 
         for (const exercise of exercises) {
-
             const { exercise_id, sets, reps, duration } = exercise;
+
+            
 
             // Validate required fields
             // fixed as duration was 0 which is a valid value
-
-            if (!exercise_id || !sets || !reps || duration == undefined) {
+            if (!exercise_id || !sets || !reps || duration === undefined) {
+                console.log('Skipping exercise due to missing required fields');
                 continue;
             }
 
             // Check if the exercise exists
             const existingExercise = await prisma.exercises.findUnique({ where: { exercise_id } });
-            if (!existingExercise) continue;
+            if (!existingExercise) {
+                console.log('Exercise not found with ID:', exercise_id);
+                continue;
+            }
 
             // Check if the exercise is already added to this workout
             const existingWorkoutExercise = await prisma.workoutexercises.findFirst({
@@ -138,21 +148,26 @@ export const addExerciseToWorkout = async (req, res) => {
             });
 
             if (existingWorkoutExercise) {
+                console.log('Exercise already exists in workout');
                 continue; // Skip adding if it's already present
             }
 
             // Add the exercise to the workout
-            const workoutExercise = await prisma.workoutexercises.create({
-                data: {
-                    workout_id: workoutId,
-                    exercise_id,
-                    sets,
-                    reps,
-                    duration,
-                },
-            });
-            addedExercises.push(workoutExercise);
-            console.log(addedExercises);
+            try {
+                const workoutExercise = await prisma.workoutexercises.create({
+                    data: {
+                        workout_id: workoutId,
+                        exercise_id,
+                        sets,
+                        reps,
+                        duration,
+                    },
+                });
+                addedExercises.push(workoutExercise);
+                console.log('Successfully added exercise:', workoutExercise);
+            } catch (error) {
+                console.error('Error adding specific exercise:', error);
+            }
         }
 
         res.status(201).json({
