@@ -6,9 +6,11 @@ import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/chat_provider/chat_service.dart';
 import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
+import 'package:gymify/theme/app_theme.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,6 +23,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+  ThemeMode _selectedThemeMode = ThemeMode.system;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadThemePreference();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final profileProvider =
+          Provider.of<ProfileProvider>(context, listen: false);
+      profileProvider.fetchProfile();
+
+      final membershipProvider =
+          Provider.of<MembershipProvider>(context, listen: false);
+      membershipProvider.fetchMembershipStatus(context);
+    });
+  }
+
+  Future<void> _loadThemePreference() async {
+    // Get the current theme mode from ThemeNotifier instead of SharedPreferences
+    final themeNotifier = Provider.of<ThemeNotifier>(context, listen: false);
+    setState(() {
+      _selectedThemeMode = themeNotifier.themeMode;
+    });
+  }
+
+  Future<void> _saveThemePreference(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('theme_mode', mode.index);
+
+    // Update the theme notifier
+    Provider.of<ThemeNotifier>(context, listen: false).updateThemeMode(mode);
+  }
 
   Future<void> _logout(BuildContext context) async {
     try {
@@ -67,20 +101,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         );
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final profileProvider =
-          Provider.of<ProfileProvider>(context, listen: false);
-      profileProvider.fetchProfile();
-
-      final membershipProvider =
-          Provider.of<MembershipProvider>(context, listen: false);
-      membershipProvider.fetchMembershipStatus(context);
-    });
   }
 
   @override
@@ -149,67 +169,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('My Profile'),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(CupertinoIcons.ellipsis_vertical),
-      //       onPressed: () {
-      //         // Show more options menu
-      //         showModalBottomSheet(
-      //           context: context,
-      //           builder: (context) => SafeArea(
-      //             child: Column(
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 ListTile(
-      //                   leading: Icon(CupertinoIcons.arrow_right_square_fill,
-      //                       color: theme.colorScheme.primary),
-      //                   title: const Text('Log Out'),
-      //                   onTap: () {
-      //                     Navigator.pop(context);
-      //                     _logout(context);
-      //                   },
-      //                 ),
-      //                 ListTile(
-      //                   leading: Icon(CupertinoIcons.delete_solid,
-      //                       color: theme.colorScheme.error),
-      //                   title: Text(
-      //                     'Delete Account',
-      //                     style: TextStyle(color: theme.colorScheme.error),
-      //                   ),
-      //                   onTap: () {
-      //                     Navigator.pop(context);
-      //                     showCupertinoDialog(
-      //                       context: context,
-      //                       builder: (context) => CupertinoAlertDialog(
-      //                         title: const Text('Delete Account'),
-      //                         content: const Text(
-      //                             'This action cannot be undone. Are you sure?'),
-      //                         actions: [
-      //                           CupertinoDialogAction(
-      //                             onPressed: () => Navigator.pop(context),
-      //                             isDefaultAction: true,
-      //                             child: const Text('Cancel'),
-      //                           ),
-      //                           CupertinoDialogAction(
-      //                             onPressed: () => Navigator.pop(context),
-      //                             isDestructiveAction: true,
-      //                             child: const Text('Delete'),
-      //                           ),
-      //                         ],
-      //                       ),
-      //                     );
-      //                   },
-      //                 ),
-      //               ],
-      //             ),
-      //           ),
-      //         );
-      //       },
-      //     ),
-      //   ],
-      // ),
       appBar: CustomAppBar(
         title: 'My Profile',
         showBackButton: false,
@@ -236,37 +195,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _logout(context);
                         },
                       ),
-                      // ListTile(
-                      //   leading: Icon(CupertinoIcons.delete_solid,
-                      //       color: theme.colorScheme.error),
-                      //   title: Text(
-                      //     'Delete Account',
-                      //     style: TextStyle(color: theme.colorScheme.error),
-                      //   ),
-                      //   onTap: () {
-                      //     Navigator.pop(context);
-                      //     showCupertinoDialog(
-                      //       context: context,
-                      //       builder: (context) => CupertinoAlertDialog(
-                      //         title: const Text('Delete Account'),
-                      //         content: const Text(
-                      //             'This action cannot be undone. Are you sure?'),
-                      //         actions: [
-                      //           CupertinoDialogAction(
-                      //             onPressed: () => Navigator.pop(context),
-                      //             isDefaultAction: true,
-                      //             child: const Text('Cancel'),
-                      //           ),
-                      //           CupertinoDialogAction(
-                      //             onPressed: () => Navigator.pop(context),
-                      //             isDestructiveAction: true,
-                      //             child: const Text('Delete'),
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     );
-                      //   },
-                      // ),
                     ],
                   ),
                 ),
@@ -483,127 +411,300 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Membership Status Card
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Consumer<MembershipProvider>(
-                builder: (context, membershipProvider, child) {
-                  final membershipStatus = membershipProvider.membership;
-                  final currentPlan = membershipStatus != null
-                      ? membershipStatus.status ?? 'Not Active'
-                      : 'Not Active';
+              child: Consumer<MembershipProvider>(builder: (
+                context,
+                membershipProvider,
+                child,
+              ) {
+                final membershipStatus = membershipProvider.membership;
+                final currentPlan = membershipStatus != null
+                    ? membershipStatus.status ?? 'Not Active'
+                    : 'Not Active';
 
-                  Color statusColor = Colors.grey;
-                  if (currentPlan == 'Active') {
-                    statusColor = Colors.green;
-                  } else if (currentPlan == 'Pending') {
-                    statusColor = Colors.orange;
-                  }
+                Color statusColor = Colors.grey;
+                if (currentPlan == 'Active') {
+                  statusColor = Colors.green;
+                } else if (currentPlan == 'Pending') {
+                  statusColor = Colors.orange;
+                }
 
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          theme.colorScheme.primaryContainer,
-                          theme.colorScheme.primaryContainer.withOpacity(0.7),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        theme.colorScheme.primaryContainer,
+                        theme.colorScheme.primaryContainer.withOpacity(0.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              CupertinoIcons.creditcard,
+                              color: theme.colorScheme.onPrimaryContainer,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'Membership',
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: theme.colorScheme.onPrimaryContainer,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Status',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onPrimaryContainer
+                                        .withOpacity(0.7),
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 10,
+                                      height: 10,
+                                      decoration: BoxDecoration(
+                                        color: statusColor,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      currentPlan,
+                                      style:
+                                          theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: theme
+                                            .colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                context.pushNamed('membershipPlans');
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    theme.colorScheme.onPrimaryContainer,
+                                foregroundColor:
+                                    theme.colorScheme.primaryContainer,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
+                              ),
+                              child: const Text('Manage'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ),
+
+            // Fitness Information Card - NEW SECTION
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Fitness Information',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            context.pushNamed('weightLog');
+                          },
+                          child: Text(
+                            'Update Weight',
+                            style: TextStyle(
+                              color: theme.colorScheme.primary,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: theme.colorScheme.outline.withOpacity(0.1),
+                        width: 1,
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                          color: Colors.black.withOpacity(0.03),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // First row - Fitness Level and Goal Type
                           Row(
                             children: [
-                              Icon(
-                                CupertinoIcons.creditcard,
-                                color: theme.colorScheme.onPrimaryContainer,
+                              _buildFitnessInfoItem(
+                                context,
+                                FontAwesomeIcons.dumbbell,
+                                user?.fitnessLevel ?? 'Not set',
+                                'Fitness Level',
                               ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Membership',
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: theme.colorScheme.onPrimaryContainer,
-                                ),
+                              Container(
+                                height: 60,
+                                width: 1,
+                                color:
+                                    theme.colorScheme.outline.withOpacity(0.2),
+                              ),
+                              _buildFitnessInfoItem(
+                                context,
+                                FontAwesomeIcons.bullseye,
+                                user?.goalType ?? 'Not set',
+                                'Goal Type',
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Divider(
+                              color: theme.colorScheme.outline.withOpacity(0.2),
+                              height: 1,
+                            ),
+                          ),
+
+                          // Second row - Weight and Height
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Status',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme
-                                          .colorScheme.onPrimaryContainer
-                                          .withOpacity(0.7),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 10,
-                                        height: 10,
-                                        decoration: BoxDecoration(
-                                          color: statusColor,
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        currentPlan,
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                          color: theme
-                                              .colorScheme.onPrimaryContainer,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              _buildFitnessInfoItem(
+                                context,
+                                FontAwesomeIcons.weightScale,
+                                user?.currentWeight != null
+                                    ? '${user!.currentWeight} kg'
+                                    : 'Not set',
+                                'Current Weight',
                               ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  context.pushNamed('membershipPlans');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      theme.colorScheme.onPrimaryContainer,
-                                  foregroundColor:
-                                      theme.colorScheme.primaryContainer,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 10),
-                                ),
-                                child: const Text('Manage'),
+                              Container(
+                                height: 60,
+                                width: 1,
+                                color:
+                                    theme.colorScheme.outline.withOpacity(0.2),
+                              ),
+                              _buildFitnessInfoItem(
+                                context,
+                                FontAwesomeIcons.rulerVertical,
+                                user?.height != null
+                                    ? '${user!.height} cm'
+                                    : 'Not set',
+                                'Height',
                               ),
                             ],
                           ),
+
+                          if (user?.calorieGoals != null &&
+                              user!.calorieGoals!.isNotEmpty) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Divider(
+                                color:
+                                    theme.colorScheme.outline.withOpacity(0.2),
+                                height: 1,
+                              ),
+                            ),
+
+                            // Third row - Calorie Goals
+                            Row(
+                              children: [
+                                _buildFitnessInfoItem(
+                                  context,
+                                  FontAwesomeIcons.fire,
+                                  '${user.calorieGoals} kcal',
+                                  'Daily Calorie Goal',
+                                  isFullWidth: true,
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
-                  );
-                },
+                  ),
+
+                  // View History Button
+                  // Padding(
+                  //   padding: const EdgeInsets.only(top: 8.0),
+                  //   child: SizedBox(
+                  //     width: double.infinity,
+                  //     child: TextButton.icon(
+                  //       onPressed: () {
+                  //         context.pushNamed('weightHistory');
+                  //       },
+                  //       icon: Icon(
+                  //         CupertinoIcons.chart_bar_alt_fill,
+                  //         size: 18,
+                  //         color: theme.colorScheme.primary,
+                  //       ),
+                  //       label: Text(
+                  //         'View Weight History',
+                  //         style: TextStyle(
+                  //           color: theme.colorScheme.primary,
+                  //           fontWeight: FontWeight.w500,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
             ),
+
+            const SizedBox(height: 16),
 
             // Trainer Tools Section (if role is trainer)
             if (profileProvider.user?.role == "Trainer") ...[
@@ -747,6 +848,136 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         () {
                           // Navigate to app rating
                         },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+
+            // Theme Toggle Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Theme Settings',
+                    style: theme.textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSettingsCard(
+                    context,
+                    [
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        leading: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer
+                                .withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            CupertinoIcons.sun_max_fill,
+                            color: theme.colorScheme.primary,
+                            size: 22,
+                          ),
+                        ),
+                        title: const Text(
+                          'Light Mode',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: Radio<ThemeMode>(
+                          value: ThemeMode.light,
+                          groupValue: _selectedThemeMode,
+                          onChanged: (ThemeMode? mode) {
+                            if (mode != null) {
+                              setState(() {
+                                _selectedThemeMode = mode;
+                              });
+                              _saveThemePreference(mode);
+                            }
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        leading: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer
+                                .withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            CupertinoIcons.moon_fill,
+                            color: theme.colorScheme.primary,
+                            size: 22,
+                          ),
+                        ),
+                        title: const Text(
+                          'Dark Mode',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: Radio<ThemeMode>(
+                          value: ThemeMode.dark,
+                          groupValue: _selectedThemeMode,
+                          onChanged: (ThemeMode? mode) {
+                            if (mode != null) {
+                              setState(() {
+                                _selectedThemeMode = mode;
+                              });
+                              _saveThemePreference(mode);
+                            }
+                          },
+                        ),
+                      ),
+                      ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        leading: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.primaryContainer
+                                .withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            CupertinoIcons.circle_grid_hex_fill,
+                            color: theme.colorScheme.primary,
+                            size: 22,
+                          ),
+                        ),
+                        title: const Text(
+                          'System Default',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                        trailing: Radio<ThemeMode>(
+                          value: ThemeMode.system,
+                          groupValue: _selectedThemeMode,
+                          onChanged: (ThemeMode? mode) {
+                            if (mode != null) {
+                              setState(() {
+                                _selectedThemeMode = mode;
+                              });
+                              _saveThemePreference(mode);
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -1032,6 +1263,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       child: Column(
         children: children,
+      ),
+    );
+  }
+
+  Widget _buildFitnessInfoItem(
+    BuildContext context,
+    IconData icon,
+    String value,
+    String label, {
+    bool isFullWidth = false,
+  }) {
+    final theme = Theme.of(context);
+
+    return Expanded(
+      flex: isFullWidth ? 2 : 1,
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            color: theme.colorScheme.primary,
+            size: 24,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }
