@@ -18,15 +18,15 @@
 // const baseUrl = "https://fyp-gymify.onrender.com/api";
 // const baseUrl = "https://192.168.31.96:8000/api";
 
-// const url = "192.168.254.65";
-
-// const baseUrl = "http://$url:8000/api";
-// const socketUrl = "ws://$url:8000";
-
-const url = "172.25.0.159";
+const url = "192.168.31.96";
 
 const baseUrl = "http://$url:8000/api";
 const socketUrl = "ws://$url:8000";
+
+// const url = "172.25.0.159";
+
+// const baseUrl = "http://$url:8000/api";
+// const socketUrl = "ws://$url:8000";
 
 // const url = "https://gymify-m2guj.ondigitalocean.app"; // Remote URL
 

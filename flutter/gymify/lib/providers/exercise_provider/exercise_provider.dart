@@ -265,7 +265,7 @@ class ExerciseProvider with ChangeNotifier {
         await fetchAllExercises(); // Refresh the list of exercises
       } else {
         throw Exception(response.data['message'].isNotEmpty
-            ? response.data['message'].message
+            ? response.data['message']
             : 'Unknown error occurred while deleting exercise');
       }
     });

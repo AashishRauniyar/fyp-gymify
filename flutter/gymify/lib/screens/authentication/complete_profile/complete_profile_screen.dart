@@ -179,6 +179,24 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
       lastDate: DateTime.now(),
     );
 
+
+    //TODO: check heereee
+    // date validation for proper year such that age should be greator than 13 and upto 70
+    if (picked != null && picked.isAfter(DateTime.now())) {
+      showCoolSnackBar(context, "Please select a valid date", false);
+      return;
+    } else if (picked != null &&
+        DateTime.now().difference(picked).inDays < 365 * 13) {
+      showCoolSnackBar(context, "You must be at least 13 years old", false);
+      return;
+    }
+    if (picked != null &&
+        picked.isBefore(
+            DateTime.now().subtract(const Duration(days: 365 * 70)))) {
+      showCoolSnackBar(context, "Please select a valid date", false);
+      return;
+    }
+
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;

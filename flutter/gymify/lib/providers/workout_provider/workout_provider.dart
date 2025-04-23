@@ -176,18 +176,8 @@ class WorkoutProvider with ChangeNotifier {
         throw Exception('No exercises provided');
       }
 
-      print('\n\nDEBUG - Adding exercises to workout:');
-      print('Workout ID: $workoutId');
-      print('Exercises data: ${exercises.toString()}');
-
-      // Check duration format
-      for (var exercise in exercises) {
-        print('Exercise: ${exercise['exercise_id']}');
-        print('Sets: ${exercise['sets']} (${exercise['sets'].runtimeType})');
-        print('Reps: ${exercise['reps']} (${exercise['reps'].runtimeType})');
-        print(
-            'Duration: ${exercise['duration']} (${exercise['duration'].runtimeType})');
-      }
+      
+      
 
       final response = await httpClient.post(
         '/workouts/$workoutId/exercises',
@@ -198,8 +188,6 @@ class WorkoutProvider with ChangeNotifier {
         }),
       );
 
-      print('Response status: ${response.statusCode}');
-      print('Response data: ${response.data}');
 
       // Fix: Change the expected response type from Map<String, dynamic> to dynamic
       // This allows us to handle both Map and List responses
