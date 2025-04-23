@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import { body, validationResult } from 'express-validator';
 import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
-const prisma = new PrismaClient();
 
 // Get user profile
 export const getProfile = async (req, res) => {

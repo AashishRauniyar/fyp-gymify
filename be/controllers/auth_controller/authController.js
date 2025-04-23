@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import generateToken from '../../utils/generateToken.js';
 import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 import fs from 'fs';
 import crypto from 'crypto';
-const prisma = new PrismaClient();
+
 
 
 import { body, validationResult } from 'express-validator';

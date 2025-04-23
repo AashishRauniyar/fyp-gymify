@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from "../prisma/prisma.js";
 
-const prisma = new PrismaClient();
 
 // Create a new custom workout for the user
 export const createCustomWorkout = async (req, res) => {

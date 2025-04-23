@@ -1,7 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import { body, validationResult, param, query } from 'express-validator';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
 
 /**
  * Get all attendance records with filtering options

@@ -1,7 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import { uploadExerciseImageToCloudinary, uploadExerciseVideoToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
-const prisma = new PrismaClient();
+
 
 // Create a new exercise (Trainer only)
 export const createExercise = async (req, res) => {

@@ -1,6 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+// import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+
+import prisma from '../../prisma/prisma.js';
 
 /**
  * Get dashboard summary statistics

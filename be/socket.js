@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { Server } from "socket.io";
+import prisma from "./prisma/prisma.js"; // Import the singleton Prisma client
 
-const prisma = new PrismaClient();
 const connectedUsers = {}; // Unified map to store userId <-> socketId pairs
 
 const initSocket = (server) => {

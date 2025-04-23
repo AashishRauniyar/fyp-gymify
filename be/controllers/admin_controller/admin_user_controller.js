@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 
 import bcrypt from 'bcryptjs';
 import { uploadToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
-const prisma = new PrismaClient();
+
 
 /**
  * Get all users for the admin panel

@@ -1,9 +1,8 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import { body, validationResult } from 'express-validator';
 import moment from 'moment-timezone';
 import { sendWelcomeEmail } from '../../utils/sendMail.js';
 
-const prisma = new PrismaClient();
 
 
 export const markAttendance = async (req, res) => {

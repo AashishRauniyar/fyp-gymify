@@ -1,11 +1,10 @@
-// khaltiController.js
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
+
 const KHALTI_API_URL = process.env.NODE_ENV === "production"
     ? "https://khalti.com/api/v2/epayment/initiate/"
     : "https://dev.khalti.com/api/v2/epayment/initiate/";

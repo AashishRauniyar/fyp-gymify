@@ -1,8 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import { body, validationResult } from 'express-validator';
 import { uploadDietPhotoToCloudinary, uploadMealPhotoToCloudinary } from '../../middleware/cloudinaryMiddleware.js';
 
-const prisma = new PrismaClient();
 
 // =====================
 // Diet Plan Endpoints

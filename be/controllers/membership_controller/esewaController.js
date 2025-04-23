@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../prisma/prisma.js';
 import axios from 'axios';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
 
 const ESEWA_API_URL = process.env.NODE_ENV === "production"
     ? "https://epay.esewa.com.np/api/epay/main/v2/form"
