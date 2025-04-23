@@ -9,7 +9,7 @@ export const markAttendance = async (req, res) => {
     try {
         // Validate card number
         await body('card_number').notEmpty().withMessage('Card number is required').run(req);
-        
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({
@@ -53,7 +53,7 @@ export const markAttendance = async (req, res) => {
 
         // Get current time in Nepal timezone
         const nepalDateTime = moment().tz('Asia/Kathmandu');
-        
+
         // Start of day in Nepal for checking existing attendance
         const nepalStartOfDay = nepalDateTime.clone().startOf('day').toDate();
         const nepalEndOfDay = nepalDateTime.clone().endOf('day').toDate();
@@ -69,10 +69,24 @@ export const markAttendance = async (req, res) => {
             }
         });
 
+        // if (existingAttendance) {
+        //     return res.status(400).json({
+        //         status: 'failure',
+        //         message: 'Attendance already marked for today'
+        //     });
+        // }
+
+        // Change this part in your markAttendance function
         if (existingAttendance) {
-            return res.status(400).json({
-                status: 'failure',
-                message: 'Attendance already marked for today'
+            // Instead of returning an error, send a successful response
+            // but with a note that attendance was already marked
+            return res.status(200).json({
+                status: 'success',
+                message: 'Attendance was already marked today, but access granted',
+                data: {
+                    user_name: user.user_name,
+                    previous_attendance: true
+                }
             });
         }
 
@@ -115,7 +129,7 @@ export const markAttendance = async (req, res) => {
 //     try {
 //         // Validate card number
 //         await body('card_number').notEmpty().withMessage('Card number is required').run(req);
-        
+
 //         const errors = validationResult(req);
 //         if (!errors.isEmpty()) {
 //             return res.status(400).json({
@@ -159,7 +173,7 @@ export const markAttendance = async (req, res) => {
 
 //         // Get current time in Nepal timezone
 //         const nepalDateTime = moment().tz('Asia/Kathmandu');
-        
+
 //         // Start of day in Nepal for checking existing attendance
 //         const nepalStartOfDay = nepalDateTime.clone().startOf('day').toDate();
 //         const nepalEndOfDay = nepalDateTime.clone().endOf('day').toDate();

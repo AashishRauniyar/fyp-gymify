@@ -17,8 +17,6 @@ import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/utils/custom_loader.dart';
-import 'package:gymify/utils/workout_utils.dart/workout_card.dart';
-import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:gymify/widget/attendance_date_picker_widget.dart';
 import 'package:gymify/widget/attendance_stats_widget.dart';
 import 'package:gymify/widget/fitnes_stats_widget.dart';
@@ -154,6 +152,11 @@ class _HomeScreenState extends State<HomeScreen> {
       body: FutureBuilder(
         future: _initialData,
         builder: (context, snapshot) {
+          // Get the membership status before building the UI
+          final membershipProvider = Provider.of<MembershipProvider>(context);
+          final hasActiveMembership = membershipProvider.membership != null &&
+              membershipProvider.membership!.status.toLowerCase() == 'active';
+
           if (snapshot.connectionState != ConnectionState.done) {
             // Show loading indicator until all data is fetched
             return const Center(child: CustomLoadingAnimation());
@@ -301,91 +304,81 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       _buildOfferBanner(context),
 
-                      _buildAttendanceCalender(context, _selectedDate, (date) {
-                        setState(() {
-                          _selectedDate = date;
-                        });
-                      }),
-
-                      const SizedBox(height: 10),
-                      _buildAttendanceSection(context),
+                      if (hasActiveMembership) ...[
+                        _buildAttendanceCalender(context, _selectedDate,
+                            (date) {
+                          setState(() {
+                            _selectedDate = date;
+                          });
+                        }),
+                        const SizedBox(height: 10),
+                        _buildAttendanceSection(context),
+                      ],
                       const SizedBox(height: 10),
                       _buildStepCountSection(context),
-
-                      // TextButton(
-                      //     onPressed: () {
-                      //       context.pushNamed('stepCount');
-                      //     },
-                      //     child: const Text("Step Count")),
-
+                      const SizedBox(height: 10),
                       _buildWeightSection(
                           context,
                           user!.currentWeight.toString(),
                           context.watch<ProfileProvider>().weightHistory),
                       const SizedBox(height: 10),
-
                       _buildNutritionSection(context),
                       const SizedBox(height: 10),
-
                       _buildWorkoutStatsSection(
                           context, user.userId.toString()),
                       const SizedBox(height: 10),
-
                       Text(
                         "Personal Bests",
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                       const SizedBox(height: 10),
                       _buildPersonalBestsGrid(context),
-
                       const SizedBox(height: 10),
-
                       _buildRecentWorkoutHistory(context),
-
                       const SizedBox(height: 16),
                       // Workout Plans Section
-                      Text(
-                        "Workouts",
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
-                      const SizedBox(height: 10),
+                      // Text(
+                      //   "Workouts",
+                      //   style: Theme.of(context).textTheme.headlineMedium,
+                      // ),
+                      // const SizedBox(height: 10),
                       // Horizontal List of Workouts
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: filteredWorkouts.map((workout) {
-                            return WorkoutCard(
-                              workout: workout,
-                              onTap: () {
-                                context.pushNamed(
-                                  'workoutDetail',
-                                  queryParameters: {
-                                    'workoutId': workout.workoutId.toString(),
-                                  },
-                                );
-                              },
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      // All Workouts Section
-                      Text(
-                        "All Workouts",
-                        style: Theme.of(context).textTheme.headlineMedium,
-                      ),
+                      // SingleChildScrollView(
+                      //   scrollDirection: Axis.horizontal,
+                      //   child: Row(
+                      //     children: filteredWorkouts.map((workout) {
+                      //       return WorkoutCard(
+                      //         workout: workout,
+                      //         onTap: () {
+                      //           context.pushNamed(
+                      //             'workoutDetail',
+                      //             queryParameters: {
+                      //               'workoutId': workout.workoutId.toString(),
+                      //             },
+                      //           );
+                      //         },
+                      //       );
+                      //     }).toList(),
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 20),
+                      // // All Workouts Section
+                      // Text(
+                      //   "All Workouts",
+                      //   style: Theme.of(context).textTheme.headlineMedium,
+                      // ),
 
-                      // Vertical ListView of Workouts
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics:
-                            const NeverScrollableScrollPhysics(), // Disable internal scrolling
-                        itemCount: workoutProvider.workouts.length,
-                        itemBuilder: (context, index) {
-                          final workout = workoutProvider.workouts[index];
-                          return WorkoutListItem(workout: workout);
-                        },
-                      )
+                      // // Vertical ListView of Workouts
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   physics:
+                      //       const NeverScrollableScrollPhysics(), // Disable internal scrolling
+                      //   itemCount: workoutProvider.workouts.length,
+                      //   itemBuilder: (context, index) {
+                      //     final workout = workoutProvider.workouts[index];
+                      //     return WorkoutListItem(workout: workout);
+                      //   },
+                      // )
                     ],
                   ),
                 );
@@ -428,18 +421,27 @@ Widget _buildHeader(
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             if (hasActiveMembership) ...[
               const SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {
-                  context.pushNamed('membershipPlans');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     context.pushNamed('membershipPlans');
+              //   },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: Theme.of(context).colorScheme.primary,
+              //     foregroundColor: Colors.white,
+              //     shape: RoundedRectangleBorder(
+              //       borderRadius: BorderRadius.circular(12),
+              //     ),
+              //   ),
+              //   child: const Text('Premium Member'),
+              // ),
+              // a text saying "Premium Member"
+              Text(
+                'Premium Member',
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                child: const Text('Premium Member'),
               ),
             ],
           ],
@@ -1042,30 +1044,10 @@ Widget _buildWeightSection(
     padding: const EdgeInsets.all(16.0),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16),
-      gradient: LinearGradient(
-        colors: isDarkMode
-            ? [
-                theme.colorScheme.primary.withOpacity(0.2),
-                theme.colorScheme.primary.withOpacity(0.05),
-              ]
-            : [
-                theme.colorScheme.primary.withOpacity(0.1),
-                theme.colorScheme.primary.withOpacity(0.02),
-              ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
       border: Border.all(
         color: theme.colorScheme.onSurface.withOpacity(0.1),
         width: 1.5,
       ),
-      boxShadow: [
-        BoxShadow(
-          color: theme.shadowColor.withOpacity(0.1),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
-      ],
     ),
     child: Column(
       children: [
@@ -1587,7 +1569,7 @@ Widget _buildStepCountSection(BuildContext context) {
           ),
         ],
       ),
-      const SizedBox(height: 10),
+      const SizedBox(height: 5),
       // Add the FitnessStatsCard here
       FitnessStatsCard(
         onTap: () {

@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Create an instance of axios with default settings
 export const userInstance = axios.create({
-  baseURL: 'http://localhost:8000/api',  // Set the base URL for API requests
+  // baseURL: 'http://localhost:8000/api',  // Set the base URL for API requests
+  baseURL: 'https://gymify-m2guj.ondigitalocean.app/api',  // Set the base URL for API requests
   headers: {
     'Content-Type': 'application/json',
   },

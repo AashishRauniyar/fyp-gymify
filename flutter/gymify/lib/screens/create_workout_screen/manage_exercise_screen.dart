@@ -5,6 +5,7 @@ import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -60,32 +61,36 @@ class _ManageExerciseScreenState extends State<ManageExerciseScreen> {
           Provider.of<ExerciseProvider>(context, listen: false);
       await exerciseProvider.deleteExercise(exercise.exerciseId);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.check_circle, color: Colors.white),
-              const SizedBox(width: 12),
-              Text('${exercise.exerciseName} deleted successfully'),
-            ],
-          ),
-          backgroundColor: Colors.green.shade700,
-        ),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Row(
+      //       children: [
+      //         const Icon(Icons.check_circle, color: Colors.white),
+      //         const SizedBox(width: 12),
+      //         Text('${exercise.exerciseName} deleted successfully'),
+      //       ],
+      //     ),
+      //     backgroundColor: Colors.green.shade700,
+      //   ),
+      // );
+      showCoolSnackBar(
+          context, "${exercise.exerciseName} deleted successfully", true);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.error_outline, color: Colors.white),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Text('Failed to delete exercise: ${e.toString()}')),
-            ],
-          ),
-          backgroundColor: Colors.red.shade700,
-        ),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Row(
+      //       children: [
+      //         const Icon(Icons.error_outline, color: Colors.white),
+      //         const SizedBox(width: 12),
+      //         Expanded(
+      //             child: Text('Failed to delete exercise: ${e.toString()}')),
+      //       ],
+      //     ),
+      //     backgroundColor: Colors.red.shade700,
+      //   ),
+      // );
+
+      showCoolSnackBar(context, 'Failed to delete exercise', false);
     } finally {
       setState(() {
         _isLoading = false;
@@ -761,7 +766,7 @@ class _ManageExerciseScreenState extends State<ManageExerciseScreen> {
                 children: [
                   Text(
                     exercise.exerciseName,
-                    style: theme.textTheme.titleMedium?.copyWith(
+                    style: theme.textTheme.bodyLarge?.copyWith(
                         color: isDarkMode ? Colors.white : Colors.black,
                         fontWeight: FontWeight.bold),
                   ),

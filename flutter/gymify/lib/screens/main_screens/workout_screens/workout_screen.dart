@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:gymify/models/custom_workout_model.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/workout_utils.dart/workout_list_item.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
@@ -119,6 +120,23 @@ class _WorkoutListScreenState extends State<WorkoutListScreen> {
                       const SizedBox(height: 20),
                       _buildWorkoutCategoriesSection(theme, workoutProvider),
                       const SizedBox(height: 32),
+                      Text(
+                        'All Workouts',
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics:
+                            const NeverScrollableScrollPhysics(), // Disable internal scrolling
+                        itemCount: workoutProvider.workouts.length,
+                        itemBuilder: (context, index) {
+                          final workout = workoutProvider.workouts[index];
+                          return WorkoutListItem(workout: workout);
+                        },
+                      )
                     ],
                   ),
                 ),
