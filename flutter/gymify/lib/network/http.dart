@@ -46,6 +46,8 @@ MediaType getContentType(File file) {
       return MediaType('image', 'jpeg');
     case '.png':
       return MediaType('image', 'png');
+    case '.webp':
+      return MediaType('image', 'webp');
     case '.gif':
       return MediaType('image', 'gif');
     case '.mp4':
