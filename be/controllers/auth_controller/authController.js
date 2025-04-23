@@ -681,7 +681,7 @@ export const resetPassword = async (req, res) => {
 
         // Validate the new password meets criteria:
         // Minimum 8 characters, at least one uppercase, one lowercase, one number, and one special character
-        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
         if (!passwordRegex.test(newPassword)) {
             return res.status(400).json({
                 status: 'failure',

@@ -219,7 +219,7 @@ class _SignupPageState extends State<SignupPage> {
                                 return "Password must be at least 8 characters";
                               }
                               if (!RegExp(
-                                      r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$")
+                                      r"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$")
                                   .hasMatch(value)) {
                                 return "Must include uppercase, lowercase, number, special character";
                               }
