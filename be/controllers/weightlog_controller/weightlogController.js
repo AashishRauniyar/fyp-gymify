@@ -36,6 +36,9 @@ export const updateWeight = async (req, res) => {
             });
 
             return user;
+        }, {
+            // Add transaction timeout to prevent long-running transactions
+            timeout: 10000 // 10 seconds timeout
         });
 
         // Respond with the updated user details
@@ -46,15 +49,23 @@ export const updateWeight = async (req, res) => {
         });
     } catch (error) {
         console.error('Error updating weight:', error);
+
+        // Check for specific database connection errors
+        if (error.code && (
+            error.code.includes('P2037') || // Prisma connection error
+            error.message.includes('connection') ||
+            error.message.includes('timeout')
+        )) {
+            return res.status(503).json({
+                status: 'failure',
+                message: 'Database connection issue. Please try again later.'
+            });
+        }
+
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
 
-
-
-
-
-//TODO: Add weight history , check error in deployment
 export const getWeightHistory = async (req, res) => {
     try {
         const { user_id } = req.user;
@@ -76,6 +87,19 @@ export const getWeightHistory = async (req, res) => {
         });
     } catch (error) {
         console.error('Error retrieving weight history:', error);
+
+        // Check for specific database connection errors
+        if (error.code && (
+            error.code.includes('P2037') || // Prisma connection error
+            error.message.includes('connection') ||
+            error.message.includes('timeout')
+        )) {
+            return res.status(503).json({
+                status: 'failure',
+                message: 'Database connection issue. Please try again later.'
+            });
+        }
+
         res.status(500).json({ status: 'failure', message: 'Server error' });
     }
 };
