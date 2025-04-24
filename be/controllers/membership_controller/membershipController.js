@@ -400,7 +400,7 @@ export const approveMembership = async (req, res) => {
         // Send membership approval email
         if (user && user.email) {
             try {
-                const emailSent = await sendMembershipApprovalEmail(user.email, user.full_name || user.user_name);
+                const emailSent = await sendMembershipApprovalEmail(user.email, user.full_name || user.user_name, user.card_number );
                 if (!emailSent) {
                     console.error("Failed to send membership approval email to user:", user.email);
                 } else {

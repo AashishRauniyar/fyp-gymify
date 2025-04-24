@@ -407,7 +407,7 @@ export const sendWelcomeEmail = async (email, user_name) => {
 
 
 // send email to user when he/she when membership is approved by Admin
-export const sendMembershipApprovalEmail = async (email, user_name) => {
+export const sendMembershipApprovalEmail = async (email, user_name, card_number) => {
     try {
         await transporter.sendMail({
             from: `"Gymify Support" <${process.env.EMAIL_USER}>`,
@@ -519,6 +519,8 @@ export const sendMembershipApprovalEmail = async (email, user_name) => {
                             </div>
                             
                             <p>To get started, simply log in to your Gymify account and explore all the features we offer.</p>
+                            <p>Please collect your Gym Card from your gym helpdesk</p>
+                            <p>Your card number is "${card_number}"</p>
                             
                             <a href="#" class="btn-primary">Start Your Fitness Journey</a>
                             

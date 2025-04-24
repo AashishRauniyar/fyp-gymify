@@ -62,15 +62,6 @@ export const PlanType = {
 };
 
 // Form validation schema
-// const membershipFormSchema = z.object({
-//   user_id: z.string().min(1, "User is required"),
-//   plan_id: z.string().min(1, "Plan is required"),
-//   start_date: z.string().min(1, "Start date is required"),
-//   end_date: z.string().min(1, "End date is required"),
-//   status: z.string().min(1, "Status is required")
-// });
-
-
 const membershipFormSchema = z.object({
   user_id: z.string().min(1, "User is required"),
   plan_id: z.string().min(1, "Plan is required"),
@@ -79,9 +70,6 @@ const membershipFormSchema = z.object({
   status: z.string().min(1, "Status is required"),
   payment_method: z.string().min(1, "Payment method is required")
 });
-
-// Then update the form's defaultValues to include payment_method:
-
 
 const MembershipsPage = () => {
   const { toast } = useToast();
@@ -94,7 +82,27 @@ const MembershipsPage = () => {
   const [error, setError] = useState(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [planFilter, setPlanFilter] = useState('all');
-  const [cardNumber, setCardNumber] = useState('');
+
+  // Additional loading states for specific operations
+  const [isCreatingMembership, setIsCreatingMembership] = useState(false);
+  const [isUpdatingMembership, setIsUpdatingMembership] = useState(false);
+  const [isApprovingMembership, setIsApprovingMembership] = useState(false);
+  const [isUpdatingCardNumber, setIsUpdatingCardNumber] = useState(false);
+  const [isCancellingMembership, setIsCancellingMembership] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  // Card number state for dialogs
+  const [approvalCardNumber, setApprovalCardNumber] = useState('');
+  const [updateCardNumber, setUpdateCardNumber] = useState('');
+  
+  // Dialog for approval card number
+  const [approvalDialog, setApprovalDialog] = useState({
+    isOpen: false,
+    membershipId: null,
+    userName: '',
+  });
   
   // State for pagination
   const [page, setPage] = useState(1);
@@ -135,19 +143,6 @@ const MembershipsPage = () => {
     }
   });
   
-
-  // Form setup
-  // const form = useForm({
-  //   resolver: zodResolver(membershipFormSchema),
-  //   defaultValues: {
-  //     user_id: '',
-  //     plan_id: '',
-  //     start_date: '',
-  //     end_date: '',
-  //     status: MembershipStatus.Pending
-  //   }
-  // });
-
   // Fetch all data on component mount
   useEffect(() => {
     fetchMemberships();
@@ -192,6 +187,7 @@ const MembershipsPage = () => {
   // Fetch memberships with pagination
   const fetchMemberships = async () => {
     setLoading(true);
+    setIsRefreshing(true);
     try {
       const response = await userInstance.get('/admin/memberships', {
         params: { page, limit, status: statusFilter !== 'all' ? statusFilter : undefined }
@@ -221,6 +217,7 @@ const MembershipsPage = () => {
       });
     } finally {
       setLoading(false);
+      setIsRefreshing(false);
     }
   };
 
@@ -288,73 +285,45 @@ const MembershipsPage = () => {
     }
   };
 
-  // // Handle membership creation
-  // const handleCreateMembership = async (data) => {
-  //   try {
-  //     const payload = {
-  //       user_id: parseInt(data.user_id),
-  //       plan_id: parseInt(data.plan_id),
-  //       start_date: data.start_date,
-  //       end_date: data.end_date,
-  //       status: data.status
-  //     };
+  // Handle membership creation
+  const handleCreateMembership = async (data) => {
+    setIsCreatingMembership(true);
+    try {
+      const payload = {
+        user_id: parseInt(data.user_id),
+        plan_id: parseInt(data.plan_id),
+        start_date: data.start_date,
+        end_date: data.end_date,
+        status: data.status,
+        payment_method: data.payment_method
+      };
 
-  //     const response = await userInstance.post('/admin/memberships', payload);
+      const response = await userInstance.post('/admin/memberships', payload);
       
-  //     toast({
-  //       title: "Success",
-  //       description: "Membership created successfully!",
-  //       variant: "default",
-  //     });
+      toast({
+        title: "Success",
+        description: "Membership created successfully!",
+        variant: "default",
+      });
       
-  //     fetchMemberships();
-  //     setShowCreateDialog(false);
-  //     form.reset();
-  //   } catch (err) {
-  //     console.error('Error creating membership:', err);
-  //     toast({
-  //       title: "Error",
-  //       description: err.response?.data?.message || "Failed to create membership.",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
-
-  // Finally, update your handleCreateMembership function to include the payment_method:
-const handleCreateMembership = async (data) => {
-  try {
-    const payload = {
-      user_id: parseInt(data.user_id),
-      plan_id: parseInt(data.plan_id),
-      start_date: data.start_date,
-      end_date: data.end_date,
-      status: data.status,
-      payment_method: data.payment_method
-    };
-
-    const response = await userInstance.post('/admin/memberships', payload);
-    
-    toast({
-      title: "Success",
-      description: "Membership created successfully!",
-      variant: "default",
-    });
-    
-    fetchMemberships();
-    setShowCreateDialog(false);
-    form.reset();
-  } catch (err) {
-    console.error('Error creating membership:', err);
-    toast({
-      title: "Error",
-      description: err.response?.data?.message || "Failed to create membership.",
-      variant: "destructive",
-    });
-  }
-};
+      fetchMemberships();
+      setShowCreateDialog(false);
+      form.reset();
+    } catch (err) {
+      console.error('Error creating membership:', err);
+      toast({
+        title: "Error",
+        description: err.response?.data?.message || "Failed to create membership.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingMembership(false);
+    }
+  };
 
   // Handle membership update
   const handleUpdateMembership = async (data) => {
+    setIsUpdatingMembership(true);
     try {
       const payload = {
         ...(data.plan_id && { plan_id: parseInt(data.plan_id) }),
@@ -381,13 +350,16 @@ const handleCreateMembership = async (data) => {
         description: err.response?.data?.message || "Failed to update membership.",
         variant: "destructive",
       });
+    } finally {
+      setIsUpdatingMembership(false);
     }
   };
 
   // Handle membership approval
-  const handleApproveMembership = async (membershipId) => {
+  const handleApproveMembership = async () => {
+    setIsApprovingMembership(true);
     try {
-      if (!cardNumber.trim()) {
+      if (!approvalCardNumber.trim()) {
         toast({
           title: "Validation Error",
           description: "Please provide a card number before approving.",
@@ -396,17 +368,18 @@ const handleCreateMembership = async (data) => {
         return;
       }
       
-      const response = await userInstance.put(`/admin/approve/${membershipId}`, { card_number: cardNumber });
+      const response = await userInstance.put(`/admin/approve/${approvalDialog.membershipId}`, { card_number: approvalCardNumber });
       
       // Update the local state
       const updatedMemberships = memberships.map(membership =>
-        membership.membership_id === membershipId
-          ? { ...membership, status: MembershipStatus.Active, users: { ...membership.users, card_number: cardNumber } }
+        membership.membership_id === approvalDialog.membershipId
+          ? { ...membership, status: MembershipStatus.Active, users: { ...membership.users, card_number: approvalCardNumber } }
           : membership
       );
       
       setMemberships(updatedMemberships);
-      setCardNumber('');
+      setApprovalCardNumber('');
+      setApprovalDialog({ isOpen: false, membershipId: null, userName: '' });
       
       toast({
         title: "Success",
@@ -422,6 +395,8 @@ const handleCreateMembership = async (data) => {
         description: error.response?.data?.message || "Failed to approve membership.",
         variant: "destructive",
       });
+    } finally {
+      setIsApprovingMembership(false);
     }
   };
 
@@ -451,6 +426,7 @@ const handleCreateMembership = async (data) => {
 
   // Handle membership cancellation
   const handleCancelMembership = async (membershipId) => {
+    setIsCancellingMembership(true);
     try {
       const response = await userInstance.put(`/admin/memberships/${membershipId}/cancel`);
       
@@ -469,11 +445,14 @@ const handleCreateMembership = async (data) => {
         description: err.response?.data?.message || "Failed to cancel membership.",
         variant: "destructive",
       });
+    } finally {
+      setIsCancellingMembership(false);
     }
   };
 
   // Handle user card update
   const handleUpdateUserCard = async (userId, cardNum) => {
+    setIsUpdatingCardNumber(true);
     try {
       const response = await userInstance.put(`/admin/users/${userId}/card`, {
         card_number: cardNum
@@ -487,6 +466,7 @@ const handleCreateMembership = async (data) => {
       
       fetchMemberships();
       setShowCardDialog(false);
+      setUpdateCardNumber(''); // Clear the update card number input
     } catch (err) {
       console.error('Error updating card number:', err);
       toast({
@@ -494,24 +474,30 @@ const handleCreateMembership = async (data) => {
         description: err.response?.data?.message || "Failed to update card number.",
         variant: "destructive",
       });
+    } finally {
+      setIsUpdatingCardNumber(false);
     }
   };
 
   // Handle view details
   const handleViewDetails = async (membership) => {
+    setIsLoadingDetails(true);
     setSelectedMembership(membership);
     const details = await fetchMembershipDetails(membership.membership_id);
     console.log('Membership details:', details);
     if (details) {
       setShowDetailsDialog(true);
     }
+    setIsLoadingDetails(false);
   };
 
   // Handle view history
   const handleViewHistory = async (membership) => {
+    setIsLoadingHistory(true);
     setSelectedMembership(membership);
     await fetchMembershipHistory(membership.membership_id);
     setShowHistoryDialog(true);
+    setIsLoadingHistory(false);
   };
 
   // Handle edit membership
@@ -812,215 +798,255 @@ const handleCreateMembership = async (data) => {
                         <TableCell className="text-right">
                           {/* Approval UI for pending memberships */}
                           {membership.status === MembershipStatus.Pending && (
-                            <div className="flex flex-col md:flex-row items-end gap-2 mb-2">
-                              <Input 
-                                type="text" 
-                                placeholder="Card Number" 
-                                value={cardNumber} 
-                                onChange={(e) => setCardNumber(e.target.value)} 
-                                className="w-full md:w-32 text-xs"
-                              />
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                className="whitespace-nowrap" onClick={() => handleApproveMembership(membership.membership_id)}
-                                >
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="whitespace-nowrap" 
+                              onClick={() => setApprovalDialog({
+                                isOpen: true,
+                                membershipId: membership.membership_id,
+                                userName: membership.users?.full_name || membership.users?.user_name || 'Unknown'
+                              })}
+                              disabled={isApprovingMembership}
+                            >
+                              {isApprovingMembership && approvalDialog.membershipId === membership.membership_id ? (
+                                <>
+                                  <span className="mr-1 h-3 w-3 animate-spin rounded-full border-2 border-b-transparent"></span>
+                                  Approving...
+                                </>
+                              ) : (
+                                <>
                                   <CheckCircle className="mr-1 h-3 w-3" />
                                   Approve
-                                </Button>
-                              </div>
-                            )}
+                                </>
+                              )}
+                            </Button>
+                          )}
                             
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                  <span className="sr-only">Actions</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem onClick={() => handleViewDetails(membership)}>
-                                  <Clipboard className="mr-2 h-4 w-4" />
-                                  View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleViewHistory(membership)}>
-                                  <Calendar className="mr-2 h-4 w-4" />
-                                  View History
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => {
-                                  setSelectedMembership(membership);
-                                  setShowCardDialog(true);
-                                }}>
-                                  <CreditCard className="mr-2 h-4 w-4" />
-                                  Update Card
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleEditMembership(membership)}>
-                                  <Edit className="mr-2 h-4 w-4" />
-                                  Edit Membership
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                {membership.status !== MembershipStatus.Cancelled && (
-                                  <DropdownMenuItem 
-                                    className="text-destructive"
-                                    onClick={() => setConfirmDialog({
-                                      isOpen: true,
-                                      title: "Cancel Membership",
-                                      message: "Are you sure you want to cancel this membership? This action cannot be undone.",
-                                      onConfirm: () => handleCancelMembership(membership.membership_id)
-                                    })}
-                                  >
-                                    <Trash className="mr-2 h-4 w-4" />
-                                    Cancel Membership
-                                  </DropdownMenuItem>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                                <span className="sr-only">Actions</span>
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuItem 
+                                onClick={() => handleViewDetails(membership)}
+                                disabled={isLoadingDetails}
+                              >
+                                {isLoadingDetails && selectedMembership?.membership_id === membership.membership_id ? (
+                                  <>
+                                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                                    Loading...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Clipboard className="mr-2 h-4 w-4" />
+                                    View Details
+                                  </>
                                 )}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              ) : (
-                <div className="text-center py-10 border rounded-md">
-                  <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                    <Users className="h-10 w-10 text-muted-foreground" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-semibold">No memberships found</h3>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    {searchTerm || statusFilter !== 'all' || planFilter !== 'all' 
-                      ? 'Try adjusting your filters or search term'
-                      : 'Start by creating a new membership for a user'}
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="mt-4"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setStatusFilter('all');
-                      setPlanFilter('all');
-                    }}
-                  >
-                    Reset Filters
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-            
-            <CardFooter className="flex items-center justify-between border-t p-4">
-              <div className="text-sm text-muted-foreground">
-                Showing {filteredMemberships.length} of {totalRecords} memberships
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => handleViewHistory(membership)}
+                                disabled={isLoadingHistory}
+                              >
+                                {isLoadingHistory && selectedMembership?.membership_id === membership.membership_id ? (
+                                  <>
+                                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                                    Loading...
+                                  </>
+                                ) : (
+                                  <>
+                                    <Calendar className="mr-2 h-4 w-4" />
+                                    View History
+                                  </>
+                                )}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {
+                                setSelectedMembership(membership);
+                                setShowCardDialog(true);
+                              }}>
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                Update Card
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleEditMembership(membership)}>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit Membership
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              {membership.status !== MembershipStatus.Cancelled && (
+                                <DropdownMenuItem 
+                                  className="text-destructive"
+                                  onClick={() => setConfirmDialog({
+                                    isOpen: true,
+                                    title: "Cancel Membership",
+                                    message: "Are you sure you want to cancel this membership? This action cannot be undone.",
+                                    onConfirm: () => handleCancelMembership(membership.membership_id)
+                                  })}
+                                  disabled={isCancellingMembership}
+                                >
+                                  {isCancellingMembership && selectedMembership?.membership_id === membership.membership_id ? (
+                                    <>
+                                      <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                                      Cancelling...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Trash className="mr-2 h-4 w-4" />
+                                      Cancel Membership
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
-              
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious 
-                      onClick={() => setPage(p => Math.max(1, p - 1))}
-                      disabled={page === 1}
-                    />
-                  </PaginationItem>
-                  
-                  {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                    const pageNum = page <= 3 
-                      ? i + 1 
-                      : page + i - 2;
-                      
-                    if (pageNum <= totalPages && pageNum > 0) {
-                      return (
-                        <PaginationItem key={pageNum}>
-                          <PaginationLink 
-                            isActive={pageNum === page}
-                            onClick={() => setPage(pageNum)}
-                          >
-                            {pageNum}
-                          </PaginationLink>
-                        </PaginationItem>
-                      );
-                    }
-                    return null;
-                  })}
-                  
-                  <PaginationItem>
-                    <PaginationNext 
-                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                      disabled={page === totalPages}
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </CardFooter>
-          </Card>
-        </div>
-  
-        {/* Create/Edit Membership Dialog */}
-        <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>{isEditMode ? 'Edit Membership' : 'Create New Membership'}</DialogTitle>
-              <DialogDescription>
-                {isEditMode 
-                  ? 'Update membership details for this user.' 
-                  : 'Create a new membership for a user by selecting the details below.'}
-              </DialogDescription>
-            </DialogHeader>
+            ) : (
+              <div className="text-center py-10 border rounded-md">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                  <Users className="h-10 w-10 text-muted-foreground" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold">No memberships found</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {searchTerm || statusFilter !== 'all' || planFilter !== 'all' 
+                    ? 'Try adjusting your filters or search term'
+                    : 'Start by creating a new membership for a user'}
+                </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setStatusFilter('all');
+                    setPlanFilter('all');
+                  }}
+                >
+                  Reset Filters
+                </Button>
+              </div>
+            )}
+          </CardContent>
+          
+          <CardFooter className="flex items-center justify-between border-t p-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {filteredMemberships.length} of {totalRecords} memberships
+            </div>
             
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(isEditMode ? handleUpdateMembership : handleCreateMembership)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="user_id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>User</FormLabel>
-                      <Select 
-                        disabled={isEditMode} 
-                        onValueChange={field.onChange} 
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a user" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {users.map(user => (
-                            <SelectItem key={user.user_id} value={user.user_id.toString()}>
-                              {user.full_name || user.user_name} ({user.email})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious 
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    disabled={page === 1}
+                  />
+                </PaginationItem>
                 
-                <FormField
-                  control={form.control}
-                  name="plan_id"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Membership Plan</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a plan" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {plans.map(plan => (
-                            <SelectItem key={plan.plan_id} value={plan.plan_id.toString()}>
-                              {plan.plan_type} - NPR {Number(plan.price).toFixed(2)} / {plan.duration} Month(s)
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  const pageNum = page <= 3 
+                    ? i + 1 
+                    : page + i - 2;
+                    
+                  if (pageNum <= totalPages && pageNum > 0) {
+                    return (
+                      <PaginationItem key={pageNum}>
+                        <PaginationLink 
+                          isActive={pageNum === page}
+                          onClick={() => setPage(pageNum)}
+                        >
+                          {pageNum}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+                  return null;
+                })}
+                
+                <PaginationItem>
+                  <PaginationNext 
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    disabled={page === totalPages}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </CardFooter>
+        </Card>
+      </div>
+  
+      {/* Create/Edit Membership Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>{isEditMode ? 'Edit Membership' : 'Create New Membership'}</DialogTitle>
+            <DialogDescription>
+              {isEditMode 
+                ? 'Update membership details for this user.' 
+                : 'Create a new membership for a user by selecting the details below.'}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(isEditMode ? handleUpdateMembership : handleCreateMembership)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="user_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>User</FormLabel>
+                    <Select 
+                      disabled={isEditMode} 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a user" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {users.map(user => (
+                          <SelectItem key={user.user_id} value={user.user_id.toString()}>
+                            {user.full_name || user.user_name} ({user.email})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
+                name="plan_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Membership Plan</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a plan" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {plans.map(plan => (
+                          <SelectItem key={plan.plan_id} value={plan.plan_id.toString()}>
+                            {plan.plan_type} - NPR {Number(plan.price).toFixed(2)} / {plan.duration} Month(s)
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
 
 <FormField
@@ -1048,351 +1074,395 @@ const handleCreateMembership = async (data) => {
     </FormItem>
   )}
 />
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="start_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 
+                <FormField
+                  control={form.control}
+                  name="end_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>End Date</FormLabel>
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              {!isEditMode && (
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value={MembershipStatus.Pending}>Pending</SelectItem>
+                          <SelectItem value={MembershipStatus.Active}>Active</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={handleCancelOperation}>
+                  Cancel
+                </Button>
+                <Button type="submit">{isEditMode ? 'Update' : 'Create'}</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+  
+      {/* Membership Details Dialog */}
+      <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Membership Details</DialogTitle>
+            <DialogDescription>
+              Detailed information about this membership.
+            </DialogDescription>
+          </DialogHeader>
+          
+          {membershipDetails && (
+            <Tabs defaultValue="details" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="details">Details</TabsTrigger>
+                <TabsTrigger value="payments">Payments</TabsTrigger>
+                <TabsTrigger value="user">User Info</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="details" className="space-y-4 pt-4">
                 <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="start_date"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Start Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="end_date"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>End Date</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                
-                {!isEditMode && (
-                  <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value={MembershipStatus.Pending}>Pending</SelectItem>
-                            <SelectItem value={MembershipStatus.Active}>Active</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-                
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={handleCancelOperation}>
-                    Cancel
-                  </Button>
-                  <Button type="submit">{isEditMode ? 'Update' : 'Create'}</Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-  
-        {/* Membership Details Dialog */}
-        <Dialog open={showDetailsDialog} onOpenChange={setShowDetailsDialog}>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Membership Details</DialogTitle>
-              <DialogDescription>
-                Detailed information about this membership.
-              </DialogDescription>
-            </DialogHeader>
-            
-            {membershipDetails && (
-              <Tabs defaultValue="details" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="details">Details</TabsTrigger>
-                  <TabsTrigger value="payments">Payments</TabsTrigger>
-                  <TabsTrigger value="user">User Info</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="details" className="space-y-4 pt-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Membership ID</h4>
-                      <p>{membershipDetails.membership_id}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        {getStatusIcon(membershipDetails.status)}
-                        <Badge variant={getStatusBadgeVariant(membershipDetails.status)}>
-                          {membershipDetails.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Plan Type</h4>
-                      <p>{membershipDetails.membership_plan?.plan_type}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Price</h4>
-                      <p>NPR {Number(membershipDetails.membership_plan?.price || 0).toFixed(2)}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Start Date</h4>
-                      <p>{formatDate(membershipDetails.start_date)}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">End Date</h4>
-                      <p>{formatDate(membershipDetails.end_date)}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Created At</h4>
-                      <p>{formatDate(membershipDetails.created_at)}</p>
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-medium text-muted-foreground">Last Updated</h4>
-                      <p>{formatDate(membershipDetails.updated_at)}</p>
-                    </div>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="payments" className="pt-4">
-                  {membershipDetails.payments && membershipDetails.payments.length > 0 ? (
-                    <div className="rounded-md border overflow-hidden">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Payment ID</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead>Amount</TableHead>
-                            <TableHead>Method</TableHead>
-                            <TableHead>Status</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {membershipDetails.payments.map(payment => (
-                            <TableRow key={payment.payment_id}>
-                              <TableCell>{payment.payment_id}</TableCell>
-                              <TableCell>{formatDate(payment.payment_date)}</TableCell>
-                              <TableCell>NPR {Number(payment.price).toFixed(2)}</TableCell>
-                              <TableCell className="capitalize">{payment.payment_method}</TableCell>
-                              <TableCell>
-                                <Badge 
-                                  variant={payment.payment_status === 'Paid' ? 'default' : 'secondary'}
-                                  className={payment.payment_status === 'Paid' ? 'bg-green-500' : 'bg-amber-500'}
-                                >
-                                  {payment.payment_status}
-                                </Badge>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 border rounded-md">
-                      <p className="text-muted-foreground">No payment records found</p>
-                    </div>
-                  )}
-                </TabsContent>
-                
-                <TabsContent value="user" className="pt-4">
-                  {membershipDetails.users && (
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="h-16 w-16">
-                          <AvatarImage src={membershipDetails.users.profile_image} />
-                          <AvatarFallback>
-                            {membershipDetails.users.user_name?.substring(0, 2).toUpperCase() || 'UN'}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <h3 className="text-lg font-medium">{membershipDetails.users.full_name || membershipDetails.users.user_name}</h3>
-                          <p className="text-sm text-muted-foreground">{membershipDetails.users.email}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground">Phone Number</h4>
-                          <p>{membershipDetails.users.phone_number || 'Not provided'}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground">Card Number</h4>
-                          <p>{membershipDetails.users.card_number || 'Not assigned'}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground">Address</h4>
-                          <p>{membershipDetails.users.address || 'Not provided'}</p>
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-medium text-muted-foreground">Role</h4>
-                          <p className="capitalize">{membershipDetails.users.role}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            )}
-            
-            <DialogFooter>
-              <Button variant="outline" onClick={handleCancelOperation}>
-                Close
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-  
-        {/* Membership History Dialog */}
-        <Dialog open={showHistoryDialog} onOpenChange={setShowHistoryDialog}>
-          <DialogContent className="sm:max-w-[600px]">
-            <DialogHeader>
-              <DialogTitle>Membership History</DialogTitle>
-              <DialogDescription>
-                History of changes made to this membership
-              </DialogDescription>
-            </DialogHeader>
-            
-            {membershipHistory.length > 0 ? (
-              <div className="rounded-md border overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Previous Plan</TableHead>
-                      <TableHead>New Plan</TableHead>
-                      <TableHead>Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {membershipHistory.map(change => (
-                      <TableRow key={change.change_id}>
-                        <TableCell>{formatDate(change.change_date)}</TableCell>
-                        <TableCell>{change.previous_plan}</TableCell>
-                        <TableCell>{change.new_plan}</TableCell>
-                        <TableCell>{change.action}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : (
-              <div className="text-center py-8 border rounded-md">
-                <p className="text-muted-foreground">No history records found</p>
-              </div>
-            )}
-            
-            <DialogFooter>
-              <Button variant="outline" onClick={handleCancelOperation}>
-                Close
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-  
-        {/* Update Card Dialog */}
-        <Dialog open={showCardDialog} onOpenChange={setShowCardDialog}>
-          <DialogContent className="sm:max-w-[400px]">
-            <DialogHeader>
-              <DialogTitle>Update Card Number</DialogTitle>
-              <DialogDescription>
-                Assign a new card number to this user
-              </DialogDescription>
-            </DialogHeader>
-            
-            {selectedMembership && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={selectedMembership.users?.profile_image} />
-                    <AvatarFallback>
-                      {selectedMembership.users?.user_name?.substring(0, 2).toUpperCase() || 'UN'}
-                    </AvatarFallback>
-                  </Avatar>
                   <div>
-                    <div className="font-medium">
-                      {selectedMembership.users?.full_name || selectedMembership.users?.user_name}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {selectedMembership.users?.email}
+                    <h4 className="text-sm font-medium text-muted-foreground">Membership ID</h4>
+                    <p>{membershipDetails.membership_id}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Status</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      {getStatusIcon(membershipDetails.status)}
+                      <Badge variant={getStatusBadgeVariant(membershipDetails.status)}>
+                        {membershipDetails.status}
+                      </Badge>
                     </div>
                   </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Plan Type</h4>
+                    <p>{membershipDetails.membership_plan?.plan_type}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Price</h4>
+                    <p>NPR {Number(membershipDetails.membership_plan?.price || 0).toFixed(2)}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Start Date</h4>
+                    <p>{formatDate(membershipDetails.start_date)}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">End Date</h4>
+                    <p>{formatDate(membershipDetails.end_date)}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Created At</h4>
+                    <p>{formatDate(membershipDetails.created_at)}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-muted-foreground">Last Updated</h4>
+                    <p>{formatDate(membershipDetails.updated_at)}</p>
+                  </div>
                 </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="cardNumber">New Card Number</Label>
-                  <Input
-                    id="cardNumber"
-                    placeholder="Enter card number"
-                    value={cardNumber}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                  />
+              </TabsContent>
+              
+              <TabsContent value="payments" className="pt-4">
+                {membershipDetails.payments && membershipDetails.payments.length > 0 ? (
+                  <div className="rounded-md border overflow-hidden">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Payment ID</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead>Amount</TableHead>
+                          <TableHead>Method</TableHead>
+                          <TableHead>Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {membershipDetails.payments.map(payment => (
+                          <TableRow key={payment.payment_id}>
+                            <TableCell>{payment.payment_id}</TableCell>
+                            <TableCell>{formatDate(payment.payment_date)}</TableCell>
+                            <TableCell>NPR {Number(payment.price).toFixed(2)}</TableCell>
+                            <TableCell className="capitalize">{payment.payment_method}</TableCell>
+                            <TableCell>
+                              <Badge 
+                                variant={payment.payment_status === 'Paid' ? 'default' : 'secondary'}
+                                className={payment.payment_status === 'Paid' ? 'bg-green-500' : 'bg-amber-500'}
+                              >
+                                {payment.payment_status}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8 border rounded-md">
+                    <p className="text-muted-foreground">No payment records found</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="user" className="pt-4">
+                {membershipDetails.users && (
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-4">
+                      <Avatar className="h-16 w-16">
+                        <AvatarImage src={membershipDetails.users.profile_image} />
+                        <AvatarFallback>
+                          {membershipDetails.users.user_name?.substring(0, 2).toUpperCase() || 'UN'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="text-lg font-medium">{membershipDetails.users.full_name || membershipDetails.users.user_name}</h3>
+                        <p className="text-sm text-muted-foreground">{membershipDetails.users.email}</p>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground">Phone Number</h4>
+                        <p>{membershipDetails.users.phone_number || 'Not provided'}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground">Card Number</h4>
+                        <p>{membershipDetails.users.card_number || 'Not assigned'}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground">Address</h4>
+                        <p>{membershipDetails.users.address || 'Not provided'}</p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium text-muted-foreground">Role</h4>
+                        <p className="capitalize">{membershipDetails.users.role}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelOperation}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+  
+      {/* Membership History Dialog */}
+      <Dialog open={showHistoryDialog} onOpenChange={setShowHistoryDialog}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Membership History</DialogTitle>
+            <DialogDescription>
+              History of changes made to this membership
+            </DialogDescription>
+          </DialogHeader>
+          
+          {membershipHistory.length > 0 ? (
+            <div className="rounded-md border overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Date</TableHead>
+                    <TableHead>Previous Plan</TableHead>
+                    <TableHead>New Plan</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {membershipHistory.map(change => (
+                    <TableRow key={change.change_id}>
+                      <TableCell>{formatDate(change.change_date)}</TableCell>
+                      <TableCell>{change.previous_plan}</TableCell>
+                      <TableCell>{change.new_plan}</TableCell>
+                      <TableCell>{change.action}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <div className="text-center py-8 border rounded-md">
+              <p className="text-muted-foreground">No history records found</p>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelOperation}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+  
+      {/* Update Card Dialog */}
+      <Dialog open={showCardDialog} onOpenChange={setShowCardDialog}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Update Card Number</DialogTitle>
+            <DialogDescription>
+              Assign a new card number to this user
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedMembership && (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={selectedMembership.users?.profile_image} />
+                  <AvatarFallback>
+                    {selectedMembership.users?.user_name?.substring(0, 2).toUpperCase() || 'UN'}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="font-medium">
+                    {selectedMembership.users?.full_name || selectedMembership.users?.user_name}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {selectedMembership.users?.email}
+                  </div>
                 </div>
               </div>
-            )}
-            
-            <DialogFooter>
-              <Button variant="outline" onClick={handleCancelOperation}>
-                Cancel
-              </Button>
-              <Button 
-                onClick={() => handleUpdateUserCard(selectedMembership.user_id, cardNumber)}
-                disabled={!cardNumber.trim()}
-              >
-                Update Card
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+              
+              <div className="space-y-2">
+                <Label htmlFor="cardNumber">New Card Number</Label>
+                <Input
+                  id="cardNumber"
+                  placeholder="Enter card number"
+                  value={updateCardNumber}
+                  onChange={(e) => setUpdateCardNumber(e.target.value)}
+                />
+              </div>
+            </div>
+          )}
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelOperation}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => handleUpdateUserCard(selectedMembership.user_id, updateCardNumber)}
+              disabled={!updateCardNumber.trim()}
+            >
+              Update Card
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   
-        {/* Confirmation Dialog */}
-        <AlertDialog open={confirmDialog.isOpen} onOpenChange={(isOpen) => 
-          setConfirmDialog({...confirmDialog, isOpen})
-        }>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
-              <AlertDialogDescription>
-                {confirmDialog.message}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})}>
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDialog.onConfirm}>
-                Confirm
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </DashboardLayout>
-    );
-  };
+      {/* Approval Dialog */}
+      <Dialog open={approvalDialog.isOpen} onOpenChange={(isOpen) => setApprovalDialog({ ...approvalDialog, isOpen })}>
+        <DialogContent className="sm:max-w-[400px]">
+          <DialogHeader>
+            <DialogTitle>Approve Membership</DialogTitle>
+            <DialogDescription>
+              Assign a card number to approve the membership for {approvalDialog.userName}.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-2">
+            <Label htmlFor="approvalCardNumber">Card Number</Label>
+            <Input
+              id="approvalCardNumber"
+              placeholder="Enter card number"
+              value={approvalCardNumber}
+              onChange={(e) => setApprovalCardNumber(e.target.value)}
+            />
+          </div>
+          
+          <DialogFooter>
+            <Button 
+              variant="outline" 
+              onClick={() => setApprovalDialog({ isOpen: false, membershipId: null, userName: '' })}
+              disabled={isApprovingMembership}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleApproveMembership} 
+              disabled={!approvalCardNumber.trim() || isApprovingMembership}
+            >
+              {isApprovingMembership ? (
+                <>
+                  <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-b-transparent"></span>
+                  Approving...
+                </>
+              ) : (
+                'Approve'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
   
-  // Forgot to import this in the first part
-  import { Label } from "@/components/ui/label";
-  
-  export default MembershipsPage;
-                                
+      {/* Confirmation Dialog */}
+      <AlertDialog open={confirmDialog.isOpen} onOpenChange={(isOpen) => 
+        setConfirmDialog({...confirmDialog, isOpen})
+      }>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{confirmDialog.title}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirmDialog.message}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setConfirmDialog({...confirmDialog, isOpen: false})}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDialog.onConfirm}>
+              Confirm
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </DashboardLayout>
+  );
+};
 
-                                
+// Forgot to import this in the first part
+import { Label } from "@/components/ui/label";
+
+export default MembershipsPage;
+
+
