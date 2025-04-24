@@ -27,6 +27,10 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
   File? exerciseVideo;
   VideoPlayerController? _videoController;
 
+  // Added error state variables for media files
+  bool showImageError = false;
+  bool showVideoError = false;
+
   final List<String> muscleGroups = [
     'Chest',
     'Back',
@@ -53,6 +57,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
     if (pickedFile != null) {
       setState(() {
         exerciseImage = File(pickedFile.path);
+        showImageError = false;
       });
     }
   }
@@ -65,12 +70,36 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
     if (result != null) {
       setState(() {
         exerciseVideo = File(result.files.single.path!);
+        showVideoError = false;
         _videoController = VideoPlayerController.file(exerciseVideo!)
           ..initialize().then((_) {
             setState(() {});
           });
       });
     }
+  }
+
+  // Check if all required fields are valid
+  bool validateForm() {
+    bool isValid = _formKey.currentState?.validate() ?? false;
+
+    // Validate exercise image
+    if (exerciseImage == null) {
+      setState(() {
+        showImageError = true;
+      });
+      isValid = false;
+    }
+
+    // Validate exercise video
+    if (exerciseVideo == null) {
+      setState(() {
+        showVideoError = true;
+      });
+      isValid = false;
+    }
+
+    return isValid;
   }
 
   @override
@@ -95,7 +124,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               // Exercise Name
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Exercise Name',
+                  labelText: 'Exercise Name *',
                   helperText: 'Enter a unique name for the exercise.',
                 ),
                 onSaved: (value) => exerciseName = value ?? '',
@@ -112,7 +141,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               TextFormField(
                 maxLines: 3,
                 decoration: const InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Description *',
                   helperText: 'Provide a brief description of the exercise.',
                 ),
                 onSaved: (value) => description = value ?? '',
@@ -129,7 +158,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               DropdownButtonFormField<String>(
                 style: theme.textTheme.bodyMedium,
                 decoration: const InputDecoration(
-                  labelText: 'Target Muscle Group',
+                  labelText: 'Target Muscle Group *',
                   helperText: 'Select the target muscle group.',
                 ),
                 value: targetMuscleGroup.isNotEmpty ? targetMuscleGroup : null,
@@ -157,7 +186,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               // Calories Burned Per Minute
               TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Calories Burned per Min',
+                  labelText: 'Calories Burned per Min *',
                   helperMaxLines: 2,
                   helperText:
                       'Enter the calories burned per minute (max 999.99).',
@@ -184,8 +213,21 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Exercise Image",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      const Text("Exercise Image *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      if (showImageError)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            "Required",
+                            style:
+                                TextStyle(color: Colors.red[700], fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: _pickImage,
@@ -198,14 +240,20 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                                color: theme.colorScheme.primary, width: 2),
+                                color: showImageError
+                                    ? Colors.red
+                                    : theme.colorScheme.primary,
+                                width: 2),
                             color: exerciseImage == null
                                 ? theme.colorScheme.secondary.withOpacity(0.1)
                                 : null,
                           ),
                           child: exerciseImage == null
                               ? Icon(Icons.image,
-                                  color: theme.colorScheme.primary, size: 40)
+                                  color: showImageError
+                                      ? Colors.red
+                                      : theme.colorScheme.primary,
+                                  size: 40)
                               : ClipOval(
                                   child: Image.file(
                                     exerciseImage!,
@@ -221,6 +269,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                               onTap: () {
                                 setState(() {
                                   exerciseImage = null;
+                                  showImageError = true;
                                 });
                               },
                               child: Container(
@@ -247,8 +296,21 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Exercise Video",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      const Text("Exercise Video *",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      if (showVideoError)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            "Required",
+                            style:
+                                TextStyle(color: Colors.red[700], fontSize: 12),
+                          ),
+                        ),
+                    ],
+                  ),
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: _pickVideo,
@@ -261,14 +323,20 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                                color: theme.colorScheme.primary, width: 2),
+                                color: showVideoError
+                                    ? Colors.red
+                                    : theme.colorScheme.primary,
+                                width: 2),
                             color: exerciseVideo == null
                                 ? theme.colorScheme.secondary.withOpacity(0.1)
                                 : null,
                           ),
                           child: exerciseVideo == null
                               ? Icon(Icons.videocam,
-                                  color: theme.colorScheme.primary, size: 40)
+                                  color: showVideoError
+                                      ? Colors.red
+                                      : theme.colorScheme.primary,
+                                  size: 40)
                               : ClipOval(
                                   child: _videoController != null &&
                                           _videoController!.value.isInitialized
@@ -288,6 +356,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                               onTap: () {
                                 setState(() {
                                   exerciseVideo = null;
+                                  showVideoError = true;
                                   _videoController?.dispose();
                                   _videoController = null;
                                 });
@@ -317,7 +386,7 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                   ? const Center(child: CustomLoadingAnimation())
                   : ElevatedButton(
                       onPressed: () async {
-                        if (_formKey.currentState?.validate() ?? false) {
+                        if (validateForm()) {
                           _formKey.currentState?.save();
                           try {
                             await exerciseProvider.createExercise(
@@ -331,6 +400,8 @@ class _CreateExerciseScreenState extends State<CreateExerciseScreen> {
                             );
 
                             if (context.mounted) {
+                              Navigator.pop(
+                                  context); // Return to previous screen after successful creation
                               showCoolSnackBar(context,
                                   "Exercise Created Successfully", true);
                             }

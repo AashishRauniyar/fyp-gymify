@@ -180,7 +180,7 @@ class _ProfileCompletionScreenState extends State<ProfileCompletionScreen> {
     );
 
 
-    //TODO: check heereee
+    
     // date validation for proper year such that age should be greator than 13 and upto 70
     if (picked != null && picked.isAfter(DateTime.now())) {
       showCoolSnackBar(context, "Please select a valid date", false);

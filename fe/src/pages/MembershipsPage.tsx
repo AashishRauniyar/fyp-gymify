@@ -1196,7 +1196,8 @@ const handleCreateMembership = async (data) => {
                               <TableCell className="capitalize">{payment.payment_method}</TableCell>
                               <TableCell>
                                 <Badge 
-                                  variant={payment.payment_status === 'Paid' ? 'success' : 'warning'}
+                                  variant={payment.payment_status === 'Paid' ? 'default' : 'secondary'}
+                                  className={payment.payment_status === 'Paid' ? 'bg-green-500' : 'bg-amber-500'}
                                 >
                                   {payment.payment_status}
                                 </Badge>
