@@ -123,7 +123,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      //TODO: Uncomment here
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         scrolledUnderElevation: 0,
@@ -859,7 +858,7 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
                       'weight': personalBest.weight,
                       'reps': personalBest.reps,
                     }
-                  : {'weight': 'N/A', 'reps': 'N/A'},
+                  : {'weight': '0', 'reps': '0'},
             ),
           );
         },
