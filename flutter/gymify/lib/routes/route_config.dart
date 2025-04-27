@@ -26,7 +26,6 @@ import 'package:gymify/screens/diet_screens/meal_detail_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_log_screen.dart';
 import 'package:gymify/screens/diet_screens/meal_list_screen.dart';
 import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
-import 'package:gymify/screens/height_selector.dart';
 import 'package:gymify/screens/help_faqs_screen.dart';
 import 'package:gymify/screens/main_screens/attendance_screen/attendance_screen.dart';
 import 'package:gymify/screens/main_screens/chat_screen.dart';
@@ -43,7 +42,6 @@ import 'package:gymify/screens/personal_best_screens/weight_update_screen.dart';
 import 'package:gymify/screens/profile_screen/edit_profile_screen.dart';
 import 'package:gymify/screens/step_count_screen.dart';
 import 'package:gymify/screens/trainer_screens/manage_diet_plans.dart';
-import 'package:gymify/screens/weight_selecter.dart';
 import 'package:gymify/screens/exercise_screens/exercise_screen.dart';
 import 'package:gymify/screens/main_screen/main_screen.dart';
 import 'package:gymify/screens/main_screens/diet_screen.dart';
@@ -149,16 +147,6 @@ final GoRouter router = GoRouter(
       path: '/createExercise',
       builder: (context, state) => const CreateExerciseScreen(),
     ),
-    GoRoute(
-      path: '/weight',
-      builder: (context, state) => const WeightSelector(),
-    ),
-
-    GoRoute(
-      path: '/height',
-      builder: (context, state) => const HeightSelector(),
-    ),
-
     GoRoute(
       path: '/workoutDetail',
       name:

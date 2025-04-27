@@ -299,11 +299,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           user?.userName.toString() ?? "username",
                           user?.profileImage.toString() ??
                               "assets/images/profile/default_avatar.jpg"),
-
                       const SizedBox(height: 10),
-
                       _buildOfferBanner(context),
-
                       if (hasActiveMembership) ...[
                         _buildAttendanceCalender(context, _selectedDate,
                             (date) {
@@ -322,11 +319,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           user!.currentWeight.toString(),
                           context.watch<ProfileProvider>().weightHistory),
                       const SizedBox(height: 10),
-                      _buildNutritionSection(context),
-                      const SizedBox(height: 10),
-                      _buildWorkoutStatsSection(
-                          context, user.userId.toString()),
-                      const SizedBox(height: 10),
                       Text(
                         "Personal Bests",
                         style: Theme.of(context).textTheme.headlineMedium,
@@ -334,51 +326,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       const SizedBox(height: 10),
                       _buildPersonalBestsGrid(context),
                       const SizedBox(height: 10),
+                      _buildNutritionSection(context),
+                      const SizedBox(height: 10),
+                      _buildWorkoutStatsSection(
+                          context, user.userId.toString()),
+                      const SizedBox(height: 10),
                       _buildRecentWorkoutHistory(context),
                       const SizedBox(height: 16),
-                      // Workout Plans Section
-                      // Text(
-                      //   "Workouts",
-                      //   style: Theme.of(context).textTheme.headlineMedium,
-                      // ),
-                      // const SizedBox(height: 10),
-                      // Horizontal List of Workouts
-                      // SingleChildScrollView(
-                      //   scrollDirection: Axis.horizontal,
-                      //   child: Row(
-                      //     children: filteredWorkouts.map((workout) {
-                      //       return WorkoutCard(
-                      //         workout: workout,
-                      //         onTap: () {
-                      //           context.pushNamed(
-                      //             'workoutDetail',
-                      //             queryParameters: {
-                      //               'workoutId': workout.workoutId.toString(),
-                      //             },
-                      //           );
-                      //         },
-                      //       );
-                      //     }).toList(),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 20),
-                      // // All Workouts Section
-                      // Text(
-                      //   "All Workouts",
-                      //   style: Theme.of(context).textTheme.headlineMedium,
-                      // ),
-
-                      // // Vertical ListView of Workouts
-                      // ListView.builder(
-                      //   shrinkWrap: true,
-                      //   physics:
-                      //       const NeverScrollableScrollPhysics(), // Disable internal scrolling
-                      //   itemCount: workoutProvider.workouts.length,
-                      //   itemBuilder: (context, index) {
-                      //     final workout = workoutProvider.workouts[index];
-                      //     return WorkoutListItem(workout: workout);
-                      //   },
-                      // )
                     ],
                   ),
                 );
@@ -421,20 +375,6 @@ Widget _buildHeader(
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             if (hasActiveMembership) ...[
               const SizedBox(height: 8),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     context.pushNamed('membershipPlans');
-              //   },
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor: Theme.of(context).colorScheme.primary,
-              //     foregroundColor: Colors.white,
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(12),
-              //     ),
-              //   ),
-              //   child: const Text('Premium Member'),
-              // ),
-              // a text saying "Premium Member"
               Text(
                 'Premium Member',
                 style: TextStyle(
@@ -717,20 +657,6 @@ void _showBottomSheet(BuildContext context) {
 
                       return Container(
                         padding: const EdgeInsets.all(16),
-                        // decoration: BoxDecoration(
-                        //   borderRadius: BorderRadius.circular(16),
-                        //   gradient: LinearGradient(
-                        //     colors: [
-                        //       colorScheme.primary.withOpacity(0.1),
-                        //       colorScheme.surface,
-                        //     ],
-                        //     begin: Alignment.topLeft,
-                        //     end: Alignment.bottomRight,
-                        //   ),
-                        //   border: Border.all(
-                        //     color: colorScheme.outline.withOpacity(0.1),
-                        //   ),
-                        // ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
 
@@ -897,12 +823,6 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
                 ),
               ],
             ),
-            // child: Text(
-            //   "No personal bests recorded yet",
-            //   style: TextStyle(
-            //     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
-            //   ),
-            // ),
           ),
         );
       }
@@ -939,7 +859,7 @@ Widget _buildPersonalBestsGrid(BuildContext context) {
                       'weight': personalBest.weight,
                       'reps': personalBest.reps,
                     }
-                  : {'weight': '-', 'reps': '-'},
+                  : {'weight': 'N/A', 'reps': 'N/A'},
             ),
           );
         },

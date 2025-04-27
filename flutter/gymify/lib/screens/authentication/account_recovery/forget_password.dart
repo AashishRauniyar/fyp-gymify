@@ -68,8 +68,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               // Illustration for forgot password
               Image.asset(
                 'assets/images/forgot_password.png',
-                width: 150,
-                height: 150,
+                width: 200,
+                height: 200,
               ),
               const SizedBox(height: 24),
               Text(
@@ -95,10 +95,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               _isLoading
                   ? const CustomLoadingAnimation()
                   :
-                  // CustomButton(
-                  //     text: "Send OTP",
-                  //     onPressed: _sendOTP,
-                  //   ),
                   SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(

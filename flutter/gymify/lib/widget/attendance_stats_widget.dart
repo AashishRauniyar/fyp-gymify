@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:intl/intl.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';

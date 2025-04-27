@@ -104,17 +104,5 @@ Future<String?> getUserId() async {
     return decodedToken['role'];
   }
 
-//? example usage
-  /**
-   * // Get user ID
-String? userId = await loginService.getUserId();
-print('User ID: $userId');
 
-// Get role
-String? role = await loginService.getRole();
-print('Role: $role');
-
-   * 
-   * 
-   */
 }

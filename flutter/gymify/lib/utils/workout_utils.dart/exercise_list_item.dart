@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gymify/models/exercise_model.dart';
-import 'package:gymify/screens/exercise_screens/exercise_detail_screen.dart';
 
 class ExerciseTile extends StatelessWidget {
   final Exercise exercise;

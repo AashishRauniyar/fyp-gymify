@@ -453,9 +453,7 @@ This exercise would be a great addition to your workout routine!
 
     _setLoading(true);
     try {
-      // This would typically fetch diet plans from your provider
-      // Since we don't have direct access to the diet provider here,
-      // we'll need to implement this in the UI layer
+      
 
       const messageContent = '''
 I'd be happy to recommend a diet plan that matches your goals! 

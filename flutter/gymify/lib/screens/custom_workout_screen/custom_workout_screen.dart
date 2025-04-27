@@ -7,6 +7,7 @@ import 'package:gymify/providers/custom_workout_provider/custom_workout_provider
 import 'package:gymify/screens/custom_workout_screen/custom_workout_detail_screen.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class CustomWorkoutListScreen extends StatefulWidget {
@@ -614,12 +615,17 @@ class _CustomWorkoutListScreenState extends State<CustomWorkoutListScreen> {
                 }
 
                 // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Error deleting workout: ${e.toString()}'),
-                    backgroundColor: Colors.red,
-                    behavior: SnackBarBehavior.floating,
-                  ),
+                // ScaffoldMessenger.of(context).showSnackBar(
+                //   SnackBar(
+                //     content: Text('Error deleting workout: ${e.toString()}'),
+                //     backgroundColor: Colors.red,
+                //     behavior: SnackBarBehavior.floating,
+                //   ),
+                // );
+                showCoolSnackBar(
+                  context,
+                  'Error deleting workout: ${e.toString()}',
+                  false,
                 );
               }
             },

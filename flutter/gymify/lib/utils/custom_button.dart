@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:gymify/colors/app_colors.dart';
 import 'package:gymify/colors/custom_colors.dart'; // Assuming this is where your TextWidget is
 

@@ -39,32 +39,7 @@ class _SignupPageState extends State<SignupPage> {
           isDarkMode ? Colors.black : theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // // Background design elements
-          // Positioned(
-          //   top: -100,
-          //   right: -100,
-          //   child: Container(
-          //     width: 300,
-          //     height: 300,
-          //     decoration: BoxDecoration(
-          //       color: theme.colorScheme.primary.withOpacity(0.1),
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
-          // Positioned(
-          //   bottom: -80,
-          //   left: -80,
-          //   child: Container(
-          //     width: 200,
-          //     height: 200,
-          //     decoration: BoxDecoration(
-          //       color: theme.colorScheme.secondary.withOpacity(0.1),
-          //       shape: BoxShape.circle,
-          //     ),
-          //   ),
-          // ),
-
+          
           // Main content
           SafeArea(
             child: SingleChildScrollView(

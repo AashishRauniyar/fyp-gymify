@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:gymify/colors/app_colors.dart';
 import 'package:gymify/models/exercise_model.dart';
 import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/models/deit_plan_models/diet_plan_model.dart';

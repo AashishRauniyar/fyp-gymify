@@ -13,8 +13,7 @@ class PedometerService {
   void startStepCounting() {
     _stepCountStream = Pedometer.stepCountStream;
     _stepCountSubscription = _stepCountStream.listen((stepCount) {
-      // You can save or process the step count as needed
-      print("Steps: ${stepCount.steps}");
+      
     });
   }
 

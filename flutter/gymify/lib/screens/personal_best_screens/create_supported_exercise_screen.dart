@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/models/supported_exercise_model.dart';
 import 'package:gymify/utils/custom_appbar.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
 
@@ -65,17 +66,32 @@ class _CreateSupportedExerciseScreenState
           .then((success) {
         if (success) {
           _exerciseNameController.clear();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Exercise created successfully')),
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text('Exercise created successfully')),
+          // );
+          showCoolSnackBar(
+            context,
+            'Exercise "$exerciseName" created successfully',
+            true,
           );
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to create exercise')),
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(content: Text('Failed to create exercise')),
+          // );
+          showCoolSnackBar(
+            context,
+            'Failed to create exercise "$exerciseName"',
+            false,
           );
         }
       }).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $error')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Error: $error')),
+        // );
+        showCoolSnackBar(
+          context,
+          'Error: Unable to create exercise "$exerciseName"',
+          false,
         );
       });
     }

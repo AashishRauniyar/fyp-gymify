@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 
 class CustomColors {
   // Primary Colors
-  // static Color primary = const Color.fromARGB(255, 136, 129, 252); // rgb(136, 129, 252)
+  
   static const Color primary = Color(0xFFFF5E3A); // rgb(136, 129, 252)
-  // static const Color primary =
-  // Color.fromARGB(255, 7, 124, 240); // rgb(136, 129, 252)
-
+  
   static const Color secondary = Color(0xFF666666); // rgb(102, 102, 102)
 
   static const Color buttonText = Color(0xFFFFFFFF); // rgb(102, 102, 102)

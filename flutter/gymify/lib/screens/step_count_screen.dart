@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymify/providers/pedometer_provider/pedometer_provider.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -1213,20 +1214,7 @@ class _StepCountScreenState extends State<StepCountScreen>
               provider.resetSteps();
               Navigator.pop(context);
 
-              // Show confirmation snackbar
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Step count has been reset'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  action: SnackBarAction(
-                    label: 'OK',
-                    onPressed: () {},
-                  ),
-                ),
-              );
+              showCoolSnackBar(context, 'Step count has been reset', true);
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent,

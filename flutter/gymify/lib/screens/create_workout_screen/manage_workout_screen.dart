@@ -350,6 +350,7 @@ import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -414,22 +415,27 @@ class _ManageWorkoutScreenState extends State<ManageWorkoutScreen> {
     } catch (e) {
       // Show error message
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(
-            children: [
-              const Icon(Icons.error_outline, color: Colors.white),
-              const SizedBox(width: 12),
-              Expanded(
-                  child: Text('Failed to delete workout: ${e.toString()}')),
-            ],
-          ),
-          backgroundColor: Colors.red.shade700,
-          behavior: SnackBarBehavior.floating,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          margin: const EdgeInsets.all(12),
-        ),
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Row(
+      //       children: [
+      //         const Icon(Icons.error_outline, color: Colors.white),
+      //         const SizedBox(width: 12),
+      //         Expanded(
+      //             child: Text('Failed to delete workout: ${e.toString()}')),
+      //       ],
+      //     ),
+      //     backgroundColor: Colors.red.shade700,
+      //     behavior: SnackBarBehavior.floating,
+      //     shape:
+      //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      //     margin: const EdgeInsets.all(12),
+      //   ),
+      // );
+      showCoolSnackBar(
+        context,
+        'Failed to delete workout: ${e.toString()}',
+        false,
       );
     } finally {
       if (mounted) {

@@ -5,6 +5,7 @@ import 'package:gymify/models/workout_model.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -136,24 +137,21 @@ class _EditWorkoutScreenState extends State<EditWorkoutScreen> {
       if (!mounted) return;
 
       // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Workout updated successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text('Workout updated successfully'),
+      //     backgroundColor: Colors.green,
+      //   ),
+      // );
+      showCoolSnackBar(context, 'Workout updated successfully', true);
 
       // Return to manage workouts screen
       context.pop();
     } catch (e) {
       // Show error message
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error updating workout: ${e.toString()}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      showCoolSnackBar(
+          context, 'Error updating workout: ${e.toString()}', false);
     } finally {
       if (mounted) {
         setState(() {

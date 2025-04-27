@@ -9,14 +9,12 @@ import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/multipage_register_provider/signup_provider.dart';
 import 'package:gymify/providers/pedometer_provider/pedometer_provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
-import 'package:gymify/screens/diet_screens/meal_list_screen.dart';
 import 'package:gymify/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
 import 'package:gymify/providers/custom_workout_provider/custom_workout_provider.dart';
 import 'package:gymify/providers/exercise_provider/exercise_provider.dart';
 import 'package:gymify/providers/log_provider/log_provider.dart';
-import 'package:gymify/providers/multipage_register_provider/register_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
@@ -30,7 +28,6 @@ void main() async {
         ChangeNotifierProvider(create: (context) => ExerciseProvider()),
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => WorkoutLogProvider()),
-        ChangeNotifierProvider(create: (context) => RegistrationProvider()),
         ChangeNotifierProvider(create: (context) => CustomWorkoutProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ChangeNotifierProvider(
