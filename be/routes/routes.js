@@ -20,6 +20,7 @@ import adminMembershipRouter from './adminRoutes/adminMembershipRouter.js';
 import adminAttendanceRouter from './adminRoutes/adminAttendanceRoutes.js';
 import adminNewMembershipRouter from './adminRoutes/adminNewMembershipRoutes.js';
 import adminDashboardRouter from './adminRoutes/adminDashboardRouter.js';
+import { trainerRoutes } from './trainerRoutes/trainerRoutes.js';
 
 
 const mainRouter = express.Router();
@@ -42,6 +43,7 @@ mainRouter.use('/api', esewaRouter);
 mainRouter.use('/api', weightRouter);
 mainRouter.use('/api', testRouter);
 
+mainRouter.use('/api', trainerRoutes );
 
 mainRouter.use('/api/admin', adminUserRouter);
 mainRouter.use('/api/admin', adminMembershipRouter);
