@@ -1,5 +1,7 @@
 export default {
-    testEnvironment: 'node', // Use Node.js as the test environment
-    transform: {}, // Skip transformations for plain JavaScript
-  };
-  
+  testEnvironment: 'node',
+  transform: {},
+  moduleFileExtensions: ['js', 'mjs'],
+  extensionsToTreatAsEsm: ['.mjs'],
+  testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js', '**/__tests__/**/*.mjs', '**/?(*.)+(spec|test).mjs'],
+};
