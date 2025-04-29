@@ -9,6 +9,7 @@ import 'package:gymify/providers/membership_provider/membership_provider.dart';
 import 'package:gymify/providers/multipage_register_provider/signup_provider.dart';
 import 'package:gymify/providers/pedometer_provider/pedometer_provider.dart';
 import 'package:gymify/providers/personal_best_provider/personal_best_provider.dart';
+import 'package:gymify/providers/trainer_provider/trainer_analytics_provider.dart';
 import 'package:gymify/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
@@ -41,6 +42,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => MembershipProvider()),
         ChangeNotifierProvider(create: (context) => PedometerProvider()),
         ChangeNotifierProvider(create: (context) => AttendanceProvider()),
+        ChangeNotifierProvider(create: (context) => UserStatsProvider()),
         ChangeNotifierProvider(
             create: (context) => AIChatbotProvider(
                 // Add AIChatbotProvider

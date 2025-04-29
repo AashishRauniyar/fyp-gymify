@@ -299,6 +299,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           user?.profileImage.toString() ??
                               "assets/images/profile/default_avatar.jpg"),
                       const SizedBox(height: 10),
+
+                      // text button
+                      TextButton(
+                        onPressed: () {
+                          context.pushNamed('userList');
+                        },
+                        child: const Text(
+                          'All User',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          context.pushNamed('trainerDashboard');
+                        },
+                        child: const Text(
+                          'Overall stats',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       _buildOfferBanner(context),
                       if (hasActiveMembership) ...[
                         _buildAttendanceCalender(context, _selectedDate,

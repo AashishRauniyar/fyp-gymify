@@ -49,6 +49,9 @@ import 'package:gymify/screens/main_screens/home_screen.dart';
 import 'package:gymify/screens/main_screens/profile_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_screen.dart';
 import 'package:gymify/screens/splash_screen/splash_sreen.dart';
+import 'package:gymify/screens/trainer_screens/trainer_dashboard_screen.dart';
+import 'package:gymify/screens/trainer_screens/user_list_trainer_screen.dart';
+import 'package:gymify/screens/trainer_screens/user_stats_screen.dart';
 import 'package:gymify/screens/welcome/welcome_screen.dart';
 import 'package:gymify/screens/authentication/login.dart';
 import 'package:gymify/screens/create_workout_screen/create_exercise_screen.dart';
@@ -296,6 +299,30 @@ final GoRouter router = GoRouter(
         name: 'mealList',
         path: '/mealList',
         builder: (context, state) => const MealListScreen()),
+    GoRoute(
+      name: 'userList',
+      path: '/userList',
+      builder: (context, state) => const UserListScreen(),
+    ),
+
+// User stats route (to view detailed stats for a specific user)
+    GoRoute(
+      name: 'userStats',
+      path: '/userStats/:userId',
+      builder: (context, state) {
+        final extraData = state.extra as Map<String, dynamic>?;
+        final userId =
+            int.parse(extraData?['userId'] ?? state.pathParameters['userId']!);
+        return UserStatsScreen(userId: userId);
+      },
+    ),
+
+// Trainer dashboard route (overview of all users)
+    GoRoute(
+      name: 'trainerDashboard',
+      path: '/trainerDashboard',
+      builder: (context, state) => const TrainerDashboardScreen(),
+    ),
     GoRoute(
         name: 'workoutSearch',
         path: '/workoutSearch',
