@@ -298,33 +298,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           user?.userName.toString() ?? "username",
                           user?.profileImage.toString() ??
                               "assets/images/profile/default_avatar.jpg"),
+                      
                       const SizedBox(height: 10),
-
-                      // text button
-                      TextButton(
-                        onPressed: () {
-                          context.pushNamed('userList');
-                        },
-                        child: const Text(
-                          'All User',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          context.pushNamed('trainerDashboard');
-                        },
-                        child: const Text(
-                          'Overall stats',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      // Add the trainer dashboard card here
+                      _buildTrainerDashboardCard(context),
                       const SizedBox(height: 10),
                       _buildOfferBanner(context),
                       if (hasActiveMembership) ...[
@@ -1494,6 +1471,141 @@ class _WorkoutLogCard extends StatelessWidget {
       },
     );
   }
+}
+
+// Add this method in your HomeScreen class
+Widget _buildTrainerDashboardCard(BuildContext context) {
+  // Get the user role from AuthProvider
+  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  final isTrainer = authProvider.role?.toLowerCase() == 'trainer';
+
+  // Only show the trainer dashboard card if the user is a trainer
+  if (!isTrainer) return const SizedBox.shrink();
+
+  final theme = Theme.of(context);
+  final isDarkMode = theme.brightness == Brightness.dark;
+
+  return Container(
+    margin: const EdgeInsets.only(bottom: 16),
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        colors: [
+          theme.colorScheme.primary,
+          theme.colorScheme.primary.withOpacity(0.7),
+        ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      borderRadius: BorderRadius.circular(16),
+      boxShadow: [
+        BoxShadow(
+          color: theme.colorScheme.primary.withOpacity(0.3),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.admin_panel_settings,
+                  color: Colors.white,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'Trainer Dashboard',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Access trainer tools to monitor member progress and manage workouts',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTrainerActionButton(
+                  context: context,
+                  icon: Icons.people,
+                  label: 'Members',
+                  onTap: () => context.pushNamed('userList'),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: _buildTrainerActionButton(
+                  context: context,
+                  icon: Icons.insert_chart,
+                  label: 'Analytics',
+                  onTap: () => context.pushNamed('trainerDashboard'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+Widget _buildTrainerActionButton({
+  required BuildContext context,
+  required IconData icon,
+  required String label,
+  required VoidCallback onTap,
+}) {
+  return Material(
+    color: Colors.white.withOpacity(0.2),
+    borderRadius: BorderRadius.circular(12),
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 18,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 Widget _buildStepCountSection(BuildContext context) {

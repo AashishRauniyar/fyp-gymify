@@ -123,13 +123,48 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
           },
         ),
       ),
+      // floatingActionButton: FloatingActionButton.extended(
+      //   shape: CircleBorder(
+      //     side: BorderSide(color: theme.colorScheme.primary, width: 2),
+      //   ),
+      //   onPressed: () {
+      //     context.push('/userList');
+      //   },
+      //   label: const Text('View All Members'),
+      //   backgroundColor: theme.colorScheme.primary,
+      // ),
       floatingActionButton: FloatingActionButton.extended(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(20), // Rounded corners for a modern look
+          side: BorderSide(color: theme.colorScheme.primary, width: 2),
+        ),
         onPressed: () {
           context.push('/userList');
         },
-        icon: const Icon(Icons.visibility),
-        label: const Text('View All Members'),
+        label: Row(
+          mainAxisSize: MainAxisSize
+              .min, // Ensures the label fits tightly around the text
+          children: [
+            Icon(Icons.group,
+                color:
+                    theme.colorScheme.onPrimary), // Adds an icon for better UX
+            const SizedBox(width: 8), // Adds spacing between icon and text
+            Text(
+              'View All Members',
+              style: TextStyle(
+                  color: theme.colorScheme.onPrimary), // Improved text style
+            ),
+          ],
+        ),
         backgroundColor: theme.colorScheme.primary,
+        elevation: 6, // Adds shadow for depth
+        hoverColor: theme.colorScheme.primary
+            .withOpacity(0.1), // Adds hover effect for web
+        focusColor: theme.colorScheme.primary
+            .withOpacity(0.1), // Adds focus effect for accessibility
+        splashColor:
+            theme.colorScheme.secondary.withOpacity(0.3), // Adds splash effect
       ),
     );
   }
@@ -591,34 +626,35 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
           children: [
             _buildActionButton(
               icon: Icons.fitness_center,
-              title: 'Create Workout',
+              title: 'Manage Workout',
               color: Colors.blue,
-              onTap: () => context.pushNamed('createWorkout'),
+              onTap: () => context.pushNamed('manageWorkouts'),
               theme: theme,
             ),
             _buildActionButton(
               icon: Icons.restaurant_menu,
-              title: 'Create Diet Plan',
+              title: 'Manage Diet Plan',
               color: Colors.green,
-              onTap: () => context.pushNamed('createDietPlan'),
+              onTap: () => context.pushNamed('manageDietPlans'),
               theme: theme,
             ),
             _buildActionButton(
-              icon: Icons.assessment,
-              title: 'Workout History',
+              icon: Icons.fitness_center,
+              title: 'Manage Exercise',
               color: Colors.orange,
-              onTap: () => context.pushNamed('workoutHistory', extra: "all"),
+              onTap: () => context.pushNamed('manageExercise'),
               theme: theme,
             ),
             _buildActionButton(
-              icon: Icons.favorite,
-              title: 'Personal Bests',
+              icon: Icons.health_and_safety,
+              title: 'Supported Exercises',
               color: Colors.red,
-              onTap: () => context.pushNamed('personalBest'),
+              onTap: () => context.pushNamed('createSupportedExercise'),
               theme: theme,
             ),
           ],
         ),
+        const SizedBox(height: 30),
       ],
     );
   }
@@ -666,10 +702,11 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
-                  maxLines: 1,
+                  maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
             ],
           ),
         ),

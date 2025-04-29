@@ -428,7 +428,7 @@ class _UserStatsScreenState extends State<UserStatsScreen>
                   child: _buildMembershipDetailItem(
                     label: 'Price',
                     value:
-                        '₹${membership.membershipPlan.price.toStringAsFixed(2)}',
+                        'NPR ${membership.membershipPlan.price.toStringAsFixed(2)}',
                     theme: theme,
                   ),
                 ),
