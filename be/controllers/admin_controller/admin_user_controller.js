@@ -314,7 +314,11 @@ export const registerUserByAdmin = async (req, res) => {
 
 
         
-                let profileImageUrl = null;
+                // let profileImageUrl = null;
+
+                let profileImageUrl = "https://res.cloudinary.com/dqcdosfch/image/upload/v1743757651/profile_images/wwp2kkuwohoh7ejkmq7s.png";
+
+
                 if (req.file) {
                     try {
                         profileImageUrl = await uploadToCloudinary(req.file.buffer); // Pass the file buffer directly

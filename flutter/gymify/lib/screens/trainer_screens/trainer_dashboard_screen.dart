@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gymify/models/trainer_models/user_list_trainer.dart';
-
 import 'package:gymify/providers/trainer_provider/trainer_analytics_provider.dart';
-
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
 import 'package:provider/provider.dart';
@@ -123,16 +121,6 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
           },
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //   shape: CircleBorder(
-      //     side: BorderSide(color: theme.colorScheme.primary, width: 2),
-      //   ),
-      //   onPressed: () {
-      //     context.push('/userList');
-      //   },
-      //   label: const Text('View All Members'),
-      //   backgroundColor: theme.colorScheme.primary,
-      // ),
       floatingActionButton: FloatingActionButton.extended(
         shape: RoundedRectangleBorder(
           borderRadius:
@@ -299,7 +287,6 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
         ),
         const SizedBox(height: 16),
         Container(
-          height: 220,
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: theme.colorScheme.surface,
@@ -312,77 +299,122 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
               ),
             ],
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: PieChart(
-                  PieChartData(
-                    sectionsSpace: 2,
-                    centerSpaceRadius: 40,
-                    sections: _getPieChartSections(summary.usersByGoalType),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 16,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: _getLegendItems(summary.usersByGoalType, theme),
-              ),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Adjust layout based on available width
+              final isNarrow = constraints.maxWidth < 400;
+
+              return isNarrow
+                  ? Column(
+                      children: [
+                        SizedBox(
+                          height: 200,
+                          child: PieChart(
+                            PieChartData(
+                              sectionsSpace: 2,
+                              centerSpaceRadius: 40,
+                              sections:
+                                  _getPieChartSections(summary.usersByGoalType),
+                              pieTouchData: PieTouchData(
+                                touchCallback:
+                                    (FlTouchEvent event, pieTouchResponse) {
+                                  // Interactive touch response could be added here
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        _buildEnhancedLegend(summary.usersByGoalType, theme),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          flex: 3,
+                          child: PieChart(
+                            PieChartData(
+                              sectionsSpace: 2,
+                              centerSpaceRadius: 40,
+                              sections:
+                                  _getPieChartSections(summary.usersByGoalType),
+                              pieTouchData: PieTouchData(
+                                touchCallback:
+                                    (FlTouchEvent event, pieTouchResponse) {
+                                  // Interactive touch response could be added here
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 24),
+                        Expanded(
+                          flex: 2,
+                          child: _buildEnhancedLegend(
+                              summary.usersByGoalType, theme),
+                        ),
+                      ],
+                    );
+            },
           ),
         ),
       ],
     );
   }
 
-  // Fixed Pie Chart Section
-  List<PieChartSectionData> _getPieChartSections(List<GoalTypeCount> data) {
-    final colors = [
-      const Color(0xFF4CAF50), // Green for Weight Loss
-      const Color(0xFFFFC107), // Amber/Yellow for Muscle Gain
-      const Color(0xFF2196F3), // Blue for Endurance
-      const Color(0xFFFF5722), // Red-Orange for Flexibility
-      const Color(0xFF9C27B0), // Purple for other goals
-    ];
+  // Enhanced legend with better readability and percentage display
+  Widget _buildEnhancedLegend(List<GoalTypeCount> data, ThemeData theme) {
+    final totalCount = data.fold<int>(0, (sum, item) => sum + item.count);
 
-    // Make sure the data is correctly associated with colors by goal type
-    final colorMap = {
-      'weight_loss': colors[0],
-      'muscle_gain': colors[1],
-      'endurance': colors[2],
-      'flexibility': colors[3],
-    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: data.map((item) {
+        final goalTypeKey = item.goalType.toLowerCase();
+        final color = _getGoalTypeColor(goalTypeKey);
+        final percentage = totalCount > 0 ? (item.count / totalCount) * 100 : 0;
 
-    return List.generate(data.length, (index) {
-      final item = data[index];
-
-      // Get color based on goal type, defaulting to colors[index] if not in map
-      final goalTypeKey = item.goalType.toLowerCase();
-      final color = colorMap[goalTypeKey] ??
-          (index < colors.length ? colors[index] : Colors.grey);
-
-      // Calculate percentage
-      final totalCount = data.fold<int>(0, (sum, item) => sum + item.count);
-      final percentage = totalCount > 0 ? (item.count / totalCount) * 100 : 0;
-
-      return PieChartSectionData(
-        color: color,
-        value: item.count.toDouble(),
-        title: '${percentage.toStringAsFixed(1)}%',
-        radius: 80,
-        titleStyle: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      );
-    });
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Row(
+            children: [
+              Container(
+                width: 16,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: color,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  _formatGoalType(item.goalType),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '(${item.count})',
+                style: theme.textTheme.bodyMedium,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                '${percentage.toStringAsFixed(1)}%',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        );
+      }).toList(),
+    );
   }
 
-// Fixed legend items
-  List<Widget> _getLegendItems(List<GoalTypeCount> data, ThemeData theme) {
+  Color _getGoalTypeColor(String goalType) {
     final colorMap = {
       'weight_loss': const Color(0xFF4CAF50), // Green
       'muscle_gain': const Color(0xFFFFC107), // Amber/Yellow
@@ -390,33 +422,10 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
       'flexibility': const Color(0xFFFF5722), // Red-Orange
     };
 
-    return List.generate(data.length, (index) {
-      final item = data[index];
-      final goalTypeKey = item.goalType.toLowerCase();
-      final color = colorMap[goalTypeKey] ?? Colors.grey;
-
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 12,
-            height: 12,
-            decoration: BoxDecoration(
-              color: color,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 4),
-          Text(
-            '${_formatGoalType(item.goalType)} (${item.count})',
-            style: theme.textTheme.bodySmall,
-          ),
-        ],
-      );
-    });
+    return colorMap[goalType] ?? Colors.grey;
   }
 
-// Fixed Bar Chart for Fitness Level Distribution
+  // Fixed Bar Chart for Fitness Level Distribution
   Widget _buildFitnessLevelDistribution(StatsSummary summary, ThemeData theme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -441,106 +450,188 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
               ),
             ],
           ),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 200,
-                child: BarChart(
-                  BarChartData(
-                    alignment: BarChartAlignment.spaceEvenly,
-                    maxY: _getMaxFitnessLevelCount(summary.usersByFitnessLevel),
-                    gridData: FlGridData(
-                      show: true,
-                      drawHorizontalLine: true,
-                      horizontalInterval: 5,
-                      getDrawingHorizontalLine: (value) {
-                        return FlLine(
-                          color: theme.colorScheme.onSurface.withOpacity(0.1),
-                          strokeWidth: 1,
-                        );
-                      },
-                      drawVerticalLine: false,
-                    ),
-                    titlesData: FlTitlesData(
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 30,
-                          interval: 5,
-                          getTitlesWidget: (value, meta) {
-                            if (value == 0) return const SizedBox.shrink();
-                            return SideTitleWidget(
-                              meta: meta,
-                              child: Text(
-                                value.toInt().toString(),
-                                style: theme.textTheme.bodySmall,
-                              ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isNarrow = constraints.maxWidth < 400;
+
+              return Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                    child: BarChart(
+                      BarChartData(
+                        alignment: BarChartAlignment.spaceEvenly,
+                        maxY: _getMaxFitnessLevelCount(
+                            summary.usersByFitnessLevel),
+                        gridData: FlGridData(
+                          show: true,
+                          drawHorizontalLine: true,
+                          horizontalInterval: 5,
+                          getDrawingHorizontalLine: (value) {
+                            return FlLine(
+                              color:
+                                  theme.colorScheme.onSurface.withOpacity(0.1),
+                              strokeWidth: 1,
                             );
                           },
+                          drawVerticalLine: false,
                         ),
-                      ),
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            if (value >= summary.usersByFitnessLevel.length ||
-                                value < 0) {
-                              return const SizedBox.shrink();
-                            }
-                            return SideTitleWidget(
-                              meta: meta,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  _shortenFitnessLevel(summary
-                                      .usersByFitnessLevel[value.toInt()]
-                                      .fitnessLevel),
-                                  style: theme.textTheme.bodySmall,
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    borderData: FlBorderData(show: false),
-                    barGroups: List.generate(
-                      summary.usersByFitnessLevel.length,
-                      (index) {
-                        final item = summary.usersByFitnessLevel[index];
-                        return BarChartGroupData(
-                          x: index,
-                          barRods: [
-                            BarChartRodData(
-                              toY: item.count.toDouble(),
-                              color: _getFitnessLevelColor(item.fitnessLevel),
-                              width: 22,
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(6),
-                              ),
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              reservedSize: 30,
+                              interval: 5,
+                              getTitlesWidget: (value, meta) {
+                                if (value == 0) return const SizedBox.shrink();
+                                return SideTitleWidget(
+                                  meta: meta,
+                                  child: Text(
+                                    value.toInt().toString(),
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                );
+                              },
                             ),
-                          ],
-                        );
-                      },
+                          ),
+                          rightTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          topTitles: const AxisTitles(
+                            sideTitles: SideTitles(showTitles: false),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                if (value >=
+                                        summary.usersByFitnessLevel.length ||
+                                    value < 0) {
+                                  return const SizedBox.shrink();
+                                }
+                                return SideTitleWidget(
+                                  meta: meta,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      _shortenFitnessLevel(summary
+                                          .usersByFitnessLevel[value.toInt()]
+                                          .fitnessLevel),
+                                      style: theme.textTheme.bodySmall,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        barGroups: List.generate(
+                          summary.usersByFitnessLevel.length,
+                          (index) {
+                            final item = summary.usersByFitnessLevel[index];
+                            return BarChartGroupData(
+                              x: index,
+                              barRods: [
+                                BarChartRodData(
+                                  toY: item.count.toDouble(),
+                                  color:
+                                      _getFitnessLevelColor(item.fitnessLevel),
+                                  width: isNarrow
+                                      ? 18
+                                      : 22, // Adjust width based on screen size
+                                  borderRadius: const BorderRadius.vertical(
+                                    top: Radius.circular(6),
+                                  ),
+                                  backDrawRodData: BackgroundBarChartRodData(
+                                    show: true,
+                                    toY: _getMaxFitnessLevelCount(
+                                        summary.usersByFitnessLevel),
+                                    color: theme.colorScheme.onSurface
+                                        .withOpacity(0.05),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                        barTouchData: BarTouchData(
+                          enabled: true,
+                          touchTooltipData: BarTouchTooltipData(
+                            // tooltipBgColor:
+                            //     theme.colorScheme.surface.withOpacity(0.8),
+
+                            tooltipPadding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            tooltipMargin: 8,
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              final item = summary.usersByFitnessLevel[group.x];
+                              return BarTooltipItem(
+                                '${item.fitnessLevel}\n',
+                                theme.textTheme.bodySmall!
+                                    .copyWith(fontWeight: FontWeight.bold),
+                                children: [
+                                  TextSpan(
+                                    text: '${item.count} members',
+                                    style: theme.textTheme.bodySmall,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  // Enhanced detailed stats display
+                  _buildFitnessLevelLegend(summary.usersByFitnessLevel, theme),
+                ],
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFitnessLevelLegend(
+      List<FitnessLevelCount> data, ThemeData theme) {
+    // Calculate total for percentages
+    final totalCount = data.fold<int>(0, (sum, item) => sum + item.count);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            'Distribution Details:',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        // Grid layout for fitness level stats
+        Wrap(
+          spacing: 16,
+          runSpacing: 12,
+          children: data.map((level) {
+            final color = _getFitnessLevelColor(level.fitnessLevel);
+            final percentage =
+                totalCount > 0 ? (level.count / totalCount) * 100 : 0;
+
+            return Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: color.withOpacity(0.4), width: 1),
               ),
-              const SizedBox(height: 8),
-              // Add fitness level labels with colors for better readability
-              Wrap(
-                spacing: 12,
-                runSpacing: 8,
-                alignment: WrapAlignment.center,
-                children: summary.usersByFitnessLevel.map((level) {
-                  final color = _getFitnessLevelColor(level.fitnessLevel);
-                  return Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
@@ -551,17 +642,24 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
                           shape: BoxShape.circle,
                         ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 8),
                       Text(
-                        '${level.fitnessLevel} (${level.count})',
-                        style: theme.textTheme.bodySmall,
+                        level.fitnessLevel,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
-                  );
-                }).toList(),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${level.count} members (${percentage.toStringAsFixed(1)}%)',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          }).toList(),
         ),
       ],
     );
@@ -603,6 +701,28 @@ class _TrainerDashboardScreenState extends State<TrainerDashboardScreen> {
       default:
         return Colors.blue;
     }
+  }
+
+  List<PieChartSectionData> _getPieChartSections(List<GoalTypeCount> data) {
+    final totalCount = data.fold<int>(0, (sum, item) => sum + item.count);
+
+    return data.map((item) {
+      final goalTypeKey = item.goalType.toLowerCase();
+      final color = _getGoalTypeColor(goalTypeKey);
+      final percentage = totalCount > 0 ? (item.count / totalCount) * 100 : 0;
+
+      return PieChartSectionData(
+        value: item.count.toDouble(),
+        title: '${percentage.toStringAsFixed(1)}%',
+        color: color,
+        radius: 50,
+        titleStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      );
+    }).toList();
   }
 
   Widget _buildActionButtons(ThemeData theme) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/auth_provider/auth_provider.dart';
-import 'package:gymify/providers/chat_provider/chat_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -54,16 +53,16 @@ class _SplashScreenState extends State<SplashScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          const Center(
-            child: Text(
-              'Welcome to Gymify',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // const Center(
+          //   child: Text(
+          //     'Welcome to Gymify',
+          //     style: TextStyle(
+          //       fontSize: 24,
+          //       fontWeight: FontWeight.bold,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

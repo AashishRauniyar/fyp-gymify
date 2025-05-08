@@ -62,7 +62,7 @@ class NutritionStatsWidget extends StatelessWidget {
             double.tryParse(calorieGoals ?? '2000') ?? 2000.0;
         // double targetCalories = 2000.0;
         double percentage = (totalCalories / targetCalories).clamp(0.0, 1.0);
-  
+
         return _buildNutritionCard(
           context,
           totalCalories,

@@ -298,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           user?.userName.toString() ?? "username",
                           user?.profileImage.toString() ??
                               "assets/images/profile/default_avatar.jpg"),
-                      
+
                       const SizedBox(height: 10),
                       // Add the trainer dashboard card here
                       _buildTrainerDashboardCard(context),
@@ -1231,7 +1231,7 @@ Widget _buildNutritionSection(BuildContext context) {
           ),
           TextButton(
             onPressed: () {
-              context.push('/mealLogs');
+              context.push('/mealLog');
             },
             child: const Text("View All"),
           ),
