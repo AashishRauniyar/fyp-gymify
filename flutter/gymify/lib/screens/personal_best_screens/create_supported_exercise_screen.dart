@@ -53,9 +53,14 @@ class _CreateSupportedExerciseScreenState
               exerciseName.toLowerCase());
 
       if (exists) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text('An exercise with this name already exists')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //       content: Text('An exercise with this name already exists')),
+        // );
+        showCoolSnackBar(
+          context,
+          'An exercise with the name "$exerciseName" already exists',
+          false,
         );
         return;
       }
@@ -133,18 +138,33 @@ class _CreateSupportedExerciseScreenState
         .deleteSupportedExercise(exerciseId)
         .then((success) {
       if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text('Exercise "$exerciseName" deleted successfully')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //       content: Text('Exercise "$exerciseName" deleted successfully')),
+        // );
+        showCoolSnackBar(
+          context,
+          'Exercise "$exerciseName" deleted successfully',
+          true,
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to delete exercise "$exerciseName"')),
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(content: Text('Failed to delete exercise "$exerciseName"')),
+        // );
+        showCoolSnackBar(
+          context,
+          'Failed to delete exercise "$exerciseName"',
+          false,
         );
       }
     }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $error')),
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text('Error: $error')),
+      // );
+      showCoolSnackBar(
+        context,
+        'Error: Unable to delete exercise "$exerciseName"',
+        false,
       );
     });
   }
@@ -191,77 +211,86 @@ class _CreateSupportedExerciseScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // New Exercise Form
-                        Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
+                        Container(
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: theme.colorScheme.primary.withOpacity(0.1),
+                            ),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(kSpacingMedium),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Add New Exercise',
-                                  style: theme.textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
+                          child: Card(
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(kSpacingMedium),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Add New Exercise',
+                                    style: theme.textTheme.titleLarge?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: kSpacingSmall),
-                                Text(
-                                  'Create a new exercise that members can track',
-                                  style: TextStyle(
-                                    color: theme.colorScheme.onSurface
-                                        .withOpacity(0.6),
+                                  const SizedBox(height: kSpacingSmall),
+                                  Text(
+                                    'Create a new exercise that members can track',
+                                    style: TextStyle(
+                                      color: theme.colorScheme.onSurface
+                                          .withOpacity(0.6),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(height: kSpacingMedium),
-                                Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    children: [
-                                      TextFormField(
-                                        controller: _exerciseNameController,
-                                        decoration: InputDecoration(
-                                          labelText: 'Exercise Name',
-                                          hintText:
-                                              'e.g., Bench Press, Squat, Deadlift',
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                  const SizedBox(height: kSpacingMedium),
+                                  Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: [
+                                        TextFormField(
+                                          controller: _exerciseNameController,
+                                          decoration: InputDecoration(
+                                            labelText: 'Exercise Name',
+                                            hintText:
+                                                'e.g., Bench Press, Squat, Deadlift',
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            prefixIcon: const Icon(
+                                                Icons.fitness_center),
                                           ),
-                                          prefixIcon:
-                                              const Icon(Icons.fitness_center),
+                                          validator: (value) {
+                                            if (value == null ||
+                                                value.trim().isEmpty) {
+                                              return 'Please enter an exercise name';
+                                            }
+                                            return null;
+                                          },
                                         ),
-                                        validator: (value) {
-                                          if (value == null ||
-                                              value.trim().isEmpty) {
-                                            return 'Please enter an exercise name';
-                                          }
-                                          return null;
-                                        },
-                                      ),
-                                      const SizedBox(height: kSpacingMedium),
-                                      ElevatedButton(
-                                        onPressed: _createExercise,
-                                        style: ElevatedButton.styleFrom(
-                                          minimumSize:
-                                              const Size(double.infinity, 50),
-                                          backgroundColor:
-                                              theme.colorScheme.primary,
-                                          foregroundColor:
-                                              theme.colorScheme.onPrimary,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
+                                        const SizedBox(height: kSpacingMedium),
+                                        ElevatedButton(
+                                          onPressed: _createExercise,
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize:
+                                                const Size(double.infinity, 50),
+                                            backgroundColor:
+                                                theme.colorScheme.primary,
+                                            foregroundColor:
+                                                theme.colorScheme.onPrimary,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
                                           ),
+                                          child: const Text('Create Exercise'),
                                         ),
-                                        child: const Text('Create Exercise'),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -344,36 +373,53 @@ class _CreateSupportedExerciseScreenState
                                 itemCount: filteredExercises.length,
                                 itemBuilder: (context, index) {
                                   final exercise = filteredExercises[index];
-                                  return Card(
-                                    margin: const EdgeInsets.only(
-                                        bottom: kSpacingSmall),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    child: ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundColor: theme
-                                            .colorScheme.primary
-                                            .withOpacity(0.2),
-                                        child: Icon(
-                                          Icons.fitness_center,
-                                          color: theme.colorScheme.primary,
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.surface,
+                                        borderRadius: BorderRadius.circular(12),
+                                        border: Border.all(
+                                          color: theme.colorScheme.primary
+                                              .withOpacity(0.1),
                                         ),
                                       ),
-                                      title: Text(
-                                        exercise.exerciseName,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      subtitle: Text(
-                                          'ID: ${exercise.supportedExerciseId}'),
-                                      trailing: IconButton(
-                                        icon: const Icon(Icons.delete_outline),
-                                        onPressed: () {
-                                          // Show confirmation dialog for deletion
-                                          _showDeleteConfirmationDialog(
-                                              exercise);
-                                        },
+                                      child: Card(
+                                        elevation: 0,
+                                        margin: const EdgeInsets.only(
+                                            bottom: kSpacingSmall),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                        ),
+                                        child: ListTile(
+                                          leading: CircleAvatar(
+                                            backgroundColor: theme
+                                                .colorScheme.primary
+                                                .withOpacity(0.2),
+                                            child: Icon(
+                                              Icons.fitness_center,
+                                              color: theme.colorScheme.primary,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            exercise.exerciseName,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          // subtitle: Text(
+                                          //     'ID: ${exercise.supportedExerciseId}'),
+                                          trailing: IconButton(
+                                            icon: const Icon(
+                                                Icons.delete_outline),
+                                            onPressed: () {
+                                              // Show confirmation dialog for deletion
+                                              _showDeleteConfirmationDialog(
+                                                  exercise);
+                                            },
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   );
