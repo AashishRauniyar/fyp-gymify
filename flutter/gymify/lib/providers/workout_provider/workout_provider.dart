@@ -176,9 +176,6 @@ class WorkoutProvider with ChangeNotifier {
         throw Exception('No exercises provided');
       }
 
-      
-      
-
       final response = await httpClient.post(
         '/workouts/$workoutId/exercises',
         data: {'exercises': exercises},
@@ -187,7 +184,6 @@ class WorkoutProvider with ChangeNotifier {
           'Content-Type': 'application/json',
         }),
       );
-
 
       // Fix: Change the expected response type from Map<String, dynamic> to dynamic
       // This allows us to handle both Map and List responses
@@ -291,8 +287,6 @@ class WorkoutProvider with ChangeNotifier {
     }
   }
 
-  // Add these methods to your existing WorkoutProvider class
-
   // Delete a workout
   Future<void> deleteWorkout(int workoutId) async {
     _setLoading(true); // Start loading
@@ -314,13 +308,18 @@ class WorkoutProvider with ChangeNotifier {
         _workouts.removeWhere((workout) => workout.workoutId == workoutId);
         notifyListeners();
       } else {
-        throw Exception(apiResponse.message.isNotEmpty
-            ? apiResponse.message
-            : 'Unknown error');
+        throw Exception(apiResponse.message);
       }
     } catch (e) {
       print('Error deleting workout: $e');
-      throw Exception('Error deleting workout: $e');
+      // Re-throw the error with the original message
+      if (e is DioException) {
+        final response = e.response?.data;
+        if (response != null && response['message'] != null) {
+          throw Exception(response['message']);
+        }
+      }
+      rethrow;
     } finally {
       _setLoading(false); // Stop loading
     }

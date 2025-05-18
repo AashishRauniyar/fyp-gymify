@@ -328,16 +328,11 @@ export const deleteWorkout = async (req, res) => {
             return res.status(403).json({ status: 'failure', message: 'Access denied' });
         }
 
-        // Check if workout exists and get its logs
+        // Check if workout exists
         const workoutExists = await prisma.workouts.findUnique({
             where: { workout_id: workoutId },
             include: {
-                workoutlogs: true,
-                workoutexercises: {
-                    include: {
-                        workoutexerciseslogs: true
-                    }
-                }
+                workoutlogs: true
             }
         });
 
@@ -345,21 +340,17 @@ export const deleteWorkout = async (req, res) => {
             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
         }
 
-        // Check if workout has any logs or exercise logs
-        const hasWorkoutLogs = workoutExists.workoutlogs && workoutExists.workoutlogs.length > 0;
-        const hasExerciseLogs = workoutExists.workoutexercises.some(
-            exercise => exercise.workoutexerciseslogs && exercise.workoutexerciseslogs.length > 0
-        );
-
-        if (hasWorkoutLogs || hasExerciseLogs) {
+        // Check if workout has any logs
+        if (workoutExists.workoutlogs && workoutExists.workoutlogs.length > 0) {
             return res.status(400).json({
                 status: 'failure',
-                message: 'This workout cannot be deleted because it has been logged by users. Please archive it instead.'
+                message: 'Cannot delete workout. This workout has been logged by users. Please archive it instead.'
             });
         }
 
-        // If no logs exist, proceed with deletion
+        // Delete the workout
         await prisma.workouts.delete({ where: { workout_id: workoutId } });
+
         res.status(200).json({ status: 'success', message: 'Workout deleted successfully' });
     } catch (error) {
         console.error('Error deleting workout:', error);
