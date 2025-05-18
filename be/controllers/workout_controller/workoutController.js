@@ -122,7 +122,7 @@ export const addExerciseToWorkout = async (req, res) => {
         for (const exercise of exercises) {
             const { exercise_id, sets, reps, duration } = exercise;
 
-            
+
 
             // Validate required fields
             // fixed as duration was 0 which is a valid value
@@ -328,15 +328,38 @@ export const deleteWorkout = async (req, res) => {
             return res.status(403).json({ status: 'failure', message: 'Access denied' });
         }
 
-        // Check if workout exists
-        const workoutExists = await prisma.workouts.findUnique({ where: { workout_id: workoutId } });
+        // Check if workout exists and get its logs
+        const workoutExists = await prisma.workouts.findUnique({
+            where: { workout_id: workoutId },
+            include: {
+                workoutlogs: true,
+                workoutexercises: {
+                    include: {
+                        workoutexerciseslogs: true
+                    }
+                }
+            }
+        });
+
         if (!workoutExists) {
             return res.status(404).json({ status: 'failure', message: 'Workout not found' });
         }
 
-        // Delete the workout
-        await prisma.workouts.delete({ where: { workout_id: workoutId } });
+        // Check if workout has any logs or exercise logs
+        const hasWorkoutLogs = workoutExists.workoutlogs && workoutExists.workoutlogs.length > 0;
+        const hasExerciseLogs = workoutExists.workoutexercises.some(
+            exercise => exercise.workoutexerciseslogs && exercise.workoutexerciseslogs.length > 0
+        );
 
+        if (hasWorkoutLogs || hasExerciseLogs) {
+            return res.status(400).json({
+                status: 'failure',
+                message: 'This workout cannot be deleted because it has been logged by users. Please archive it instead.'
+            });
+        }
+
+        // If no logs exist, proceed with deletion
+        await prisma.workouts.delete({ where: { workout_id: workoutId } });
         res.status(200).json({ status: 'success', message: 'Workout deleted successfully' });
     } catch (error) {
         console.error('Error deleting workout:', error);
