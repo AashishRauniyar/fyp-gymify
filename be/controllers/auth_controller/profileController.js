@@ -96,17 +96,21 @@ export const updateProfile = async (req, res) => {
             }
         }
 
-        // check phone  number already exists
+        // Check if phone number already exists for another user
         if (phone_number) {
-            const existingUser = await prisma.users.findUnique({
-                where: { phone_number },
-                select: { user_id: true }
+            const existingPhoneNumber = await prisma.users.findFirst({
+                where: {
+                    phone_number,
+                    NOT: {
+                        user_id: user_id
+                    }
+                }
             });
 
-            if (existingUser && existingUser.user_id !== user_id) {
+            if (existingPhoneNumber) {
                 return res.status(400).json({ status: 'failure', message: 'Phone number already exists' });
             }
-        }   
+        }
 
         if (
             !full_name &&

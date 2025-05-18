@@ -151,7 +151,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }
 
-    if (profileProvider.hasError) {
+    if (profileProvider.hasError && profileProvider.user == null) {
       return Scaffold(
         appBar: const CustomAppBar(
           title: "Edit profile",
@@ -323,7 +323,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     } else {
                       showCoolSnackBar(
                         context,
-                        profileProvider.errorMessage ?? 'Error',
+                        profileProvider.errorMessage ??
+                            'Error updating profile',
                         false,
                       );
                     }

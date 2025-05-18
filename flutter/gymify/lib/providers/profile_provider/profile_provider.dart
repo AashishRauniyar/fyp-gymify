@@ -136,6 +136,15 @@ class ProfileProvider with ChangeNotifier {
           _setError(apiResponse.message);
         }
       }
+    } on dio.DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        // Extract error message from the response
+        final errorData = e.response?.data as Map<String, dynamic>?;
+        final message = errorData?['message'] as String?;
+        _setError(message ?? 'Error updating profile');
+      } else {
+        _setError('Error updating profile: ${e.message}');
+      }
     } catch (e) {
       _setError('Error updating profile: ${e.toString()}');
     } finally {
