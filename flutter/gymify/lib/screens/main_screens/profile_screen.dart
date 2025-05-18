@@ -9,6 +9,7 @@ import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/theme/app_theme.dart';
 import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_loader.dart';
+import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   ThemeMode _selectedThemeMode = ThemeMode.system;
+  double _userRating = 0.0;
 
   @override
   void initState() {
@@ -32,12 +34,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final profileProvider =
           Provider.of<ProfileProvider>(context, listen: false);
+      profileProvider.resetError();
       profileProvider.fetchProfile();
 
       final membershipProvider =
           Provider.of<MembershipProvider>(context, listen: false);
       membershipProvider.fetchMembershipStatus(context);
+
+      _loadUserRating();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   Future<void> _loadThemePreference() async {
@@ -54,6 +64,88 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     // Update the theme notifier
     Provider.of<ThemeNotifier>(context, listen: false).updateThemeMode(mode);
+  }
+
+  Future<void> _loadUserRating() async {
+    if (!mounted) return;
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+    setState(() {
+      _userRating = prefs.getDouble('user_rating') ?? 0.0;
+    });
+  }
+
+  Future<void> _saveUserRating(double rating) async {
+    if (!mounted) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('user_rating', rating);
+    if (!mounted) return;
+    setState(() {
+      _userRating = rating;
+    });
+  }
+
+  void _showRatingDialog() {
+    if (!mounted) return;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Rate Our App'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              _userRating > 0
+                  ? 'You rated us ${_userRating.toStringAsFixed(1)} stars'
+                  : 'How would you rate our app?',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(5, (index) {
+                return IconButton(
+                  icon: Icon(
+                    index < _userRating ? Icons.star : Icons.star_border,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 32,
+                  ),
+                  onPressed: () {
+                    _saveUserRating(index + 1.0);
+                    if (!mounted) return;
+                    Navigator.pop(context);
+                    // ScaffoldMessenger.of(context).showSnackBar(
+                    //   SnackBar(
+                    //     content: Text(
+                    //       _userRating == 5.0
+                    //           ? 'Thank you for your 5-star rating!'
+                    //           : 'Thanks for rating us ${_userRating.toStringAsFixed(1)} stars!',
+                    //     ),
+                    //     backgroundColor: Theme.of(context).colorScheme.primary,
+                    //   ),
+                    // );
+                    showCoolSnackBar(
+                        context,
+                        // 'Thanks for rating us ${_userRating.toStringAsFixed(1)} stars!',
+
+                        _userRating == 5.0
+                            ? 'Thank you for your 5-star rating!'
+                            : 'Thanks for rating us ${_userRating.toStringAsFixed(1)} stars!',
+                        true);
+                  },
+                );
+              }),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -844,9 +936,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         context,
                         CupertinoIcons.star_fill,
                         'Rate the App',
-                        'Let us know how we\'re doing',
+                        _userRating > 0
+                            ? 'You rated us ${_userRating.toStringAsFixed(1)} stars'
+                            : 'Let us know how we\'re doing',
                         () {
-                          // Navigate to app rating
+                          _showRatingDialog();
                         },
                       ),
                     ],
