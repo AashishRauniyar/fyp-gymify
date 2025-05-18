@@ -56,6 +56,7 @@ class _WeightLogState extends State<WeightLog> {
   void _showUpdateWeightDialog() {
     final profileProvider =
         Provider.of<ProfileProvider>(context, listen: false);
+    final formKey = GlobalKey<FormState>();
 
     // Pre-fill with current weight if available
     if (profileProvider.user?.currentWeight != null) {
@@ -66,12 +67,65 @@ class _WeightLogState extends State<WeightLog> {
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Update Weight'),
-        content: TextField(
-          controller: _weightController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Weight (kg)',
-            hintText: 'Enter your current weight',
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: _weightController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            decoration: InputDecoration(
+              labelText: 'Weight (kg)',
+              hintText: 'Enter your current weight',
+              suffixText: 'kg',
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              prefixIcon: const Icon(Icons.monitor_weight_outlined),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Weight cannot be empty';
+              }
+
+              // Check if input is a valid number
+              final weight = double.tryParse(value);
+              if (weight == null) {
+                return 'Please enter a valid number';
+              }
+
+              // Check weight range
+              if (weight < 30) {
+                return 'Weight must be at least 30kg';
+              }
+              if (weight > 250) {
+                return 'Weight cannot exceed 250kg';
+              }
+
+              return null;
+            },
+            onChanged: (value) {
+              // Format input to allow only numbers and one decimal point
+              if (value.isNotEmpty) {
+                final formatted = value.replaceAll(RegExp(r'[^0-9.]'), '');
+                if (formatted != value) {
+                  _weightController.value = TextEditingValue(
+                    text: formatted,
+                    selection:
+                        TextSelection.collapsed(offset: formatted.length),
+                  );
+                }
+
+                // Ensure only one decimal point
+                final parts = formatted.split('.');
+                if (parts.length > 2) {
+                  final corrected = '${parts[0]}.${parts[1]}';
+                  _weightController.value = TextEditingValue(
+                    text: corrected,
+                    selection:
+                        TextSelection.collapsed(offset: corrected.length),
+                  );
+                }
+              }
+            },
           ),
         ),
         actions: [
@@ -81,77 +135,32 @@ class _WeightLogState extends State<WeightLog> {
           ),
           TextButton(
             onPressed: () async {
-              String weightText = _weightController.text.trim();
+              if (formKey.currentState?.validate() ?? false) {
+                final weightText = _weightController.text.trim();
+                final newWeight = double.parse(weightText);
 
-              if (weightText.isEmpty) {
-                // Show validation error if input is empty
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content: Text('Weight cannot be empty.'),
-                //   ),
-                // );
-                showCoolSnackBar(context, 'Weight cannot be empty', true);
-                return;
-              }
+                try {
+                  await profileProvider.updateWeight(context, newWeight);
 
-              // Check if the weight input is a valid number
-              double? newWeight = double.tryParse(weightText);
-              if (newWeight == null || newWeight <= 0) {
-                // Show validation error for invalid weight
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content:
-                //         Text('Please enter a valid weight (greater than 0).'),
-                //   ),
-                // );
-                showCoolSnackBar(context,
-                    'Please enter a valid weight (greater than 0).', false);
-                return;
-              }
-
-              // Optional: Check for a reasonable weight range (e.g., 30kg - 300kg)
-              if (newWeight < 30 || newWeight > 250) {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content:
-                //         Text('Please enter a weight between 30kg and 250kg.'),
-                //   ),
-                // );
-                showCoolSnackBar(context,
-                    'Please enter a weight between 30kg and 250kg.', false);
-                return;
-              }
-
-              // Proceed with the update if everything is valid
-              try {
-                await profileProvider.updateWeight(context, newWeight);
-
-                if (!profileProvider.hasError) {
-                  // Refresh weight history after update
-                  await profileProvider.fetchWeightHistory();
-                  Navigator.of(ctx).pop();
-
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   const SnackBar(
-                  //     content: Text('Weight updated successfully'),
-                  //   ),
-                  // );
+                  if (!profileProvider.hasError) {
+                    await profileProvider.fetchWeightHistory();
+                    Navigator.of(ctx).pop();
+                    showCoolSnackBar(
+                        context, 'Weight updated successfully', true);
+                  } else {
+                    showCoolSnackBar(
+                      context,
+                      profileProvider.errorMessage ?? 'Error occurred',
+                      false,
+                    );
+                  }
+                } catch (e) {
                   showCoolSnackBar(
-                      context, 'Weight updated successfully', true);
-                } else {
-                  // Handle error from the provider
-                  showCoolSnackBar(context,
-                      profileProvider.errorMessage ?? 'Error occurred', false);
+                    context,
+                    'An error occurred while updating the weight.',
+                    false,
+                  );
                 }
-              } catch (e) {
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content:
-                //         Text('An error occurred while updating the weight.'),
-                //   ),
-                // );
-                showCoolSnackBar(context,
-                    'An error occurred while updating the weight.', false);
               }
             },
             child: const Text('Update'),
