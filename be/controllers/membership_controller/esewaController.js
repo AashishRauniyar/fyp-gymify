@@ -1,53 +1,58 @@
+import { v4 as uuidv4 } from 'uuid';
 import prisma from '../../prisma/prisma.js';
-import axios from 'axios';
-import crypto from 'crypto';
-import dotenv from 'dotenv';
+import { getEsewaPaymentHash, verifyEsewaPayment } from '../../utils/esewa.js';
+import { body, validationResult } from 'express-validator';
 
-dotenv.config();
-
-
-const ESEWA_API_URL = process.env.NODE_ENV === "production"
-    ? "https://epay.esewa.com.np/api/epay/main/v2/form"
-    : "https://rc-epay.esewa.com.np/api/epay/main/v2/form";  // Test URL
-
-const ESEWA_SECRET_KEY = process.env.ESEWA_SECRET_KEY;
-const BASE_URL = process.env.BASE_URL;
-
-// Helper function to generate HMAC-SHA256 signature for eSewa
-function generateSignature(params) {
-    const sortedKeys = Object.keys(params).sort();
-    const stringToSign = sortedKeys.map(key => `${key}=${params[key]}`).join('&');
-
-    const hmac = crypto.createHmac('sha256', ESEWA_SECRET_KEY);
-    hmac.update(stringToSign);
-    return hmac.digest('base64');
-}
-
-export const initiatePaymentEsewa = async (req, res) => {
+export const initializeEsewaPayment = async (req, res) => {
     try {
-        const { user_id, plan_id, amount, payment_method } = req.body;
+        // Validate input
+        await Promise.all([
+            body('plan_id').isInt().withMessage('Invalid plan ID').run(req),
+            body('amount').isFloat({ min: 0 }).withMessage('Invalid amount').run(req)
+        ]);
 
-        if (payment_method !== 'eSewa') {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
             return res.status(400).json({
                 status: 'failure',
-                message: 'Invalid payment method. Please use "eSewa".'
+                message: 'Validation failed',
+                errors: errors.array()
             });
         }
 
-        const user = await prisma.users.findUnique({ where: { user_id: parseInt(user_id) } });
+        const { plan_id, amount } = req.body;
+        const userId = req.user.user_id;
+
+        // Check if user exists
+        const user = await prisma.users.findUnique({
+            where: { user_id: parseInt(userId) }
+        });
+
         if (!user) {
-            return res.status(404).json({ status: 'failure', message: 'User not found' });
+            return res.status(404).json({
+                status: 'failure',
+                message: 'User not found'
+            });
         }
 
+        // Check if plan exists
         const plan = await prisma.membership_plan.findUnique({ where: { plan_id: parseInt(plan_id) } });
         if (!plan) {
             return res.status(404).json({ status: 'failure', message: 'Membership plan not found' });
         }
 
+        // Validate amount matches plan price
+        if (parseFloat(amount) !== parseFloat(plan.price)) {
+            return res.status(400).json({
+                status: 'failure',
+                message: 'Amount does not match plan price'
+            });
+        }
+
         // Check for existing active or pending membership
         const existingMembership = await prisma.memberships.findFirst({
             where: {
-                user_id: parseInt(user_id),
+                user_id: parseInt(userId),
                 OR: [
                     { status: 'Pending' },
                     { status: 'Active', end_date: { gte: new Date() } }
@@ -62,126 +67,215 @@ export const initiatePaymentEsewa = async (req, res) => {
             });
         }
 
-        // Create a new membership entry (Pending)
-        const newMembership = await prisma.memberships.create({
-            data: {
-                user_id: parseInt(user_id),
-                plan_id: parseInt(plan_id),
-                status: 'Pending', // Initially pending until payment is verified
-            }
+        const transaction_uuid = uuidv4();
+
+        // Create membership and payment in a single transaction
+        const result = await prisma.$transaction(async (tx) => {
+            // Create a new membership entry (Pending)
+            const newMembership = await tx.memberships.create({
+                data: {
+                    user_id: parseInt(userId),
+                    plan_id: parseInt(plan_id),
+                    status: 'Pending', // Initially pending until payment is verified
+                }
+            });
+
+            // Get eSewa payment hash
+            const paymentHash = await getEsewaPaymentHash({
+                amount: parseFloat(amount),
+                transaction_uuid: transaction_uuid
+            });
+
+            // Create a payment entry linked to the new membership
+            const payment = await tx.payments.create({
+                data: {
+                    memberships: {
+                        connect: {
+                            membership_id: newMembership.membership_id
+                        }
+                    },
+                    users: {
+                        connect: {
+                            user_id: parseInt(userId)
+                        }
+                    },
+                    price: parseFloat(amount),
+                    payment_method: 'Online',
+                    transaction_id: transaction_uuid,
+                    payment_status: 'Pending',
+                    payment_date: new Date()
+                }
+            });
+
+            return { newMembership, payment, paymentHash };
         });
 
-        const transactionUuid = `TXN-${Date.now()}-${user_id}`;
+        // Calculate tax and total amount
+        const tax_amount = 0; // Set your tax calculation logic here
+        const product_service_charge = 0;
+        const product_delivery_charge = 0;
+        const total_amount = parseFloat(amount) + tax_amount + product_service_charge + product_delivery_charge;
 
-        const total_amount = (parseFloat(amount) + 0).toString(); // For simplicity, no extra charges added.
-
-        const params = {
-            total_amount,
-            transaction_uuid: transactionUuid,
-            product_code: 'EPAYTEST',  // Define the product code
-            signed_field_names: "total_amount,transaction_uuid,product_code",
-        };
-
-        // Generate signature
-        const signature = generateSignature(params);
-
-        const paymentPayload = {
-            ...params,
-            signature,
-            success_url: `${BASE_URL}payment-success?transaction_uuid=${transactionUuid}`,
-            failure_url: `${BASE_URL}payment-failure?transaction_uuid=${transactionUuid}`,
-        };
-
-        const esewaResponse = await axios.post(ESEWA_API_URL, paymentPayload, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (!esewaResponse.data.success_url) {
-            throw new Error('Failed to get eSewa payment URL');
+        // Ensure FRONTEND_URL is set
+        if (!process.env.FRONTEND_URL) {
+            throw new Error('FRONTEND_URL environment variable is not set');
         }
 
-        // Create a payment entry linked to the new membership
-        await prisma.payments.create({
-            data: {
-                user_id: parseInt(user_id),
-                membership_id: newMembership.membership_id, // 🔥 Link Payment to Membership
-                price: amount,
-                payment_method: 'eSewa',
-                transaction_id: transactionUuid,
-                pidx: esewaResponse.data.transaction_uuid, // Transaction UUID
-                payment_status: 'Pending',
-                payment_date: new Date(),
-            },
-        });
+        // Construct success and failure URLs
+        const success_url = `${process.env.FRONTEND_URL}/payment/success`;
+        const failure_url = `${process.env.FRONTEND_URL}/payment/failure`;
 
         res.status(200).json({
             status: 'success',
             data: {
-                transaction_uuid: transactionUuid,
-                payment_url: esewaResponse.data.success_url,
+                amount: amount,
+                tax_amount: tax_amount,
+                total_amount: total_amount,
+                transaction_uuid: transaction_uuid,
+                product_code: process.env.ESEWA_PRODUCT_CODE,
+                product_service_charge: product_service_charge,
+                product_delivery_charge: product_delivery_charge,
+                success_url: success_url,
+                failure_url: failure_url,
+                signed_field_names: result.paymentHash.signed_field_names,
+                signature: result.paymentHash.signature,
+                plan_details: {
+                    plan_name: plan.plan_type,
+                    plan_type: plan.plan_type,
+                    duration: plan.duration
+                }
             },
-            message: 'Payment initiated successfully',
+            message: 'Payment initiated successfully'
         });
 
     } catch (error) {
-        console.error("Error initiating payment:", error);
+        console.error('Error initializing eSewa payment:', error);
         res.status(500).json({
             status: 'failure',
             message: 'Internal server error',
-            error: error.message,
+            error: error.message
         });
     }
 };
 
-export const verifyPaymentEsewa = async (req, res) => {
+export const completeEsewaPayment = async (req, res) => {
     try {
-        const { transaction_uuid, status } = req.body;
+        const { data } = req.body;
+        const userId = req.user.user_id;
 
-        const payment = await prisma.payments.findUnique({
-            where: { transaction_id: transaction_uuid },
-            include: { memberships: true }, // Fetch the linked membership
-        });
+        // Verify payment with eSewa
+        const paymentInfo = await verifyEsewaPayment(data);
 
-        if (!payment) {
-            return res.status(404).json({ status: 'failure', message: 'Payment not found' });
-        }
-
-        if (status !== 'COMPLETE') {
+        const transactionUuid = paymentInfo.decodedData.transaction_uuid;
+        if (!transactionUuid) {
             return res.status(400).json({
                 status: 'failure',
-                message: 'Payment was not successful'
+                message: 'Invalid transaction UUID'
             });
         }
 
-        // Update payment status to 'Paid'
-        await prisma.payments.update({
-            where: { transaction_id: transaction_uuid },
-            data: { payment_status: 'Paid' },
+        // Find payment record
+        const payment = await prisma.payments.findFirst({
+            where: {
+                transaction_id: transactionUuid,
+                user_id: parseInt(userId),
+                payment_method: 'Online'  // Ensure it's an eSewa payment
+            },
+            include: {
+                memberships: {
+                    include: {
+                        membership_plan: true
+                    }
+                }
+            }
         });
 
-        // Update membership status to Active
+        if (!payment) {
+            return res.status(404).json({
+                status: 'failure',
+                message: 'Payment record not found'
+            });
+        }
+
+        // Update payment status
+        await prisma.payments.update({
+            where: { payment_id: payment.payment_id },
+            data: {
+                payment_status: 'Paid',
+                transaction_id: paymentInfo.decodedData.transaction_code,
+                payment_date: new Date()
+            }
+        });
+
+        // Calculate end date based on plan type
+        const start_date = new Date();
+        let end_date = new Date(start_date);
+
+        const planType = payment.memberships.membership_plan.plan_type;
+        const planDuration = payment.memberships.membership_plan.duration;
+
+        if (planDuration) {
+            end_date.setMonth(end_date.getMonth() + planDuration);
+        } else {
+            switch (planType) {
+                case 'Monthly':
+                    end_date.setMonth(end_date.getMonth() + 1);
+                    break;
+                case 'Quaterly':
+                    end_date.setMonth(end_date.getMonth() + 3);
+                    break;
+                case 'Yearly':
+                    end_date.setFullYear(end_date.getFullYear() + 1);
+                    break;
+                default:
+                    end_date.setMonth(end_date.getMonth() + 1);
+            }
+        }
+
+        // Update membership status
         await prisma.memberships.update({
             where: { membership_id: payment.membership_id },
             data: {
                 status: 'Active',
-                start_date: new Date(),
-                end_date: new Date(new Date().setMonth(new Date().getMonth() + 1)) // Adjust based on plan
+                start_date,
+                end_date,
+                updated_at: new Date()
             }
+        });
+
+        // Set payment details in cookie for the success page
+        const paymentDetails = {
+            transactionId: paymentInfo.decodedData.transaction_code,
+            amount: `Rs. ${paymentInfo.decodedData.total_amount}`,
+            date: new Date().toLocaleString(),
+            paymentMethod: 'Online',
+            planName: payment.memberships.membership_plan.plan_type,
+            membershipEndDate: end_date.toLocaleDateString()
+        };
+
+        res.cookie('paymentDetails', JSON.stringify(paymentDetails), {
+            maxAge: 300000, // 5 minutes
+            httpOnly: false
         });
 
         res.status(200).json({
             status: 'success',
             message: 'Payment verified, membership activated',
+            data: {
+                status: 'Active',
+                start_date,
+                end_date,
+                plan_name: payment.memberships.membership_plan.plan_type,
+                plan_type: payment.memberships.membership_plan.plan_type
+            }
         });
 
     } catch (error) {
-        console.error("Error verifying payment:", error);
+        console.error('Error completing eSewa payment:', error);
         res.status(500).json({
             status: 'failure',
             message: 'Internal server error',
-            error: error.message,
+            error: error.message
         });
     }
 };

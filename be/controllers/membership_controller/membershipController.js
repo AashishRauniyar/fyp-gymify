@@ -503,3 +503,41 @@ export const updateUserCard = async (req, res) => {
 };
 
 
+// delete membership request by a user ( before being approved)
+
+export const deleteMembershipRequest = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+
+        // Check if membership exists
+        const membership = await prisma.memberships.findFirst({
+            where: {
+                user_id: parseInt(user_id),
+                status: 'Pending'
+            }
+        });
+
+        if (!membership) {
+            return res.status(404).json({
+                status: 'failure',
+                message: 'Membership not found or already approved'
+            });
+        }
+
+        // Delete the membership request
+        await prisma.memberships.delete({
+            where: { membership_id: membership.membership_id }
+        });
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Membership request deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting membership request:', error);
+        res.status(500).json({
+            status: 'failure',
+            message: 'Server error'
+        });
+    }
+}

@@ -7,6 +7,8 @@ import 'package:gymify/utils/custom_appbar.dart';
 import 'package:gymify/utils/custom_snackbar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:app_links/app_links.dart';
+import 'dart:async';
 
 class MembershipScreen extends StatefulWidget {
   const MembershipScreen({super.key});
@@ -19,8 +21,13 @@ class _MembershipScreenState extends State<MembershipScreen>
     with SingleTickerProviderStateMixin {
   bool _isLoading = false;
   bool _isApplying = false;
+  bool _isEsewaPaymentPending = false;
+  bool _isCancellingMembership = false;
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+
+  StreamSubscription? _esewaSub;
+  final AppLinks _appLinks = AppLinks();
 
   String formatDate(DateTime date) {
     final DateFormat formatter = DateFormat('MMM dd, yyyy');
@@ -46,11 +53,96 @@ class _MembershipScreenState extends State<MembershipScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeData();
     });
+
+    // Listen for eSewa payment redirect
+    _listenForEsewaRedirect();
+  }
+
+  void _listenForEsewaRedirect() {
+    _esewaSub = _appLinks.uriLinkStream.listen((Uri? uri) async {
+      if (uri != null) {
+        if (uri.path == '/payment/success') {
+          final data = uri.queryParameters['data'];
+          print('eSewa redirect received!');
+          print('Redirect URI: $uri');
+          print('Data parameter from eSewa: ${data ?? 'null'}');
+          if (data != null) {
+            setState(() => _isEsewaPaymentPending = true);
+            try {
+              print('Calling verifyEsewaPayment with data: $data');
+              final provider =
+                  Provider.of<MembershipProvider>(context, listen: false);
+              await provider.verifyEsewaPayment(context, data);
+              if (mounted) {
+                // Show success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content:
+                        Text('eSewa Payment Successful! Membership Activated.'),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+
+                // Refresh membership status
+                await provider.fetchMembershipStatus(context);
+
+                // Force rebuild the widget
+                setState(() {});
+
+                // Optional: Add a small delay to ensure smooth transition
+                await Future.delayed(const Duration(milliseconds: 500));
+
+                // Navigate back to membership screen to show updated status
+                if (mounted) {
+                  context.go('/membership');
+                }
+              }
+            } catch (e) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content:
+                        Text('Payment verification failed: ${e.toString()}'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            } finally {
+              if (mounted) {
+                setState(() => _isEsewaPaymentPending = false);
+              }
+            }
+          }
+        } else if (uri.path == '/payment/failure') {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content:
+                    Text('Payment was cancelled or failed. Please try again.'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      }
+    }, onError: (err) {
+      print('Error in eSewa redirect: $err');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Error processing payment redirect. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _esewaSub?.cancel();
     super.dispose();
   }
 
@@ -233,6 +325,68 @@ class _MembershipScreenState extends State<MembershipScreen>
                       Icons.attach_money, 'Price', 'NRS ${membership.price}'),
                   _buildDetailRow(Icons.payment, 'Payment Status',
                       membership.paymentStatus),
+
+                  // Show Cancel Membership button if status is pending
+                  if (membership.status.toLowerCase() == 'pending')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.cancel, color: Colors.white),
+                          label: _isCancellingMembership
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                )
+                              : const Text('Cancel Membership Request'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: _isCancellingMembership
+                              ? null
+                              : () async {
+                                  setState(
+                                      () => _isCancellingMembership = true);
+                                  final provider =
+                                      Provider.of<MembershipProvider>(context,
+                                          listen: false);
+                                  try {
+                                    await provider.deleteMembership(context);
+                                    if (mounted) {
+                                      showCoolSnackBar(
+                                          context,
+                                          'Membership request cancelled.',
+                                          true);
+                                      await provider
+                                          .fetchMembershipStatus(context);
+                                    }
+                                  } catch (e) {
+                                    if (mounted) {
+                                      showCoolSnackBar(
+                                          context,
+                                          'Failed to cancel membership: \\${e.toString()}',
+                                          false);
+                                    }
+                                  } finally {
+                                    if (mounted)
+                                      setState(() =>
+                                          _isCancellingMembership = false);
+                                  }
+                                },
+                        ),
+                      ),
+                    ),
 
                   if (membership.status.toLowerCase() == 'active') ...[
                     _buildDetailRow(Icons.date_range, 'Start Date',
@@ -554,6 +708,41 @@ class _MembershipScreenState extends State<MembershipScreen>
               () async {
                 Navigator.pop(dialogContext);
                 await _applyForMembership(context, planId, 'Cash');
+              },
+            ),
+            const SizedBox(height: 12),
+            _buildPaymentOption(
+              dialogContext,
+              'Pay with eSewa',
+              Icons.account_balance,
+              Colors.green,
+              !_isApplying && !_isEsewaPaymentPending,
+              () async {
+                setState(() => _isApplying = true);
+                Navigator.pop(dialogContext);
+
+                try {
+                  final provider =
+                      Provider.of<MembershipProvider>(context, listen: false);
+                  await provider.applyForMembershipUsingEsewa(
+                      context, planId, int.parse(price));
+                } catch (e) {
+                  if (mounted) {
+                    String errorMessage = 'Payment failed: ';
+                    if (e.toString().contains('network')) {
+                      errorMessage += 'Please check your internet connection';
+                    } else if (e.toString().contains('invalid')) {
+                      errorMessage += 'Invalid payment details';
+                    } else {
+                      errorMessage += e.toString();
+                    }
+                    showCoolSnackBar(context, errorMessage, false);
+                  }
+                } finally {
+                  if (mounted) {
+                    setState(() => _isApplying = false);
+                  }
+                }
               },
             ),
           ],
@@ -948,178 +1137,4 @@ class _MembershipScreenState extends State<MembershipScreen>
       ),
     );
   }
-
-  // Widget _buildPlanCard(
-  //   int index,
-  //   String planType,
-  //   String price,
-  //   String duration,
-  //   String description,
-  //   VoidCallback onApply,
-  // ) {
-  //   final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-  //   final colors = [
-  //     [Colors.blue, Colors.lightBlue],
-  //     [Colors.purple, Colors.purpleAccent],
-  //     [Colors.green, Colors.lightGreen],
-  //     [Colors.orange, Colors.amber],
-  //   ];
-
-  //   final colorIndex = index % colors.length;
-  //   final primaryColor = colors[colorIndex][0];
-  //   final secondaryColor = colors[colorIndex][1];
-
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       gradient: LinearGradient(
-  //         colors: [
-  //           primaryColor.withOpacity(isDarkMode ? 0.2 : 0.1),
-  //           secondaryColor.withOpacity(isDarkMode ? 0.1 : 0.05),
-  //         ],
-  //         begin: Alignment.topLeft,
-  //         end: Alignment.bottomRight,
-  //       ),
-  //       borderRadius: BorderRadius.circular(20),
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: primaryColor.withOpacity(0.1),
-  //           blurRadius: 10,
-  //           offset: const Offset(0, 5),
-  //         ),
-  //       ],
-  //       border: Border.all(color: primaryColor.withOpacity(0.3), width: 2),
-  //     ),
-  //     child: ClipRRect(
-  //       borderRadius: BorderRadius.circular(20),
-  //       child: Stack(
-  //         children: [
-  //           // Background pattern
-  //           Positioned(
-  //             right: -20,
-  //             top: -20,
-  //             child: Container(
-  //               width: 120,
-  //               height: 120,
-  //               decoration: BoxDecoration(
-  //                 shape: BoxShape.circle,
-  //                 color: primaryColor.withOpacity(0.1),
-  //               ),
-  //             ),
-  //           ),
-
-  //           // Content
-  //           Padding(
-  //             padding: const EdgeInsets.all(20),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 // Plan type and icon
-  //                 Row(
-  //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                   children: [
-  //                     Text(
-  //                       planType,
-  //                       style: TextStyle(
-  //                         fontSize: 22,
-  //                         fontWeight: FontWeight.bold,
-  //                         color: primaryColor,
-  //                       ),
-  //                     ),
-  //                     Container(
-  //                       padding: const EdgeInsets.all(8),
-  //                       decoration: BoxDecoration(
-  //                         color: primaryColor.withOpacity(0.2),
-  //                         shape: BoxShape.circle,
-  //                       ),
-  //                       child: Icon(
-  //                         Icons.fitness_center,
-  //                         color: primaryColor,
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-
-  //                 const SizedBox(height: 12),
-
-  //                 // Price and duration
-  //                 Row(
-  //                   children: [
-  //                     Text(
-  //                       'NRS $price',
-  //                       style: const TextStyle(
-  //                         fontSize: 24,
-  //                         fontWeight: FontWeight.bold,
-  //                       ),
-  //                     ),
-  //                     const SizedBox(width: 8),
-  //                     Text(
-  //                       '/ $duration months',
-  //                       style: TextStyle(
-  //                         fontSize: 16,
-  //                         color: Colors.grey[600],
-  //                       ),
-  //                     ),
-  //                   ],
-  //                 ),
-
-  //                 const SizedBox(height: 12),
-
-  //                 // Description
-  //                 Expanded(
-  //                   child: Text(
-  //                     description,
-  //                     style: TextStyle(
-  //                       fontSize: 14,
-  //                       color: Theme.of(context)
-  //                           .colorScheme
-  //                           .onSurface
-  //                           .withOpacity(0.7),
-  //                     ),
-  //                     maxLines: 2,
-  //                     overflow: TextOverflow.ellipsis,
-  //                   ),
-  //                 ),
-
-  //                 // Apply button
-  //                 SizedBox(
-  //                   width: double.infinity,
-  //                   child: ElevatedButton(
-  //                     style: ElevatedButton.styleFrom(
-  //                       backgroundColor: primaryColor,
-  //                       foregroundColor: Colors.white,
-  //                       padding: const EdgeInsets.symmetric(vertical: 12),
-  //                       shape: RoundedRectangleBorder(
-  //                         borderRadius: BorderRadius.circular(12),
-  //                       ),
-  //                       elevation: 2,
-  //                     ),
-  //                     onPressed: _isApplying ? null : onApply,
-  //                     child: _isApplying
-  //                         ? const SizedBox(
-  //                             height: 20,
-  //                             width: 20,
-  //                             child: CircularProgressIndicator(
-  //                               strokeWidth: 2,
-  //                               valueColor:
-  //                                   AlwaysStoppedAnimation<Color>(Colors.white),
-  //                             ),
-  //                           )
-  //                         : const Text(
-  //                             'Apply Now',
-  //                             style: TextStyle(
-  //                               fontSize: 16,
-  //                               fontWeight: FontWeight.bold,
-  //                             ),
-  //                           ),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }
-

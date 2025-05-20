@@ -12,7 +12,7 @@ import attendanceRouter from './attendanceRoutes.js';
 import membershipRouter from './membershipRoutes.js';
 import chatRouter from './chatRoutes.js';
 import khaltiRouter from './khaltiRoutes.js';
-import esewaRouter from './esewaRoutes.js';
+// import esewaRouter from './esewaRoutes.js';
 import weightRouter from './weightRoutes.js';
 import testRouter from './testRoute.js';
 import adminUserRouter from './adminRoutes/adminUserRoutes.js';
@@ -21,6 +21,7 @@ import adminAttendanceRouter from './adminRoutes/adminAttendanceRoutes.js';
 import adminNewMembershipRouter from './adminRoutes/adminNewMembershipRoutes.js';
 import adminDashboardRouter from './adminRoutes/adminDashboardRouter.js';
 import { trainerRoutes } from './trainerRoutes/trainerRoutes.js';
+import esewaRouter from './payment_routes/esewaRoutes.js';
 
 
 const mainRouter = express.Router();

@@ -94,7 +94,10 @@ dependencies:
   confetti: ^0.8.0
   iconsax_flutter: ^1.0.0
   flutter_launcher_icons: ^0.14.3
+  url_launcher: ^6.3.1
   #khalti_flutter: ^3.0.0
+  app_links: ^6.4.0
+  webview_flutter: ^4.12.0
 
 dev_dependencies:
   flutter_test:
