@@ -78,7 +78,7 @@ class AIChatbotProvider with ChangeNotifier {
 
     // Initialize vision model for food image analysis
     _visionModel = GenerativeModel(
-      model: 'gemini-1.5-pro-vision',
+      model: 'gemini-2.0-flash', // Use a widely available vision model
       apiKey: apiKey,
       generationConfig: GenerationConfig(
         temperature: 0.4,
