@@ -48,7 +48,7 @@ class _AIChatbotScreenState extends State<AIChatbotScreen>
     _animationController.forward();
 
     // Send welcome message after the user profile has been loaded
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Initialize required providers
       final profileProvider =
           Provider.of<ProfileProvider>(context, listen: false);
@@ -59,9 +59,11 @@ class _AIChatbotScreenState extends State<AIChatbotScreen>
       final dietProvider = Provider.of<DietProvider>(context, listen: false);
 
       // Fetch workouts, exercises, and diet plans for AI recommendations
-      workoutProvider.fetchAllWorkouts();
-      exerciseProvider.fetchAllExercises();
-      dietProvider.fetchAllDietPlans(); // Add this line to fetch diet plans
+      await Future.wait([
+        workoutProvider.fetchAllWorkouts(),
+        exerciseProvider.fetchAllExercises(),
+        dietProvider.fetchAllDietPlans(),
+      ]);
 
       if (profileProvider.user != null) {
         _sendWelcomeMessage();
