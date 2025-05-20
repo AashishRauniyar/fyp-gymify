@@ -66,7 +66,7 @@ class AIChatbotProvider with ChangeNotifier {
   void _initializeModels() {
     // Initialize text-only model
     _model = GenerativeModel(
-      model: 'gemini-1.5-pro',
+      model: 'gemini-2.0-flash',
       apiKey: apiKey,
       generationConfig: GenerationConfig(
         temperature: 0.7,
@@ -453,8 +453,6 @@ This exercise would be a great addition to your workout routine!
 
     _setLoading(true);
     try {
-      
-
       const messageContent = '''
 I'd be happy to recommend a diet plan that matches your goals! 
 
