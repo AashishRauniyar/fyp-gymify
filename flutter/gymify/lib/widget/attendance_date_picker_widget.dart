@@ -44,8 +44,10 @@ class _AttendanceDatePickerState extends State<AttendanceDatePicker> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Date header showing month and year
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Wrap(
+          spacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.spaceBetween,
           children: [
             Text(
               DateFormat('MMMM yyyy').format(_selectedDate),
@@ -54,6 +56,7 @@ class _AttendanceDatePickerState extends State<AttendanceDatePicker> {
               ),
             ),
             Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 // Today button
                 TextButton.icon(
@@ -78,7 +81,6 @@ class _AttendanceDatePickerState extends State<AttendanceDatePicker> {
                     ),
                   ),
                 ),
-
                 // Legend for attendance colors - Updated with green color
                 Row(
                   children: [
