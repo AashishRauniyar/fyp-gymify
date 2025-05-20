@@ -28,6 +28,8 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gymify/screens/nutrition_analysis_screen.dart';
+import 'dart:math' as math;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -37,10 +39,35 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late Future<void> _initialData;
   DateTime _selectedDate = DateTime.now(); // Define the selected date variable
   bool _hasError = false; // Add error tracking flag
+
+  late AnimationController _fabController;
+  late Animation<double> _fabScale;
+
+  @override
+  void initState() {
+    super.initState();
+    _initialData = Future.delayed(Duration.zero, () async {
+      await _fetchAllData();
+    });
+    _fabController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    _fabScale = Tween<double>(begin: 1.0, end: 1.12).animate(
+      CurvedAnimation(parent: _fabController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _fabController.dispose();
+    super.dispose();
+  }
 
   Future<void> _fetchAllData() async {
     try {
@@ -92,14 +119,6 @@ class _HomeScreenState extends State<HomeScreen> {
       // Print error for debugging purposes
       debugPrint('Error fetching data: $e');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _initialData = Future.delayed(Duration.zero, () async {
-      await _fetchAllData();
-    });
   }
 
   // Method to format the current date
@@ -343,6 +362,54 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           );
         },
+      ),
+      floatingActionButton: ScaleTransition(
+        scale: _fabScale,
+        child: GestureDetector(
+          onTap: () {
+            context.pushNamed('nutriScan');
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Colors.teal,
+                  Colors.green,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.teal.withOpacity(0.3),
+                  blurRadius: 10,
+                  spreadRadius: 1,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.camera_alt_rounded, color: Colors.white, size: 22),
+                  SizedBox(width: 8),
+                  Text(
+                    'Scan Food',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

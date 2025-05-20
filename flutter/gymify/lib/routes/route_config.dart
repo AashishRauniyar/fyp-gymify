@@ -36,6 +36,7 @@ import 'package:gymify/screens/main_screens/workout_history_screens/workout_hist
 import 'package:gymify/screens/main_screens/workout_screens/all_workouts.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_details_screen.dart';
 import 'package:gymify/screens/main_screens/workout_screens/workout_search_screen.dart';
+import 'package:gymify/screens/nutrition_analysis_screen.dart';
 import 'package:gymify/screens/personal_best_screens/create_supported_exercise_screen.dart';
 import 'package:gymify/screens/personal_best_screens/personal_best_screen.dart';
 import 'package:gymify/screens/personal_best_screens/weight_update_screen.dart';
@@ -352,6 +353,10 @@ final GoRouter router = GoRouter(
         name: 'weightLog',
         path: '/weightLog',
         builder: (context, state) => const WeightLog()),
+    GoRoute(
+        name: 'nutriScan',
+        path: '/nutriScan',
+        builder: (context, state) => const NutritionAnalysisScreen()),
     GoRoute(
         name: 'helpFaqs',
         path: '/helpFaqs',

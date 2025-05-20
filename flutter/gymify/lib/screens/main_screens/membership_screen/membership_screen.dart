@@ -671,7 +671,7 @@ class _MembershipScreenState extends State<MembershipScreen>
             _buildPaymentOption(
               dialogContext,
               'Pay with Khalti',
-              Icons.account_balance_wallet,
+              'assets/logo/khalti.png',
               Colors.purple,
               !_isApplying,
               () async {
@@ -702,7 +702,7 @@ class _MembershipScreenState extends State<MembershipScreen>
             _buildPaymentOption(
               dialogContext,
               'Pay with Cash',
-              Icons.money,
+              'assets/logo/cash.png',
               Colors.green,
               !_isApplying,
               () async {
@@ -714,7 +714,7 @@ class _MembershipScreenState extends State<MembershipScreen>
             _buildPaymentOption(
               dialogContext,
               'Pay with eSewa',
-              Icons.account_balance,
+              'assets/logo/esewa.png',
               Colors.green,
               !_isApplying && !_isEsewaPaymentPending,
               () async {
@@ -765,7 +765,7 @@ class _MembershipScreenState extends State<MembershipScreen>
   Widget _buildPaymentOption(
     BuildContext context,
     String label,
-    IconData icon,
+    String imagePath,
     Color color,
     bool enabled,
     VoidCallback onTap,
@@ -786,10 +786,11 @@ class _MembershipScreenState extends State<MembershipScreen>
         ),
         child: Row(
           children: [
-            Icon(
-              icon,
-              color: enabled ? color : Colors.grey,
-              size: 28,
+            Image.asset(
+              imagePath,
+              height: 28,
+              width: 28,
+              color: enabled ? null : Colors.grey,
             ),
             const SizedBox(width: 16),
             Text(
@@ -923,15 +924,10 @@ class _MembershipScreenState extends State<MembershipScreen>
   Widget _buildMembershipPlans(MembershipProvider membershipProvider) {
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: GridView.builder(
+      child: ListView.builder(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1,
-          childAspectRatio: 1.6,
-          mainAxisSpacing: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
         itemCount: membershipProvider.plans.length,
         itemBuilder: (context, index) {
           final plan = membershipProvider.plans[index];
@@ -939,17 +935,21 @@ class _MembershipScreenState extends State<MembershipScreen>
           final price = plan['price'];
           final duration = plan['duration'];
 
-          return _buildPlanCard(
-            index,
-            planType,
-            price,
-            duration.toString(),
-            plan['description'] ?? 'Access to all gym facilities and equipment',
-            () => _showPaymentDialog(
-              context,
-              plan['plan_id'],
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: _buildPlanCard(
+              index,
               planType,
               price,
+              duration.toString(),
+              plan['description'] ??
+                  'Access to all gym facilities and equipment',
+              () => _showPaymentDialog(
+                context,
+                plan['plan_id'],
+                planType,
+                price,
+              ),
             ),
           );
         },
@@ -1078,19 +1078,17 @@ class _MembershipScreenState extends State<MembershipScreen>
                   const SizedBox(height: 12),
 
                   // Description
-                  Expanded(
-                    child: Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.7),
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7),
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
 
                   // Apply button

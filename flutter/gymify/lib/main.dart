@@ -19,6 +19,7 @@ import 'package:gymify/providers/log_provider/log_provider.dart';
 import 'package:gymify/providers/profile_provider/profile_provider.dart';
 import 'package:gymify/providers/workout_provider/workout_provider.dart';
 import 'package:gymify/routes/route_config.dart';
+import 'package:gymify/providers/nutrition_analysis_provider.dart';
 
 void main() async {
   await dotenv.load(fileName: "lib/.env");
@@ -47,6 +48,7 @@ void main() async {
             create: (context) => AIChatbotProvider(
                 // Add AIChatbotProvider
                 apiKey: dotenv.env['GEMINI_API_KEY']!)),
+        ChangeNotifierProvider(create: (_) => NutritionAnalysisProvider()),
       ],
       child: const MyApp(),
     ),
